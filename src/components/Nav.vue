@@ -1,9 +1,16 @@
 <script>
-	export default {
-	  props: {
-		user_connected : Boolean
-	  }
-	}
+    import { ref, computed } from 'vue'
+  import { useStore } from 'vuex'
+
+  export default {
+    setup() {
+      const store = useStore()
+
+      return {
+        user_connected: computed(() => store.state.user_connected)
+      }
+    }
+  }
 </script>
 
 
@@ -12,10 +19,10 @@
     <routerLink to="/" class="navbar-brand">HYPERTUBE</routerLink>
     <ul class="navbar-nav ms-auto" v-if = "!user_connected">
         <li class="nav-item">
-			<router-link to="/sign_in" class="nav-link">Sign in</router-link>
+			<router-link to="/Sign_in" class="nav-link">Sign in</router-link>
         </li>
         <li class="nav-item">
-            <router-link to="/" class="nav-link" >Sign up</router-link>
+            <router-link to="/Sign_up" class="nav-link" >Sign up</router-link>
         </li>
     </ul>
 	<ul class="navbar-nav ms-auto" v-if = "user_connected">
@@ -40,17 +47,19 @@
     font-size: 120%;
     padding: 10px;
     background-color: rgb(34, 35, 40);
-	// background-image: url('../assets/background2.jpg');
 }
 .navbar-brand {
     font-family: 'Michroma', sans-serif;
 }
 .nav-item {
     margin: 0 0 0 30px;
+    letter-spacing: 2.5px;
+	font-family: 'Roboto', sans-serif;
+	text-transform: uppercase;
+	font-size: 15px;
 }
 .nav-link {
     color: white
-    // text-transform: Uppercase;
 }
 
 

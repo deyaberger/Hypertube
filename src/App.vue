@@ -7,7 +7,7 @@ export default {
 	},
 	data() {
 		return {
-			user_connected : false
+			test : false
 		}
 	}
 }
@@ -15,7 +15,7 @@ export default {
 
 <template>
   <div id="app">
-	<Nav :user_connected="user_connected"/>
+	<Nav />
     <router-view />
   </div>
 </template>
