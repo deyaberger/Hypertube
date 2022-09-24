@@ -1,28 +1,29 @@
 <script>
-  export default {
-    data() {
-      return {
-        visible: false
-      }
-    },
-    methods: {
-    password_visibility() {
-      this.visible = !this.visible
-    },
-  },
-  computed: {
-    currentRouteName() {
-        return this.$route.name;
+import { ref, computed } from 'vue'
+import { useStore } from 'vuex'
+
+export default {
+  data() {
+    const store = useStore()
+    return {
+      visible: false,
+      wesh: computed(() => store.state.wesh),
     }
+  },
+  methods: {
+    password_visibility() {
+    this.visible = !this.visible
+    this.$store.commit('SET_WESH', 42)
+  },
+  },
 }
-  }
   </script>
   
 
 <template>
    <div class="container">
     <form>
-      <h2 class="mb-4 text-center">Sign up:</h2>
+      <h2 class="mb-4 text-center">Sign up: {{wesh}}</h2>
       <div class="input mb-2">
         <label class = "mb-2" for="username">Username:</label>
         <input

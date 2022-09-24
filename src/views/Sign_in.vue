@@ -13,7 +13,7 @@ export default {
   methods: {
     password_visibility() {
     this.visible = !this.visible
-    // this.$store.commit('SET_WESH', 42)
+    this.$store.commit('SET_WESH', 56)
   },
   },
 }
