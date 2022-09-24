@@ -1,4 +1,5 @@
 <script>
+import { RouterLink, RouterView } from 'vue-router'
 import Nav from './components/Nav.vue'
 export default {
 	components: {
@@ -28,8 +29,7 @@ export default {
   --textColor: #f6f8fc;
   --linkActiveColor: #41b783;
   background-color : #112d66;
-	// background-image: url('./assets/background.jpg');
-
+	background-image: url('./assets/background2.jpg');
 }
 
 #app {
@@ -39,6 +39,5 @@ export default {
   color: var(--textColor);
 
 }
-
 
 </style>
