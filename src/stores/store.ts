@@ -18,11 +18,16 @@ const store = createStore({
     return {
       user_connected : false,
       username: '',
+      username_error : false,
       firstname: '',
+      firstname_error : false,
       lastname: '',
+      lastname_error : false,
       email: '',
+      email_error : false,
       password: '',
-      wesh: 4
+      connection_error : false,
+      wesh: "heyyy"
     }
   },
   mutations: {

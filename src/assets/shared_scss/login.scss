@@ -6,7 +6,7 @@
 	left: 50%;
 	transform: translate(-50%, -50%);
 	border: 1px solid rgb(40, 37, 37);
-	padding: 4rem 4rem;
+	padding: 2rem 4rem;
 	border-radius: 5px;
 	background: #191818ed;
 	letter-spacing: 2.5px;
@@ -51,4 +51,10 @@
 	box-shadow: 0px 10px 10px rgba(46, 229, 157, 0.4);
 	transform: translateY(-3px);
   }
+
+.change_page {
+	text-transform: none;
+  letter-spacing: 0px;
+	font-size: 15px;
+}
   

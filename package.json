@@ -17,6 +17,7 @@
     "vuex": "^4.0.2"
   },
   "devDependencies": {
+    "@braid/vue-formulate": "^2.5.3",
     "@rushstack/eslint-patch": "^1.1.4",
     "@types/node": "^16.11.56",
     "@vitejs/plugin-vue": "^3.0.3",

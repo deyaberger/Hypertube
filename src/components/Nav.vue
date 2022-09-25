@@ -19,10 +19,10 @@
     <routerLink to="/" class="navbar-brand">HYPERTUBE</routerLink>
     <ul class="navbar-nav ms-auto" v-if = "!user_connected">
         <li class="nav-item">
-			<router-link to="/Sign_in" class="nav-link">Sign in</router-link>
+			<router-link to="/sign_in" class="nav-link">Sign in</router-link>
         </li>
         <li class="nav-item">
-            <router-link to="/Sign_up" class="nav-link" >Sign up</router-link>
+            <router-link to="/sign_up" class="nav-link" >Sign up</router-link>
         </li>
     </ul>
 	<ul class="navbar-nav ms-auto" v-if = "user_connected">

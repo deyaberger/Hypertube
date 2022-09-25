@@ -23,9 +23,9 @@ export default {
 <template>
    <div class="container">
     <form>
-      <h2 class="mb-4 text-center">Sign up: {{wesh}}</h2>
+      <h2 class="mb-4 text-center">Sign up:{{wesh}}</h2>
       <div class="input mb-2">
-        <label class = "mb-2" for="username">Username:</label>
+        <label class = "mb-2" for="username">Create username:</label>
         <input
           class="form-control"
           type="text"
@@ -34,7 +34,7 @@ export default {
         />
       </div>
       <div class="input mb-2">
-        <label class = "mb-2" for="firstname">First Name:</label>
+        <label class = "mb-2" for="firstname">Your first Name:</label>
         <input
           class="form-control"
           type="text"
@@ -43,7 +43,7 @@ export default {
         />
       </div>
       <div class="input mb-2">
-        <label class = "mb-2" for="lastname">Last Name:</label>
+        <label class = "mb-2" for="lastname">Your Last Name:</label>
         <input
           class="form-control"
           type="text"
@@ -63,11 +63,16 @@ export default {
       <div class="input mt-2">
         <label class = "mb-2" for="password">Create password:</label>
         <div class="input-group">
-        <input v-if="visible" type="password" class="form-control pwd" placeholder="password">
-        <input v-else type="text" class="form-control pwd" placeholder="password">
+        <input
+          v-model = "password"
+        class="form-control"
+        :type="visible ? 'text' : 'password'"
+        name="password"
+        placeholder="password"
+        >
         <span class="input-group-btn">
-          <button class="btn btn-default reveal" v-on:click="password_visibility" type="button">
-            <b-icon-eye-fill v-if="visible"></b-icon-eye-fill>
+          <button class="btn" v-on:click="password_visibility" type="button">
+            <b-icon-eye-fill v-if="!visible"></b-icon-eye-fill>
             <b-icon-eye-slash-fill v-else></b-icon-eye-slash-fill>
           </button>
         </span>
@@ -76,6 +81,9 @@ export default {
       <div class="col-md-12 text-center mt-5">
       <button class="submit_button" type="submit">Sign up</button>
       </div>
+      <div class="change_page mt-3 text-center">
+      <router-link to="/sign_in">Already have an account? Sign in</router-link>
+    </div>
     </form>
    </div>
 </template>
