@@ -4,16 +4,18 @@ import { useStore } from 'vuex'
 
 export default {
   data() {
-    const store = useStore()
+    // const store = useStore()
     return {
       visible: false,
-      wesh: computed(() => store.state.wesh),
+      username: '',
+      password: ''
+      // wesh: computed(() => store.state.wesh),
     }
   },
   methods: {
     password_visibility() {
     this.visible = !this.visible
-    this.$store.commit('SET_WESH', 56)
+    // this.$store.commit('SET_WESH', 56)
   },
   },
 }
@@ -23,10 +25,11 @@ export default {
 <template>
    <div class="container">
     <form>
-      <h2 class="mb-4 text-center">Sign in: {{wesh}}</h2>
+      <h2 class="mb-4 text-center">Sign in:</h2>
       <div class="input mb-3">
         <label class = "mb-2" for="username">Username:</label>
         <input
+          v-model = "username"
           class="form-control"
           type="text"
           name="username"
@@ -36,11 +39,23 @@ export default {
       <div class="input mt-5">
         <label class = "mb-2" for="password">Password:</label>
         <div class="input-group">
-        <input v-if="visible" type="password" class="form-control pwd" placeholder="password">
-        <input v-else type="text" class="form-control pwd" placeholder="password">
+        <input v-if="!visible"
+          v-model = "password"
+        class="form-control"
+        type='password'
+        name="password"
+        placeholder="password"
+        >
+        <input v-else
+          v-model = "password"
+        class="form-control"
+        type="text"
+        name="password"
+        placeholder="password"
+        >
         <span class="input-group-btn">
-          <button class="btn btn-default reveal" v-on:click="password_visibility" type="button">{{visible}}
-            <b-icon-eye-fill v-if="visible"></b-icon-eye-fill>
+          <button class="btn" v-on:click="password_visibility" type="button">
+            <b-icon-eye-fill v-if="!visible"></b-icon-eye-fill>
             <b-icon-eye-slash-fill v-else></b-icon-eye-slash-fill>
           </button>
         </span>
