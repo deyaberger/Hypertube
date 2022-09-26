@@ -31,6 +31,9 @@ const store = createStore({
     }
   },
   mutations: {
+    SET_CONNECTION(state, bool) {
+      state.user_connected = bool
+    },
     SET_USERNAME(state, username) {
       state.username = username
     },

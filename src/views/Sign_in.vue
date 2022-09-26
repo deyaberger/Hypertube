@@ -1,7 +1,7 @@
 <script>
   import { ref, computed } from 'vue'
-  import { useStore } from 'vuex'
-  import { mapState } from 'vuex';
+  import { mapState, useStore } from 'vuex';
+  import check_form from "../stores/login_validation"
   
   export default {
     data() {
@@ -10,17 +10,30 @@
         visible: false,
         username: '',
         password: '',
+        connection_error : false,
       }
     },
     computed: mapState({
       wesh: state => state.wesh,
-      connection_error: state => state.connection_error,
+      user_connected: state =>  state.user_connected,
     }),
     methods: {
       password_visibility() {
         this.visible = !this.visible
-        // this.$store.commit('SET_WESH', 42)
       },
+      onSubmit(e){
+        e.preventDefault();
+        const form = {
+          "username" : this.username,
+          "password" : this.password
+        }
+        const sign_in_res = check_form(form);
+        this.connection_error = sign_in_res.connection_error;
+        if (!this.connection_error) {
+          this.$store.commit('SET_CONNECTION', true)
+          console.log("ALL good") /* Connect to website */
+        }
+      }
     },
   }
 </script>
@@ -28,8 +41,8 @@
 
 <template>
   <div class="container">
-    <form>
-      <h2 class="mb-4 text-center">Sign in:</h2>
+    <form @submit="onSubmit">
+      <h2 class="mb-4 text-center">Sign in:{{wesh}}</h2>
       <div class="input mb-3">
         <label class = "mb-2" for="username">Username:</label>
         <input
@@ -65,7 +78,7 @@
       </div>
       <div class="col-md-12 text-center" :class="{ 'mt-4' : connection_error, 'mt-4' : !connection_error }">
         <p class="error_msg" v-show="connection_error">Wrong username or password</p>
-        <button class="submit_button" type="submit">Sign in</button>
+        <button class="submit_button" type = "submit">Sign in</button>
         <div class = "m-3">OR</div>
       </div>
       <button class="mt-3 loginBtn loginBtn--facebook">

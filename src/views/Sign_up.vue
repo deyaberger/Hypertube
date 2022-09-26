@@ -1,8 +1,6 @@
 <script>
 import { ref, computed } from 'vue'
-import { useStore } from 'vuex'
-import { mapState } from 'vuex';
-
+import { mapState, useStore } from 'vuex';
 
 export default {
   data() {
@@ -33,7 +31,7 @@ export default {
     <form>
       <h2 class="mb-4 text-center">Sign up:</h2>
       <div class="input mb-2">
-        <label class = "mb-2" for="username">Create username:</label>
+        <label class = "mb-2" for="username">Create a username:</label>
         <input
           class="form-control"
           :class="{ error_input : username_error}"
@@ -77,7 +75,7 @@ export default {
         <p class="error_msg" v-show="email_error">Please enter a valid email address</p>
       </div>
       <div class="input mt-2">
-        <label class = "mb-2" for="password">Create password:</label>
+        <label class = "mb-2" for="password">Create a password:</label>
         <div class="input-group">
         <input
           v-model = "password"
@@ -115,7 +113,7 @@ export default {
           Sign up with twitter
         </button>
       </span>
-      <div class="change_page mt-3 text-center">
+      <div class="change_page mt-4 text-center">
       <router-link to="/sign_in">Already have an account? Sign in</router-link>
     </div>
     </form>

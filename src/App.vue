@@ -27,8 +27,8 @@ export default {
 :root {
   --font: Roboto, sans-serif;
   --textColor: #f6f8fc;
-  --linkActiveColor: #41b783;
-  background-color : #112d66;
+  // --linkActiveColor: #41b783;
+  // background-color : #112d66;
 	background-image: url('./assets/background2.jpg');
 }
 
