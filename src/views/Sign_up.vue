@@ -97,7 +97,24 @@ export default {
       <div class="col-md-12 text-center mt-5">
         <p class="error_msg" v-show="connection_error">Error: please follow the instructions</p>
       <button class="submit_button" type="submit">Sign up</button>
+      <div class = "m-3">OR</div>
       </div>
+      <button class="mt-3 loginBtn loginBtn--facebook">
+        Sign up with Facebook
+      </button>
+      <span>
+        <button class="loginBtn loginBtn--google">
+          Sign up with Google
+        </button>
+      </span>
+      <button class="mt-3 loginBtn loginBtn--42">
+        Sign up with 42
+      </button>
+      <span>
+        <button class="mt-3 loginBtn loginBtn--twitter">
+          Sign up with twitter
+        </button>
+      </span>
       <div class="change_page mt-3 text-center">
       <router-link to="/sign_in">Already have an account? Sign in</router-link>
     </div>
@@ -108,6 +125,10 @@ export default {
 
 <style scoped>
 
-@import "../assets/shared_scss/login.scss"
+@import "../assets/shared_scss/login.scss";
+
+.container {
+  width: 530px;
+}
 
 </style>
