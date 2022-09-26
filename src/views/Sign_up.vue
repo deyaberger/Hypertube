@@ -1,15 +1,28 @@
 <script>
 import { ref, computed } from 'vue'
 import { useStore } from 'vuex'
+import { mapState } from 'vuex';
+
 
 export default {
   data() {
     const store = useStore()
     return {
       visible: false,
-      wesh: computed(() => store.state.wesh),
+      username_error : true,
+      firstname_error : true,
+      lastname_error : true,
+      email_error : true,
+      connection_error : true,
     }
   },
+  computed: mapState({
+      username_error: state => state.username_error,
+      firstname_error: state => state.firstname_error,
+      lastname_error: state => state.lastname_error,
+      email_error: state => state.email_error,
+      connection_error: state => state.connection_error,
+  }),
   methods: {
     password_visibility() {
     this.visible = !this.visible
@@ -23,42 +36,50 @@ export default {
 <template>
    <div class="container">
     <form>
-      <h2 class="mb-4 text-center">Sign up:{{wesh}}</h2>
+      <h2 class="mb-4 text-center">Sign up:</h2>
       <div class="input mb-2">
         <label class = "mb-2" for="username">Create username:</label>
         <input
           class="form-control"
+          :class="{ error_input : username_error}"
           type="text"
           name="username"
           placeholder="username"
         />
+        <p class="error_msg" v-show="username_error">Username already in use</p>
       </div>
       <div class="input mb-2">
         <label class = "mb-2" for="firstname">Your first Name:</label>
         <input
           class="form-control"
+          :class="{ error_input : firstname_error}"
           type="text"
           name="firstname"
           placeholder="firstname"
         />
+        <p class="error_msg" v-show="username_error">Please enter a first name</p>
       </div>
       <div class="input mb-2">
         <label class = "mb-2" for="lastname">Your Last Name:</label>
         <input
           class="form-control"
+          :class="{ error_input : lastname_error}"
           type="text"
           name="lastname"
           placeholder="lastname"
         />
+        <p class="error_msg" v-show="username_error">Please enter a last name</p>
       </div>
       <div class="input mt-5">
         <label class = "mb-2" for="email">Your email address:</label>
         <input
           class="form-control"
+          :class="{ error_input : email_error}"
           type="text"
           name="email"
           placeholder="email@adress.com"
         />
+        <p class="error_msg" v-show="username_error">Please enter a valid email address</p>
       </div>
       <div class="input mt-2">
         <label class = "mb-2" for="password">Create password:</label>
@@ -79,6 +100,7 @@ export default {
         </div>
       </div>
       <div class="col-md-12 text-center mt-5">
+        <p class="error_msg" v-show="connection_error">Error: please follow the instructions</p>
       <button class="submit_button" type="submit">Sign up</button>
       </div>
       <div class="change_page mt-3 text-center">

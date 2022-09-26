@@ -14,10 +14,6 @@ export default {
   },
   computed: mapState({
       wesh: state => state.wesh,
-      username_error: state => state.username_error,
-      firstname_error: state => state.firstname_error,
-      lastname_error: state => state.lastname_error,
-      email_error: state => state.email_error,
       connection_error: state => state.connection_error,
   }),
   methods: {
@@ -33,16 +29,16 @@ export default {
 <template>
    <div class="container">
     <form>
-      <h2 class="mb-4 text-center">Sign in:{{wesh}}</h2>
+      <h2 class="mb-4 text-center">Sign in:</h2>
       <div class="input mb-3">
         <label class = "mb-2" for="username">Username:</label>
         <input
           v-model = "username"
-          class="form-control"
+          class = "form-control"
+          :class="{ error_input : connection_error}"
           type="text"
           name="username"
           placeholder="username"
-          :error="!username_error ? 'That username is already taken' : null"
         />
       </div>
       <div class="input mt-5">
@@ -51,6 +47,7 @@ export default {
         <input
           v-model = "password"
         class="form-control"
+        :class="{ error_input : connection_error}"
         :type="visible ? 'text' : 'password'"
         name="password"
         placeholder="password"
@@ -63,7 +60,8 @@ export default {
         </span>
         </div>
       </div>
-      <div class="col-md-12 text-center mt-5">
+      <div class="col-md-12 text-center" :class="{ 'mt-4' : connection_error, 'mt-5' : !connection_error }">
+      <p class="error_msg" v-show="connection_error">Wrong username or password</p>
       <button class="submit_button" type="submit">Sign in</button>
       </div>
       <div class="change_page mt-3 text-center">

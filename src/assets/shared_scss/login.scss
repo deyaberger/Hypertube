@@ -2,9 +2,9 @@
 	width: 400px;
 	max-width: 95%;
 	position: absolute;
-	top: 50%;
 	left: 50%;
-	transform: translate(-50%, -50%);
+	top: 50%;
+	transform: translate(-50%) translateY(-35%);
 	border: 1px solid rgb(40, 37, 37);
 	padding: 2rem 4rem;
 	border-radius: 5px;
@@ -57,4 +57,14 @@
   letter-spacing: 0px;
 	font-size: 15px;
 }
+
+.error_msg {
+	padding-left: 2%;
+	color: red;
+  }
+  
+  .error_input {
+	border-color: red;
+	border: 2px solid red;
+  }
   
