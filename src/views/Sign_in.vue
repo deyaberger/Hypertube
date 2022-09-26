@@ -188,7 +188,7 @@ export default {
 .loginBtn--twitter {
   /*font-family: "Roboto", Roboto, arial, sans-serif;*/
   color: white;
-  background-image: linear-gradient(#14a3dcf1, #006188);
+  background-image: linear-gradient(#008ec6ab, #007cadf2);
   width: 45%;
   margin-left: 5%;
 
@@ -196,7 +196,7 @@ export default {
 .loginBtn--twitter:before {
   border-right: #c0bcbc 1px solid;
   background : url('../assets/twitter.svg');
-  background-size: 70%;
+  background-size: 65%;
   background-repeat: no-repeat;
   background-position: 50%;
 }
@@ -204,7 +204,7 @@ export default {
 
 .loginBtn--twitter:hover,
 .loginBtn--twitter:focus {
-  background-image: linear-gradient(#47b1dc, #2285ac);
+  background-image: linear-gradient(#46bcebf4, #41a4cc);
 }
 
 
