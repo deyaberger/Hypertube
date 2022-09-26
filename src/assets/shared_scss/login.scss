@@ -1,5 +1,5 @@
 .container {
-	width: 400px;
+	width: 500px;
 	max-width: 95%;
 	position: absolute;
 	left: 50%;
@@ -24,9 +24,6 @@
 	background-color: rgb(201, 195, 195);
 }
 
-.btn-default:hover {
-	color: black
-}
 
 .submit_button {
 	width: 140px;
@@ -54,7 +51,7 @@
 
 .change_page {
 	text-transform: none;
-  letter-spacing: 0px;
+  	letter-spacing: 0px;
 	font-size: 15px;
 }
 

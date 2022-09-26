@@ -9,11 +9,6 @@ export default {
     const store = useStore()
     return {
       visible: false,
-      username_error : true,
-      firstname_error : true,
-      lastname_error : true,
-      email_error : true,
-      connection_error : true,
     }
   },
   computed: mapState({
@@ -57,7 +52,7 @@ export default {
           name="firstname"
           placeholder="firstname"
         />
-        <p class="error_msg" v-show="username_error">Please enter a first name</p>
+        <p class="error_msg" v-show="firstname_error">Please enter a first name</p>
       </div>
       <div class="input mb-2">
         <label class = "mb-2" for="lastname">Your Last Name:</label>
@@ -68,7 +63,7 @@ export default {
           name="lastname"
           placeholder="lastname"
         />
-        <p class="error_msg" v-show="username_error">Please enter a last name</p>
+        <p class="error_msg" v-show="lastname_error">Please enter a last name</p>
       </div>
       <div class="input mt-5">
         <label class = "mb-2" for="email">Your email address:</label>
@@ -79,7 +74,7 @@ export default {
           name="email"
           placeholder="email@adress.com"
         />
-        <p class="error_msg" v-show="username_error">Please enter a valid email address</p>
+        <p class="error_msg" v-show="email_error">Please enter a valid email address</p>
       </div>
       <div class="input mt-2">
         <label class = "mb-2" for="password">Create password:</label>
