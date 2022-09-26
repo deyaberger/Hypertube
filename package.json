@@ -14,6 +14,7 @@
     "bootstrap-vue-3": "^0.3.5",
     "pinia": "^2.0.21",
     "vue-router": "^4.1.5",
+    "vue-tweet": "^2.0.2",
     "vuex": "^4.0.2"
   },
   "devDependencies": {
