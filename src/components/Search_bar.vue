@@ -10,7 +10,7 @@
 						</button>
 					</span>
 				</div>
-
+				
 				<div class = "nav-item">
 					<h2>Genres</h2>
 					<a class="nav-link" href="#" v-for="genre in genre_list" :key="genre">
@@ -19,16 +19,10 @@
 				</div>
 				<div class = "nav-item">
 					<h2>Sort by</h2>
-					<div class="row">
-						<div class = "col">
-							<a class="nav-link" href="#">Rating</a>
-						</div>
-						<div class = "col">
-							<a class="nav-link" href="#">Year</a>
-						</div>
-						<div class = "col">
-							<a class="nav-link" href="#">Name</a>
-						</div>
+					<div class="row justify-content-md-center">
+						<a class="col nav-link" href="#">Rating</a>
+						<a class="col col-sm-5 nav-link" href="#">Year</a>
+						<a class="col col-sm-2 nav-link" href="#">Name</a>
 					</div>
 				</div>
 				<div class = "nav-item">
@@ -99,11 +93,11 @@ export default {
 <style lang="scss" scoped>
 @import url("./../assets/shared_scss/navbars.scss");
 
-
 .navbar {
 	position: absolute;
 	width: 300px;
 	height: 100%;
+	background-color: rgba(34, 35, 40, 0.864);
 }
 
 .nav-link, .row, .nav-item {
@@ -126,10 +120,16 @@ export default {
 	background-color: rgba(0, 0, 0, 0.662);
 	box-shadow: 0px 0px 10px 0px rgba(252, 252, 252, 0.198);
 	color: white;
+	transition: box-shadow 1s;
 }
 
 .input-group:hover > *, .input-group:active > * {
 	box-shadow: 0px 0px 10px 0px white;
+	transition: 0.5s;
+}
+
+.input-group:hover:after > *{
+	transition: 0.5s;
 }
 
 .nav-item > input {
@@ -137,6 +137,25 @@ export default {
 	border-radius: 5px;
 }
 
+.nav-link {
+	font-size: 12px;
+	opacity: 0.7;
+	
+}
+
+
+.nav-link:hover, .nav-link:active {
+	opacity: unset;
+	font-size: 14px;
+}
+
+.filter {
+	margin: 15% 0% 5% 0%;
+}
+
+p,.filter {
+	padding-bottom: 10%;
+}
 
 
 </style>

@@ -27,6 +27,8 @@ export default {
 :root {
 	--font: Roboto, sans-serif;
 	--textColor: #f6f8fc;
+	--slider-tooltip-font-size: 0.775rem;
+	--slider-tooltip-line-height: 0.9rem;
 	// --linkActiveColor: #41b783;
 	// background-color : #112d66;
 	background-image: url('./assets/background2.jpg');
