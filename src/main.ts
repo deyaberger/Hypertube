@@ -5,6 +5,7 @@ import { BootstrapIconsPlugin } from 'bootstrap-icons-vue';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap-vue-3/dist/bootstrap-vue-3.css';
 
+
 import store from './stores/store';
 
 
@@ -18,6 +19,7 @@ app.use(router)
 
 app.use(BootstrapVue3);
 app.use(BootstrapIconsPlugin);
+
 
 app.use(store);
 

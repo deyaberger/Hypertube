@@ -16,7 +16,7 @@ import { createStore } from 'vuex'
 const store = createStore({
   state() {
     return {
-      user_connected : false,
+      user_connected : true,
       username: '',
       username_error : false,
       firstname: '',

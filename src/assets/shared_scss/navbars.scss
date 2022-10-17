@@ -1,0 +1,23 @@
+@import url('https://fonts.googleapis.com/css2?family=Michroma&display=swap');
+
+.navbar {
+    font-size: 120%;
+    padding: 10px;
+    background-color: rgb(34, 35, 40);
+}
+
+.navbar-brand {
+    font-family: 'Michroma', sans-serif;
+}
+
+.nav-item {
+    margin: 0 0 0 30px;
+    letter-spacing: 2.5px;
+	font-family: 'Roboto', sans-serif;
+	text-transform: uppercase;
+	font-size: 15px;
+}
+
+.nav-link {
+    color: white
+}
