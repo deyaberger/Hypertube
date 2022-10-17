@@ -21,12 +21,12 @@
 					<h2>Sort by</h2>
 					<div class="row justify-content-md-center">
 						<a class="col nav-link" href="#">Rating</a>
-						<a class="col col-sm-5 nav-link" href="#">Year</a>
-						<a class="col col-sm-2 nav-link" href="#">Name</a>
+						<a class="col nav-link" href="#">Year</a>
+						<a class="col nav-link" href="#">Name</a>
 					</div>
 				</div>
 				<div class = "nav-item">
-					<h2>Filters:</h2>
+					<hr class="solid">
 					<p class="filter">Rating</p>
 					<div>
 						<Slider
@@ -44,6 +44,12 @@
 						/>
 					</div>
 					<p class="filter">Name</p>
+					<button v-if="a_to_z == true" class="btn a_to_z" @click="AtoZ" type="button">
+						A <b-icon-arrow-right></b-icon-arrow-right> Z
+					</button>
+					<button v-else class="btn a_to_z" @click="AtoZ" type="button">
+						Z <b-icon-arrow-right></b-icon-arrow-right> A
+					</button>
 				</div>
 			</div>
 		</nav>
@@ -59,6 +65,7 @@ export default {
 	},
 	data() {
 		return {
+			a_to_z : true,
 			rating_vale: [2, 5],
 			years: [1980, 2022],
 			genre_list: [
@@ -78,7 +85,13 @@ export default {
 			"Thriller",
 			]
 		}
+	},
+	methods: {
+		AtoZ() {
+			this.a_to_z = !this.a_to_z
+		}
 	}
+
 }
 
 
@@ -150,11 +163,19 @@ export default {
 }
 
 .filter {
-	margin: 15% 0% 5% 0%;
+	margin: 15% 0% 15% 0%;
 }
 
-p,.filter {
-	padding-bottom: 10%;
+.a_to_z {
+	color: white;
+	margin-top: -20%;
+	padding: 5px 10px 5px 10px;
+	border: 0.02rem solid;
+	font-size: 12px
+}
+
+hr {
+	border: 1.2px solid #bbb;
 }
 
 
