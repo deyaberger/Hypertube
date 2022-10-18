@@ -1,59 +1,72 @@
 <template>
-	<div>
-		<nav class="navbar nav flex-column">
-			<div class="sidebar_menu">
+	<nav class="navbar nav flex-column">
+		<div class="sidebar_menu">
+			<form @submit="submit">
 				<div class = "nav-item input-group">
-					<input type="text"/>
+					<input type="text" v-model="form.name"/>
 					<span class="input-group-btn">
-						<button class="btn" type="button">
+						<button class="btn" type="submit">
 							<b-icon-search color="white"></b-icon-search>
 						</button>
 					</span>
 				</div>
-				
-				<div class = "nav-item">
-					<h2>Genres</h2>
-					<a class="nav-link" href="#" v-for="genre in genre_list" :key="genre">
-						{{ genre }}
-					</a>
-				</div>
-				<div class = "nav-item">
-					<h2>Sort by</h2>
-					<div class="row justify-content-md-center">
-						<a class="col nav-link" href="#">Rating</a>
-						<a class="col nav-link" href="#">Year</a>
-						<a class="col nav-link" href="#">Name</a>
-					</div>
-				</div>
-				<div class = "nav-item">
-					<hr class="solid">
-					<p class="filter">Rating</p>
-					<div>
-						<Slider
-						v-model="rating_vale"
-						:min="0"
-						:max="5"
-						/>
-					</div>
-					<p class="filter">Year</p>
-					<div>
-						<Slider
-						v-model="years"
-						:min="1950"
-						:max="2022"
-						/>
-					</div>
-					<p class="filter">Name</p>
-					<button v-if="a_to_z == true" class="btn a_to_z" @click="AtoZ" type="button">
-						A <b-icon-arrow-right></b-icon-arrow-right> Z
-					</button>
-					<button v-else class="btn a_to_z" @click="AtoZ" type="button">
-						Z <b-icon-arrow-right></b-icon-arrow-right> A
-					</button>
+			</form>
+			
+			<div class = "nav-item">
+				<h2>Genres</h2>
+				<div
+					v-for="genre in genre_list" :key="genre"
+					class="nav-link"
+					:class="{ active: genre == form.genre }"
+				>
+					<span @click="update_genre(genre)" class="touchable"> {{ genre }} </span>
+					<b-icon-x
+						@click="update_genre()"
+						class = "remove touchable"
+						:class="{ active: genre == form.genre }"
+					></b-icon-x>
+			</div>
+			</div>
+			<div class = "nav-item">
+				<h2>Sort by</h2>
+				<div class="row justify-content-md-center">
+					<a
+					href="#"
+					v-for="sort_category in sorting_list" :key="sort_category"
+					class="col nav-link"
+					:class="{ active: sort_category == form.sort_category }"
+					@click="form.sort_category = sort_category"
+					>{{sort_category}}</a>
 				</div>
 			</div>
-		</nav>
-	</div>
+			<div class = "nav-item">
+				<hr class="solid">
+				<p class="filter">Rating</p>
+				<div>
+					<Slider
+					v-model="form.rating_interval"
+					:min="0"
+					:max="5"
+					/>
+				</div>
+				<p class="filter">Year</p>
+				<div>
+					<Slider
+					v-model="form.years"
+					:min="1950"
+					:max="2022"
+					/>
+				</div>
+				<p class="filter">Name</p>
+				<button v-if="form.a_to_z == true" class="btn a_to_z" @click="AtoZ" type="button">
+					A <b-icon-arrow-right></b-icon-arrow-right> Z
+				</button>
+				<button v-else class="btn a_to_z" @click="AtoZ" type="button">
+					Z <b-icon-arrow-right></b-icon-arrow-right> A
+				</button>
+			</div>
+		</div>
+	</nav>
 </template>
 
 <script>
@@ -65,33 +78,57 @@ export default {
 	},
 	data() {
 		return {
-			a_to_z : true,
-			rating_vale: [2, 5],
-			years: [1980, 2022],
+			sorting_list : [
+				'Rating',
+				'Year',
+				'Name',
+			],
+			form : {
+				name           : '',
+				genre          : '',
+				sort_category  : 'Name',
+				a_to_z         : true,
+				rating_interval: [2, 5],
+				years          : [1980, 2022],
+			},
 			genre_list: [
-			"Action",
-			"Animation",
-			"Aventure",
-			"Comédie",
-			"Comédie dramatique",
-			"Drame",
-			"Epouvante-horreur",
-			"Famille",
-			"Fantastique",
-			"Musical",
-			"Policier",
-			"Romance",
-			"Science Fiction",
-			"Thriller",
-			]
+				"Action",
+				"Animation",
+				"Aventure",
+				"Comédie",
+				"Comédie dramatique",
+				"Drame",
+				"Epouvante-horreur",
+				"Famille",
+				"Fantastique",
+				"Musical",
+				"Policier",
+				"Romance",
+				"Science Fiction",
+				"Thriller",
+			],
 		}
 	},
 	methods: {
+		emit_form() {
+			this.$emit('search_form', this.form);
+		},
 		AtoZ() {
-			this.a_to_z = !this.a_to_z
+			this.form.a_to_z = !this.form.a_to_z
+		},
+		update_genre(genre) {
+			this.form.genre = genre
+			this.emit_form()
+		},
+		submit(e) {
+			e.preventDefault()
+			this.emit_form()
 		}
+	},
+	mounted() {
+		this.emit_form()
 	}
-
+	
 }
 
 
@@ -107,33 +144,48 @@ export default {
 @import url("./../assets/shared_scss/navbars.scss");
 
 .navbar {
-	position: absolute;
-	width: 300px;
-	height: 100%;
+	position        : absolute;
+	width           : 300px;
+	height          : 100%;
 	background-color: rgba(34, 35, 40, 0.864);
 }
 
+.toto {
+	font-size: 20px;
+}
+@media (min-height: 915px) {
+	.toto {
+		font-size: 10px;
+	}
+}
+@media (min-height: 1200px) {
+	.toto {
+		font-size: 10px;
+	}
+}
+
 .nav-link, .row, .nav-item {
-	margin: 0px;
+	margin : 0px;
 	padding: 0px;
 }
 
 .nav-item {
-	margin-top: 20%;
+	margin-top    : 20%;
+	position: relative;
 }
 
 .filter {
 	letter-spacing: inherit;
-	font-family: inherit;
+	font-family   : inherit;
 	text-transform: inherit;
-	font-size: inherit;
+	font-size     : inherit;
 }
 
 .input-group > * {
 	background-color: rgba(0, 0, 0, 0.662);
-	box-shadow: 0px 0px 10px 0px rgba(252, 252, 252, 0.198);
-	color: white;
-	transition: box-shadow 1s;
+	box-shadow      : 0px 0px 10px 0px rgba(252, 252, 252, 0.198);
+	color           : white;
+	transition      : box-shadow 1s;
 }
 
 .input-group:hover > *, .input-group:active > * {
@@ -146,37 +198,55 @@ export default {
 }
 
 .nav-item > input {
-	border: none;
+	border       : none;
 	border-radius: 5px;
 }
 
 .nav-link {
 	font-size: 12px;
-	opacity: 0.7;
+	opacity  : 0.7;
 	
 }
 
-
-.nav-link:hover, .nav-link:active {
-	opacity: unset;
+.nav-link:hover, .nav-link:active, .nav-link.active {
+	opacity  : unset;
 	font-size: 14px;
 }
 
+.nav-link.active {
+	font-weight    : bold;
+	text-decoration: underline;
+}
+
 .filter {
-	margin: 15% 0% 15% 0%;
+	margin         : 15% 0% 15% 0%;
 }
 
 .a_to_z {
-	color: white;
-	margin-top: -20%;
-	padding: 5px 10px 5px 10px;
-	border: 0.02rem solid;
-	font-size: 12px
+	color          : white;
+	margin-top     : -20%;
+	padding        : 5px 10px 5px 10px;
+	border         : 0.02rem solid;
+	font-size      : 12px
 }
 
 hr {
-	border: 1.2px solid #bbb;
+	border         : 1.2px solid #bbb;
 }
 
+.remove {
+	display        :none
+}
+
+.remove.active {
+	display: unset;
+	font-size: 1.4rem;
+	position: absolute;
+	right: 0px;
+}
+
+.touchable {
+	cursor: pointer;
+}
 
 </style>

@@ -1,3 +1,8 @@
+<script setup>
+
+</script>
+
+
 <script>
   import { ref, computed } from 'vue'
   import { mapState, useStore } from 'vuex';
@@ -42,7 +47,7 @@
 <template>
   <div class="container">
     <form @submit="onSubmit">
-      <h2 class="mb-4 text-center">Sign in:{{wesh}}</h2>
+      <h2 class="mb-4 text-center">Sign in:{{this.mq}}</h2>
       <div class="input mb-3">
         <label class = "mb-2" for="username">Username:</label>
         <input
@@ -66,7 +71,7 @@
           placeholder="password"
           >
           <span class="input-group-btn">
-            <button class="btn" v-on:click="password_visibility" type="button">
+            <button class="btn btn-md" v-on:click="password_visibility" type="button">
               <b-icon-eye-fill v-if="!visible"></b-icon-eye-fill>
               <b-icon-eye-slash-fill v-else></b-icon-eye-slash-fill>
             </button>

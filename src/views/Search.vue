@@ -7,6 +7,15 @@ export default {
 	},
 	data() {
 		return {
+			form : '',
+		}
+	},
+	methods: {
+		getForm(value) {
+			const form = JSON.parse(JSON.stringify(value));
+			this.form = form
+			console.log(form);
+			console.log(form.name);
 		}
 	}
 }
@@ -15,7 +24,8 @@ export default {
 </script>
 
 <template>
-	<SearchBar />
+	<SearchBar  @search_form="getForm"/>
+	<div class = "container">FORM: {{form}}</div>
 </template>
 
 

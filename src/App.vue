@@ -1,6 +1,7 @@
 <script>
 import { RouterLink, RouterView } from 'vue-router'
 import Nav from './components/Nav.vue'
+
 export default {
 	components: {
 		Nav
@@ -9,7 +10,7 @@ export default {
 		return {
 			test : false
 		}
-	}
+	},
 }
 </script>
 
