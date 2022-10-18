@@ -24,8 +24,7 @@ export default {
 </script>
 
 <template>
-	<SearchBar  @search_form="getForm"/>
-	<div class = "container">FORM: {{form}}</div>
+	<SearchBar @search_form="getForm"/>
 </template>
 
 

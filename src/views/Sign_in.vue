@@ -45,7 +45,7 @@
 
 
 <template>
-  <div class="container">
+  <div class="container home_made">
     <form @submit="onSubmit">
       <h2 class="mb-4 text-center">Sign in:{{this.mq}}</h2>
       <div class="input mb-3">

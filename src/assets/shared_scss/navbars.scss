@@ -1,11 +1,14 @@
 @import url('https://fonts.googleapis.com/css2?family=Michroma&display=swap');
 
 .navbar {
-    font-size: 120%;
-    padding: 10px;
+    padding: 10px 5px 10px 5px;
     background-color: rgb(34, 35, 40);
 	box-shadow: 0px 5px 5px 0px rgba(252, 252, 252, 0.198);
 
+}
+
+.logo {
+	display : none;
 }
 
 .navbar-brand {
@@ -19,8 +22,34 @@
 	text-transform: uppercase;
 	font-size: 15px;
 }
-
+@media (max-width: 690px) {
+	.navbar-brand, .nav-item {
+		font-size: 12px;
+	}
+}
 
 .nav-link {
     color: white
+}
+
+@media (max-width: 590px) {
+	.navbar {
+		flex-wrap: unset;
+	}
+	.navbar-nav {
+		flex-direction: unset;
+	}
+	.navbar-brand, .nav-item {
+		font-size: 8px;
+	}
+	.brand_text {
+		display: none
+	}
+	.logo {
+		width: 100%;
+		max-width: 30px;
+		display : unset;
+	}
+	
+
 }

@@ -1,5 +1,5 @@
 <template>
-	<div class="container">
+	<div class="container home_made">
 	<form>
 		<h2 class="text-center">Forgot your password?</h2>
 		<p class="text-center">Enter your email adress. If you have an account, you will receive a link to reset your password</p>

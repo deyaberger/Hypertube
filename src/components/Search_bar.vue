@@ -3,9 +3,9 @@
 		<div class="sidebar_menu">
 			<form @submit="submit">
 				<div class = "nav-item input-group">
-					<input type="text" v-model="form.name"/>
+					<input class = "input_text" type="text" v-model="form.name"/>
 					<span class="input-group-btn">
-						<button class="btn" type="submit">
+						<button class="btn search_icon" type="submit">
 							<b-icon-search color="white"></b-icon-search>
 						</button>
 					</span>
@@ -145,9 +145,23 @@ export default {
 
 .navbar {
 	position        : absolute;
-	width           : 300px;
+	width           : 25%;
 	height          : 100%;
 	background-color: rgba(34, 35, 40, 0.864);
+}
+
+.sidebar_menu {
+	width: 90%
+}
+
+.btn {
+	margin: unset;
+	padding: unset;
+}
+
+.search_icon {
+	position: absolute;
+	width: 100%
 }
 
 .toto {
@@ -186,6 +200,23 @@ export default {
 	box-shadow      : 0px 0px 10px 0px rgba(252, 252, 252, 0.198);
 	color           : white;
 	transition      : box-shadow 1s;
+	padding-top : 5px;
+	padding-bottom : 5px;
+}
+
+.input_text {
+	padding-left: 10%;
+}
+
+.input-group > input {
+	width: 80%;
+}
+
+.input-group-btn {
+	width: 20%;
+	align-content: center;
+	justify-content: center;
+	position:relative;
 }
 
 .input-group:hover > *, .input-group:active > * {

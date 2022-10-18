@@ -23,7 +23,7 @@ export default {
 
 
 <template>
-	<div class="container">
+	<div class="container home_made">
 		<form>
 			<h2 class="mb-4 text-center">Reset Password:</h2>
 			<div class="input mt-5">
