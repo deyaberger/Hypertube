@@ -29,7 +29,9 @@ export default {
 	--font: Roboto, sans-serif;
 	--textColor: #f6f8fc;
 
-	background-image: url('./assets/background2.jpg');
+	background-color: black;
+	background-repeat: no-repeat;
+	background-image: linear-gradient(to bottom, transparent 90%, black, black), url("/src/assets/background2.jpg");
 	background-size: cover;
 	height: 100%;
 	width: 100%;

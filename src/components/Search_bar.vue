@@ -1,6 +1,8 @@
 <template>
-	<nav class="navbar nav flex-column">
+	<nav class="navbar nav flex-column" :class="{small_sidebar : !show}">
 		<div class="sidebar_menu">
+			<button @click="show = !show" class="btn navbar-nav ms-auto"><b-icon-filter-left class = "h1 show_bar"></b-icon-filter-left></button>
+			<div v-if="show">
 			<form @submit="submit">
 				<div class = "nav-item input-group">
 					<input class = "input_text" type="text" v-model="form.name"/>
@@ -68,6 +70,7 @@
 				</button>
 			</div>
 		</div>
+		</div>
 	</nav>
 </template>
 
@@ -80,6 +83,7 @@ export default {
 	},
 	data() {
 		return {
+			show         : true,
 			sorting_list : [
 				'Rating',
 				'Year',
@@ -145,11 +149,6 @@ export default {
 <style lang="scss" scoped>
 @import url("./../assets/shared_scss/navbars.scss");
 
-:root {
-	--slider-handle-width: 8px;
-	--slider-handle-height: 8px;
-}
-
 .navbar {
 	position        : absolute;
 	width           : 25%;
@@ -157,8 +156,106 @@ export default {
 	background-color: rgba(34, 35, 40, 0.864);
 }
 
+.small_sidebar {
+	width: 5%;
+}
+
 .sidebar_menu {
 	width: 90%
+}
+
+.nav-link, .row, .nav-item {
+	margin : 0px;
+	padding: 0px;
+}
+
+.nav-item {
+	margin-top    : 10%;
+	margin-bottom  : 20%;
+	position: relative;
+}
+
+
+.input-group > *{
+	background-color: rgba(0, 0, 0, 0.662);
+	box-shadow      : 0px 0px 10px 0px rgba(252, 252, 252, 0.198);
+	color           : white;
+	transition      : box-shadow 1s;
+	border       : none;
+	border-radius: 5px;
+	width: 80%;
+}
+
+.input_text {
+	padding-left: 10%;
+}
+
+.input-group-btn {
+	width: 15%;
+	position:relative;
+}
+
+
+.input-group:hover > *, .input-group:active > * {
+	box-shadow: 0px 0px 10px 0px white;
+	transition: 0.5s;
+}
+
+.input-group:hover:after > *{
+	transition: 0.5s;
+}
+.btn.search_icon {
+	width: 100%;
+}
+
+
+@media (max-width: 590px) {
+	.search_icon {
+		font-size:10px;
+		right: 100%;
+	}
+}
+
+
+.touchable {
+	cursor: pointer;
+}
+
+.nav-link {
+	font-size: 12px;
+	opacity  : 0.7;
+}
+
+.nav-link:hover, .nav-link:active, .nav-link.active {
+	opacity  : unset;
+	font-size: 14px;
+}
+
+.nav-link.active {
+	font-weight    : bold;
+	text-decoration: underline;
+}
+
+
+.remove {
+	display        :none
+}
+
+.remove.active {
+	display: unset;
+	font-size: 1.4rem;
+	position: absolute;
+	right: 0px;
+}
+
+
+
+.filter {
+	letter-spacing: inherit;
+	font-family   : inherit;
+	text-transform: inherit;
+	font-size     : inherit;
+	margin         : 15% 0% 15% 0%;
 }
 
 .green_slider {
@@ -178,134 +275,31 @@ export default {
 }
 
 
-.btn {
-	margin: unset;
-	padding: unset;
-}
-
-.search_icon {
-	position: absolute;
-	width: 100%;
-	height: 100%;
-	top: 0px;
-}
-
-@media (max-width: 590px) {
-	.search_icon {
-		font-size:10px;
-	}
-}
-
-
-.nav-link, .row, .nav-item {
-	margin : 0px;
-	padding: 0px;
-}
-
-.nav-item {
-	margin-top    : 20%;
-	position: relative;
-}
-
-.filter {
-	letter-spacing: inherit;
-	font-family   : inherit;
-	text-transform: inherit;
-	font-size     : inherit;
-}
-
-.input-group > * {
-	background-color: rgba(0, 0, 0, 0.662);
-	box-shadow      : 0px 0px 10px 0px rgba(252, 252, 252, 0.198);
-	color           : white;
-	transition      : box-shadow 1s;
-	padding-top : 5px;
-	padding-bottom : 5px;
-}
-
-.input_text {
-	padding-left: 10%;
-}
-
-.input-group > input {
-	width: 80%;
-}
-
-.input-group-btn {
-	width: 20%;
-	align-content: center;
-	justify-content: center;
-	position:relative;
-}
-
-.input-group:hover > *, .input-group:active > * {
-	box-shadow: 0px 0px 10px 0px white;
-	transition: 0.5s;
-}
-
-.input-group:hover:after > *{
-	transition: 0.5s;
-}
-
-.nav-item > input {
-	border       : none;
+.show_bar, .a_to_z {
+	border       : 0.02rem solid;
+	border-color : rgba(255, 255, 255, 0.654);
 	border-radius: 5px;
+	color        : white;
 }
-
-.nav-link {
-	font-size: 12px;
-	opacity  : 0.7;
-	
-}
-
-.nav-link:hover, .nav-link:active, .nav-link.active {
-	opacity  : unset;
-	font-size: 14px;
-}
-
-.nav-link.active {
-	font-weight    : bold;
-	text-decoration: underline;
-}
-
-.filter {
-	margin         : 15% 0% 15% 0%;
+.show_bar:hover, .a_to_z:hover {
+	background-color: rgba(255, 255, 255, 0.163);
 }
 
 .a_to_z {
-	color          : white;
 	margin-top     : -20%;
 	padding        : 5px 10px 5px 10px;
-	border         : 0.02rem solid;
 	font-size      : 12px
 }
-@media (max-width: 590px) {
+@media (max-width  : 590px) {
 	.a_to_z{
-		font-size: 8px;
-		margin-top     : -10%;
-		padding        : 2px 5px 2px 5px;
+		font-size  : 8px;
+		margin-top : -10%;
+		padding    : 2px 5px 2px 5px;
 	}
 	
 }
 
-hr {
-	border         : 1.2px solid #bbb;
-}
 
-.remove {
-	display        :none
-}
-
-.remove.active {
-	display: unset;
-	font-size: 1.4rem;
-	position: absolute;
-	right: 0px;
-}
-
-.touchable {
-	cursor: pointer;
-}
 
 @media (max-width: 690px) {
 	h2{
