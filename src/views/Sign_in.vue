@@ -1,8 +1,3 @@
-<script setup>
-
-</script>
-
-
 <script>
   import { ref, computed } from 'vue'
   import { mapState, useStore } from 'vuex';
@@ -87,19 +82,19 @@
         <div class = "m-3">OR</div>
       </div>
       <button class="mt-3 loginBtn loginBtn--facebook">
-        Login with Facebook
+		<span class = "button_text">Login with Facebook</span>
       </button>
       <span>
         <button class="loginBtn loginBtn--google">
-          Login with Google
+			<span class = "button_text">Login with Google</span>
         </button>
       </span>
       <button class="mt-3 loginBtn loginBtn--42">
-        Login with 42
+		<span class = "button_text">Login with 42</span>
       </button>
       <span>
         <button class="mt-3 loginBtn loginBtn--twitter">
-          Login with twitter
+			<span class = "button_text">Login with twitter</span>
         </button>
       </span>
       

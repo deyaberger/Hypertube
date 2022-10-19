@@ -44,6 +44,7 @@
 				<p class="filter">Rating</p>
 				<div>
 					<Slider
+					class="green_slider"
 					v-model="form.rating_interval"
 					:min="0"
 					:max="5"
@@ -52,6 +53,7 @@
 				<p class="filter">Year</p>
 				<div>
 					<Slider
+					class="green_slider"
 					v-model="form.years"
 					:min="1950"
 					:max="2022"
@@ -143,6 +145,11 @@ export default {
 <style lang="scss" scoped>
 @import url("./../assets/shared_scss/navbars.scss");
 
+:root {
+	--slider-handle-width: 8px;
+	--slider-handle-height: 8px;
+}
+
 .navbar {
 	position        : absolute;
 	width           : 25%;
@@ -154,6 +161,23 @@ export default {
 	width: 90%
 }
 
+.green_slider {
+	--slider-tooltip-font-size: 0.775rem;
+	--slider-tooltip-line-height: 0.9rem;
+}
+@media (max-width: 590px) {
+	.green_slider {
+		margin-top: 30%;
+	--slider-tooltip-font-size: 0.5rem;
+	--slider-tooltip-line-height: 0.4rem;
+	--slider-tooltip-py: 2px;
+	--slider-tooltip-px: 2px;
+	--slider-handle-width: 8px;
+	--slider-handle-height: 8px;
+}
+}
+
+
 .btn {
 	margin: unset;
 	padding: unset;
@@ -161,22 +185,17 @@ export default {
 
 .search_icon {
 	position: absolute;
-	width: 100%
+	width: 100%;
+	height: 100%;
+	top: 0px;
 }
 
-.toto {
-	font-size: 20px;
-}
-@media (min-height: 915px) {
-	.toto {
-		font-size: 10px;
+@media (max-width: 590px) {
+	.search_icon {
+		font-size:10px;
 	}
 }
-@media (min-height: 1200px) {
-	.toto {
-		font-size: 10px;
-	}
-}
+
 
 .nav-link, .row, .nav-item {
 	margin : 0px;
@@ -260,6 +279,14 @@ export default {
 	border         : 0.02rem solid;
 	font-size      : 12px
 }
+@media (max-width: 590px) {
+	.a_to_z{
+		font-size: 8px;
+		margin-top     : -10%;
+		padding        : 2px 5px 2px 5px;
+	}
+	
+}
 
 hr {
 	border         : 1.2px solid #bbb;
@@ -279,5 +306,25 @@ hr {
 .touchable {
 	cursor: pointer;
 }
+
+@media (max-width: 690px) {
+	h2{
+		font-size: 20px;
+	}
+	.nav-link, .filter {
+		font-size: 10px;
+	}
+}
+
+@media (max-width: 590px) {
+	h2{
+		font-size: 12px;
+	}
+	.nav-link, .nav-link.active {
+		font-size: 9px;
+	}
+}
+
+
 
 </style>
