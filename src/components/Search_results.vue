@@ -1,7 +1,8 @@
 <template>
 	<div class="results_container">
-		<div class="row">
+		<div class="search_header">
 			<div class="title">Suggestions:</div>
+			<div class="number_of_results">115 results</div>
 		</div>
 		<div class="movie-card" v-for="movie in movie_list" :key="movie">
 			<div class="movie-header">
@@ -89,13 +90,37 @@ export default {
 	color: black;
 }
 
-a {
-	text-decoration:none;
-	color:inherit;
+.search_header {
+	height: 30px;
+	margin: 5%;
+	letter-spacing: 3.5px;
+	font-family: 'Roboto', sans-serif;
+	text-transform: uppercase;
+	text-align: center;
 }
 
-a:hover {
-	color:#6ABCEA;
+.title { 
+	font-weight: bold;
+	font-size: 25px;
+	color: white;
+}
+
+.number_of_results {
+	color: rgba(255, 255, 255, 0.644);
+	margin-top: 3%;
+	text-align: left;
+}
+
+@media screen and (max-width: 590px) {
+	.title { 
+		font-size: 18px;
+	}
+
+	.number_of_results {
+		font-size: 12px;
+	letter-spacing: 2.5px;
+	margin-top: 7%;
+	}
 }
 
 .movie-card {

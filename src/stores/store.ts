@@ -27,6 +27,8 @@ const store = createStore({
       email_error : false,
       password: '',
       connection_error : false,
+	  language: 'eng',
+	  language_options: ['eng', 'fr'],
       wesh: "heyyy"
     }
   },
@@ -37,6 +39,9 @@ const store = createStore({
     SET_USERNAME(state, username) {
       state.username = username
     },
+	SET_LANGUAGE(state, language) {
+		state.language = language
+	},
     SET_WESH(state, wesh) {
       state.wesh = wesh
     }

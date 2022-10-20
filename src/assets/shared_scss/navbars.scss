@@ -22,7 +22,7 @@
 	text-transform: uppercase;
 	font-size: 15px;
 }
-@media (max-width: 690px) {
+@media (max-width: 780px) {
 	.navbar-brand, .nav-item {
 		font-size: 12px;
 	}
@@ -32,7 +32,7 @@
     color: white
 }
 
-@media (max-width: 590px) {
+@media (max-width: 645px) {
 	.navbar {
 		flex-wrap: unset;
 	}
@@ -41,6 +41,10 @@
 	}
 	.navbar-brand, .nav-item {
 		font-size: 9px;
+	}
+	.nav-item {
+		margin: 0 0 0 20px;
+
 	}
 	.brand_text {
 		display: none
@@ -52,4 +56,12 @@
 	}
 	
 
+}
+
+@media (max-width: 370px) {
+
+	.nav-item {
+		margin: 0 0 0 15px;
+
+	}
 }
