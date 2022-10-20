@@ -1,9 +1,11 @@
 <script>
 import SearchBar from '../components/Search_bar.vue'
+import SearchResults from '../components/Search_results.vue'
 
 export default {
 	components: {
-		SearchBar
+		SearchBar,
+		SearchResults
 	},
 	data() {
 		return {
@@ -25,9 +27,10 @@ export default {
 
 <template>
 	<SearchBar @search_form="getForm"/>
+	<SearchResults></SearchResults>
 </template>
 
 
-<style lang="scss">
+<style lang="scss" scoped>
 
 </style>
