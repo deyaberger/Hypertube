@@ -76,10 +76,11 @@ export default {
 
 .results_container {
 	position: absolute;
-	width: 100%;
+	width: 75%;
 	height: 100%;
 	left: 25%;
 	background-color: rgba(34, 35, 40, 0.864);
+	overflow: scroll
 }
 
 
@@ -108,11 +109,13 @@ a:hover {
 	cursor: pointer;
 }
 
+
+
 .movie-header, .movie-image{
 	position: relative;
 	padding:0;
 	margin: 0;
-	height: 367px;
+	height: 300px;
 	width: 100%;
 	display: block;
 	border-top-left-radius: 10px;
@@ -121,6 +124,7 @@ a:hover {
 
 .movie-image {
 	justify-content: left;
+	object-fit: cover;
 }
 
 .header-icon {
@@ -206,13 +210,26 @@ a:hover {
 	background-position: 100% 100%;
 }
 
-@media screen and (max-width: 500px) {
+@media screen and (max-width: 590px) {
 	.movie-card {
-		width: 95%;
-		max-width: 95%;
-		margin: 1em;
-		display: block;
+		width: 70%;
 	}
+
+	.movie-header, .movie-image{
+	height: 200px;
+	}
+
+	.movie-title {
+		font-size: 15px;
+	}
+	.movie-info {
+	margin-top: 0em;
+	}
+	.movie-content {
+		padding: 12px 12px 10px 12px;
+		margin: 0;
+	}
+
 }
 
 </style>
