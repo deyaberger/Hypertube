@@ -26,6 +26,7 @@ export default {
 			"Or", // 15
 			"Already have an account? Sign in", // 16
 			"Sign up with ", // 17
+			"Error: a password should contain at least: 8 character, including at least an alphabetical character, a numeric charater and an uppercase and a lowercase", // 18
 		],
 		fr_content : [
 			"s'enregistrer", // 0
@@ -46,6 +47,7 @@ export default {
 			"Ou", // 15
 			"Déjà un compte? Se connecter", // 16
 			"S'inscrire via ", // 17
+			"Erreur: le mot de passe doit contenir au moins 8 characteres, numeriques et alphabetiques, en lettre majuscules et minuscules.", // 18
 		],
     }
   },
@@ -54,6 +56,7 @@ export default {
       firstname_error: state => state.firstname_error,
       lastname_error: state => state.lastname_error,
       email_error: state => state.email_error,
+	  mdp_error: state => state.mdp_error,
       connection_error: state => state.connection_error,
 	  language: state => state.language,
   }),
@@ -130,6 +133,7 @@ export default {
         <input
           v-model = "password"
         class="form-control"
+		:class="{ error_input : mdp_error}"
         :type="visible ? 'text' : 'password'"
         name="password"
         :placeholder="content(13)"
@@ -141,6 +145,7 @@ export default {
           </button>
         </span>
         </div>
+		<p class="error_msg" v-show="mdp_error">{{content(18)}}</p>
       </div>
       <div class="col-md-12 text-center mt-5">
         <p class="error_msg" v-show="connection_error">{{content(14)}}</p>

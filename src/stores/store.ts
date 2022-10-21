@@ -3,20 +3,21 @@ import { createStore } from 'vuex'
 const store = createStore({
   state() {
     return {
-      user_connected : false,
-      username: '',
-      username_error : false,
-      firstname: '',
-      firstname_error : false,
-      lastname: '',
-      lastname_error : false,
-      email: '',
-      email_error : false,
-      password: '',
+      user_connected   : false,
+      username         : '',
+      username_error   : false,
+      firstname        : '',
+      firstname_error  : false,
+      lastname         : '',
+      lastname_error   : false,
+      email            : '',
+      email_error      : false,
+      password         : '',
+      mdp_error        : false,
       connection_error : false,
-	  language: 'eng',
-	  language_options: ['eng', 'fr'],
-      wesh: "heyyy"
+	  language         : 'eng',
+	  language_options : ['eng', 'fr'],
+      wesh             : "heyyy"
     }
   },
   mutations: {
