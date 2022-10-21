@@ -5,33 +5,28 @@ export default {
 	data() {
 		const store = useStore()
 		return {
-			eng_content : [
-			"Forgot your password?", // 0
-			"Enter your email adress. If you have an account, you will receive a link to reset your password", // 1
-			"email address:", // 2
-			"Send" // 2
-			],
-			fr_content : [
-			"Mot de passe oublié?", // 0
-			"Entrez votre adresse email. Si vous avez un compte, vous recevrez un lien pour recréer votre mot de passe", // 1
-			"adresse email:", // 2
-			"Envoyer" // 3
-			],
+			lang_nb : 0,
+			text_content : {
+				forgot_pwd : ["Forgot your password?", "Mot de passe oublié?"],
+				sentence   : [
+					"Enter your email adress. If you have an account, you will receive a link to reset your password",
+					"Entrez votre adresse email. Si vous avez un compte, vous recevrez un lien pour recréer votre mot de passe",
+				],
+				email      : ["email address:", "adresse email:"],
+				send       : ["Send", "Envoyer"],
+			}
 		}
 	},
 	computed: mapState({
 		language: state => state.language,
 	}),
-	methods: {
-		is_english() {
-			return (this.language == 'eng')
+	watch: {
+		language: {
+			handler:function(newVal) {
+				this.lang_nb = newVal == "eng" ? 0 : 1
+			},
+			deep:true
 		},
-		content(index) {
-			if (this.is_english()) {
-				return (this.eng_content[index])
-			}
-			else return (this.fr_content[index])
-		}
 	},
 }
 </script>
@@ -39,10 +34,10 @@ export default {
 <template>
 	<div class="container home_made">
 		<form>
-			<h2 class="text-center">{{content(0)}}</h2>
-			<p class="text-center">{{content(1)}}</p>
+			<h2 class="text-center">{{text_content.forgot_pwd[lang_nb]}}</h2>
+			<p class="text-center">{{text_content.sentence[lang_nb]}}</p>
 			<div class="input mt-5">
-				<label class = "mb-2" for="email">{{content(2)}}</label>
+				<label class = "mb-2" for="email">{{text_content.email[lang_nb]}}</label>
 				<input
 				class="form-control"
 				type="text"
@@ -51,7 +46,7 @@ export default {
 				/>
 			</div>
 			<div class="col-md-12 text-center mt-4">
-				<button class="submit_button" type="submit">{{content(3)}}</button>
+				<button class="submit_button" type="submit">{{text_content.send[lang_nb]}}</button>
 			</div>
 		</form>
 	</div>

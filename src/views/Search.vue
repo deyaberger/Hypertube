@@ -27,8 +27,7 @@ export default {
 
 <template>
 	<SearchBar @search_form="getForm"/>
-	<p class="home_made">{{form}}</p>
-	<!-- <SearchResults></SearchResults> -->
+	<SearchResults></SearchResults>
 </template>
 
 

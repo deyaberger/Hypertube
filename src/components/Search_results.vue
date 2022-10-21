@@ -54,19 +54,19 @@ export default {
 					<div class="info-section">
 						<label>Year</label>
 						<span>{{movie.year}}</span>
-					</div><!--date,time-->
+					</div>
 					<div class="info-section">
 						<label>Rating</label>
 						<span>{{movie.rating}}</span>
-					</div><!--screen-->
+					</div>
 					<div class="info-section">
 						<label>Row</label>
 						<span>F</span>
-					</div><!--row-->
+					</div>
 					<div class="info-section">
 						<label>Seat</label>
 						<span>21,22</span>
-					</div><!--seat-->
+					</div>
 				</div>
 			</div>
 		</div>
