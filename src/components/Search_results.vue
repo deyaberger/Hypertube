@@ -1,3 +1,38 @@
+<script>
+export default {
+	data() {
+		return {
+			movie_list: [
+				{
+					path: "../src/assets/fake_library/la_vie_est_belle.jpg",
+					name: "La vie est belle",
+					rating: 2,
+					year: 1998,
+				},
+				{
+					path: "../src/assets/fake_library/tschik.jpg",
+					name: "Tschik",
+					rating: 3,
+					year: 2017,
+				},
+				{
+					path: "../src/assets/fake_library/victoria.jpg",
+					name: "Victoria",
+					rating: 4,
+					year: 2020,
+				},
+				{
+					path: "../src/assets/fake_library/bagdad_cafe.jpg",
+					name: "Bagdad cafe",
+					rating: 3,
+					year: 2003,
+				}
+			],
+		}
+	},
+}
+</script>
+
 <template>
 	<div class="results_container">
 		<div class="search_header">
@@ -38,40 +73,7 @@
 	</div>
 </template>
 
-<script>
-export default {
-	data() {
-		return {
-			movie_list: [
-				{
-					path: "../src/assets/fake_library/la_vie_est_belle.jpg",
-					name: "La vie est belle",
-					rating: 2,
-					year: 1998,
-				},
-				{
-					path: "../src/assets/fake_library/tschik.jpg",
-					name: "Tschik",
-					rating: 3,
-					year: 2017,
-				},
-				{
-					path: "../src/assets/fake_library/victoria.jpg",
-					name: "Victoria",
-					rating: 4,
-					year: 2020,
-				},
-				{
-					path: "../src/assets/fake_library/bagdad_cafe.jpg",
-					name: "Bagdad cafe",
-					rating: 3,
-					year: 2003,
-				}
-			],
-		}
-	},
-}
-</script>
+
 
 <style lang="scss" scoped>
 

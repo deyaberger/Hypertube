@@ -1,3 +1,98 @@
+<script>
+import Slider from '@vueform/slider'
+import { mapState, useStore } from 'vuex';
+
+export default {
+	components: {
+		Slider,
+	},
+	data() {
+		const store = useStore()
+		return {
+			show         : true,
+			text_content : {
+				genre : ["Genre", "Genres"], // 0
+				sort  : ["Sort by", "Trier par"] // 1
+			},
+			form : {
+				name           : '',
+				genre          : '',
+				sort_category  : ['Name', 'Nom'],
+				a_to_z         : true,
+				rating_interval: [2, 5],
+				years          : [1980, 2022],
+			},
+			sorting_list : {
+				"RATING" : ['Rating', 'Note'],
+				"YEAR" : ['Year', 'Année'],
+				"NAME" : ['Name', 'Nom'],
+			},
+			genre_list: [
+				["Action", "Action"],
+				["Animation", "Animation"],
+				["Adventure","Aventure"],
+				["Comedy", "Comédie"],
+				["Drama", "Drame"],
+				["Horror", "Epouvante-horreur"],
+				["Familly", "Famille"],
+				["Musical", "Musical"],
+				["Romance", "Romance"],
+				["Science Fiction", "Science Fiction"],
+				["Thriller", "Thriller"],
+			], 
+		}
+	},
+	computed: mapState({
+		language: state => state.language,
+	}),
+	methods: {
+		emit_form() {
+			this.$emit('search_form', this.form);
+		},
+		AtoZ() {
+			this.form.a_to_z = !this.form.a_to_z
+		},
+		update_genre(genre) {
+			this.form.genre = genre
+			this.emit_form()
+		},
+		update_sort_cat(cat) {
+			this.form.sort_category = cat
+			this.emit_form()
+		},
+		submit(e) {
+			e.preventDefault()
+			this.emit_form()
+		},
+		language_nb() {
+			if (this.language == 'eng') {
+				return (0)
+			}
+			else return (1)
+		}
+	},
+	mounted() {
+		this.emit_form()
+	},
+	watch: {
+		form: {
+		handler:function(newVal) {
+			this.emit_form()
+		},
+		deep:true
+		},
+
+	}
+
+
+	
+}
+
+
+
+</script>
+
+
 <template>
 	<nav class="navbar nav flex-column" :class="{small_sidebar : !show}">
 		<div class="sidebar_menu">
@@ -15,13 +110,13 @@
 			</form>
 			
 			<div class = "nav-item">
-				<h2>{{content(0)}}</h2>
+				<h2>{{text_content.genre[language_nb()]}}</h2>
 				<div
-					v-for="genre in genre_list[language]" :key="genre"
+					v-for="genre in genre_list" :key="genre"
 					class="nav-link"
 					:class="{ active: genre == form.genre }"
 				>
-					<span @click="update_genre(genre)" class="touchable"> {{ genre }} </span>
+					<span @click="update_genre(genre)" class="touchable"> {{ genre[language_nb()] }} </span>
 					<b-icon-x
 						@click="update_genre()"
 						class = "remove touchable"
@@ -30,20 +125,20 @@
 			</div>
 			</div>
 			<div class = "nav-item">
-				<h2>{{content(1)}}</h2>
-				<div class="row justify-content-md-center">
+				<h2>{{text_content.sort[language_nb()]}}</h2>
+				<div class="row justify-text_content-md-center">
 					<a
 					href="#"
-					v-for="sort_category in sorting_list[language]" :key="sort_category"
+					v-for="sort_category in sorting_list" :key="sort_category"
 					class="col nav-link"
-					:class="{ active: sort_category == form.sort_category }"
-					@click="form.sort_category = sort_category"
-					>{{sort_category}}</a>
+					:class="{ active: sort_category[0] == form.sort_category[0] }"
+					@click="update_sort_cat(sort_category)"
+					>{{sort_category[language_nb()]}}</a>
 				</div>
 			</div>
 			<div class = "nav-item">
 				<hr class="solid">
-				<p class="filter">{{sorting_list[language][0]}}</p>
+				<p class="filter">{{sorting_list["RATING"][language_nb()]}}</p>
 				<div>
 					<Slider
 					class="green_slider"
@@ -52,7 +147,7 @@
 					:max="5"
 					/>
 				</div>
-				<p class="filter">{{sorting_list[language][1]}}</p>
+				<p class="filter">{{sorting_list["YEAR"][language_nb()]}}</p>
 				<div>
 					<Slider
 					class="green_slider"
@@ -61,7 +156,7 @@
 					:max="2022"
 					/>
 				</div>
-				<p class="filter">{{sorting_list[language][2]}}</p>
+				<p class="filter">{{sorting_list["NAME"][language_nb()]}}</p>
 				<button v-if="form.a_to_z == true" class="btn a_to_z" @click="AtoZ" type="button">
 					A <b-icon-arrow-right></b-icon-arrow-right> Z
 				</button>
@@ -74,111 +169,6 @@
 	</nav>
 </template>
 
-<script>
-import Slider from '@vueform/slider'
-import { mapState, useStore } from 'vuex';
-
-export default {
-	components: {
-		Slider,
-	},
-	data() {
-		const store = useStore()
-		return {
-			show         : true,
-			sorting_list : { "eng" : [
-				'Rating',
-				'Year',
-				'Name',
-			],
-			"fr" : [
-				'Note',
-				'Année',
-				'Nom',
-			]
-			},
-			form : {
-				name           : '',
-				genre          : '',
-				sort_category  : 'Name',
-				a_to_z         : true,
-				rating_interval: [2, 5],
-				years          : [1980, 2022],
-			},
-			eng_content : [
-				"Genre", // 0
-				"Sort by", // 1
-			],
-			fr_content : [
-				"Genres", // 0
-				"Trier par", // 1
-			],
-			genre_list: { "eng" : [
-				"Action",
-				"Animation",
-				"Adventure",
-				"Comedy",
-				"Drama",
-				"Horror",
-				"Familly",
-				"Musical",
-				"Romance",
-				"Science Fiction",
-				"Thriller",
-			], 
-			"fr" : [
-				"Action",
-				"Animation",
-				"Aventure",
-				"Comédie",
-				"Drame",
-				"Epouvante-horreur",
-				"Famille",
-				"Musical",
-				"Romance",
-				"Science Fiction",
-				"Thriller",
-			]
-			},
-		}
-	},
-	computed: mapState({
-		language: state => state.language,
-	}),
-	methods: {
-		emit_form() {
-			this.$emit('search_form', this.form);
-		},
-		AtoZ() {
-			this.form.a_to_z = !this.form.a_to_z
-		},
-		update_genre(genre) {
-			this.form.genre = genre
-			this.emit_form()
-		},
-		submit(e) {
-			e.preventDefault()
-			this.emit_form()
-		},
-		is_english() {
-			return (this.language == 'eng')
-		},
-		content(index) {
-			if (this.is_english()) {
-				return (this.eng_content[index])
-			}
-			else return (this.fr_content[index])
-		}
-	},
-	mounted() {
-		this.emit_form()
-	}
-	
-}
-
-
-
-</script>
 
 
 <style src="@vueform/slider/themes/default.css">

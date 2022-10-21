@@ -14,23 +14,11 @@ export default {
 			form : '',
 		}
 	},
-	computed: mapState({
-		language: state => state.language,
-	}),
 	methods: {
 		getForm(value) {
 			const form = JSON.parse(JSON.stringify(value));
 			this.form = form
 		},
-		is_english() {
-			return (this.language == 'eng')
-		},
-		content(index) {
-			if (this.is_english()) {
-				return (this.eng_content[index])
-			}
-			else return (this.fr_content[index])
-		}
 	}
 }
 
@@ -39,7 +27,8 @@ export default {
 
 <template>
 	<SearchBar @search_form="getForm"/>
-	<SearchResults></SearchResults>
+	<p class="home_made">{{form}}</p>
+	<!-- <SearchResults></SearchResults> -->
 </template>
 
 

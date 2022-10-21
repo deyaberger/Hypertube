@@ -84,30 +84,4 @@ export default {
 <style scoped lang="scss">
 @import url("./../assets/shared_scss/navbars.scss");
 
-:deep(.dropdown_menu  > *) {
-   color: white;
-   background-color: inherit;
-	--bs-dropdown-min-width: 0rem;
-	--bs-dropdown-padding-y: 0rem;
-	--bs-dropdown-spacer: 0.1rem;
-	font-size: inherit;
-	letter-spacing: inherit;
-	font-family: inherit;
-	text-transform: inherit;
-	margin: inherit;
-}
-
-:deep(.dropdown_item  > *) {
-   color: white;
-   background-color: black;
-   letter-spacing: inherit;
-	font-family: inherit;
-	text-transform: inherit;
-}
-
-:deep(.dropdown_menu.show  > *) {
-	position: absolute
-}
-
-
 </style>

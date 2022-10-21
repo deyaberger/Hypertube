@@ -28,22 +28,18 @@ export default {
 :root {
 	--font: Roboto, sans-serif;
 	--textColor: #f6f8fc;
-
 	background-color: black;
-	background-repeat: no-repeat;
 	background-image: linear-gradient(to bottom, transparent 90%, black, black), url("/src/assets/background2.jpg");
 	background-size: cover;
+	background-repeat: no-repeat;
+	background-position: center;
 	height: 100%;
 	width: 100%;
-	background-position: center;
 }
 
 #app {
 	font-family: var(--font);
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
 	color: var(--textColor);
-
 }
 
 </style>
