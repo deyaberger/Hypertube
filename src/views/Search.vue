@@ -16,8 +16,6 @@ export default {
 		getForm(value) {
 			const form = JSON.parse(JSON.stringify(value));
 			this.form = form
-			console.log(form);
-			console.log(form.name);
 		}
 	}
 }

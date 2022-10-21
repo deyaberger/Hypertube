@@ -7,6 +7,46 @@ export default {
     const store = useStore()
     return {
       visible: false,
+	  eng_content : [
+			"sign up", // 0
+			"create a username:", // 1
+			"username", // 2
+			"Username already in use", // 3
+			"Your first Name:", // 4
+			"firstname", // 5
+			"Please enter a first name", // 6
+			"Your last Name:", // 7
+			"lastname", // 8
+			"Please enter a last name", // 9
+			"Your email address:", // 10
+			"Please enter a valid email address", // 11
+			"Create a password:", // 12
+			"password", // 13
+			"Error: please follow the instructions", // 14
+			"Or", // 15
+			"Already have an account? Sign in", // 16
+			"Sign up with ", // 17
+		],
+		fr_content : [
+			"s'enregistrer", // 0
+			"créer un pseudo:", // 1
+			"pseudo", // 2
+			"Pseudo déjà pris", // 3
+			"Votre prénom:", // 4
+			"prénom", // 5
+			"Merci d'indiquer votre prénom", // 6
+			"Votre nom de famille:", // 7
+			"nomdefamille", // 8
+			"Merci d'indiquer votre nom de famille", // 9
+			"Adresse email:", // 10
+			"Adresse invalide", // 11
+			"Créer un mot de passe:", // 12
+			"motdepasse", // 13
+			"Erreur: merci de suivre les instructions", // 14
+			"Ou", // 15
+			"Déjà un compte? Se connecter", // 16
+			"S'inscrire via ", // 17
+		],
     }
   },
   computed: mapState({
@@ -15,12 +55,22 @@ export default {
       lastname_error: state => state.lastname_error,
       email_error: state => state.email_error,
       connection_error: state => state.connection_error,
+	  language: state => state.language,
   }),
   methods: {
     password_visibility() {
     this.visible = !this.visible
     this.$store.commit('SET_WESH', 42)
   },
+  is_english() {
+		return (this.language == 'eng')
+		},
+		content(index) {
+			if (this.is_english()) {
+				return (this.eng_content[index])
+			}
+			else return (this.fr_content[index])
+		}
   },
 }
   </script>
@@ -29,42 +79,42 @@ export default {
 <template>
    <div class="container home_made">
     <form>
-      <h2 class="mb-4 text-center">Sign up:</h2>
+      <h2 class="mb-4 text-center">{{content(0)}}:</h2>
       <div class="input mb-2">
-        <label class = "mb-2" for="username">Create a username:</label>
+        <label class = "mb-2" for="username">{{content(1)}}</label>
         <input
           class="form-control"
           :class="{ error_input : username_error}"
           type="text"
           name="username"
-          placeholder="username"
+          :placeholder="content(2)"
         />
-        <p class="error_msg" v-show="username_error">Username already in use</p>
+        <p class="error_msg" v-show="username_error">{{content(3)}}</p>
       </div>
       <div class="input mb-2">
-        <label class = "mb-2" for="firstname">Your first Name:</label>
+        <label class = "mb-2" for="firstname">{{content(4)}}</label>
         <input
           class="form-control"
           :class="{ error_input : firstname_error}"
           type="text"
           name="firstname"
-          placeholder="firstname"
+          :placeholder="content(5)"
         />
-        <p class="error_msg" v-show="firstname_error">Please enter a first name</p>
+        <p class="error_msg" v-show="firstname_error">{{content(6)}}</p>
       </div>
       <div class="input mb-2">
-        <label class = "mb-2" for="lastname">Your Last Name:</label>
+        <label class = "mb-2" for="lastname">{{content(7)}}</label>
         <input
           class="form-control"
           :class="{ error_input : lastname_error}"
           type="text"
           name="lastname"
-          placeholder="lastname"
+          :placeholder="content(8)"
         />
-        <p class="error_msg" v-show="lastname_error">Please enter a last name</p>
+        <p class="error_msg" v-show="lastname_error">{{content(9)}}</p>
       </div>
       <div class="input mt-5">
-        <label class = "mb-2" for="email">Your email address:</label>
+        <label class = "mb-2" for="email">{{content(10)}}</label>
         <input
           class="form-control"
           :class="{ error_input : email_error}"
@@ -72,17 +122,17 @@ export default {
           name="email"
           placeholder="email@adress.com"
         />
-        <p class="error_msg" v-show="email_error">Please enter a valid email address</p>
+        <p class="error_msg" v-show="email_error">{{content(11)}}</p>
       </div>
       <div class="input mt-2">
-        <label class = "mb-2" for="password">Create a password:</label>
+        <label class = "mb-2" for="password">{{content(12)}}</label>
         <div class="input-group">
         <input
           v-model = "password"
         class="form-control"
         :type="visible ? 'text' : 'password'"
         name="password"
-        placeholder="password"
+        :placeholder="content(13)"
         >
         <span class="input-group-btn">
           <button class="btn" v-on:click="password_visibility" type="button">
@@ -93,28 +143,28 @@ export default {
         </div>
       </div>
       <div class="col-md-12 text-center mt-5">
-        <p class="error_msg" v-show="connection_error">Error: please follow the instructions</p>
-      <button class="submit_button" type="submit">Sign up</button>
-      <div class = "m-3">OR</div>
+        <p class="error_msg" v-show="connection_error">{{content(14)}}</p>
+      <button class="submit_button" type="submit">{{content(0)}}</button>
+      <div class = "m-3">{{content(15)}}</div>
       </div>
       <button class="mt-3 loginBtn loginBtn--facebook">
-        Sign up with Facebook
+        {{content(17)}}Facebook
       </button>
       <span>
         <button class="loginBtn loginBtn--google">
-          Sign up with Google
+			{{content(17)}}Google
         </button>
       </span>
       <button class="mt-3 loginBtn loginBtn--42">
-        Sign up with 42
+        {{content(17)}}42
       </button>
       <span>
         <button class="mt-3 loginBtn loginBtn--twitter">
-          Sign up with twitter
+          {{content(17)}}twitter
         </button>
       </span>
       <div class="change_page mt-4 text-center">
-      <router-link to="/sign_in">Already have an account? Sign in</router-link>
+      <router-link to="/sign_in">{{content(16)}}</router-link>
     </div>
     </form>
    </div>
@@ -127,6 +177,10 @@ export default {
 
 .container {
   width: 530px;
+}
+
+.home_made {
+	top: 450px;
 }
 
 </style>

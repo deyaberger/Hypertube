@@ -11,11 +11,31 @@
         username: '',
         password: '',
         connection_error : false,
+		eng_content : [
+			"sign in", // 0
+			"username", // 1
+			"password", // 2
+			"Forgot your password ?", // 3
+			"Or", // 4
+			"Don't have av account? Sign up", // 5
+			"Wrong username or password", // 6
+			"Login with ", // 7
+		],
+		fr_content : [
+			"se connecter", // 0
+			"pseudo", // 1
+			"mot de passe", // 2
+			"Mot de passe oublié ?", // 3
+			"Ou", // 4
+			"Pas de compte? S'inscrire", // 5
+			"Mauvais pseudo ou mot de passe", // 6
+			"Co. avec ", // 7
+		],
       }
     },
     computed: mapState({
-      wesh: state => state.wesh,
       user_connected: state =>  state.user_connected,
+	  language: state => state.language,
     }),
     methods: {
       password_visibility() {
@@ -33,8 +53,18 @@
           this.$store.commit('SET_CONNECTION', true)
           console.log("ALL good") /* Connect to website */
         }
-      }
+      },
+	  is_english() {
+		return (this.language == 'eng')
+		},
+		content(index) {
+			if (this.is_english()) {
+				return (this.eng_content[index])
+			}
+			else return (this.fr_content[index])
+		}
     },
+
   }
 </script>
 
@@ -42,20 +72,20 @@
 <template>
   <div class="container home_made">
     <form @submit="onSubmit">
-      <h2 class="mb-4 text-center">Sign in:{{this.mq}}</h2>
+      <h2 class="mb-4 text-center">{{content(0)}}:</h2>
       <div class="input mb-3">
-        <label class = "mb-2" for="username">Username:</label>
+        <label class = "mb-2" for="username">{{content(1)}}:</label>
         <input
         v-model = "username"
         class = "form-control"
         :class="{ error_input : connection_error}"
         type="text"
         name="username"
-        placeholder="username"
+        :placeholder="content(1)"
         />
       </div>
       <div class="input mt-5">
-        <label class = "mb-2" for="password">Password:</label>
+        <label class = "mb-2" for="password">{{content(2)}}:</label>
         <div class="input-group">
           <input
           v-model = "password"
@@ -63,7 +93,7 @@
           :class="{ error_input : connection_error}"
           :type="visible ? 'text' : 'password'"
           name="password"
-          placeholder="password"
+          :placeholder="content(2)"
           >
           <span class="input-group-btn">
             <button class="btn btn-md" v-on:click="password_visibility" type="button">
@@ -74,32 +104,32 @@
         </div>
       </div>
       <div class="mt-2 change_page">
-        <router-link to="/reset_pwd">Forgot your password?</router-link>
+        <router-link to="/reset_pwd">{{content(3)}}</router-link>
       </div>
       <div class="col-md-12 text-center" :class="{ 'mt-4' : connection_error, 'mt-4' : !connection_error }">
-        <p class="error_msg" v-show="connection_error">Wrong username or password</p>
-        <button class="submit_button" type = "submit">Sign in</button>
-        <div class = "m-3">OR</div>
+        <p class="error_msg" v-show="connection_error">{{content(6)}}</p>
+        <button class="submit_button" type = "submit">{{content(0)}}</button>
+        <div class = "m-3">{{content(4)}}</div>
       </div>
       <button class="mt-3 loginBtn loginBtn--facebook">
-		<span class = "button_text">Login with Facebook</span>
+		<span class = "button_text">{{content(7)}}Facebook</span>
       </button>
       <span>
         <button class="loginBtn loginBtn--google">
-			<span class = "button_text">Login with Google</span>
+			<span class = "button_text">{{content(7)}}Google</span>
         </button>
       </span>
       <button class="mt-3 loginBtn loginBtn--42">
-		<span class = "button_text">Login with 42</span>
+		<span class = "button_text">{{content(7)}}42</span>
       </button>
       <span>
         <button class="mt-3 loginBtn loginBtn--twitter">
-			<span class = "button_text">Login with twitter</span>
+			<span class = "button_text">{{content(7)}}twitter</span>
         </button>
       </span>
       
       <div class="change_page mt-3 text-center">
-        <router-link to="/sign_up">Don't have an account ? Sign up</router-link>
+        <router-link to="/sign_up">{{content(5)}}</router-link>
       </div>
     </form>
   </div>

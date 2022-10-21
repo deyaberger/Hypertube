@@ -1,22 +1,9 @@
-// import { ref, computed } from 'vue'
-// import { defineStore } from 'pinia'
-
-// export const useCounterStore = defineStore('counter', () => {
-//   const count = ref(0)
-//   const doubleCount = computed(() => count.value * 2)
-//   function increment() {
-//     count.value++
-//   }
-
-//   return { count, doubleCount, increment }
-// })
-
 import { createStore } from 'vuex'
 
 const store = createStore({
   state() {
     return {
-      user_connected : true,
+      user_connected : false,
       username: '',
       username_error : false,
       firstname: '',
@@ -47,5 +34,6 @@ const store = createStore({
     }
   }
 })
+
 
 export default store

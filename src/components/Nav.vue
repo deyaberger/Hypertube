@@ -1,34 +1,25 @@
 <script>
 import { ref, computed } from 'vue'
-import { useStore } from 'vuex'
+import { mapState, useStore } from 'vuex';
 
 export default {
-	setup() {
-		const store = useStore()
-		
-		return {
-			user_connected: computed(() => store.state.user_connected),
-			language : computed(() => store.state.language),
-			language_options : computed(() => store.state.language_options),
-		}
-	},
 	data() {
-		return {
-			language: this.language,
-		}
-	},
+      const store = useStore()
+      return {
+      }
+    },
+	computed: mapState({
+      user_connected: state =>  state.user_connected,
+      language: state =>  state.language,
+      language_options: state =>  state.language_options,
+    }),
 	methods: {
-		change_language(language) {
-			console.log("language:" + language)
-			this.$store.commit('SET_LANGUAGE', language)
+		change_language(new_language) {
+			console.log("Changing language to: " + new_language)
+			this.$store.commit('SET_LANGUAGE', new_language)
 		},
 		is_english() {
-			if (this.language == 'eng') {
-				console.log("hey")
-				return true
-			}
-				console.log("hos")
-			return false
+			return (this.language == 'eng')
 		}
 	}
 }
@@ -40,10 +31,21 @@ export default {
 		<routerLink to="/" class="navbar-brand"><span class = "brand_text">HYPERTUBE</span><img class="logo" src="../assets/logo_white.png"/></routerLink>
 		<ul class="navbar-nav ms-auto" v-if = "!user_connected">
 			<li class="nav-item">
-				<router-link to="/sign_in" cass="nav-link"><span class="nav_text">Sign in</span></router-link>
+				<router-link to="/sign_in" class="nav-link">
+					<span v-if="is_english()" class="nav_text">Sign in </span>
+					<span v-else class="nav_text">Se connecter </span>
+				</router-link>
 			</li>
 			<li class="nav-item">
-				<router-link to="/sign_up" class="nav-link" ><span class="nav_text">Sign up</span></router-link>
+				<router-link to="/sign_up" class="nav-link" >
+					<span v-if="is_english()" class="nav_text">Sign up </span>
+					<span v-else class="nav_text">S'inscrire </span>
+				</router-link>
+			</li>
+			<li class="nav-item">
+				<b-dropdown :text="language" class="dropdown_menu">
+					<b-dropdown-item class="dropdown_item" v-for="option in language_options" :key="option" @click="change_language(option)">{{option}}</b-dropdown-item>
+				</b-dropdown>
 			</li>
 		</ul>
 		<ul class="navbar-nav ms-auto" v-if = "user_connected">
@@ -56,15 +58,23 @@ export default {
 				</router-link>
 			</li>
 			<li class="nav-item">
-				<router-link to="/profile" class="nav-link"><span class="nav_text">Profile </span><b-icon-person-circle/></router-link>
+				<router-link to="/profile" class="nav-link">
+					<span v-if="is_english()" class="nav_text">Profile </span>
+					<span v-else class="nav_text">Profil </span>
+					<b-icon-person-circle/>
+				</router-link>
 			</li>
 			<li class="nav-item">
 				<b-dropdown :text="language" class="dropdown_menu">
-					<b-dropdown-item class="dropdown_item" v-for="option in language_options" :key="option" @click="language = option">{{option}}</b-dropdown-item>
+					<b-dropdown-item class="dropdown_item" v-for="option in language_options" :key="option" @click="change_language(option)">{{option}}</b-dropdown-item>
 				</b-dropdown>
 			</li>
 			<li class="nav-item">
-				<router-link to="/" class="nav-link"><span class="nav_text">Exit </span><b-icon-arrow-bar-right /></router-link>
+				<router-link to="/" class="nav-link">
+					<span v-if="is_english()" class="nav_text">Quit </span>
+					<span v-else class="nav_text">Quitter </span>
+					<b-icon-arrow-bar-right />
+				</router-link>
 			</li>
 	</ul>
 </nav>
@@ -74,7 +84,7 @@ export default {
 <style scoped lang="scss">
 @import url("./../assets/shared_scss/navbars.scss");
 
-:deep .dropdown_menu  > * {
+:deep(.dropdown_menu  > *) {
    color: white;
    background-color: inherit;
 	--bs-dropdown-min-width: 0rem;
@@ -87,7 +97,7 @@ export default {
 	margin: inherit;
 }
 
-:deep .dropdown_item  > * {
+:deep(.dropdown_item  > *) {
    color: white;
    background-color: black;
    letter-spacing: inherit;
@@ -95,7 +105,7 @@ export default {
 	text-transform: inherit;
 }
 
-:deep .dropdown_menu.show  > * {
+:deep(.dropdown_menu.show  > *) {
 	position: absolute
 }
 
