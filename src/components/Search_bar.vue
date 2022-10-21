@@ -15,9 +15,9 @@
 			</form>
 			
 			<div class = "nav-item">
-				<h2>Genres</h2>
+				<h2>{{content(0)}}</h2>
 				<div
-					v-for="genre in genre_list" :key="genre"
+					v-for="genre in genre_list[language]" :key="genre"
 					class="nav-link"
 					:class="{ active: genre == form.genre }"
 				>
@@ -30,11 +30,11 @@
 			</div>
 			</div>
 			<div class = "nav-item">
-				<h2>Sort by</h2>
+				<h2>{{content(1)}}</h2>
 				<div class="row justify-content-md-center">
 					<a
 					href="#"
-					v-for="sort_category in sorting_list" :key="sort_category"
+					v-for="sort_category in sorting_list[language]" :key="sort_category"
 					class="col nav-link"
 					:class="{ active: sort_category == form.sort_category }"
 					@click="form.sort_category = sort_category"
@@ -43,7 +43,7 @@
 			</div>
 			<div class = "nav-item">
 				<hr class="solid">
-				<p class="filter">Rating</p>
+				<p class="filter">{{sorting_list[language][0]}}</p>
 				<div>
 					<Slider
 					class="green_slider"
@@ -52,7 +52,7 @@
 					:max="5"
 					/>
 				</div>
-				<p class="filter">Year</p>
+				<p class="filter">{{sorting_list[language][1]}}</p>
 				<div>
 					<Slider
 					class="green_slider"
@@ -61,7 +61,7 @@
 					:max="2022"
 					/>
 				</div>
-				<p class="filter">Name</p>
+				<p class="filter">{{sorting_list[language][2]}}</p>
 				<button v-if="form.a_to_z == true" class="btn a_to_z" @click="AtoZ" type="button">
 					A <b-icon-arrow-right></b-icon-arrow-right> Z
 				</button>
@@ -76,19 +76,27 @@
 
 <script>
 import Slider from '@vueform/slider'
+import { mapState, useStore } from 'vuex';
 
 export default {
 	components: {
 		Slider,
 	},
 	data() {
+		const store = useStore()
 		return {
 			show         : true,
-			sorting_list : [
+			sorting_list : { "eng" : [
 				'Rating',
 				'Year',
 				'Name',
 			],
+			"fr" : [
+				'Note',
+				'Année',
+				'Nom',
+			]
+			},
 			form : {
 				name           : '',
 				genre          : '',
@@ -97,24 +105,46 @@ export default {
 				rating_interval: [2, 5],
 				years          : [1980, 2022],
 			},
-			genre_list: [
+			eng_content : [
+				"Genre", // 0
+				"Sort by", // 1
+			],
+			fr_content : [
+				"Genres", // 0
+				"Trier par", // 1
+			],
+			genre_list: { "eng" : [
+				"Action",
+				"Animation",
+				"Adventure",
+				"Comedy",
+				"Drama",
+				"Horror",
+				"Familly",
+				"Musical",
+				"Romance",
+				"Science Fiction",
+				"Thriller",
+			], 
+			"fr" : [
 				"Action",
 				"Animation",
 				"Aventure",
 				"Comédie",
-				"Comédie dramatique",
 				"Drame",
 				"Epouvante-horreur",
 				"Famille",
-				"Fantastique",
 				"Musical",
-				"Policier",
 				"Romance",
 				"Science Fiction",
 				"Thriller",
-			],
+			]
+			},
 		}
 	},
+	computed: mapState({
+		language: state => state.language,
+	}),
 	methods: {
 		emit_form() {
 			this.$emit('search_form', this.form);
@@ -129,6 +159,15 @@ export default {
 		submit(e) {
 			e.preventDefault()
 			this.emit_form()
+		},
+		is_english() {
+			return (this.language == 'eng')
+		},
+		content(index) {
+			if (this.is_english()) {
+				return (this.eng_content[index])
+			}
+			else return (this.fr_content[index])
 		}
 	},
 	mounted() {
@@ -140,7 +179,7 @@ export default {
 
 
 </script>
-<div class="nav_category__enable"></div>
+
 
 <style src="@vueform/slider/themes/default.css">
 
