@@ -40,10 +40,10 @@ export default {
 			<div class="number_of_results">115 results</div>
 		</div>
 		<div class="row movies">
-			<div class="col-md-auto movie-card" v-for="movie in movie_list" :key="movie">
+			<router-link :to="'/movie/' + movie.name" class="col-md-auto movie-card" v-for="movie in movie_list" :key="movie">
 				<div class="movie-header">
-					<img class="movie-image" :src="movie.path"/>
-					<b-icon-info-circle-fill class="h2 header-icon"></b-icon-info-circle-fill>
+						<img class="movie-image" :src="movie.path"/>
+						<b-icon-info-circle-fill class="h2 header-icon"></b-icon-info-circle-fill>
 				</div>
 				<div class="movie-content">
 					<div class="movie-content-header">
@@ -70,7 +70,7 @@ export default {
 						</div>
 					</div>
 				</div>
-			</div>
+			</router-link>
 		</div>
 		<div class="pagination overflow-auto">
 			<div>
@@ -196,17 +196,16 @@ export default {
 	transform:scale(1.03);
 }
 
-.movie-header:hover > .movie-image {
+.movie-card:hover .movie-image {
 	opacity: 0.7
 }
 
-.movie-header:hover > .header-icon {
+.movie-card:hover .header-icon {
 	visibility: visible;
 }
 
 
 .header-icon:hover {
-	// font-size: 74px;
 	transform:scale(1.1);
 }
 

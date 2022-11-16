@@ -5,6 +5,7 @@ import Reset_pwd from "../views/Reset_password.vue";
 import New_pwd from "../views/New_password.vue";
 import Search from "../views/Search.vue";
 import Profile from "../views/Profile.vue";
+import SingleMovie from "../views/Single_movie.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -43,6 +44,12 @@ const router = createRouter({
 		path: "/profile",
 		name: "profile",
 		component: Profile,
+	},
+	{
+		path: "/movie/:moviename",
+		name: "movie",
+		props: true,
+		component: SingleMovie,
 	},
   ]
 })
