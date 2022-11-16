@@ -5,16 +5,16 @@
 
 	export default {
 		props: {
-			moviename: String
+			moviename: String,
 		},
 		data() {
 			const store = useStore()
 			return {
-				movie: fakeData
+				movie: fakeData,
 			}
 		},
 		computed: mapState({
-		language: state =>  state.language,
+			language: state =>  state.language,
 		}),
 		methods: {
 			is_english() {
@@ -70,16 +70,16 @@
 </template>
 
 
-<style>
+<style lang="css">
 
 #app {
 	background:linear-gradient(
-      rgba(30,27,38, 0.95), 
-      rgba(30,27,38, 0.95)),
-    url("https://i.ibb.co/FDGqCmM/papers-co-ag74-interstellar-wide-space-film-movie-art-33-iphone6-wallpaper.jpg");
-  background-position: center;
-  background-size: cover;
-  background-repeat: repeat;
+		rgba(30, 27, 38, 0.687), 
+		rgba(30,27,38, 0.95)),
+	url("https://i.ibb.co/FDGqCmM/papers-co-ag74-interstellar-wide-space-film-movie-art-33-iphone6-wallpaper.jpg");
+	background-position: center;
+	background-size: cover;
+	background-repeat: repeat;
 }
 
 
@@ -88,6 +88,10 @@
 <style lang="scss" scoped>
 
 .container-sm {
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
 	background-color: rgb(238, 255, 0);
 }
 
