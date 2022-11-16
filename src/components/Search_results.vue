@@ -77,19 +77,24 @@ export default {
 
 <style lang="scss" scoped>
 
+* {
+	transition: 300ms;
+	color: black;
+}
+
 .results_container {
 	position: absolute;
-	width: 75%;
+	width: calc(100% - 300px);
 	height: 100%;
-	left: 25%;
+	margin-left: 300px;
+	transition : none;
 	background-color: rgba(34, 35, 40, 0.864);
 	overflow: scroll
 }
 
-
-* {
-	transition: 300ms;
-	color: black;
+.small_sidebar + .results_container {
+	margin-left: 70px;
+	width: calc(100% - 70px);
 }
 
 .search_header {
@@ -117,7 +122,6 @@ export default {
 	.title { 
 		font-size: 18px;
 	}
-
 	.number_of_results {
 		font-size: 12px;
 	letter-spacing: 2.5px;
@@ -191,7 +195,6 @@ export default {
 }
 
 
-
 .movie-content {
 	padding: 18px 18px 24px 18px;
 	margin: 0;
@@ -237,7 +240,18 @@ export default {
 	background-position: 100% 100%;
 }
 
+@media screen and (max-width: 690px) {
+	.results_container {
+		margin-left: 250px;
+		width: calc(100% - 250px);
+	}
+}
+
 @media screen and (max-width: 590px) {
+	.results_container {
+		margin-left: 150px;
+		width: calc(100% - 150px);
+	}
 	.movie-card {
 		width: 70%;
 	}

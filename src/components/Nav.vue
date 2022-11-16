@@ -27,58 +27,53 @@ export default {
 
 
 <template>
-	<nav class="navbar navbar-expand-sm navbar-dark">
-		<routerLink to="/" class="navbar-brand"><span class = "brand_text">HYPERTUBE</span><img class="logo" src="../assets/logo_white.png"/></routerLink>
-		<ul class="navbar-nav ms-auto" v-if = "!user_connected">
-			<li class="nav-item">
-				<router-link to="/sign_in" class="nav-link">
-					<span v-if="is_english()" class="nav_text">Sign in </span>
-					<span v-else class="nav_text">Se connecter </span>
-				</router-link>
-			</li>
-			<li class="nav-item">
-				<router-link to="/sign_up" class="nav-link" >
-					<span v-if="is_english()" class="nav_text">Sign up </span>
-					<span v-else class="nav_text">S'inscrire </span>
-				</router-link>
-			</li>
-			<li class="nav-item">
-				<b-dropdown :text="language" class="dropdown_menu">
-					<b-dropdown-item class="dropdown_item" v-for="option in language_options" :key="option" @click="change_language(option)">{{option}}</b-dropdown-item>
-				</b-dropdown>
-			</li>
-		</ul>
-		<ul class="navbar-nav ms-auto" v-if = "user_connected">
-			
-			<li class="nav-item">
-				<router-link to="/search" class="nav-link">
-					<span v-if="is_english()" class="nav_text">movies </span>
-					<span v-else class="nav_text">films </span>
-					<b-icon-search/>
-				</router-link>
-			</li>
-			<li class="nav-item">
-				<router-link to="/profile" class="nav-link">
-					<span v-if="is_english()" class="nav_text">Profile </span>
-					<span v-else class="nav_text">Profil </span>
-					<b-icon-person-circle/>
-				</router-link>
-			</li>
-			<li class="nav-item">
-				<b-dropdown :text="language" class="dropdown_menu">
-					<b-dropdown-item class="dropdown_item" v-for="option in language_options" :key="option" @click="change_language(option)">{{option}}</b-dropdown-item>
-				</b-dropdown>
-			</li>
-			<li class="nav-item">
-				<router-link to="/" class="nav-link">
-					<span v-if="is_english()" class="nav_text">Quit </span>
-					<span v-else class="nav_text">Quitter </span>
-					<b-icon-arrow-bar-right />
-				</router-link>
-			</li>
-	</ul>
-</nav>
+<b-navbar toggleable="lg" class="navbar navbar-dark horizontal">
+    <b-navbar-brand href="#"><routerLink to="/" class="navbar-brand"><span class = "brand_text">HYPERTUBE</span><img class="logo" src="../assets/logo_white.png"/></routerLink></b-navbar-brand>
+    <b-navbar-toggle class="toggle" target="nav-collapse"></b-navbar-toggle>
+    <b-collapse id="nav-collapse" is-nav>
+      <b-navbar-nav class="ms-auto" v-if="!user_connected">
+        <b-nav-item>
+			<router-link v-if="is_english()" to="/sign_in" class="nav-link">Sign in</router-link>
+			<router-link v-else to="/sign_in" class="nav-link">Se connecter</router-link>
+		</b-nav-item>
+		<b-nav-item>
+			<router-link v-if="is_english()" to="/sign_up" class="nav-link">Sign up</router-link>
+			<router-link v-else to="/sign_up" class="nav-link">S'inscrire</router-link>
+		</b-nav-item>
+		<b-nav-item>
+			<b-dropdown variant="link" class="dropdown_menu">
+				<template #button-content>
+					<b-icon-gear-fill/>
+				</template>
+				<b-dropdown-item class="dropdown_item" v-for="option in language_options" :key="option" @click="change_language(option)">{{option}}</b-dropdown-item>
+			</b-dropdown>
+		</b-nav-item>
+      </b-navbar-nav>
 
+      <b-navbar-nav class="ms-auto" v-else>
+		<b-nav-item>
+			<router-link v-if="is_english()" to="/search" class="nav-link">Movies <b-icon-search/></router-link>
+			<router-link v-else to="/search" class="nav-link">Films <b-icon-search/></router-link>
+		</b-nav-item>
+        <b-nav-item>
+			<router-link v-if="is_english()" to="/profile" class="nav-link">Profile <b-icon-person-circle/></router-link>
+			<router-link v-else to="/profile" class="nav-link">Profil <b-icon-person-circle/></router-link>
+		</b-nav-item>
+		<b-nav-item>
+			<b-dropdown variant="link" class="dropdown_menu">
+				<template #button-content>
+					<b-icon-gear-fill/>
+				</template>
+				<b-dropdown-item class="dropdown_item" v-for="option in language_options" :key="option" @click="change_language(option)">{{option}}</b-dropdown-item>
+			</b-dropdown>
+		</b-nav-item>
+		<b-nav-item>
+			<router-link v-if="is_english()" to="/" class="nav-link">Logout <b-icon-arrow-bar-right /></router-link>
+			<router-link v-else to="/" class="nav-link">Se deconnecter <b-icon-arrow-bar-right /></router-link>
+		</b-nav-item>
+      </b-navbar-nav>
+    </b-collapse>
+</b-navbar>
 </template>
 
 <style scoped lang="scss">

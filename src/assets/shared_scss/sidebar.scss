@@ -1,12 +1,12 @@
 .search_bar {
 	position        : absolute;
-	width           : 25%;
+	width           : 300px;
 	height          : 100%;
 	background-color: rgba(34, 35, 40, 0.864);
 }
 
 .small_sidebar {
-	width: 5%;
+	width: 70px;
 }
 
 .sidebar_menu {
@@ -108,17 +108,6 @@
 	--slider-tooltip-font-size: 0.775rem;
 	--slider-tooltip-line-height: 0.9rem;
 }
-@media (max-width: 590px) {
-	.green_slider {
-		margin-top: 30%;
-	--slider-tooltip-font-size: 0.5rem;
-	--slider-tooltip-line-height: 0.4rem;
-	--slider-tooltip-py: 2px;
-	--slider-tooltip-px: 2px;
-	--slider-handle-width: 8px;
-	--slider-handle-height: 8px;
-}
-}
 
 .show_bar, .a_to_z {
 	border       : 0.02rem solid;
@@ -135,14 +124,6 @@
 	padding        : 5px 10px 5px 10px;
 	font-size      : 12px
 }
-@media (max-width  : 590px) {
-	.a_to_z{
-		font-size  : 8px;
-		margin-top : -10%;
-		padding    : 2px 5px 2px 5px;
-	}
-	
-}
 
 
 @media (max-width: 690px) {
@@ -152,13 +133,33 @@
 	.nav-link, .filter {
 		font-size: 10px;
 	}
+	.search_bar {
+		width: 250px;
+	}
 }
 
 @media (max-width: 590px) {
+	.search_bar {
+		width: 150px;
+	}
 	h2{
 		font-size: 12px;
 	}
 	.nav-link, .nav-link.active {
 		font-size: 9px;
+	}
+	.a_to_z{
+		font-size  : 8px;
+		margin-top : -10%;
+		padding    : 2px 5px 2px 5px;
+	}
+	.green_slider {
+		margin-top: 30%;
+	--slider-tooltip-font-size: 0.5rem;
+	--slider-tooltip-line-height: 0.4rem;
+	--slider-tooltip-py: 2px;
+	--slider-tooltip-px: 2px;
+	--slider-handle-width: 8px;
+	--slider-handle-height: 8px;
 	}
 }
