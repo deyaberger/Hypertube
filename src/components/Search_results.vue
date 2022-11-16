@@ -39,35 +39,48 @@ export default {
 			<div class="title">Suggestions:</div>
 			<div class="number_of_results">115 results</div>
 		</div>
-		<div class="movie-card" v-for="movie in movie_list" :key="movie">
-			<div class="movie-header">
-				<img class="movie-image" :src="movie.path"/>
-				<b-icon-info-circle-fill class="h2 header-icon"></b-icon-info-circle-fill>
+		<div class="row movies">
+			<div class="col-md-auto movie-card" v-for="movie in movie_list" :key="movie">
+				<div class="movie-header">
+					<img class="movie-image" :src="movie.path"/>
+					<b-icon-info-circle-fill class="h2 header-icon"></b-icon-info-circle-fill>
+				</div>
+				<div class="movie-content">
+					<div class="movie-content-header">
+						<a href="#">
+							<h3 class="movie-title">{{movie.name}}</h3>
+						</a>
+					</div>
+					<div class="movie-info">
+						<div class="info-section">
+							<label>Year</label>
+							<span>{{movie.year}}</span>
+						</div>
+						<div class="info-section">
+							<label>Rating</label>
+							<span>{{movie.rating}}</span>
+						</div>
+						<div class="info-section">
+							<label>Row</label>
+							<span>F</span>
+						</div>
+						<div class="info-section">
+							<label>Seat</label>
+							<span>21,22</span>
+						</div>
+					</div>
+				</div>
 			</div>
-			<div class="movie-content">
-				<div class="movie-content-header">
-					<a href="#">
-						<h3 class="movie-title">{{movie.name}}</h3>
-					</a>
-				</div>
-				<div class="movie-info">
-					<div class="info-section">
-						<label>Year</label>
-						<span>{{movie.year}}</span>
-					</div>
-					<div class="info-section">
-						<label>Rating</label>
-						<span>{{movie.rating}}</span>
-					</div>
-					<div class="info-section">
-						<label>Row</label>
-						<span>F</span>
-					</div>
-					<div class="info-section">
-						<label>Seat</label>
-						<span>21,22</span>
-					</div>
-				</div>
+		</div>
+		<div class="pagination overflow-auto">
+			<div>
+				<b-pagination
+					v-model="currentPage"
+					:total-rows="rows"
+					:per-page="perPage"
+					first-number
+					class="custom_pagination"
+				></b-pagination>
 			</div>
 		</div>
 	</div>
@@ -89,7 +102,7 @@ export default {
 	margin-left: 300px;
 	transition : none;
 	background-color: rgba(34, 35, 40, 0.864);
-	overflow: scroll
+	overflow: scroll;
 }
 
 .small_sidebar + .results_container {
@@ -129,6 +142,11 @@ export default {
 	}
 }
 
+.col-md-auto {
+	margin: 0px;
+	padding: 0px;
+}
+
 .movie-card {
 	background: #ffffff;
 	box-shadow: 0px 6px 18px rgba(0,0,0,.1);
@@ -139,8 +157,6 @@ export default {
 	display:inline-block;
 	cursor: pointer;
 }
-
-
 
 .movie-header, .movie-image{
 	position: relative;
@@ -270,7 +286,21 @@ export default {
 		padding: 12px 12px 10px 12px;
 		margin: 0;
 	}
+}
 
+.pagination {
+	justify-content: center;
+}
+
+
+
+</style>
+
+<style lang="css">
+
+.page-link.active, .active > .page-link {
+	background-color: black;
+	border-color: rgb(99, 97, 97);
 }
 
 </style>
