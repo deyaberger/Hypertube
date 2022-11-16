@@ -64,7 +64,7 @@ export default {
 				<template #button-content>
 					<b-icon-gear-fill/>
 				</template>
-				<b-dropdown-item class="dropdown_item" v-for="option in language_options" :key="option" @click="change_language(option)">{{option}}</b-dropdown-item>
+				<b-dropdown-item :class="option==language ? 'dropdown_item disabled' : 'dropdown_item'" v-for="option in language_options" :key="option" @click="change_language(option)" :disabled="option==language ? true : false">{{option}}</b-dropdown-item>
 			</b-dropdown>
 		</b-nav-item>
 		<b-nav-item>
@@ -78,5 +78,10 @@ export default {
 
 <style scoped lang="scss">
 @import url("./../assets/shared_scss/navbars.scss");
+
+</style>
+
+<style scoped lang="css">
+
 
 </style>

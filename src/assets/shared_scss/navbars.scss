@@ -84,8 +84,19 @@
 	 font-family: inherit;
 	 text-transform: inherit;
  }
- 
+
+ :deep(.dropdown_item.disabled  > *) {
+	background-color: rgb(45, 44, 44);
+ }
+
+ :deep(.dropdown_item.disabled) {
+	cursor: default;
+	pointer-events: none;
+	text-decoration: none;
+ }
+
+
  :deep(.dropdown_menu.show  > *) {
 	 position: absolute
  }
- 
+
