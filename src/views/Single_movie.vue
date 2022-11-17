@@ -49,21 +49,21 @@
 			</div>
 		</div>
 		<div class="row general_infos-container">
-			<div class="col">
-				<h3 class="infos_title">GENRE</h3>
+			<div class="col infos">
+				<h3 class="infos_title"><b-icon-camera-reels-fill class="icon-genre"></b-icon-camera-reels-fill> GENRE</h3>
 				<span class="infos_content">{{movie.genre}}</span>
 			</div>
-			<div class="col">
-				<h3 class="infos_title">YEAR</h3>
+			<div class="col infos">
+				<h3 class="infos_title"><b-icon-calendar2-minus-fill class="icon-year"></b-icon-calendar2-minus-fill> YEAR</h3>
 				<span class="infos_content">{{movie.year}}</span>
 			</div>
-			<div class="col">
-				<h3 class="infos_title">DURATION</h3>
+			<div class="col infos">
+				<h3 class="infos_title"><b-icon-clock-fill class="icon-time"></b-icon-clock-fill> DURATION</h3>
 				<span class="infos_content">{{movie.duration}}</span>
 			</div>
-			<div class="col">
-				<h3 class="infos_title">SCORE</h3>
-				<span class="infos_content">{{movie.score}}</span>
+			<div class="col infos">
+				<h3 class="infos_title"><b-icon-star-fill class="icon-score"></b-icon-star-fill> SCORE</h3>
+				<span class="infos_content"><span class="big">{{movie.score}}</span>/10</span>
 			</div>
 		</div>
 		<div class="row summary_container">
@@ -127,8 +127,43 @@
 	height          : 500px;
 }
 
+h1, h3 {
+	text-transform: uppercase;
+}
+
+h1 {
+	font-size: 30px;
+}
+
+h3 {
+	font-size: 15px;
+}
+
+.big {
+	font-weight: bold;
+	font-size: 15px;
+}
+
+.icon-score {
+	color: rgb(255, 255, 81);
+}
+
+.icon-genre {
+	color: rgb(100, 195, 106);
+}
+
+.icon-year {
+	color: rgb(112, 114, 219);
+}
+
+.icon-time {
+	color: rgb(210, 102, 201)}
 .row {
 	margin-top      : 2%;
+}
+
+.general_infos-container {
+	text-align:center;
 }
 
 .movie_image {
@@ -144,6 +179,15 @@
 	margin-bottom   : 2%;
 	color           : white;
 	background      : black;
+}
+
+.infos_title svg {
+	margin-bottom: 5px;
+}
+
+.summary {
+	font-size: 18px;
+	font-weight: lighter;
 }
 
 </style>
