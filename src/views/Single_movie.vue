@@ -123,6 +123,8 @@
 			</button>
 		</div>
 		<div v-for="comment in movie.list_comments" :key="comment" class="row people_reviews">
+			<hr class="solid">
+
 			<div class="col-3 rating">
 				<b-icon-star-fill class="icon-score"></b-icon-star-fill>
 				<span><span class="big">{{comment.rating}}</span>/10</span>
@@ -257,6 +259,10 @@ h3 {
 	margin-right  : 1%;
 }
 
+.people_reviews {
+	margin-top: 3%;
+	margin-bottom: 3%;
+}
 .rating .big {
 	margin-left: 5px;
 }
