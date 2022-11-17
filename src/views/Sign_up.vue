@@ -86,7 +86,7 @@ export default {
 
 
 <template>
-	<div class="container home_made">
+	<div class="container homemade-container ">
 		<form @submit="onSubmit">
 			<h2 class="mb-4 text-center">{{text_content.sign_up[lang_nb]}}:</h2>
 			<div class="input mb-2">
@@ -189,12 +189,13 @@ export default {
 <style scoped>
 
 @import "../assets/shared_scss/login.scss";
+@import "../assets/shared_scss/shared.scss";
 
 .container {
 	width: 530px;
 }
 
-.home_made {
+.homemade-container  {
 	top: 450px;
 }
 

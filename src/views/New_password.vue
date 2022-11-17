@@ -44,7 +44,7 @@ export default {
 
 
 <template>
-	<div class="container home_made">
+	<div class="container homemade-container ">
 		<form>
 			<h2 class="mb-4 text-center">{{text_content.reset[lang_nb]}}</h2>
 			<div class="input mt-5">
@@ -75,7 +75,9 @@ export default {
 </template>
 
 
-<style >
+<style scoped>
 	@import "../assets/shared_scss/login.scss";
+	@import "../assets/shared_scss/shared.scss";
+
 	
 </style>

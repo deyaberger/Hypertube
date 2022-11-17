@@ -11,7 +11,8 @@
 			const store = useStore()
 			return {
 				movie: fakeData,
-			}
+				user_comment: ""
+		}
 		},
 		computed: mapState({
 			language: state =>  state.language,
@@ -19,13 +20,24 @@
 		methods: {
 			is_english() {
 				return (this.language == 'eng')
+			},
+			addComment: function(comment) {
+				const d = new Date();
+				const complete_info = {
+					"name" : "test",
+					"date" : d.toDateString(),
+					"hour" : d.toLocaleTimeString(),
+					"comment" : comment,
+				}
+				this.movie.list_comments.unshift(complete_info);
 			}
+
 		}
 	}
 </script>
 
 <template>
-	<b-container fluid="sm">
+	<div class="homemade-container">
 		<div class="row">
 			<div class="col video_container">
 				<img class="movie_image" :src="movie.image"/>
@@ -75,11 +87,12 @@
 			<div class="infos_title">Leave a comment:</div>
 			<b-form-textarea
 				id="textarea"
-				v-model="text"
+				v-model="user_comment"
 				placeholder="Enter something..."
 				rows="3"
 				max-rows="6"
 				></b-form-textarea>
+			<button @click="addComment(user_comment)" class="submit_button" type = "submit">Add comment</button>
 		</div>
 		<div v-for="comment in movie.list_comments" :key="comment" class="row people_comments">
 			<div class="col-3 username">
@@ -90,24 +103,23 @@
 			</div>
 			<div class="comment">'{{comment.comment}}'</div>
 		</div>
-	</b-container>
+	</div>
 </template>
 
 
 
 <style lang="scss" scoped>
+@import "../assets/shared_scss/shared.scss";
+
 @import url('https://fonts.googleapis.com/css2?family=Michroma&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
 
-.container-sm {
-	position        : flex;
-	margin-top      : 50%;
-	margin-left     : 50%;
-	padding         : 3%;
-	transform       : translate(-50%, -50%);
-	background-color: rgb(0, 0, 0);
-	border-radius   : 1%;
-	font-family     : 'Montserrat', sans-serif;
+
+
+.homemade-container {
+	width: 80%;
+    margin: auto;
+	margin-top: 5%;
 }
 
 .video_container {
@@ -129,6 +141,7 @@
 #textarea {
 	width           : 100%;
 	margin-top      : 1%;
+	margin-bottom   : 2%;
 	color           : white;
 	background      : black;
 }

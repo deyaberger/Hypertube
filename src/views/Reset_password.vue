@@ -32,7 +32,7 @@ export default {
 </script>
 
 <template>
-	<div class="container home_made">
+	<div class="container homemade-container ">
 		<form>
 			<h2 class="text-center">{{text_content.forgot_pwd[lang_nb]}}</h2>
 			<p class="text-center">{{text_content.sentence[lang_nb]}}</p>
@@ -54,8 +54,10 @@ export default {
 
 
 
-<style >
+<style scoped>
 @import "../assets/shared_scss/login.scss";
+@import "../assets/shared_scss/shared.scss";
+
 
 .container {
 	width: 500px;
