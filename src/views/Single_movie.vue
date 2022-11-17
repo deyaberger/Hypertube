@@ -2,6 +2,7 @@
 	import { ref, computed } from 'vue'
 	import { mapState, useStore } from 'vuex';
 	import fakeData from "./fake_data.json";
+	import vue3StarRatings from "vue3-star-ratings";
 
 	export default {
 		props: {
@@ -13,6 +14,9 @@
 				movie: fakeData,
 				user_comment: ""
 		}
+		},
+		components: {
+			vue3StarRatings
 		},
 		computed: mapState({
 			language: state =>  state.language,
@@ -71,20 +75,27 @@
 				<p class="summary">{{movie.summary}}</p>
 			</div>
 		</div>
-		<div class="row director_container">
+		<div class="row cast_container">
 			<div class="col">
 				<span class="infos_title_horizontal">Director: </span>
-				<span>{{movie.director}}</span>
+				<span class="names">{{movie.director}}</span>
 			</div>
 		</div>
-		<div class="row actors_container">
+		<div class="row cast_container">
 			<div class="col">
 				<span class="infos_title_horizontal">Actors: </span>
-				<span v-for="actor_name in movie.actors" :key="actor_name">{{actor_name}}, </span>
+				<span class="names" v-for="actor_name in movie.actors" :key="actor_name">{{actor_name}}, </span>
 			</div>
 		</div>
-		<div class="row my_comment">
-			<div class="infos_title">Leave a comment:</div>
+		<hr class="solid">
+		<div class="row my_review">
+			<vue3-star-ratings
+				v-model="rating"
+				:showControl="false"
+				:numberOfStars="10"
+				:starSize="20"
+			/>
+			<div class="infos_title">Add a review:</div>
 			<b-form-textarea
 				id="textarea"
 				v-model="user_comment"
@@ -94,7 +105,7 @@
 				></b-form-textarea>
 			<button @click="addComment(user_comment)" class="submit_button" type = "submit">Add comment</button>
 		</div>
-		<div v-for="comment in movie.list_comments" :key="comment" class="row people_comments">
+		<div v-for="comment in movie.list_comments" :key="comment" class="row people_reviews">
 			<div class="col-3 username">
 				@{{comment.name}}
 			</div>
@@ -108,7 +119,7 @@
 
 
 
-<style lang="scss" scoped>
+<style lang="css" scoped>
 @import "../assets/shared_scss/shared.scss";
 
 @import url('https://fonts.googleapis.com/css2?family=Michroma&display=swap');
@@ -117,14 +128,15 @@
 
 
 .homemade-container {
-	width: 80%;
-    margin: auto;
-	margin-top: 5%;
+	width         : 80%;
+    margin        : auto;
+	margin-top    : 5%;
+	font-size     : 15px;
 }
 
 .video_container {
-	width           : 100%;
-	height          : 500px;
+	width         : 100%;
+	height        : 500px;
 }
 
 h1, h3 {
@@ -132,62 +144,84 @@ h1, h3 {
 }
 
 h1 {
-	font-size: 30px;
+	font-size     : 30px;
 }
 
 h3 {
-	font-size: 15px;
+	font-size     : 15px;
 }
 
 .big {
-	font-weight: bold;
-	font-size: 15px;
+	font-weight   : bold;
+	font-size     : 15px;
 }
 
 .icon-score {
-	color: rgb(255, 255, 81);
+	color         : rgb(255, 255, 81);
 }
 
 .icon-genre {
-	color: rgb(100, 195, 106);
+	color         : rgb(100, 195, 106);
 }
 
 .icon-year {
-	color: rgb(112, 114, 219);
+	color         : rgb(112, 114, 219);
 }
 
 .icon-time {
-	color: rgb(210, 102, 201)}
+	color         : rgb(210, 102, 201)}
 .row {
-	margin-top      : 2%;
+	margin-top    : 2%;
 }
 
 .general_infos-container {
-	text-align:center;
+	text-align    :center;
 }
 
 .movie_image {
-	margin          : 0px;
-	width           : 100%;
-	height          : 100%;
-	object-fit      : cover;
+	margin        : 0px;
+	width         : 100%;
+	height        : 100%;
+	object-fit    : cover;
 }
 
 #textarea {
-	width           : 100%;
-	margin-top      : 1%;
-	margin-bottom   : 2%;
-	color           : white;
-	background      : black;
+	width         : 100%;
+	margin-top    : 1%;
+	margin-bottom : 2%;
+	margin-left   : 1%;
+	margin-right  : 1%;
+	color         : white;
+	background    : black;
 }
 
 .infos_title svg {
-	margin-bottom: 5px;
+	margin-bottom : 5px;
 }
 
+.infos_content {
+	font-size     : 11px;
+}
+
+.summary_container {
+	margin-top    : 5%;
+	margin-bottom : 5%;
+}
 .summary {
-	font-size: 18px;
-	font-weight: lighter;
+	font-size     : 18px;
+	font-weight   : lighter;
+}
+
+.infos_title_horizontal {
+	font-weight   : bold;
+}
+
+.names {
+	font-weight   : lighter;
+}
+
+.my_review {
+	margin-top    : 5%;
 }
 
 </style>
