@@ -27,99 +27,110 @@
 <template>
 	<b-container fluid="sm">
 		<div class="row">
-			<div class="col video">
-				THIS IS THE VIDEO {{moviename}}
+			<div class="col video_container">
+				<img class="movie_image" :src="movie.image"/>
 			</div>
 		</div>
-		<div class="row movie_name">
+		<div class="row movie_name_container">
 			<div class="col">
-				THIS IS THE MOVIE NAME
+				<h1>{{movie.name}}</h1>
 			</div>
 		</div>
-		<div class="row general_infos">
-			<div class="col type">
-				TYPE
-			</div>
-			<div class="col year">
-				YEAR {{movie.year}}
-			</div>
-			<div class="col duration">
-				DURATION
-			</div>
-			<div class="col score">
-				SCORE
-			</div>
-		</div>
-		<div class="row summary">
+		<div class="row general_infos-container">
 			<div class="col">
-				THIS IS THE LOOOOOOOOOOOOONG SUMMARY
+				<h3 class="infos_title">GENRE</h3>
+				<span class="infos_content">{{movie.genre}}</span>
 			</div>
-		</div>
-		<div class="row director">
 			<div class="col">
-				THIS IS THE DIRECTOR NAME
+				<h3 class="infos_title">YEAR</h3>
+				<span class="infos_content">{{movie.year}}</span>
 			</div>
-		</div>
-		<div class="row actors">
 			<div class="col">
-				THIS IS THE ACTORS NAMES
+				<h3 class="infos_title">DURATION</h3>
+				<span class="infos_content">{{movie.duration}}</span>
+			</div>
+			<div class="col">
+				<h3 class="infos_title">SCORE</h3>
+				<span class="infos_content">{{movie.score}}</span>
 			</div>
 		</div>
-		100% wide until small breakpoint
+		<div class="row summary_container">
+			<div class="col">
+				<p class="summary">{{movie.summary}}</p>
+			</div>
+		</div>
+		<div class="row director_container">
+			<div class="col">
+				<span class="infos_title_horizontal">Director: </span>
+				<span>{{movie.director}}</span>
+			</div>
+		</div>
+		<div class="row actors_container">
+			<div class="col">
+				<span class="infos_title_horizontal">Actors: </span>
+				<span v-for="actor_name in movie.actors" :key="actor_name">{{actor_name}}, </span>
+			</div>
+		</div>
+		<div class="row my_comment">
+			<div class="infos_title">Leave a comment:</div>
+			<b-form-textarea
+				id="textarea"
+				v-model="text"
+				placeholder="Enter something..."
+				rows="3"
+				max-rows="6"
+				></b-form-textarea>
+		</div>
+		<div v-for="comment in movie.list_comments" :key="comment" class="row people_comments">
+			<div class="col-3 username">
+				@{{comment.name}}
+			</div>
+			<div class="col-3 time">
+				<span>{{comment.date}} {{comment.hour}}</span>
+			</div>
+			<div class="comment">'{{comment.comment}}'</div>
+		</div>
 	</b-container>
 </template>
 
 
-<style lang="css">
-
-#app {
-	background:linear-gradient(
-		rgba(30, 27, 38, 0.687), 
-		rgba(30,27,38, 0.95)),
-	url("https://i.ibb.co/FDGqCmM/papers-co-ag74-interstellar-wide-space-film-movie-art-33-iphone6-wallpaper.jpg");
-	background-position: center;
-	background-size: cover;
-	background-repeat: repeat;
-}
-
-
-</style>
 
 <style lang="scss" scoped>
+@import url('https://fonts.googleapis.com/css2?family=Michroma&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
 
 .container-sm {
-	position: fixed;
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%);
-	background-color: rgb(238, 255, 0);
+	position        : flex;
+	margin-top      : 50%;
+	margin-left     : 50%;
+	padding         : 3%;
+	transform       : translate(-50%, -50%);
+	background-color: rgb(0, 0, 0);
+	border-radius   : 1%;
+	font-family     : 'Montserrat', sans-serif;
 }
 
-.video {
-	background-color: green;
-	height: 300px;
+.video_container {
+	width           : 100%;
+	height          : 500px;
 }
 
-.movie_name {
-	background-color: red;
+.row {
+	margin-top      : 2%;
 }
 
-
-.general_infos {
-	background-color: blue;
+.movie_image {
+	margin          : 0px;
+	width           : 100%;
+	height          : 100%;
+	object-fit      : cover;
 }
 
-.summary {
-	background-color: pink;
-	height: 200px;
-}
-
-.director {
-	background-color: rgb(192, 255, 254);
-}
-
-.actors {
-	background-color: rgb(39, 225, 25);
+#textarea {
+	width           : 100%;
+	margin-top      : 1%;
+	color           : white;
+	background      : black;
 }
 
 </style>
