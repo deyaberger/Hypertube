@@ -12,7 +12,8 @@
 			const store = useStore()
 			return {
 				movie: fakeData,
-				user_comment: ""
+				user_comment: "",
+				user_rating : 0
 		}
 		},
 		components: {
@@ -25,15 +26,25 @@
 			is_english() {
 				return (this.language == 'eng')
 			},
-			addComment: function(comment) {
+			addReview(comment, rating) {
 				const d = new Date();
 				const complete_info = {
-					"name" : "test",
-					"date" : d.toDateString(),
-					"hour" : d.toLocaleTimeString(),
+					"name"    : "test",
+					"date"    : d.toDateString(),
+					"hour"    : d.toLocaleTimeString(),
+					"rating"  : rating,
 					"comment" : comment,
 				}
 				this.movie.list_comments.unshift(complete_info);
+			},
+
+			reviewComplete() {
+				if (this.user_rating != 0 && this.user_comment.length > 0) {
+					console.log("review complete")
+					return true
+				}
+				console.log("review incomplete")
+				return false
 			}
 
 		}
@@ -89,13 +100,14 @@
 		</div>
 		<hr class="solid">
 		<div class="row my_review">
-			<vue3-star-ratings
-				v-model="rating"
-				:showControl="false"
-				:numberOfStars="10"
-				:starSize="20"
-			/>
 			<div class="infos_title">Add a review:</div>
+			<vue3-star-ratings
+				v-model="user_rating"
+				class="stars_container"
+				:showControl="false"
+				:numberOfStars=10
+				starSize="20"
+			/>
 			<b-form-textarea
 				id="textarea"
 				v-model="user_comment"
@@ -103,13 +115,22 @@
 				rows="3"
 				max-rows="6"
 				></b-form-textarea>
-			<button @click="addComment(user_comment)" class="submit_button" type = "submit">Add comment</button>
+			<button @click="addReview(user_comment, user_rating)"
+				:disabled="!reviewComplete()"
+				class="submit_button" 
+				type = "submit">
+				Send review
+			</button>
 		</div>
 		<div v-for="comment in movie.list_comments" :key="comment" class="row people_reviews">
+			<div class="col-3 rating">
+				<b-icon-star-fill class="icon-score"></b-icon-star-fill>
+				<span><span class="big">{{comment.rating}}</span>/10</span>
+			</div>
 			<div class="col-3 username">
 				@{{comment.name}}
 			</div>
-			<div class="col-3 time">
+			<div class="col time">
 				<span>{{comment.date}} {{comment.hour}}</span>
 			</div>
 			<div class="comment">'{{comment.comment}}'</div>
@@ -222,6 +243,26 @@ h3 {
 
 .my_review {
 	margin-top    : 5%;
+}
+
+.stars_container {
+	margin: 0px;
+	padding: 0px;
+}
+
+:deep(.stars) {
+	margin-top    : 1%;
+	margin-bottom : 2%;
+	margin-left   : 1%;
+	margin-right  : 1%;
+}
+
+.rating .big {
+	margin-left: 5px;
+}
+
+.rating .icon-score {
+	margin-top: 0px;
 }
 
 </style>

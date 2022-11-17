@@ -31,3 +31,15 @@ background-color: #d8fff0;
 box-shadow: 0px 10px 10px rgba(46, 229, 157, 0.4);
 transform: translateY(-3px);
 }
+
+.submit_button:disabled {
+	background-color: rgba(255, 255, 255, 0.51);
+	cursor: unset;
+}
+
+.submit_button:disabled:hover {
+	background-color: rgba(255, 255, 255, 0.51);
+	cursor: unset;
+	box-shadow: unset;
+	transform: unset;
+}
