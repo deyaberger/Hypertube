@@ -66,7 +66,26 @@
 		"rating"          : ["rating", "score"],
 		"time"            : ["time", "durée"],
 		"genre"           : ["genre", "genre"],
-		"title"           : ["Title", "Titre"]
+		"title"           : ["Title", "Titre"],
+		"sort"            : ["Sort by", "Trier par"],
+		"genre_list"      : [
+								["Action"         , "Action"],
+								["Animation"      , "Animation"],
+								["Adventure" 	  , "Aventure"],
+								["Comedy"         , "Comédie"],
+								["Drama"          , "Drame"],
+								["Horror"         , "Epouvante-horreur"],
+								["Familly"        , "Famille"],
+								["Musical"        , "Musical"],
+								["Romance"        , "Romance"],
+								["Science Fiction", "Science Fiction"],
+								["Thriller"       , "Thriller"]
+							],
+		"sorting_list"    : {
+			"rating"      : ["Rating", "Note"],
+			"year"        : ["Year", "Année"],
+			"title"       : ["Title", "Titre"]
+		}
 
 	}
 }

@@ -1,6 +1,8 @@
 <script>
 import Slider from '@vueform/slider'
 import { mapState } from 'vuex';
+import textContent from "../assets/language_dict/language_dict.json"
+
 
 export default {
 	components: {
@@ -8,42 +10,22 @@ export default {
 	},
 	data() {
 		return {
-			show         : true,
-			lang_nb      : 0,
-			text_content : {
-				genre : ["Genre", "Genres"], // 0
-				sort  : ["Sort by", "Trier par"] // 1
-			},
-			form : {
-				title           : '',
-				genre          : '',
-				sort_category  : ['Title', 'Titre'],
-				a_to_z         : true,
-				rating_interval: [2, 5],
-				years          : [1980, 2022],
-			},
-			sorting_list : {
-				rating : ['Rating', 'Note'],
-				year   : ['Year', 'Année'],
-				title   : ['Title', 'Titre'],
-			},
-			genre_list: [
-				["Action", "Action"],
-				["Animation", "Animation"],
-				["Adventure","Aventure"],
-				["Comedy", "Comédie"],
-				["Drama", "Drame"],
-				["Horror", "Epouvante-horreur"],
-				["Familly", "Famille"],
-				["Musical", "Musical"],
-				["Romance", "Romance"],
-				["Science Fiction", "Science Fiction"],
-				["Thriller", "Thriller"],
-			], 
+			show               : true,
+			text_content       : textContent.MOVIES,
+			genre_list         : textContent.MOVIES.genre_list,
+			sorting_list       : textContent.MOVIES.sorting_list,
+			form               : {
+									title          : '',
+									genre          : '',
+									sort_category  : textContent.MOVIES.sorting_list.title,
+									a_to_z         : true,
+									rating_interval: [2, 5],
+									years          : [1980, 2022],
+								}
 		}
 	},
 	computed: mapState({
-		language: state => state.language,
+		lang_nb: state => state.lang_nb,
 	}),
 	methods: {
 		emit_form() {
@@ -75,13 +57,6 @@ export default {
 			},
 			deep:true
 		},
-		language: {
-			handler:function(newVal) {
-				this.lang_nb = newVal == "eng" ? 0 : 1
-			},
-			deep:true
-		},
-
 	}
 }
 </script>
@@ -120,7 +95,7 @@ export default {
 			</div>
 			<div class = "nav-item">
 				<h2>{{text_content.sort[lang_nb]}}</h2>
-				<div class="row justify-text_content-md-center">
+				<div class="row justify-temp-md-center">
 					<a
 					href="#"
 					v-for="sort_category in sorting_list" :key="sort_category"
