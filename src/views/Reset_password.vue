@@ -1,33 +1,18 @@
 <script>
 import { mapState, useStore } from 'vuex';
+import textContent from "../assets/language_dict/language_dict.json"
+
 
 export default {
 	data() {
 		const store = useStore()
 		return {
-			lang_nb : 0,
-			text_content : {
-				forgot_pwd : ["Forgot your password?", "Mot de passe oublié?"],
-				sentence   : [
-					"Enter your email adress. If you have an account, you will receive a link to reset your password",
-					"Entrez votre adresse email. Si vous avez un compte, vous recevrez un lien pour recréer votre mot de passe",
-				],
-				email      : ["email address:", "adresse email:"],
-				send       : ["Send", "Envoyer"],
-			}
+			text_content : textContent.RESETPASS
 		}
 	},
 	computed: mapState({
-		language: state => state.language,
-	}),
-	watch: {
-		language: {
-			handler:function(newVal) {
-				this.lang_nb = newVal == "eng" ? 0 : 1
-			},
-			deep:true
-		},
-	},
+		lang_nb		    : state => state.lang_nb
+	})
 }
 </script>
 

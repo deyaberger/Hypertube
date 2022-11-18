@@ -1,16 +1,19 @@
 <script>
 import { ref, computed } from 'vue'
 import { mapState, useStore } from 'vuex';
+import textContent from "../assets/language_dict/language_dict.json"
 
 export default {
 	data() {
       const store = useStore()
       return {
+		text_content : textContent.NAV
       }
     },
 	computed: mapState({
-      user_connected: state =>  state.user_connected,
-      language: state =>  state.language,
+      user_connected  : state =>  state.user_connected,
+      lang_nb         : state =>  state.lang_nb,
+      language         : state =>  state.language,
       language_options: state =>  state.language_options,
     }),
 	methods: {
@@ -18,9 +21,6 @@ export default {
 			console.log("Changing language to: " + new_language)
 			this.$store.commit('SET_LANGUAGE', new_language)
 		},
-		is_english() {
-			return (this.language == 'eng')
-		}
 	}
 }
 </script>
@@ -33,31 +33,27 @@ export default {
     <b-collapse id="nav-collapse" is-nav>
       <b-navbar-nav class="ms-auto" v-if="!user_connected">
         <b-nav-item>
-			<router-link v-if="is_english()" to="/sign_in" class="nav-link">Sign in</router-link>
-			<router-link v-else to="/sign_in" class="nav-link">Se connecter</router-link>
+			<router-link to="/sign_in" class="nav-link">{{text_content.sign_in[lang_nb]}}</router-link>
 		</b-nav-item>
 		<b-nav-item>
-			<router-link v-if="is_english()" to="/sign_up" class="nav-link">Sign up</router-link>
-			<router-link v-else to="/sign_up" class="nav-link">S'inscrire</router-link>
+			<router-link to="/sign_up" class="nav-link">{{text_content.sign_up[lang_nb]}}</router-link>
 		</b-nav-item>
 		<b-nav-item>
 			<b-dropdown variant="link" class="dropdown_menu">
 				<template #button-content>
 					<b-icon-gear-fill/>
 				</template>
-				<b-dropdown-item class="dropdown_item" v-for="option in language_options" :key="option" @click="change_language(option)">{{option}}</b-dropdown-item>
+				<b-dropdown-item :class="option==language ? 'dropdown_item disabled' : 'dropdown_item'" v-for="option in language_options" :key="option" @click="change_language(option)" :disabled="option==language ? true : false">{{option}}</b-dropdown-item>
 			</b-dropdown>
 		</b-nav-item>
       </b-navbar-nav>
 
       <b-navbar-nav class="ms-auto" v-else>
 		<b-nav-item>
-			<router-link v-if="is_english()" to="/search" class="nav-link">Movies <b-icon-search/></router-link>
-			<router-link v-else to="/search" class="nav-link">Films <b-icon-search/></router-link>
+			<router-link to="/search" class="nav-link">{{text_content.movies[lang_nb]}} <b-icon-search/></router-link>
 		</b-nav-item>
         <b-nav-item>
-			<router-link v-if="is_english()" to="/profile" class="nav-link">Profile <b-icon-person-circle/></router-link>
-			<router-link v-else to="/profile" class="nav-link">Profil <b-icon-person-circle/></router-link>
+			<router-link to="/profile" class="nav-link">{{text_content.profile[lang_nb]}} <b-icon-person-circle/></router-link>
 		</b-nav-item>
 		<b-nav-item>
 			<b-dropdown variant="link" class="dropdown_menu">
@@ -68,8 +64,7 @@ export default {
 			</b-dropdown>
 		</b-nav-item>
 		<b-nav-item>
-			<router-link v-if="is_english()" to="/" class="nav-link">Logout <b-icon-arrow-bar-right /></router-link>
-			<router-link v-else to="/" class="nav-link">Se deconnecter <b-icon-arrow-bar-right /></router-link>
+			<router-link to="/" class="nav-link">{{text_content.logout[lang_nb]}} <b-icon-arrow-bar-right /></router-link>
 		</b-nav-item>
       </b-navbar-nav>
     </b-collapse>

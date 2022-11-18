@@ -12,13 +12,12 @@
         username: '',
         password: '',
         connection_error : false,
-		lang_nb: 0,
 		text_content : textContent.SIGNIN
       }
     },
     computed: mapState({
       user_connected: state =>  state.user_connected,
-	  language: state => state.language,
+	  lang_nb: state => state.lang_nb
     }),
     methods: {
       password_visibility() {
@@ -37,15 +36,6 @@
         }
       },
     },
-	watch: {
-		language: {
-		handler:function(newVal) {
-			this.lang_nb = newVal == "eng" ? 0 : 1
-		},
-		deep:true
-		},
-	}
-
   }
 </script>
 

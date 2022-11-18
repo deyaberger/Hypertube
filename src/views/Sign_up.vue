@@ -10,7 +10,6 @@ export default {
 		const store = useStore()
 		return {
 			visible: false,
-			lang_nb : 0,
 			text_content : textContent.SIGNUP,
 			username  : '',
 			firstname : '',
@@ -26,7 +25,7 @@ export default {
 		email_error     : state => state.email_error,
 		mdp_error       : state => state.mdp_error,
 		connection_error: state => state.connection_error,
-		language        : state => state.language,
+		lang_nb		    : state => state.lang_nb
 	}),
 	methods: {
 		password_visibility() {
@@ -50,14 +49,6 @@ export default {
 				console.log("ALL good") /* Connect to website */
 				console.log(form)
 			}
-		},
-	},
-	watch: {
-		language: {
-			handler:function(newVal) {
-				this.lang_nb = newVal == "eng" ? 0 : 1
-			},
-			deep:true
 		},
 	},
 }

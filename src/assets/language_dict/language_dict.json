@@ -1,4 +1,11 @@
 {
+	"NAV"    : {
+		"sign_in" : ["Sign in", "Se connecter"],
+		"sign_up" :["Sign up", "S'enregistrer"],
+		"movies"  : ["Movies", "Films"],
+		"profile" : ["Profile", "Profil"],
+		"logout"  : ["Logout", "Se deconnecter"]
+	},
 	"SIGNIN" : {
 		"sign_in"    : ["sign in", "se connecter"],
 		"username"   : ["username", "pseudo"],
@@ -25,12 +32,31 @@
 		"create_pwd"       :["Create a password:", "Créer un mot de passe:"],
 		"pwd"              :["password", "motdepasse"],
 		"error_pwd"        :[
-		"Error         : a password should contain at least 8 character, including at least an alphabetical character, a numeric charater and an uppercase and a lowercase",
-		"Erreur        : le mot de passe doit contenir au moins 8 characteres, numeriques et alphabetiques, en lettre majuscules et minuscules."
-		],
+								"Error  : a password should contain at least 8 character, including at least an alphabetical character, a numeric charater and an uppercase and a lowercase",
+								"Erreur : le mot de passe doit contenir au moins 8 characteres, numeriques et alphabetiques, en lettre majuscules et minuscules."
+							],
 		"or"               :["Or", "Ou"],
 		"sign_up_with"     :["Sign up with ", "S'inscrire via "],
 		"already_account"  :["Already have an account? Sign in", "Déjà un compte? Se connecter"],
-		"error_co"         :["Error: please follow the instructions", "Erreur: merci de suivre les instructions"],
+		"error_co"         :["Error: please follow the instructions", "Erreur: merci de suivre les instructions"]
+	},
+	"RESETPASS" : {
+		"forgot_pwd" : ["Forgot your password?", "Mot de passe oublié?"],
+		"sentence"   : [
+						"Enter your email adress. If you have an account, you will receive a link to reset your password",
+						"Entrez votre adresse email. Si vous avez un compte, vous recevrez un lien pour recréer votre mot de passe"
+					   ],
+		"email"      : ["email address:", "adresse email:"],
+		"send"       : ["Send", "Envoyer"]
+	},
+	"NEWPASS" : {
+		"reset"      : ["Reset Password                                                                                                        :", "Créer un nouveau mot de passe                                                                                :"],
+		"new_pwd"    : ["New password                                                                                                          :", "nouveau mot de passe                                                                                         :"],
+		"pwd"        : ["password", "motdepasse"],
+		"confirm"    : ["Confirm", "Confirmer"],
+		"error"      : [
+						"Error : a password should contain at least                                                                                      : 8 character, including at least an alphabetical character, a numeric charater and an uppercase and a lowercase",
+						"Erreur: le mot de passe doit contenir au moins 8 characteres, numeriques et alphabetiques, en lettre majuscules et minuscules."
+					   ]
 	}
 }

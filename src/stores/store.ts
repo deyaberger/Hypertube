@@ -16,6 +16,7 @@ const store = createStore({
       mdp_error        : false,
       connection_error : false,
 	  language         : 'eng',
+	  lang_nb		   : 0,
 	  language_options : ['eng', 'fr'],
     }
   },
@@ -37,6 +38,7 @@ const store = createStore({
 	},
 	SET_LANGUAGE(state, language) {
 		state.language = language
+		state.lang_nb = language == 'eng' ? 0 : 1
 	},
   }
 })

@@ -1,6 +1,8 @@
 <script>
 import { ref, computed } from 'vue'
 import { mapState, useStore } from 'vuex';
+import textContent from "../assets/language_dict/language_dict.json"
+
 
 export default {
 	data() {
@@ -9,21 +11,11 @@ export default {
 			visible        : false,
 			username       : '',
 			password       : '',
-			lang_nb        : 0,
-			text_content   : {
-				reset      : ["Reset Password                                                                                                        :", "Créer un nouveau mot de passe                                                                                :"],
-				new_pwd    : ["New password                                                                                                          :", "nouveau mot de passe                                                                                         :"],
-				pwd        : ["password", "motdepasse"],
-				confirm    : ["Confirm", "Confirmer"],
-				error      : [
-					"Error : a password should contain at least                                                                                      : 8 character, including at least an alphabetical character, a numeric charater and an uppercase and a lowercase",
-					"Erreur: le mot de passe doit contenir au moins 8 characteres, numeriques et alphabetiques, en lettre majuscules et minuscules.",
-				],
-			}
+			text_content   : textContent.NEWPASS
 		}
 	},
 	computed: mapState({
-		language: state => state.language,
+		lang_nb: state => state.lang_nb,
 		mdp_error: state => state.mdp_error,
 	}),
 	methods: {
