@@ -131,5 +131,4 @@
 @import "../assets/shared_scss/shared.scss";
 
   
-  
 </style>

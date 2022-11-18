@@ -12,21 +12,21 @@
 		{
 			"name"    : "deya",
 			"date"    : "10/03/2021",
-			"hour"    : "3                                                                                                                                                   :20pm",
+			"hour"    : "3:20pm",
 			"rating"  : "8.5",
 			"comment" : "it was great"
 		},
 		{
 			"name"    : "john",
 			"date"    : "10/05/2022",
-			"hour"    : "10                                                                                                                                                  :20am",
+			"hour"    : "10:20am",
 			"rating"  : "9",
 			"comment" : "it was awesome i have watched it so many times oh my god i am having so much fun writting fake comments 'cause i dont know how to use a fucking api"
 		},
 		{
 			"name"    : "francois",
 			"date"    : "05/03/2021",
-			"hour"    : "9                                                                                                                                                   :10pm",
+			"hour"    : "9:10pm",
 			"rating"  : "6.3",
 			"comment" : "mouai bof bof mais bon jai pas de life donc je laisse des kom negatifs wesh et je mappelle francois"
 		}

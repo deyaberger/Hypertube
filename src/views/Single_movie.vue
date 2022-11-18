@@ -63,21 +63,21 @@
 				<h1>{{movie.name}}</h1>
 			</div>
 		</div>
-		<div class="row general_infos-container">
+		<div class="row general_infos-container align-items-center">
 			<div class="col infos">
-				<h3 class="infos_title"><b-icon-camera-reels-fill class="icon-genre"></b-icon-camera-reels-fill> GENRE</h3>
+				<b-icon-camera-reels-fill class="icon genre"></b-icon-camera-reels-fill>
 				<span class="infos_content">{{movie.genre}}</span>
 			</div>
 			<div class="col infos">
-				<h3 class="infos_title"><b-icon-calendar2-minus-fill class="icon-year"></b-icon-calendar2-minus-fill> YEAR</h3>
+				<b-icon-calendar2-minus-fill class="icon year"></b-icon-calendar2-minus-fill>
 				<span class="infos_content">{{movie.year}}</span>
 			</div>
 			<div class="col infos">
-				<h3 class="infos_title"><b-icon-clock-fill class="icon-time"></b-icon-clock-fill> DURATION</h3>
+				<b-icon-clock-fill class="icon time"></b-icon-clock-fill>
 				<span class="infos_content">{{movie.duration}}</span>
 			</div>
 			<div class="col infos">
-				<h3 class="infos_title"><b-icon-star-fill class="icon-score"></b-icon-star-fill> SCORE</h3>
+				<span class="infos_content"><b-icon-star-fill class="icon score"></b-icon-star-fill></span>
 				<span class="infos_content"><span class="big">{{movie.score}}</span>/10</span>
 			</div>
 		</div>
@@ -124,9 +124,8 @@
 		</div>
 		<div v-for="comment in movie.list_comments" :key="comment" class="row people_reviews">
 			<hr class="solid">
-
 			<div class="col-3 rating">
-				<b-icon-star-fill class="icon-score"></b-icon-star-fill>
+				<b-icon-star-fill class="icon score"></b-icon-star-fill>
 				<span><span class="big">{{comment.rating}}</span>/10</span>
 			</div>
 			<div class="col-3 username">
@@ -142,133 +141,7 @@
 
 
 
-<style lang="css" scoped>
-@import "../assets/shared_scss/shared.scss";
-
-@import url('https://fonts.googleapis.com/css2?family=Michroma&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
-
-
-
-.homemade-container {
-	width         : 80%;
-    margin        : auto;
-	margin-top    : 5%;
-	font-size     : 15px;
-}
-
-.video_container {
-	width         : 100%;
-	height        : 500px;
-}
-
-h1, h3 {
-	text-transform: uppercase;
-}
-
-h1 {
-	font-size     : 30px;
-}
-
-h3 {
-	font-size     : 15px;
-}
-
-.big {
-	font-weight   : bold;
-	font-size     : 15px;
-}
-
-.icon-score {
-	color         : rgb(255, 255, 81);
-}
-
-.icon-genre {
-	color         : rgb(100, 195, 106);
-}
-
-.icon-year {
-	color         : rgb(112, 114, 219);
-}
-
-.icon-time {
-	color         : rgb(210, 102, 201)}
-.row {
-	margin-top    : 2%;
-}
-
-.general_infos-container {
-	text-align    :center;
-}
-
-.movie_image {
-	margin        : 0px;
-	width         : 100%;
-	height        : 100%;
-	object-fit    : cover;
-}
-
-#textarea {
-	width         : 100%;
-	margin-top    : 1%;
-	margin-bottom : 2%;
-	margin-left   : 1%;
-	margin-right  : 1%;
-	color         : white;
-	background    : black;
-}
-
-.infos_title svg {
-	margin-bottom : 5px;
-}
-
-.infos_content {
-	font-size     : 11px;
-}
-
-.summary_container {
-	margin-top    : 5%;
-	margin-bottom : 5%;
-}
-.summary {
-	font-size     : 18px;
-	font-weight   : lighter;
-}
-
-.infos_title_horizontal {
-	font-weight   : bold;
-}
-
-.names {
-	font-weight   : lighter;
-}
-
-.my_review {
-	margin-top    : 5%;
-}
-
-.stars_container {
-	margin: 0px;
-	padding: 0px;
-}
-
-:deep(.stars) {
-	margin-top    : 1%;
-	margin-bottom : 2%;
-	margin-left   : 1%;
-	margin-right  : 1%;
-}
-
-.people_reviews {
-	margin-top: 3%;
-	margin-bottom: 3%;
-}
-.rating .big {
-	margin-left: 5px;
-}
-
-.rating .icon-score {
-	margin-top: 0px;
-}
+<style lang="scss" scoped>
+@import "../assets/shared_scss/single_movie.scss";
 
 </style>
