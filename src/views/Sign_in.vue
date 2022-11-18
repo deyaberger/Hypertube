@@ -2,6 +2,7 @@
   import { ref, computed } from 'vue'
   import { mapState, useStore } from 'vuex';
   import check_sign_in_form from "../stores/login_validation"
+  import textContent from "../assets/language_dict/language_dict.json"
   
   export default {
     data() {
@@ -12,16 +13,7 @@
         password: '',
         connection_error : false,
 		lang_nb: 0,
-		text_content : {
-			sign_in    : ["sign in", "se connecter"], // 0
-			username   : ["username", "pseudo"], // 1
-			password   : ["password", "mot de passe"], // 2
-			forgot_pwd : ["Forgot your password ?", "Mot de passe oublié ?"], // 3
-			or         : ["Or", "Ou"], // 4
-			no_account : ["Don't have av account? Sign up", "Pas de compte? S'inscrire"], // 5
-			error      : ["Wrong username or password", "Mauvais pseudo ou mot de passe"], // 6
-			log_with   : ["Login with ", "Co. avec "], // 7
-		},
+		text_content : textContent.SIGNIN
       }
     },
     computed: mapState({

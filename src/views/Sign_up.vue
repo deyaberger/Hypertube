@@ -2,6 +2,8 @@
 import { ref, computed } from 'vue'
 import { mapState, useStore } from 'vuex';
 import check_signup_form from "../stores/login_validation"
+import textContent from "../assets/language_dict/language_dict.json"
+
 
 export default {
 	data() {
@@ -9,30 +11,7 @@ export default {
 		return {
 			visible: false,
 			lang_nb : 0,
-			text_content : {
-				sign_up          :["sign up", "s'enregistrer"],
-				create_user      :["create a username:", "créer un pseudo:"],
-				username         :["username", "pseudo"],
-				error_username   :["Username already in use", "Pseudo déjà pris"],
-				create_first_name:["Your First Name:", "Votre prénom:"],
-				first_name       :["firstname", "prénom"],
-				error_first_name :["Please enter a first name", "Merci d'indiquer votre prénom"],
-				create_last_name :["Your last Name:", "Votre nom de famille:"],
-				last_name        :["lastname", "nomdefamille"],
-				error_last_name  :["Please enter a last name", "Merci d'indiquer votre nom de famille"],
-				create_email     :["Your email address:", "Adresse email:"],
-				error_email      :["Please enter a valid email address", "Adresse invalide"],
-				create_pwd       :["Create a password:", "Créer un mot de passe:"],
-				pwd              :["password", "motdepasse"],
-				error_pwd        :[
-				"Error         : a password should contain at least 8 character, including at least an alphabetical character, a numeric charater and an uppercase and a lowercase",
-				"Erreur        : le mot de passe doit contenir au moins 8 characteres, numeriques et alphabetiques, en lettre majuscules et minuscules."
-				],
-				or               :["Or", "Ou"],
-				sign_up_with     :["Sign up with ", "S'inscrire via "],
-				already_account  :["Already have an account? Sign in", "Déjà un compte? Se connecter"],
-				error_co         :["Error: please follow the instructions", "Erreur: merci de suivre les instructions"],
-			},
+			text_content : textContent.SIGNUP,
 			username  : '',
 			firstname : '',
 			lastname  : '',
