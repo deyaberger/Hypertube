@@ -1,42 +1,49 @@
 <script>
-  import { ref, computed } from 'vue'
-  import { mapState, useStore } from 'vuex';
-  import check_sign_in_form from "../stores/login_validation"
-  import textContent from "../assets/language_dict/language_dict.json"
-  
-  export default {
-    data() {
-      const store = useStore()
-      return {
-        visible: false,
-        username: '',
-        password: '',
-        connection_error : false,
+import { mapState } from 'vuex';
+import check_sign_in_form from "../stores/login_validation"
+import textContent from "../assets/language_dict/language_dict.json"
+import NetworkButtons from "../components/Networks_buttons.vue"
+
+
+export default {
+	components: {
+		NetworkButtons
+	},
+
+	data() {
+		return {
+		visible: false,
+		username: '',
+		password: '',
+		connection_error : false,
 		text_content : textContent.SIGNIN
-      }
-    },
-    computed: mapState({
-      user_connected: state =>  state.user_connected,
-	  lang_nb: state => state.lang_nb
-    }),
-    methods: {
-      password_visibility() {
-        this.visible = !this.visible
-      },
-      onSubmit(e){
-        e.preventDefault();
-        const form = {
-          "username" : this.username,
-          "password" : this.password
-        }
-        const sign_in_res = check_sign_in_form(form);
-        this.connection_error = sign_in_res.connection_error;
-        if (!this.connection_error) {
-          console.log("ALL good") /* Connect to website */
-        }
-      },
-    },
-  }
+		}
+	},
+
+	computed: mapState({
+		user_connected: state =>  state.user_connected,
+		lang_nb: state => state.lang_nb
+	}),
+
+	methods: {
+		password_visibility() {
+			this.visible = !this.visible
+		},
+
+		onSubmit(e){
+			e.preventDefault();
+			const form = {
+				"username" : this.username,
+				"password" : this.password
+			}
+			const sign_in_res = check_sign_in_form(form);
+			this.connection_error = sign_in_res.connection_error;
+			if (!this.connection_error) {
+				console.log("ALL good") /* Connect to website */
+			}
+		},
+	},
+}
 </script>
 
 
@@ -82,23 +89,7 @@
         <button class="submit_button" type = "submit">{{text_content.sign_in[lang_nb]}}</button>
         <div class = "m-3">{{text_content.or[lang_nb]}}</div>
       </div>
-      <button class="mt-3 loginBtn loginBtn--facebook">
-		<span class = "button_text">{{text_content.log_with[lang_nb]}}Facebook</span>
-      </button>
-      <span>
-        <button class="loginBtn loginBtn--google">
-			<span class = "button_text">{{text_content.log_with[lang_nb]}}Google</span>
-        </button>
-      </span>
-      <button class="mt-3 loginBtn loginBtn--42">
-		<span class = "button_text">{{text_content.log_with[lang_nb]}}42</span>
-      </button>
-      <span>
-        <button class="mt-3 loginBtn loginBtn--twitter">
-			<span class = "button_text">{{text_content.log_with[lang_nb]}}twitter</span>
-        </button>
-      </span>
-      
+	  <NetworkButtons type="signin"></NetworkButtons>
       <div class="change_page mt-3 text-center">
         <router-link to="/sign_up">{{text_content.no_account[lang_nb]}}</router-link>
       </div>

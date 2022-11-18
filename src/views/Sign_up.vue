@@ -1,13 +1,16 @@
 <script>
-import { ref, computed } from 'vue'
-import { mapState, useStore } from 'vuex';
+import { mapState } from 'vuex';
 import check_signup_form from "../stores/login_validation"
 import textContent from "../assets/language_dict/language_dict.json"
+import NetworkButtons from "../components/Networks_buttons.vue"
 
 
 export default {
+	components: {
+		NetworkButtons
+	},
+
 	data() {
-		const store = useStore()
 		return {
 			visible: false,
 			text_content : textContent.SIGNUP,
@@ -18,6 +21,7 @@ export default {
 			password  : '',
 		}
 	},
+
 	computed: mapState({
 		username_error  : state => state.username_error,
 		firstname_error : state => state.firstname_error,
@@ -27,10 +31,12 @@ export default {
 		connection_error: state => state.connection_error,
 		lang_nb		    : state => state.lang_nb
 	}),
+
 	methods: {
 		password_visibility() {
 			this.visible = !this.visible
 		},
+		
 		onSubmit(e){
 			e.preventDefault();
 			const form = {
@@ -132,22 +138,7 @@ export default {
 				<button class="submit_button" type="submit">{{text_content.sign_up[lang_nb]}}</button>
 				<div class = "m-3">{{text_content.or[lang_nb]}}</div>
 			</div>
-			<button class="mt-3 loginBtn loginBtn--facebook">
-				{{text_content.sign_up_with[lang_nb]}}Facebook
-			</button>
-			<span>
-				<button class="loginBtn loginBtn--google">
-					{{text_content.sign_up_with[lang_nb]}}Google
-				</button>
-			</span>
-			<button class="mt-3 loginBtn loginBtn--42">
-				{{text_content.sign_up_with[lang_nb]}}42
-			</button>
-			<span>
-				<button class="mt-3 loginBtn loginBtn--twitter">
-					{{text_content.sign_up_with[lang_nb]}}twitter
-				</button>
-			</span>
+			<NetworkButtons type="signup"></NetworkButtons>
 			<div class="change_page mt-4 text-center">
 				<router-link to="/sign_in">{{text_content.already_account[lang_nb]}}</router-link>
 			</div>

@@ -1,72 +1,59 @@
 <script>
+import { mapState } from 'vuex';
+import fakeData from "../assets/fake_library/fake_data_search_results.json";
+import textContent from "../assets/language_dict/language_dict.json"
+
+
 export default {
 	data() {
 		return {
-			movie_list: [
-				{
-					path: "../src/assets/fake_library/la_vie_est_belle.jpg",
-					name: "La vie est belle",
-					rating: 2,
-					year: 1998,
-				},
-				{
-					path: "../src/assets/fake_library/tschik.jpg",
-					name: "Tschik",
-					rating: 3,
-					year: 2017,
-				},
-				{
-					path: "../src/assets/fake_library/victoria.jpg",
-					name: "Victoria",
-					rating: 4,
-					year: 2020,
-				},
-				{
-					path: "../src/assets/fake_library/bagdad_cafe.jpg",
-					name: "Bagdad cafe",
-					rating: 3,
-					year: 2003,
-				}
-			],
+			text_content : textContent.MOVIES,
+			nb_results	 : fakeData.results,
+			movie_list   : fakeData.movie_list,
+			currentPage  : 1,
+			rows         : 0,
+			perPage      : 0,
 		}
 	},
+	computed: mapState({
+      	lang_nb  : state =>  state.lang_nb,
+    })
 }
 </script>
 
 <template>
 	<div class="results_container">
 		<div class="search_header">
-			<div class="title">Suggestions:</div>
-			<div class="number_of_results">115 results</div>
+			<div class="title">{{text_content.recommendations[lang_nb]}}:</div>
+			<div class="number_of_results">{{nb_results}} {{text_content.results[lang_nb]}}</div>
 		</div>
 		<div class="row movies">
-			<router-link :to="'/movie/' + movie.name" class="col-md-auto movie-card" v-for="movie in movie_list" :key="movie">
+			<router-link :to="'/movie/' + movie.title" class="col-md-auto movie-card" v-for="movie in movie_list" :key="movie" style="text-decoration: none">
 				<div class="movie-header">
 						<img class="movie-image" :src="movie.path"/>
 						<b-icon-info-circle-fill class="h2 header-icon"></b-icon-info-circle-fill>
 				</div>
 				<div class="movie-content">
 					<div class="movie-content-header">
-						<a href="#">
-							<h3 class="movie-title">{{movie.name}}</h3>
-						</a>
+						<h3 class="movie-title">{{movie.title}}</h3>
 					</div>
+					<hr class="solid">
 					<div class="movie-info">
 						<div class="info-section">
-							<label>Year</label>
+							<label>{{text_content.genre[lang_nb]}}</label>
+							<span>{{movie.genre}}</span>
+						</div>
+						<div class="info-section">
+							<label>{{text_content.year[lang_nb]}}</label>
 							<span>{{movie.year}}</span>
 						</div>
 						<div class="info-section">
-							<label>Rating</label>
-							<span>{{movie.rating}}</span>
+							<label>{{text_content.time[lang_nb]}}</label>
+							<span class="time">{{movie.time}}</span>
 						</div>
 						<div class="info-section">
-							<label>Row</label>
-							<span>F</span>
-						</div>
-						<div class="info-section">
-							<label>Seat</label>
-							<span>21,22</span>
+							<label>{{text_content.rating[lang_nb]}}</label>
+							<span>{{movie.rating}}/10</span>
 						</div>
 					</div>
 				</div>
@@ -89,209 +76,7 @@ export default {
 
 
 <style lang="scss" scoped>
-
-* {
-	transition: 300ms;
-	color: black;
-}
-
-.results_container {
-	position: absolute;
-	width: calc(100% - 300px);
-	height: 100%;
-	margin-left: 300px;
-	transition : none;
-	background-color: rgba(34, 35, 40, 0.864);
-	overflow: scroll;
-}
-
-.small_sidebar + .results_container {
-	margin-left: 70px;
-	width: calc(100% - 70px);
-}
-
-.search_header {
-	height: 30px;
-	margin: 5%;
-	letter-spacing: 3.5px;
-	font-family: 'Roboto', sans-serif;
-	text-transform: uppercase;
-	text-align: center;
-}
-
-.title { 
-	font-weight: bold;
-	font-size: 25px;
-	color: white;
-}
-
-.number_of_results {
-	color: rgba(255, 255, 255, 0.644);
-	margin-top: 3%;
-	text-align: left;
-}
-
-@media screen and (max-width: 590px) {
-	.title { 
-		font-size: 18px;
-	}
-	.number_of_results {
-		font-size: 12px;
-	letter-spacing: 2.5px;
-	margin-top: 7%;
-	}
-}
-
-.col-md-auto {
-	margin: 0px;
-	padding: 0px;
-}
-
-.movie-card {
-	background: #ffffff;
-	box-shadow: 0px 6px 18px rgba(0,0,0,.1);
-	width: 100%;
-	max-width: 315px;
-	margin: 2em;
-	border-radius: 10px;
-	display:inline-block;
-	cursor: pointer;
-}
-
-.movie-header, .movie-image{
-	position: relative;
-	padding:0;
-	margin: 0;
-	height: 300px;
-	width: 100%;
-	display: block;
-	border-top-left-radius: 10px;
-	border-top-right-radius:10px;
-}
-
-.movie-image {
-	justify-content: left;
-	object-fit: cover;
-}
-
-.header-icon {
-	visibility: hidden;
-	color: rgba(0, 0, 0, 0.878);
-	// box-shadow: -2px -2px 10px 5px #202525;
-	border-radius: 35px;
-	background-color: white;
-	position: absolute;
-	top: 0;
-	bottom: 0;
-	left: 0;
-	right: 0;
-	margin: auto auto auto auto;
-	font-size: 54px;
-	opacity: .85;
-
-
-}
-
-.movie-card:hover {
-	transform:scale(1.03);
-}
-
-.movie-card:hover .movie-image {
-	opacity: 0.7
-}
-
-.movie-card:hover .header-icon {
-	visibility: visible;
-}
-
-
-.header-icon:hover {
-	transform:scale(1.1);
-}
-
-
-.movie-content {
-	padding: 18px 18px 24px 18px;
-	margin: 0;
-}
-
-.movie-content-header, .movie-info {
-	display: table;
-	width: 100%;
-}
-
-.movie-info {
-	margin-top: 1em;
-}
-
-.info-section {
-	display: table-cell;
-	text-transform: uppercase;
-	text-align:center;
-}
-
-.info-section:first-of-type {
-	text-align:left;
-}
-
-.info-section:last-of-type {
-	text-align:right;
-}
-
-.info-section label {
-	display: block;
-	color: rgba(0,0,0,.5);
-	margin-bottom: .5em;
-	font-size: 9px;
-}
-
-.info-section span {
-	font-weight: 700;
-	font-size: 11px;
-}
-
-.movie-image {
-	background-size: cover;
-	background-position: 100% 100%;
-}
-
-@media screen and (max-width: 690px) {
-	.results_container {
-		margin-left: 250px;
-		width: calc(100% - 250px);
-	}
-}
-
-@media screen and (max-width: 590px) {
-	.results_container {
-		margin-left: 150px;
-		width: calc(100% - 150px);
-	}
-	.movie-card {
-		width: 70%;
-	}
-
-	.movie-header, .movie-image{
-	height: 200px;
-	}
-
-	.movie-title {
-		font-size: 15px;
-	}
-	.movie-info {
-	margin-top: 0em;
-	}
-	.movie-content {
-		padding: 12px 12px 10px 12px;
-		margin: 0;
-	}
-}
-
-.pagination {
-	justify-content: center;
-}
-
-
+@import "../assets/shared_scss/search_results.scss";
 
 </style>
 

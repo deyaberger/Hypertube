@@ -58,5 +58,15 @@
 						"Error : a password should contain at least                                                                                      : 8 character, including at least an alphabetical character, a numeric charater and an uppercase and a lowercase",
 						"Erreur: le mot de passe doit contenir au moins 8 characteres, numeriques et alphabetiques, en lettre majuscules et minuscules."
 					   ]
+	},
+	"MOVIES" : {
+		"recommendations" : ["recommendations", "suggestions"],
+		"results"         : ["results", "résultats"],
+		"year"            : ["year", "année"],
+		"rating"          : ["rating", "score"],
+		"time"            : ["time", "durée"],
+		"genre"           : ["genre", "genre"],
+		"title"           : ["Title", "Titre"]
+
 	}
 }

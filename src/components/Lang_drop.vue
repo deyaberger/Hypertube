@@ -1,14 +1,7 @@
 <script>
-import { ref, computed } from 'vue'
-import { mapState, useStore } from 'vuex';
-import textContent from "../assets/language_dict/language_dict.json"
+import { mapState } from 'vuex';
 
 export default {
-	data() {
-      const store = useStore()
-      return {
-      }
-    },
 	computed : mapState({
       lang_nb         : state =>  state.lang_nb,
       language        : state =>  state.language,

@@ -1,13 +1,12 @@
 <script>
 import Slider from '@vueform/slider'
-import { mapState, useStore } from 'vuex';
+import { mapState } from 'vuex';
 
 export default {
 	components: {
 		Slider,
 	},
 	data() {
-		const store = useStore()
 		return {
 			show         : true,
 			lang_nb      : 0,
@@ -16,9 +15,9 @@ export default {
 				sort  : ["Sort by", "Trier par"] // 1
 			},
 			form : {
-				name           : '',
+				title           : '',
 				genre          : '',
-				sort_category  : ['Name', 'Nom'],
+				sort_category  : ['Title', 'Titre'],
 				a_to_z         : true,
 				rating_interval: [2, 5],
 				years          : [1980, 2022],
@@ -26,7 +25,7 @@ export default {
 			sorting_list : {
 				rating : ['Rating', 'Note'],
 				year   : ['Year', 'Année'],
-				name   : ['Name', 'Nom'],
+				title   : ['Title', 'Titre'],
 			},
 			genre_list: [
 				["Action", "Action"],
@@ -71,10 +70,10 @@ export default {
 	},
 	watch: {
 		form: {
-		handler:function(newVal) {
-			this.emit_form()
-		},
-		deep:true
+			handler:function(newVal) {
+				this.emit_form()
+			},
+			deep:true
 		},
 		language: {
 			handler:function(newVal) {
@@ -95,7 +94,7 @@ export default {
 			<div v-if="show">
 			<form @submit="submit">
 				<div class = "nav-item input-group">
-					<input class = "input_text" type="text" v-model="form.name"/>
+					<input class = "input_text" type="text" v-model="form.title"/>
 					<span class="input-group-btn">
 						<button class="btn search_icon" type="submit">
 							<b-icon-search color="white"></b-icon-search>
@@ -151,7 +150,7 @@ export default {
 					:max="2022"
 					/>
 				</div>
-				<p class="filter">{{sorting_list.name[lang_nb]}}</p>
+				<p class="filter">{{sorting_list.title[lang_nb]}}</p>
 				<button v-if="form.a_to_z == true" class="btn a_to_z" @click="AtoZ" type="button">
 					A <b-icon-arrow-right></b-icon-arrow-right> Z
 				</button>

@@ -1,13 +1,11 @@
 <script>
-import { ref, computed } from 'vue'
-import { mapState, useStore } from 'vuex';
+import { mapState } from 'vuex';
 import textContent from "../assets/language_dict/language_dict.json"
 import LangDrop from '../components/Lang_drop.vue';
 
 export default {
   components: { LangDrop },
 	data() {
-      const store = useStore()
       return {
 		text_content : textContent.NAV
       }

@@ -1,7 +1,7 @@
 <script>
 	import { ref, computed } from 'vue'
 	import { mapState, useStore } from 'vuex';
-	import fakeData from "../assets/fake_library/fake_data.json";
+	import fakeData from "../assets/fake_library/fake_data_movie.json";
 	import vue3StarRatings from "vue3-star-ratings";
 
 	export default {

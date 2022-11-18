@@ -23,14 +23,6 @@ export default {
 			this.visible = !this.visible
 		},
 	},
-	watch: {
-		language: {
-			handler:function(newVal) {
-				this.lang_nb = newVal == "eng" ? 0 : 1
-			},
-			deep:true
-		},
-	},
 }
 </script>
 
