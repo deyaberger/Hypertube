@@ -32,6 +32,22 @@
 			"rating": 6.6,
 			"time"  : "2h05m",
 			"year"  : 2003
+		},
+		{
+			"path"  : "../src/assets/fake_library/fleabag.jpg",
+			"title" : "Fleabag",
+			"genre" : "drame",
+			"rating": 10,
+			"time"  : "1h05m",
+			"year"  : 2019
+		},
+		{
+			"path"  : "../src/assets/fake_library/handmaid.jpeg",
+			"title" : "The Handmaid's Tale",
+			"genre" : "drame",
+			"rating": 9,
+			"time"  : "1h05m",
+			"year"  : 2019
 		}
 	]
 }

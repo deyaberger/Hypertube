@@ -27,8 +27,8 @@ export default {
 			<div class="title">{{text_content.recommendations[lang_nb]}}:</div>
 			<div class="number_of_results">{{nb_results}} {{text_content.results[lang_nb]}}</div>
 		</div>
-		<div class="row movies">
-			<router-link :to="'/movie/' + movie.title" class="col-md-auto movie-card" v-for="movie in movie_list" :key="movie" style="text-decoration: none">
+		<div class="row movies justify-content-md-center">
+			<router-link :to="'/movie/' + movie.title" class="col-md-4 movie-card" v-for="movie in movie_list" :key="movie" style="text-decoration: none">
 				<div class="movie-header">
 						<img class="movie-image" :src="movie.path"/>
 						<b-icon-info-circle-fill class="h2 header-icon"></b-icon-info-circle-fill>

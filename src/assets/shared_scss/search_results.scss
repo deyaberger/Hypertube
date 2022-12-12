@@ -50,9 +50,14 @@ hr {
 	}
 	.number_of_results {
 		font-size: 12px;
-	letter-spacing: 2.5px;
-	margin-top: 7%;
+		letter-spacing: 2.5px;
+		margin-top: 7%;
 	}
+}
+
+.movies {
+	margin: 2%;
+	margin-top: 50px;
 }
 
 .col-md-auto {
@@ -61,13 +66,9 @@ hr {
 }
 
 .movie-card {
-	background: #ffffff;
-	box-shadow: 0px 6px 18px rgba(0,0,0,.1);
-	width: 100%;
-	max-width: 315px;
-	margin: 2em;
-	border-radius: 10px;
-	display:inline-block;
+	margin-top: 2%;
+	margin-bottom: 2%;
+	width: 350px;
 	cursor: pointer;
 }
 
@@ -127,6 +128,8 @@ hr {
 .movie-content {
 	padding: 18px 18px 24px 18px;
 	margin: 0;
+	background-color: white;
+	border-radius: 0% 0% 10px 10px;
 }
 
 .movie-content-header, .movie-info {
@@ -174,6 +177,12 @@ hr {
 	background-position: 100% 100%;
 }
 
+.movie-title {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
 @media screen and (max-width: 690px) {
 	.results_container {
 		margin-left: 250px;
@@ -186,9 +195,6 @@ hr {
 		margin-left: 150px;
 		width: calc(100% - 150px);
 	}
-	.movie-card {
-		width: 70%;
-	}
 
 	.movie-header, .movie-image{
 	height: 200px;
@@ -200,6 +206,7 @@ hr {
 	.movie-info {
 	margin-top: 0em;
 	}
+
 	.movie-content {
 		padding: 12px 12px 10px 12px;
 		margin: 0;

@@ -136,11 +136,17 @@
 	.search_bar {
 		width: 250px;
 	}
+	.small_sidebar {
+		width: 70px;
+	}
 }
 
 @media (max-width: 590px) {
 	.search_bar {
 		width: 150px;
+	}
+	.small_sidebar {
+		width: 70px;
 	}
 	h2{
 		font-size: 12px;
