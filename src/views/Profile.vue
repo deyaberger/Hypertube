@@ -9,11 +9,18 @@ export default {
 		return {
 			text_content : textContent.MOVIES,
 			movie_list   : fakeData.movie_list,
+			own_profile : true,
+			followed : false,
 		}
 	},
 	computed: mapState({
       	lang_nb  : state =>  state.lang_nb,
-    })
+    }),
+	methods: {
+		Change_follow() {
+			this.followed = !this.followed
+		}
+	}
 }
 </script>
 
@@ -28,22 +35,23 @@ export default {
 					<img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-profiles/avatar-1.webp"
 						alt="Generic placeholder image" class="img-fluid img-thumbnail mt-4 mb-2"
 						style="width: 150px; z-index: 1">
-					<button type="button" class="btn btn-outline-dark" data-mdb-ripple-color="dark"
+					<button v-if="own_profile" type="button" class="btn btn-outline-dark" data-mdb-ripple-color="dark"
 						style="z-index: 1;">
 						Edit profile
 					</button>
+					<button v-else type="button" class="btn btn-outline-dark" :class="{'btn-dark': followed}" @click="Change_follow" data-mdb-ripple-color="dark"
+						style="z-index: 1;">
+						<span v-if="!followed">Follow</span>
+						<span v-else>Unfollow</span>
+					</button>
 					</div>
-					<div class="ms-3" style="margin-top: 130px;">
+					<div class="ms-3 main_info" style="margin-top: 130px;">
 					<h5>Andy Horwitz</h5>
 					<p>New York</p>
 					</div>
 				</div>
 				<div class="p-4 text-black" style="background-color: #f8f9fa;">
 					<div class="d-flex justify-content-end text-center py-1">
-					<div>
-						<p class="mb-1 h5">253</p>
-						<p class="small text-muted mb-0">Photos</p>
-					</div>
 					<div class="px-3">
 						<p class="mb-1 h5">1026</p>
 						<p class="small text-muted mb-0">Followers</p>
@@ -55,7 +63,7 @@ export default {
 					</div>
 				</div>
 				<div class="card-body p-4 text-black">
-					<div class="mb-5">
+					<div>
 					<p class="lead fw-normal mb-1">About</p>
 					<div class="p-4" style="background-color: #f8f9fa;">
 						<p class="font-italic mb-1">Web Developer</p>
@@ -63,7 +71,9 @@ export default {
 						<p class="font-italic mb-0">Photographer</p>
 					</div>
 					</div>
-
+				</div>
+				<div class="card-body p-4 text-black">
+					<p class="lead fw-normal mb-1">Favorite Movies</p>
 					<div class="row movies justify-content-md-center">
 							<router-link :to="'/movie/' + movie.title" class="col-md-4 movie-card" v-for="movie in movie_list" :key="movie" style="text-decoration: none">
 								<div class="movie-header">
@@ -96,8 +106,7 @@ export default {
 								</div>
 							</router-link>
 						</div>
-
-					</div>
+				</div>
 				</div>
 			</div>
 		</div>
@@ -124,21 +133,28 @@ export default {
 <style scoped>
 
 .col {
-	padding: 0px;
-	width: 70%;
+	width: 80%;
 }
 
-.col-mb-2 {
-	margin-right: 5%;
-	padding: 0px;
-
+.main_info > * 
+{
+	color: white;
 }
 
 
-
-.movies .col {
-	background: blue;
+.movie-content, .movie-image {
+	box-shadow: 0.5px 0px 2px rgba(0, 0, 0, 0.813);
 }
+
+
+.btn-dark > *, .btn-outline-dark:hover > * {
+	color: white;
+}
+
+.btn-dark:hover {
+	background: rgba(0, 0, 0, 0.642);
+}
+
 
 .gradient-custom-2 {
 /* fallback for old browsers */
