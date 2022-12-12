@@ -64,8 +64,8 @@ export default {
 					</div>
 					</div>
 
-					<div class="row movies">
-							<router-link :to="'/movie/' + movie.title" class="col-mb-2 movie-card" v-for="movie in movie_list" :key="movie" style="text-decoration: none">
+					<div class="row movies justify-content-md-center">
+							<router-link :to="'/movie/' + movie.title" class="col-md-4 movie-card" v-for="movie in movie_list" :key="movie" style="text-decoration: none">
 								<div class="movie-header">
 										<img class="movie-image" :src="movie.path"/>
 										<b-icon-info-circle-fill class="h2 header-icon"></b-icon-info-circle-fill>
@@ -144,10 +144,8 @@ export default {
 /* fallback for old browsers */
 background: #fbc2eb;
 
-/* Chrome 10-25, Safari 5.1-6 */
 background: -webkit-linear-gradient(to right, rgba(251, 194, 235, 1), rgba(166, 193, 238, 1));
 
-/* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-background: linear-gradient(to right, rgba(251, 194, 235, 1), rgba(166, 193, 238, 1))
+background: linear-gradient(to right, rgba(251, 194, 235, 1), rgba(166, 193, 238, 1));
 }
 </style>

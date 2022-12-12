@@ -38,17 +38,17 @@ export default {
 	width: 100%;
 }
 
-#app {
-	font-family: Roboto, sans-serif;
-	color: #f6f8fc;
-	background-color: black;
-	background-image: linear-gradient(to bottom, transparent 90%, black, black), url("/src/assets/background2.jpg");
-	background-size: cover;
-	background-repeat: no-repeat;
-	background-position: center;
-	height: 100vh;
-	width: 100%;
-}
+// #app {
+// 	font-family: Roboto, sans-serif;
+// 	color: #f6f8fc;
+// 	background-color: black;
+// 	background-image: linear-gradient(to bottom, transparent 90%, black, black), url("/src/assets/background2.jpg");
+// 	background-size: cover;
+// 	background-repeat: no-repeat;
+// 	background-position: center;
+// 	height: 100vh;
+// 	width: 100%;
+// }
 
 
 
