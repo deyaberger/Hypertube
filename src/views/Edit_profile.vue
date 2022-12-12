@@ -1,6 +1,5 @@
 <script>
 import { mapState } from 'vuex';
-import fakeData from "../assets/fake_library/fake_data_search_results.json";
 import textContent from "../assets/language_dict/language_dict.json"
 
 
@@ -8,9 +7,9 @@ export default {
 	data() {
 		return {
 			text_content : textContent.MOVIES,
-			movie_list   : fakeData.movie_list,
-			own_profile : true,
-			followed : false,
+			name: 'Andy Horwitz',
+			city: 'New York',
+			profile_pic : 'https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-profiles/avatar-1.webp'
 		}
 	},
 	computed: mapState({
@@ -32,22 +31,21 @@ export default {
 				<div class="card">
 				<div class="rounded-top text-white d-flex flex-row" style="background-color: #000; height:200px;">
 					<div class="ms-4 mt-5 d-flex flex-column" style="width: 150px;">
-					<img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-profiles/avatar-1.webp"
+					<img :src="profile_pic"
 						alt="Generic placeholder image" class="img-fluid img-thumbnail mt-4 mb-2"
 						style="width: 150px; z-index: 1">
-					<button v-if="own_profile" type="button" class="btn btn-outline-dark" data-mdb-ripple-color="dark"
-						style="z-index: 1;">
-						<router-link to="/edit_profile" class="nav-link">Edit profile</router-link>
-					</button>
-					<button v-else type="button" class="btn btn-outline-dark" :class="{'btn-dark': followed}" @click="Change_follow" data-mdb-ripple-color="dark"
-						style="z-index: 1;">
-						<span v-if="!followed">Follow</span>
-						<span v-else>Unfollow</span>
-					</button>
 					</div>
-					<div class="ms-3 main_info" style="margin-top: 130px;">
-					<h5>Andy Horwitz</h5>
-					<p>New York</p>
+					<div class="ms-3 main_info" >
+						<b-form-input 
+							v-model="name"
+							placeholder="Enter your name"
+							class="dark_input"
+						></b-form-input>
+						<b-form-input 
+							v-model="city"
+							placeholder="Enter your city"
+							class="dark_input"
+						></b-form-input>
 					</div>
 				</div>
 				<div class="p-4 text-black" style="background-color: #f8f9fa;">
@@ -71,41 +69,6 @@ export default {
 						<p class="font-italic mb-0">Photographer</p>
 					</div>
 					</div>
-				</div>
-				<div class="card-body p-4 text-black">
-					<p class="lead fw-normal mb-1">Favorite Movies</p>
-					<div class="row movies justify-content-md-center">
-							<router-link :to="'/movie/' + movie.title" class="col-md-4 movie-card" v-for="movie in movie_list" :key="movie" style="text-decoration: none">
-								<div class="movie-header">
-										<img class="movie-image" :src="movie.path"/>
-										<b-icon-info-circle-fill class="h2 header-icon"></b-icon-info-circle-fill>
-								</div>
-								<div class="movie-content">
-									<div class="movie-content-header">
-										<h3 class="movie-title">{{movie.title}}</h3>
-									</div>
-									<hr class="solid">
-									<div class="movie-info">
-										<div class="info-section">
-											<label>{{text_content.genre[lang_nb]}}</label>
-											<span>{{movie.genre}}</span>
-										</div>
-										<div class="info-section">
-											<label>{{text_content.year[lang_nb]}}</label>
-											<span>{{movie.year}}</span>
-										</div>
-										<div class="info-section">
-											<label>{{text_content.time[lang_nb]}}</label>
-											<span class="time">{{movie.time}}</span>
-										</div>
-										<div class="info-section">
-											<label>{{text_content.rating[lang_nb]}}</label>
-											<span>{{movie.rating}}/10</span>
-										</div>
-									</div>
-								</div>
-							</router-link>
-						</div>
 				</div>
 				</div>
 			</div>
@@ -136,9 +99,18 @@ export default {
 	width: 80%;
 }
 
-.main_info > * 
-{
-	color: white;
+.dark_input {
+	background-color:rgb(0, 0, 0);
+	color:white;
+	margin-top:5%;
+}
+
+.main_info {
+	margin-top: 90px;
+}
+
+.remove {
+	color:white;
 }
 
 

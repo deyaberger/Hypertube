@@ -6,6 +6,8 @@ import New_pwd from "../views/New_password.vue";
 import Search from "../views/Search.vue";
 import Profile from "../views/Profile.vue";
 import SingleMovie from "../views/Single_movie.vue";
+import Edit_profile from "../views/Edit_profile.vue";
+
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -44,6 +46,11 @@ const router = createRouter({
 		path: "/profile",
 		name: "profile",
 		component: Profile,
+	},
+	{
+		path: "/edit_profile",
+		name: "edit",
+		component: Edit_profile,
 	},
 	{
 		path: "/movie/:moviename",
