@@ -8,11 +8,7 @@ export default {
 	data() {
 		return {
 			text_content : textContent.MOVIES,
-			nb_results	 : fakeData.results,
 			movie_list   : fakeData.movie_list,
-			currentPage  : 1,
-			rows         : 0,
-			perPage      : 0,
 		}
 	},
 	computed: mapState({
@@ -22,11 +18,6 @@ export default {
 </script>
 
 <template>
-	<div class="results_container">
-		<div class="search_header">
-			<div class="title">{{text_content.recommendations[lang_nb]}}:</div>
-			<div class="number_of_results">{{nb_results}} {{text_content.results[lang_nb]}}</div>
-		</div>
 		<div class="row movies justify-content-md-center">
 			<router-link :to="'/movie/' + movie.title" class="col-md-4 movie-card" v-for="movie in movie_list" :key="movie" style="text-decoration: none">
 				<div class="movie-header">
@@ -59,18 +50,6 @@ export default {
 				</div>
 			</router-link>
 		</div>
-		<div class="pagination overflow-auto">
-			<div>
-				<b-pagination
-					v-model="currentPage"
-					:total-rows="rows"
-					:per-page="perPage"
-					first-number
-					class="custom_pagination"
-				></b-pagination>
-			</div>
-		</div>
-	</div>
 </template>
 
 

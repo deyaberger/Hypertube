@@ -77,7 +77,7 @@ export default {
 					</span>
 				</div>
 			</form>
-			
+
 			<div class = "nav-item">
 				<h2>{{text_content.genre[lang_nb]}}</h2>
 				<div
@@ -147,6 +147,7 @@ export default {
 <style lang="scss" scoped>
 @import url("./../assets/shared_scss/navbars.scss");
 @import url("./../assets/shared_scss/sidebar.scss");
+
 
 
 </style>

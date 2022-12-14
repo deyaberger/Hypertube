@@ -2,7 +2,6 @@
 import { mapState } from 'vuex';
 import textContent from "../assets/language_dict/language_dict.json"
 
-
 export default {
 	data() {
 		return {
@@ -31,23 +30,27 @@ export default {
 				<div class="card">
 				<div class="rounded-top text-white d-flex flex-row" style="background-color: #000; height:200px;">
 					<div class="ms-4 mt-5 d-flex flex-column" style="width: 150px;">
-					<img :src="profile_pic"
-						alt="Generic placeholder image" class="img-fluid img-thumbnail mt-4 mb-2"
-						style="width: 150px; z-index: 1">
+					<div class="profile_header mt-4" >
+						<img :src="profile_pic" id="test"
+							alt="Generic placeholder image" class="img-fluid img-thumbnail profile_pic">
+						<b-icon-arrow-repeat  class="h2 change_icon"></b-icon-arrow-repeat>
+					</div>
+					<span><button class="btn btn-dark remove_pic"><b-icon-trash/></button></span>
 					</div>
 					<div class="ms-3 main_info" >
-						<b-form-input 
+						<b-form-input
 							v-model="name"
 							placeholder="Enter your name"
 							class="dark_input"
 						></b-form-input>
-						<b-form-input 
+						<b-form-input
 							v-model="city"
 							placeholder="Enter your city"
 							class="dark_input"
 						></b-form-input>
 					</div>
 				</div>
+
 				<div class="p-4 text-black" style="background-color: #f8f9fa;">
 					<div class="d-flex justify-content-end text-center py-1">
 					<div class="px-3">
@@ -95,6 +98,43 @@ export default {
 
 <style scoped>
 
+.profile_header {
+	width: 150px;
+	z-index: 1;
+	position: relative;
+	cursor: pointer;
+}
+
+.profile_header:hover {
+	transform:scale(1.03);
+}
+
+.profile_header:hover .profile_pic {
+	background: linear-gradient(to bottom, transparent 10%, black, black);
+}
+
+.profile_header:hover .change_icon {
+	visibility: visible;
+}
+
+.change_icon {
+	visibility: hidden;
+	color: rgba(0, 0, 0, 0.878);
+	border-radius: 35px;
+	background-color: white;
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	margin: auto auto auto auto;
+	font-size: 50px;
+	opacity: .85;
+	transition: none;
+}
+
+
+
 .col {
 	width: 80%;
 }
@@ -130,10 +170,18 @@ export default {
 
 .gradient-custom-2 {
 /* fallback for old browsers */
-background: #fbc2eb;
-
-background: -webkit-linear-gradient(to right, rgba(251, 194, 235, 1), rgba(166, 193, 238, 1));
-
-background: linear-gradient(to right, rgba(251, 194, 235, 1), rgba(166, 193, 238, 1));
+	background: #fbc2eb;
+	background: -webkit-linear-gradient(to right, rgba(251, 194, 235, 1), rgba(166, 193, 238, 1));
+	background: linear-gradient(to right, rgba(251, 194, 235, 1), rgba(166, 193, 238, 1));
 }
+
+.remove_pic {
+	position: absolute;
+	top: 37%;
+	left: 150px;
+	z-index: 2;
+	background-color: black;
+	color: red;
+}
+
 </style>

@@ -22,7 +22,6 @@ export default {
 </script>
 
 <template>
-	<div>{{type}}</div>
 	<button class="mt-3 loginBtn loginBtn--facebook">
 		{{ButtonContent()}}Facebook
 	</button>

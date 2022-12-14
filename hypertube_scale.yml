@@ -1,0 +1,576 @@
+---
+name: scale 4
+comment: ''
+introduction_md: |2
+
+  For the smooth running of this evaluation, please respect the following rules:
+
+  - Remain polite, kind, respectful and constructive whatever happens during
+    this conversation. It's a matter of confidence between you and the
+    42 community.
+
+  - Highlight the potential problems you ‘ve had with the work you're presented
+    to the person or the group you're grading, and take the time to talk about
+    and discuss those issues.
+
+  - Accept the fact that the subject or required functions might lead
+    to different interpretations. Listen to your discussion partner's
+    perspective with an open mind (are they right or wrong ?) and grade them as
+    fairly as possible.
+    42's teaching methods can make sense only if peer-evaluation is
+    taken seriously.
+
+
+  Good luck with your evaluation!
+disclaimer_md: ''
+guidelines_md: |2
+
+  REMEMBER: You must only evaluate what you will find in the student's or group's
+  GiT repository. You will make a "git clone" of the repo and evaluate what's
+  in it.
+evaluation_id: 2371
+is_primary: true
+correction_number: 3
+duration: 4
+manual_subscription: false
+is_external: false
+free: false
+sections:
+- id: 50814
+  scalable_id: 17853
+  name: Foreword
+  description: ''
+  position: 1
+  questions:
+  - id: 171634
+    name: Preliminary instructions
+    guidelines: |2
+
+      Check with the students the libraries used for the project. Libraries
+      allowing to go straight from a torrent to a video stream are prohibited.
+      Hence, using libraries such as webtorrent, pulsar or peerflix is cheating.
+
+      Cheating means evaluation stops.
+
+      Any credentials, API keys, environment variables must be set inside a .env
+      file during the evaluation. In case any credentials, API keys are available
+      in the git repository and outside of the .env file created during the evaluation, the evaluation stop
+      and the mark is 0.
+
+      Moreover, if one warning, one error or notice in the web console appears
+      during evaluation, select Crash on top of the grading system. An error
+      message from 500 to 599 is also considered a Crash.
+    rating: bool
+    kind: standard
+    position: 1
+    questions_skills:
+    - id: 479958
+      percentage: 0
+      name: Web
+  - id: 171635
+    name: Security
+    guidelines: |2
+
+      The subject was clear: the site must be securised.
+      Make sure that:
+
+      - the passwords are encrypted in the DB.
+      - data entry and upload forms have correct validations.
+      - SQL injection is impossible.
+
+      If one of the conditions has not been met, evaluation stops.
+    rating: bool
+    kind: standard
+    position: 2
+    questions_skills:
+    - id: 479959
+      percentage: 0
+      name: Web
+- id: 50815
+  scalable_id: 17853
+  name: Users
+  description: ''
+  position: 2
+  questions:
+  - id: 171636
+    name: Creation and management of user account
+    guidelines: |2
+
+      User should be able to suscribe with at least these informations:
+
+      - email address
+      - user name
+      - profile picture
+      - name and surname
+      - password (secured, any regular english word won't be accepted for
+      instance)
+
+      These informations should be editable by the connected user.
+    rating: bool
+    kind: standard
+    position: 1
+    questions_skills:
+    - id: 479960
+      percentage: 2
+      name: Web
+    - id: 479962
+      percentage: 2
+      name: Group & interpersonal
+    - id: 479961
+      percentage: 5
+      name: DB & Data
+  - id: 171637
+    name: User registration
+    guidelines: |2
+
+      Registration and login must be possible with a Omniauth.
+      At least two strategies are required: the 42 strategy and one picked
+      by the evaluated student.
+
+      User must be able to log with their ID and must be able to receive
+      a mail to reset their password if they forgot it.
+
+      User should be able to log out on any page of the website.
+    rating: bool
+    kind: standard
+    position: 2
+    questions_skills:
+    - id: 479963
+      percentage: 2
+      name: Web
+    - id: 479965
+      percentage: 2
+      name: Group & interpersonal
+    - id: 479964
+      percentage: 5
+      name: DB & Data
+- id: 50816
+  scalable_id: 17853
+  name: Library
+  description: ''
+  position: 3
+  questions:
+  - id: 171638
+    name: Access
+    guidelines: |2
+
+      Is the library only accessible to logged-in users?
+    rating: bool
+    kind: standard
+    position: 1
+    questions_skills:
+    - id: 479966
+      percentage: 4
+      name: Web
+    - id: 479967
+      percentage: 2
+      name: Group & interpersonal
+  - id: 171639
+    name: Default layout
+    guidelines: |2
+
+      By default, if there's no research going on, library must display miniatures
+      of the most popular media of the sources managed by the application. This
+      list must be sorted out (the condition will be set by the evaluated student).
+    rating: bool
+    kind: standard
+    position: 2
+    questions_skills:
+    - id: 479968
+      percentage: 4
+      name: Web
+    - id: 479970
+      percentage: 2
+      name: Group & interpersonal
+    - id: 479969
+      percentage: 5
+      name: DB & Data
+  - id: 171640
+    name: Miniatures
+    guidelines: |2
+
+      The miniatures must contain the name of the video, and, if available,
+      the year of production, its grade and a cover image.
+
+      All these infos should logically be available for the most popular media.
+
+      Viewed videos must clearly be differentiated from the non-viewed ones.
+    rating: bool
+    kind: standard
+    position: 3
+    questions_skills:
+    - id: 479971
+      percentage: 4
+      name: Web
+    - id: 479973
+      percentage: 2
+      name: Group & interpersonal
+    - id: 479972
+      percentage: 5
+      name: DB & Data
+  - id: 171641
+    name: Pagination and sorting out
+    guidelines: |2
+
+      List of videos must be paginated and pages must automatically be loaded
+      asynchronously.
+
+      User should be able to sort out the list according to different conditions.
+    rating: bool
+    kind: standard
+    position: 4
+    questions_skills:
+    - id: 479974
+      percentage: 5
+      name: Web
+    - id: 479976
+      percentage: 2
+      name: Group & interpersonal
+    - id: 479975
+      percentage: 5
+      name: DB & Data
+  - id: 171642
+    name: Search
+    guidelines: |2
+
+      The search engine should interrogate at least two different external sources
+      and limit the results to videos.
+
+      The result of a search must be displayed as miniatures sorted out by
+      names.
+
+      Try to search a video. You can have an example with
+      `curl http://www.randomlists.com/random-movies\?qty\=1 |
+      cat  | ruby -e "p gets.match(/port'>([^<]*)/)[1]"`.
+    rating: bool
+    kind: standard
+    position: 5
+    questions_skills:
+    - id: 479977
+      percentage: 5
+      name: Web
+    - id: 479979
+      percentage: 2
+      name: Group & interpersonal
+    - id: 479978
+      percentage: 10
+      name: DB & Data
+- id: 50817
+  scalable_id: 17853
+  name: Video part
+  description: ''
+  position: 4
+  questions:
+  - id: 171643
+    name: Access
+    guidelines: |2
+
+      Is the section containing the player only available to connected users?
+    rating: bool
+    kind: standard
+    position: 1
+    questions_skills:
+    - id: 479980
+      percentage: 4
+      name: Web
+    - id: 479981
+      percentage: 2
+      name: Group & interpersonal
+  - id: 171644
+    name: Informations about the video
+    guidelines: |2
+
+      In addition to the player, the video section must display informations about
+      the video that's playing. Try with a popular video. You should be able
+      to have an abstract, the cast, the production year, etc.
+
+      User must also find a list of comments about the video left by other users.
+      They must also be able to leave a new comment themselves.
+    rating: bool
+    kind: standard
+    position: 2
+    questions_skills:
+    - id: 479982
+      percentage: 5
+      name: Web
+    - id: 479984
+      percentage: 2
+      name: Group & interpersonal
+    - id: 479983
+      percentage: 10
+      name: DB & Data
+  - id: 171645
+    name: Downloading a video
+    guidelines: |2
+
+      Launching a video must trigger the download of the video on the server
+      with the BitTorrent protocol. As soon as the whole video can run flawlessely,
+      player should start streaming it.
+
+      Download must be a background, non-blocking activity.
+    rating: bool
+    kind: standard
+    position: 3
+    questions_skills:
+    - id: 479985
+      percentage: 10
+      name: Web
+    - id: 479987
+      percentage: 4
+      name: Group & interpersonal
+    - id: 479986
+      percentage: 10
+      name: DB & Data
+  - id: 171646
+    name: Video conversion
+    guidelines: |2
+
+      When the video is not natively playable by the browser, it must
+      be instantly converted so it can be streamed. The mkv format should
+      at least be supported.
+
+      For instance, this magnet should be streamable: `magnet:?xt=urn:bt
+      ih:79816060ea56d56f2a2148cd45705511079f9bca&dn=TPB.AFK.2013.720p
+      .h264-SimonKlose&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80&
+      tr=udp%3A%2F%2Fopen.demonii.com%3A1337&tr=udp%3A%2F%2Ftracker.co
+      ppersurfer.tk%3A6969&tr=udp%3A%2F%2Fexodus.desync.com%3A6969`
+    rating: bool
+    kind: standard
+    position: 4
+    questions_skills:
+    - id: 479988
+      percentage: 5
+      name: Web
+    - id: 479990
+      percentage: 4
+      name: Group & interpersonal
+    - id: 479989
+      percentage: 5
+      name: DB & Data
+  - id: 171647
+    name: Saving videos
+    guidelines: |2
+
+      A video that's been downloaded (by any user) must be saved on the
+      server et deleted if it's not viewed in the following month. Of course,
+      playing a video on the server should not trigger a new download. It
+      should stream from the copy on the server.
+    rating: bool
+    kind: standard
+    position: 5
+    questions_skills:
+    - id: 479991
+      percentage: 5
+      name: Web
+    - id: 479993
+      percentage: 4
+      name: Group & interpersonal
+    - id: 479992
+      percentage: 10
+      name: DB & Data
+  - id: 171648
+    name: Subtitles
+    guidelines: |2
+
+      If English subtitles are available for the video, they must be
+      automatically downloaded and selectable on the player.
+
+      If the video language is not the same as the user's favorite language,
+      and subtitles are available for this language, they should be automatically
+      downloaded and selectable.
+    rating: bool
+    kind: standard
+    position: 6
+    questions_skills:
+    - id: 479994
+      percentage: 5
+      name: Web
+    - id: 479996
+      percentage: 4
+      name: Group & interpersonal
+    - id: 479995
+      percentage: 10
+      name: DB & Data
+- id: 50818
+  scalable_id: 17853
+  name: API
+  description: ''
+  position: 5
+  questions:
+  - id: 171649
+    name: Basic API checks
+    guidelines: |
+      Is there an API available? Can you authenticate with a client and secret?
+    rating: bool
+    kind: standard
+    position: 1
+    questions_skills:
+    - id: 479997
+      percentage: 5
+      name: Web
+    - id: 479999
+      percentage: 5
+      name: Group & interpersonal
+    - id: 479998
+      percentage: 5
+      name: DB & Data
+  - id: 171650
+    name: Users
+    guidelines: |
+      Users calls work and return the expected data: username, email, profile pic url
+      PATCH allows a user to modify its informations
+    rating: bool
+    kind: standard
+    position: 2
+    questions_skills:
+    - id: 480000
+      percentage: 5
+      name: Web
+    - id: 480002
+      percentage: 5
+      name: Group & interpersonal
+    - id: 480001
+      percentage: 5
+      name: DB & Data
+  - id: 171651
+    name: Movies & comments
+    guidelines: |
+      GET calls on movies and comments properly work and return expected data
+      You can post new comments, patch existing comments using the routes given.
+    rating: bool
+    kind: standard
+    position: 3
+    questions_skills:
+    - id: 480003
+      percentage: 5
+      name: Web
+    - id: 480005
+      percentage: 5
+      name: Group & interpersonal
+    - id: 480004
+      percentage: 5
+      name: DB & Data
+  - id: 171652
+    name: Disabled calls
+    guidelines: |
+      Calls not listed in the documentation return the proper HTTP error code.
+    rating: bool
+    kind: standard
+    position: 4
+    questions_skills:
+    - id: 480006
+      percentage: 5
+      name: Web
+    - id: 480008
+      percentage: 5
+      name: Group & interpersonal
+    - id: 480007
+      percentage: 5
+      name: DB & Data
+- id: 50819
+  scalable_id: 17853
+  name: Good use
+  description: ''
+  position: 6
+  questions:
+  - id: 171653
+    name: Look & feel
+    guidelines: |2
+
+      This project is the fruit of several weeks of group work. The result
+      should at least be pleasantly looking.
+      Is the layout clear, with a header, a main section and a footer? Is it
+      intuitive? Reactive?
+
+      Will an ordinary user easily register? Is the search engine easy to use?
+
+      Tick YES if the product you're presented seems accomplished and user-friendly.
+    rating: bool
+    kind: standard
+    position: 1
+    questions_skills:
+    - id: 480009
+      percentage: 10
+      name: Web
+    - id: 480010
+      percentage: 42
+      name: Group & interpersonal
+  - id: 171654
+    name: Compatibility
+    guidelines: |2
+
+      Is the website compatible with Firefox (>= 41) and Chrome (>= 46)?
+    rating: bool
+    kind: standard
+    position: 2
+    questions_skills:
+    - id: 480011
+      percentage: 5
+      name: Web
+    - id: 480012
+      percentage: 2
+      name: Group & interpersonal
+  - id: 171655
+    name: Mobile
+    guidelines: |2
+
+      Is the website displayed well on mobile device and in small resolutions?
+    rating: bool
+    kind: standard
+    position: 3
+    questions_skills:
+    - id: 480013
+      percentage: 5
+      name: Web
+    - id: 480014
+      percentage: 2
+      name: Group & interpersonal
+- id: 50820
+  scalable_id: 17853
+  name: Bonus
+  description: ''
+  position: 7
+  questions:
+  - id: 171656
+    name: API RESTful
+    guidelines: |2
+
+      Does the app have an API RESTful?
+    rating: bool
+    kind: bonus
+    position: 1
+    questions_skills:
+    - id: 480015
+      percentage: 10
+      name: Web
+    - id: 480017
+      percentage: 10
+      name: Group & interpersonal
+    - id: 480016
+      percentage: 10
+      name: DB & Data
+  - id: 171657
+    name: Other bonuses
+    guidelines: |2
+
+      For this project, you can take into account up to 5 different bonuses
+
+      For example, here is a list of potential bonus:
+
+      - additional Omniauth strategies (1 grade for each additional strategy).
+      - various video resolution management.
+      - streaming videos with the API MediaStream.
+      - etc...
+    rating: multi
+    kind: bonus
+    position: 2
+    questions_skills:
+    - id: 480018
+      percentage: 15
+      name: Web
+    - id: 480020
+      percentage: 15
+      name: Group & interpersonal
+    - id: 480019
+      percentage: 15
+      name: DB & Data
