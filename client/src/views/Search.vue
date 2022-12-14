@@ -3,8 +3,8 @@ import SearchBar from '../components/Search_bar.vue'
 import SearchResults from '../components/Search_results.vue'
 import { mapState, useStore } from 'vuex';
 import fakeData from "../assets/fake_library/fake_data_search_results.json";
-import fake from "../assets/fake_library/basic_response.json";
 import textContent from "../assets/language_dict/language_dict.json"
+import { getAllMovies, getMovies, parseMovies } from "../functions/get_all_movies"
 
 export default {
 	components: {
@@ -17,21 +17,41 @@ export default {
 			form : '',
 			text_content : textContent.MOVIES,
 			nb_results	 : fakeData.results,
-			movie_list   : fake.data.movies,
+			movie_list   : '',
 			currentPage  : 1,
 			rows         : 0,
 			perPage      : 0,
 		}
 	},
 	methods: {
-		getForm(value) {
+		async getForm(value) {
 			const form = JSON.parse(JSON.stringify(value));
-			this.form = form
+			this.form = form;
+			let res = await getMovies(this.form);
+			this.movie_list = await parseMovies(res.data.data.movies);
 		},
 	},
-	computed: mapState({
+	computed: {
+	...mapState({
       	lang_nb  : state =>  state.lang_nb,
-    })
+    }),
+	},
+	async mounted() {
+		try {
+			let res = await getAllMovies();
+			if (res.status == 200) {
+				this.movie_list = await parseMovies(res.data.data.movies);
+			}
+			else {
+				console.log(res.code, res.data)
+				throw("Unknow error code getting movies")
+			}
+		}
+		catch (e) {
+			throw(e)
+		}
+
+	}
 }
 
 
