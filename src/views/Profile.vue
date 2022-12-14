@@ -78,7 +78,7 @@ export default {
 				</div>
 				<div class="card-body p-4 text-black">
 					<p class="lead fw-normal mb-1">Favorite Movies</p>
-					<SearchResults></SearchResults>
+					<SearchResults :movie_list="movie_list"/>
 					</div>
 				</div>
 			</div>

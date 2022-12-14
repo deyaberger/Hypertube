@@ -3,6 +3,7 @@ import SearchBar from '../components/Search_bar.vue'
 import SearchResults from '../components/Search_results.vue'
 import { mapState, useStore } from 'vuex';
 import fakeData from "../assets/fake_library/fake_data_search_results.json";
+import fake from "../assets/fake_library/basic_response.json";
 import textContent from "../assets/language_dict/language_dict.json"
 
 export default {
@@ -16,7 +17,7 @@ export default {
 			form : '',
 			text_content : textContent.MOVIES,
 			nb_results	 : fakeData.results,
-			movie_list   : fakeData.movie_list,
+			movie_list   : fake.data.movies,
 			currentPage  : 1,
 			rows         : 0,
 			perPage      : 0,
@@ -43,7 +44,7 @@ export default {
 				<div class="title">{{text_content.recommendations[lang_nb]}}:</div>
 				<div class="number_of_results">{{nb_results}} {{text_content.results[lang_nb]}}</div>
 			</div>
-			<SearchResults></SearchResults>
+			<SearchResults :movie_list="movie_list"/>
 			<div class="pagination overflow-auto">
 			<div>
 				<b-pagination
