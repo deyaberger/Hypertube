@@ -18,14 +18,13 @@ export default {
 			genre_list         : textContent.MOVIES.genre_list,
 			sorting_list       : textContent.MOVIES.sorting_list,
 			form               : {
-									title          : '',
-									genre          : '',
-									quality        : '1080p',
-									sort_category  : textContent.MOVIES.sorting_list.title,
-									a_to_z         : true,
-									order_by	   : 'desc',
-									min_rating : 0,
-									years          : [1980, 2022],
+									title         : '',
+									genre         : '',
+									quality       : '1080p',
+									sort_category : textContent.MOVIES.sorting_list.year,
+									order_by      : 'desc',
+									min_rating    : 0,
+									years         : [1980, 2022],
 								}
 		}
 	},
