@@ -17,6 +17,8 @@ export default {
 			text_content       : textContent.MOVIES,
 			genre_list         : textContent.MOVIES.genre_list,
 			sorting_list       : textContent.MOVIES.sorting_list,
+			tmp_title		   : '',
+			quality_list       : ['1080p', '720p'],
 			form               : {
 									title         : '',
 									genre         : '',
@@ -45,6 +47,10 @@ export default {
 		},
 		update_genre(genre) {
 			this.form.genre = genre
+			this.emit_form()
+		},
+		update_quality(quality) {
+			this.form.quality = quality
 			this.emit_form()
 		},
 		update_sort_cat(cat) {
@@ -78,15 +84,14 @@ export default {
 			<div v-if="show">
 			<form @submit="submit">
 				<div class = "nav-item input-group">
-					<input class = "input_text" type="text" v-model="form.title"/>
+					<input class = "input_text" type="text" v-model="tmp_title" v-on:keyup.enter="form.title = tmp_title"/>
 					<span class="input-group-btn">
 						<button class="btn search_icon" type="submit">
-							<b-icon-search color="white"></b-icon-search>
+							<b-icon-search color="white" @click="form.title = tmp_title"></b-icon-search>
 						</button>
 					</span>
 				</div>
 			</form>
-
 			<div class = "nav-item">
 				<h2>{{text_content.genre[lang_nb]}}</h2>
 				<div
@@ -103,27 +108,7 @@ export default {
 			</div>
 			</div>
 			<div class = "nav-item">
-				<h2>{{text_content.sort[lang_nb]}}</h2>
-				<div class="row justify-temp-md-center">
-					<a
-					href="#"
-					v-for="sort_category in sorting_list" :key="sort_category"
-					class="col nav-link"
-					:class="{ active: sort_category[0] == form.sort_category[0] }"
-					@click="update_sort_cat(sort_category)"
-					>{{sort_category[lang_nb]}}</a>
-				</div>
-			</div>
-
-			<div class = "nav-item">
 				<hr class="solid">
-				<p class="filter">{{form.sort_category[lang_nb]}}</p>
-				<button v-if="form.order_by == 'desc'" class="btn a_to_z" @click="order" type="button">
-					ASC <b-icon-arrow-up></b-icon-arrow-up>
-				</button>
-				<button v-else class="btn a_to_z" @click="order" type="button">
-					DESC <b-icon-arrow-down></b-icon-arrow-down>
-				</button>
 				<p class="filter">Min {{sorting_list.rating[lang_nb]}}</p>
 				<div>
 					<star-rating
@@ -134,17 +119,44 @@ export default {
 						:max-rating="10"
 					/>
 				</div>
-				<p class="filter">{{sorting_list.year[lang_nb]}}</p>
-				<div>
-					<Slider
-					class="green_slider"
-					v-model="form.years"
-					:min="1950"
-					:max="2022"
-					/>
-				</div>
-
 			</div>
+			<div class = "nav-item">
+				<hr class="solid">
+				<h2>{{text_content.quality[lang_nb]}}</h2>
+				<div class="row">
+				<div
+					v-for="quality in quality_list" :key="quality"
+					class="nav-link col"
+					:class="{ active: quality == form.quality }"
+				>
+					<span @click="update_quality(quality)" class="quality touchable">{{quality}} </span>
+					<b-icon-x
+						@click="update_quality()"
+						class = "touchable cross"
+						:class="{ active: quality == form.quality }"
+					></b-icon-x>
+			</div>
+		</div>
+			</div>
+			<div class = "nav-item">
+				<h2>{{text_content.sort[lang_nb]}}</h2>
+				<div class="row justify-temp-md-center">
+					<a
+					href="#"
+					v-for="sort_category in sorting_list" :key="sort_category"
+					class="nav-link"
+					:class="{ active: sort_category[0] == form.sort_category[0] }"
+					@click="update_sort_cat(sort_category)"
+					>{{sort_category[lang_nb]}}</a>
+				</div>
+			</div>
+			<button v-if="form.order_by == 'desc'" class="btn a_to_z" @click="order" type="button">
+					ASC <b-icon-arrow-up></b-icon-arrow-up>
+				</button>
+				<button v-else class="btn a_to_z" @click="order" type="button">
+					DESC <b-icon-arrow-down></b-icon-arrow-down>
+				</button>
+
 		</div>
 		</div>
 	</nav>
@@ -160,6 +172,17 @@ export default {
 @import url("./../assets/shared_scss/navbars.scss");
 @import url("./../assets/shared_scss/sidebar.scss");
 
+.cross {
+	display        :none
+}
 
+.cross.active {
+	display: unset;
+	font-size: 1.4rem;
+}
+
+.quality {
+	text-transform: lowercase
+}
 
 </style>

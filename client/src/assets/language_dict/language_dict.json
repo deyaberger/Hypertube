@@ -66,6 +66,7 @@
 		"rating"          : ["rating", "score"],
 		"time"            : ["time", "durée"],
 		"genre"           : ["genre", "genre"],
+		"quality"		  : ["quality", "qualité"],
 		"title"           : ["Title", "Titre"],
 		"sort"            : ["Sort by", "Trier par"],
 		"genre_list"      : [
@@ -87,7 +88,9 @@
 		"sorting_list"    : {
 			"rating"      : ["rating", "note"],
 			"year"        : ["year", "année"],
-			"title"       : ["title", "titre"]
+			"title"       : ["title", "titre"],
+			"peers"       : ["peers", "peers"],
+			"seeds"       : ["seeds", "seeds"]
 		}
 
 	}
