@@ -24,8 +24,8 @@ export default {
 			<!-- <router-link :to="'/movie/' + movie.title" class="col-md-4 movie-card" v-for="movie in movie_list" :key="movie" style="text-decoration: none"> -->
 			<div class="col-md-4 movie-card" v-for="movie in movie_list" :key="movie" style="text-decoration: none">
 				<div class="movie-header">
-						<!-- <img class="movie-image" :src="movie.large_cover_image"/> -->
-						<img class="movie-image" />
+						<img class="movie-image" :src="movie.large_cover_image"/>
+						<!-- <img class="movie-image" /> -->
 						<b-icon-info-circle-fill class="h2 header-icon"></b-icon-info-circle-fill>
 				</div>
 				<div class="movie-content">
@@ -36,7 +36,7 @@ export default {
 					<div class="movie-info">
 						<div class="info-section">
 							<label>{{text_content.genre[lang_nb]}}</label>
-							<!-- <span>{{movie.genres[0]}}</span> -->
+							<span>{{movie.genres}}</span>
 						</div>
 						<div class="info-section">
 							<label>{{text_content.year[lang_nb]}}</label>

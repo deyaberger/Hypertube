@@ -32,9 +32,12 @@ export const getMovies = async (form, page) => {
 		},
         params: {
 			"page" : page,
-			"minimum_rating" : form.rating_interval[0],
+			"minimum_rating" : form.min_rating,
 			"query_term" : form.title,
 			"genre" : form.genre[0],
+			"sort_by" : form.sort_category[0],
+			'quality' : form.quality,
+			'order_by' : form.order_by
         }
 	};
 
@@ -43,8 +46,29 @@ export const getMovies = async (form, page) => {
 	return response;
 }
 
+function parse_category(cat_name, old_list, new_list, index) {
+	try {
+		new_list[index][cat_name] = old_list[index][cat_name]
+		if (cat_name == 'genres'){
+			new_list[index][cat_name] = old_list[index][cat_name][0]
+		}
+	}
+	catch(e) {
+		console.log("Error in category: ", cat_name, " for movie:");
+		console.log(old_list[index]);
+		new_list[index][cat_name] = ''
+	}
+
+}
+
+
 export function parseMovies(movies) {
 	const no_duplicates = movies.filter((movies, index, self) =>
     						index === self.findIndex((t) => (t.id === movies.id)))
+	var parsed_movies =  Object.assign({}, no_duplicates);
+	var cat_names = ['title', 'year', 'slug', 'rating', 'runtime', 'genres', 'large_cover_image'];
+	for (var index  in no_duplicates) {
+		cat_names.forEach((cat_name, i) => parse_category(cat_name, no_duplicates, parsed_movies, index));
+	}
 	return no_duplicates
 }

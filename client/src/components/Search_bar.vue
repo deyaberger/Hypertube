@@ -1,12 +1,15 @@
 <script>
 import Slider from '@vueform/slider'
 import { mapState } from 'vuex';
-import textContent from "../assets/language_dict/language_dict.json"
+import textContent from "../assets/language_dict/language_dict.json";
+import StarRating from 'vue-star-rating';
+
 
 
 export default {
 	components: {
 		Slider,
+		StarRating
 	},
 	data() {
 		return {
@@ -17,9 +20,11 @@ export default {
 			form               : {
 									title          : '',
 									genre          : '',
+									quality        : '1080p',
 									sort_category  : textContent.MOVIES.sorting_list.title,
 									a_to_z         : true,
-									rating_interval: [2, 5],
+									order_by	   : 'desc',
+									min_rating : 0,
 									years          : [1980, 2022],
 								}
 		}
@@ -31,8 +36,13 @@ export default {
 		emit_form() {
 			this.$emit('search_form', this.form);
 		},
-		AtoZ() {
-			this.form.a_to_z = !this.form.a_to_z
+		order() {
+			if (this.form.order_by == 'desc') {
+				this.form.order_by = 'asc'
+			}
+			else {
+				this.form.order_by = 'desc'
+			}
 		},
 		update_genre(genre) {
 			this.form.genre = genre
@@ -105,15 +115,24 @@ export default {
 					>{{sort_category[lang_nb]}}</a>
 				</div>
 			</div>
+
 			<div class = "nav-item">
 				<hr class="solid">
-				<p class="filter">{{sorting_list.rating[lang_nb]}}</p>
+				<p class="filter">{{form.sort_category[lang_nb]}}</p>
+				<button v-if="form.order_by == 'desc'" class="btn a_to_z" @click="order" type="button">
+					ASC <b-icon-arrow-up></b-icon-arrow-up>
+				</button>
+				<button v-else class="btn a_to_z" @click="order" type="button">
+					DESC <b-icon-arrow-down></b-icon-arrow-down>
+				</button>
+				<p class="filter">Min {{sorting_list.rating[lang_nb]}}</p>
 				<div>
-					<Slider
-					class="green_slider"
-					v-model="form.rating_interval"
-					:min="0"
-					:max="5"
+					<star-rating
+						v-model="form.min_rating"
+						:numberOfStars=10
+						:increment="1"
+						:star-size="20"
+						:max-rating="10"
 					/>
 				</div>
 				<p class="filter">{{sorting_list.year[lang_nb]}}</p>
@@ -125,13 +144,7 @@ export default {
 					:max="2022"
 					/>
 				</div>
-				<p class="filter">{{sorting_list.title[lang_nb]}}</p>
-				<button v-if="form.a_to_z == true" class="btn a_to_z" @click="AtoZ" type="button">
-					A <b-icon-arrow-right></b-icon-arrow-right> Z
-				</button>
-				<button v-else class="btn a_to_z" @click="AtoZ" type="button">
-					Z <b-icon-arrow-right></b-icon-arrow-right> A
-				</button>
+
 			</div>
 		</div>
 		</div>

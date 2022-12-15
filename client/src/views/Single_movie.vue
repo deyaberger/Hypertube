@@ -117,7 +117,7 @@
 				></b-form-textarea>
 			<button @click="addReview(user_comment, user_rating)"
 				:disabled="!reviewComplete()"
-				class="submit_button" 
+				class="submit_button"
 				type = "submit">
 				Send review
 			</button>

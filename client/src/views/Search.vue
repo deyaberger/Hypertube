@@ -27,7 +27,7 @@ export default {
 				let res = await getMovies(this.form, this.currentPage);
 				if (res.status == 200) {
 					// this.movies = await parseMovies(res.data.data.movies);
-					this.movies = res.data.data.movies;
+					this.movies = await parseMovies(res.data.data.movies);
 					this.rows = res.data.data.movie_count;
 				}
 				else {
@@ -59,6 +59,7 @@ export default {
 </script>
 
 <template>
+	<div>
 		<SearchBar @search_form="getForm"/>
 		<div class="results_container">
 			<div class="search_header">
@@ -78,9 +79,9 @@ export default {
 					class="custom_pagination"
 				></b-pagination>
 			</div>
+			</div>
 		</div>
-		</div>
-
+	</div>
 </template>
 
 

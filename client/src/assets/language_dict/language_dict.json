@@ -69,22 +69,25 @@
 		"title"           : ["Title", "Titre"],
 		"sort"            : ["Sort by", "Trier par"],
 		"genre_list"      : [
-								["Action"         , "Action"],
-								["Animation"      , "Animation"],
-								["Adventure" 	  , "Aventure"],
-								["Comedy"         , "Comédie"],
-								["Drama"          , "Drame"],
-								["Horror"         , "Epouvante-horreur"],
-								["Familly"        , "Famille"],
-								["Musical"        , "Musical"],
-								["Romance"        , "Romance"],
-								["Science Fiction", "Science Fiction"],
-								["Thriller"       , "Thriller"]
+								["Action"      , "Action"],
+								["Adventure"   , "Adventure"],
+								["Animation"   , "Animation"],
+								["Biography"   , "Biographie"],
+								["Comedy"      , "Comédie"],
+								["Crime"       , "Crime"],
+								["Documentary" , "Documentaire"],
+								["Drame"       , "Drame"],
+								["Family"      , "Famille"],
+								["Horror"      , "Epouvante"],
+								["Romance"     , "Romantique"],
+								["Sci-Fi"      , "Science Fiction"],
+								["Thriller"    , "Thriller"],
+								["Western"     , "Western"]
 							],
 		"sorting_list"    : {
-			"rating"      : ["Rating", "Note"],
-			"year"        : ["Year", "Année"],
-			"title"       : ["Title", "Titre"]
+			"rating"      : ["rating", "note"],
+			"year"        : ["year", "année"],
+			"title"       : ["title", "titre"]
 		}
 
 	}
