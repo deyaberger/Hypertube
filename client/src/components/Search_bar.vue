@@ -52,7 +52,7 @@ export default {
 	},
 	watch: {
 		form: {
-			handler:function(newVal) {
+			handler:function() {
 				this.emit_form()
 			},
 			deep:true

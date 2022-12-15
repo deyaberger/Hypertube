@@ -21,9 +21,8 @@ export const getAllMovies = async () => {
 	return response;
 }
 
-export const getMovies = async (form) => {
+export const getMovies = async (form, page) => {
 	console.log("Getting specific research")
-	console.log(form)
 	let request = {
 		url: "https://yts.torrentbay.to/api/v2/list_movies.json",
 		method: "get",
@@ -32,14 +31,15 @@ export const getMovies = async (form) => {
 			"Content-type"               : "application/json",
 		},
         params: {
-			"page" : 1,
+			"page" : page,
 			"minimum_rating" : form.rating_interval[0],
 			"query_term" : form.title,
-			"genre" : form.genre,
+			"genre" : form.genre[0],
         }
 	};
 
 	const response = await axios(request);
+	console.log("got response")
 	return response;
 }
 

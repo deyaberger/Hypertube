@@ -2,9 +2,8 @@
 import SearchBar from '../components/Search_bar.vue'
 import SearchResults from '../components/Search_results.vue'
 import { mapState, useStore } from 'vuex';
-import fakeData from "../assets/fake_library/fake_data_search_results.json";
 import textContent from "../assets/language_dict/language_dict.json"
-import { getAllMovies, getMovies, parseMovies } from "../functions/get_all_movies"
+import { getMovies, parseMovies } from "../functions/get_movies"
 
 export default {
 	components: {
@@ -16,19 +15,34 @@ export default {
 		return {
 			form : '',
 			text_content : textContent.MOVIES,
-			nb_results	 : fakeData.results,
-			movie_list   : '',
+			movies	     : null,
 			currentPage  : 1,
 			rows         : 0,
 			perPage      : 0,
 		}
 	},
 	methods: {
-		async getForm(value) {
-			const form = JSON.parse(JSON.stringify(value));
+		async getMoviesResponse() {
+			try {
+				let res = await getMovies(this.form, this.currentPage);
+				if (res.status == 200) {
+					// this.movies = await parseMovies(res.data.data.movies);
+					this.movies = res.data.data.movies;
+					this.rows = res.data.data.movie_count;
+				}
+				else {
+					console.log(res.code, res.data)
+					throw("Unknow error code getting movies")
+				}
+			}
+			catch (e) {
+				throw(e)
+			}
+		},
+		getForm(value) {
+			let form = JSON.parse(JSON.stringify(value));
 			this.form = form;
-			let res = await getMovies(this.form);
-			this.movie_list = await parseMovies(res.data.data.movies);
+			this.getMoviesResponse();
 		},
 	},
 	computed: {
@@ -36,21 +50,8 @@ export default {
       	lang_nb  : state =>  state.lang_nb,
     }),
 	},
-	async mounted() {
-		try {
-			let res = await getAllMovies();
-			if (res.status == 200) {
-				this.movie_list = await parseMovies(res.data.data.movies);
-			}
-			else {
-				console.log(res.code, res.data)
-				throw("Unknow error code getting movies")
-			}
-		}
-		catch (e) {
-			throw(e)
-		}
-
+	mounted() {
+		this.getMoviesResponse();
 	}
 }
 
@@ -61,16 +62,18 @@ export default {
 		<SearchBar @search_form="getForm"/>
 		<div class="results_container">
 			<div class="search_header">
+				<div>{{form}}, {{currentPage}}</div>
 				<div class="title">{{text_content.recommendations[lang_nb]}}:</div>
-				<div class="number_of_results">{{nb_results}} {{text_content.results[lang_nb]}}</div>
+				<div class="number_of_results">{{rows}} {{text_content.results[lang_nb]}}</div>
 			</div>
-			<SearchResults :movie_list="movie_list"/>
+			<SearchResults :movie_list="movies"/>
 			<div class="pagination overflow-auto">
 			<div>
 				<b-pagination
 					v-model="currentPage"
 					:total-rows="rows"
 					:per-page="perPage"
+					@click="getMoviesResponse"
 					first-number
 					class="custom_pagination"
 				></b-pagination>
@@ -87,6 +90,7 @@ export default {
 	position: absolute;
 	width: calc(100% - 300px);
 	margin-left: 300px;
+	min-height: 100%;
 	transition : none;
 	background-color: rgba(34, 35, 40, 0.864);
 }
