@@ -9,20 +9,6 @@ hr {
 }
 
 
-
-.title {
-	font-weight: bold;
-	font-size: 25px;
-	color: white;
-}
-
-
-@media screen and (max-width: 590px) {
-	.title {
-		font-size: 18px;
-	}
-}
-
 .movies {
 	margin: 2%;
 	margin-top: 50px;
@@ -113,6 +99,7 @@ hr {
 	display: table-cell;
 	text-transform: uppercase;
 	text-align:center;
+
 }
 
 .info-section:first-of-type {
@@ -146,9 +133,7 @@ hr {
 }
 
 .movie-title {
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
+	max-width: 300px;
 }
 
 

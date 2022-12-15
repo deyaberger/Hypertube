@@ -12,15 +12,10 @@ export default {
 			text_content : textContent.MOVIES,
 		}
 	},
-	methods: {
-		getMovieImage(movie) {
-			parseImage(movie)
-			return movie.large_cover_image
-		}
-	},
 	computed: mapState({
       	lang_nb  : state =>  state.lang_nb,
     }),
+
 }
 </script>
 
@@ -30,12 +25,12 @@ export default {
 			<div class="col-md-4 movie-card" v-for="movie in movie_list" :key="movie" style="text-decoration: none">
 				<div class="movie-header">
 						<!-- <img class="movie-image" src="../assets/missing_cover.jpeg"> -->
-						<img class="movie-image" :src="movie.large_cover_image"/>
+						<img class="movie-image" :src="movie.large_cover_image" alt="movie_image"  onerror="this.src='../src/assets/missing_cover.jpeg';"/>
 						<b-icon-info-circle-fill class="h2 header-icon"></b-icon-info-circle-fill>
 				</div>
 				<div class="movie-content">
 					<div class="movie-content-header">
-						<h3 class="movie-title">{{movie.title}}</h3>
+						<h3 class="movie-title text-truncate">{{movie.title}}</h3>
 					</div>
 					<hr class="solid">
 					<div class="movie-info">

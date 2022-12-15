@@ -26,7 +26,7 @@ export default {
 			try {
 				let res = await getMovies(this.form, this.currentPage);
 				if (res.status == 200) {
-					this.movies = await parseMovies(res.data.data.movies);
+					this.movies = parseMovies(res.data.data.movies);
 					this.rows = res.data.data.movie_count;
 				}
 				else {
