@@ -1,6 +1,5 @@
 <script>
-import { ref, computed } from 'vue'
-import { mapState, useStore } from 'vuex';
+import { mapState } from 'vuex';
 import vue3StarRatings from "vue3-star-ratings";
 import {getMovie, parseMovies} from "../functions/get_movies";
 import { timeConvert } from "../functions/utils.js";
@@ -24,12 +23,9 @@ export default {
 		StarRating
 	},
 	computed: mapState({
-		language: state =>  state.language,
+		lang_nb: state => state.lang_nb,
 	}),
 	methods: {
-		is_english() {
-			return (this.language == 'eng')
-		},
 		async getMovieResponse() {
 			try {
 				let res = await getMovie(this.id);

@@ -11,18 +11,18 @@ export default {
 		SearchResults
 	},
 	data() {
-		const store = useStore()
 		return {
 			form              : '',
 			text_content      : textContent.MOVIES,
-			movies            : [],
-			movies_slice      : [],
+			movies            : null,
+			movies_slice      : null,
 			limit			  : 50,
 			number_of_results : 0,
 			movie_count		  : 0,
 			currentPage       : 1,
 			rows              : 0,
 			perPage           : 9,
+			user_choice       : 0,
 		}
 	},
 	methods: {
@@ -33,8 +33,8 @@ export default {
 		},
 		async getMoviesResponse() {
 			try {
-				this.movies = []
-				this.movies_slice = []
+				this.movies = null
+				this.movies_slice = null
 				let res = await getMovies(this.form, this.currentPage, this.limit);
 				if (res.status == 200) {
 					this.movies = parseMovies(res.data.data.movies);
@@ -52,9 +52,11 @@ export default {
 			}
 		},
 		getForm(value) {
+			console.log("GETTING FORMM")
 			let form = JSON.parse(JSON.stringify(value));
 			this.form = form;
 			this.getMoviesResponse();
+			this.user_choice += 1;
 		},
 
 	},
@@ -63,16 +65,14 @@ export default {
       	lang_nb  : state =>  state.lang_nb,
     }),
 	},
-	mounted() {
-		this.getMoviesResponse();
-	},
 	watch: {
 		currentPage: {
 			handler:function() {
 				this.getMoviesSlice()
 			},
 			deep:true
-		},
+		}
+
 	}
 }
 
@@ -84,12 +84,15 @@ export default {
 		<SearchBar @search_form="getForm"/>
 		<div class="results_container">
 			<div class="search_header">
-				<div class="title">{{text_content.recommendations[lang_nb]}}:</div>
-				<div class="number_of_results">{{perPage * currentPage}}/{{number_of_results}} {{text_content.results[lang_nb]}}</div>
+				<div v-if="user_choice > 1" class="title">Research:</div>
+				<div v-else class="title">{{text_content.recommendations[lang_nb]}}:</div>
+				<div v-if="number_of_results > 0" class="number_of_results">{{perPage * currentPage}}/{{number_of_results}} {{text_content.results[lang_nb]}}</div>
+				<div v-else class="number_of_results">{{number_of_results}} {{text_content.results[lang_nb]}}</div>
+
 			</div>
 			<SearchResults :movie_list="movies_slice"/>
 			<div class="pagination overflow-auto">
-			<div>
+			<div v-if="number_of_results > 0">
 				<b-pagination
 					v-model="currentPage"
 					:total-rows="rows"
@@ -105,6 +108,7 @@ export default {
 
 
 <style lang="scss" scoped>
+
 
 .results_container {
 	position: absolute;

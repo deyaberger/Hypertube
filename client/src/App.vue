@@ -10,13 +10,15 @@ export default {
 		return {
 			test : false
 		}
-	},
+	}
 }
 </script>
 
 <template>
+	<div>
 		<Nav />
 		<router-view />
+	</div>
 </template>
 
 

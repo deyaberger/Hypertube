@@ -46,19 +46,15 @@ export default {
 		},
 		update_genre(genre) {
 			this.form.genre = genre
-			this.emit_form()
 		},
 		update_quality(quality) {
 			this.form.quality = quality
-			this.emit_form()
 		},
 		update_sort_cat(cat) {
 			this.form.sort_category = cat
-			this.emit_form()
 		},
 		submit(e) {
 			e.preventDefault()
-			this.emit_form()
 		},
 	},
 	mounted() {
@@ -120,7 +116,8 @@ export default {
 						:numberOfStars=10
 						:increment="1"
 						:star-size="20"
-						:max-rating="10"
+						:max-rating="9"
+						:clearable="true"
 					/>
 				</div>
 			</div>

@@ -22,7 +22,7 @@ export default {
 
 <template>
 	<div class="row movies justify-content-md-center">
-		<div v-if="movie_list.length == 0" class = "col-md-auto">
+		<div v-if="movie_list == null" class = "col-md-auto">
 			<b-spinner label="Loading..." variant="success" class="mt-5"></b-spinner>
 		</div>
 			<router-link v-else :to="'/movie/' + movie.id" class="col-md-4 movie-card" v-for="movie in movie_list" :key="movie" style="text-decoration: none">

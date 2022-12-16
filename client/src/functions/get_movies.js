@@ -1,7 +1,7 @@
 import axios from "axios"
 
 export const getMovie = async (id) => {
-	console.log("Getting specific research")
+	console.log("Getting specific movie")
 	let request = {
 		url: "https://yts.torrentbay.to/api/v2/movie_details.json",
 		method: "get",
@@ -17,12 +17,19 @@ export const getMovie = async (id) => {
 	};
 
 	const response = await axios(request);
-	console.log("got response")
 	return response;
 }
 
 export const getMovies = async (form, page, limit) => {
-	console.log("Getting specific research")
+	console.log("Getting list of movies");
+	var genre = ""
+	var category = ""
+	if (form.genre) {
+		genre = form.genre[0];
+	}
+	if (form.sort_category) {
+		category = form.sort_category[0];
+	}
 	let request = {
 		url: "https://yts.torrentbay.to/api/v2/list_movies.json",
 		method: "get",
@@ -34,16 +41,15 @@ export const getMovies = async (form, page, limit) => {
 			"page" : page,
 			"minimum_rating" : form.min_rating,
 			"query_term" : form.title,
-			"genre" : form.genre[0],
-			"sort_by" : form.sort_category[0],
+			"genre" : genre,
+			"sort_by" : category,
 			'quality' : form.quality,
 			'order_by' : form.order_by,
 			"limit"   : limit,
-        }
+		}
 	};
 
 	const response = await axios(request);
-	console.log("got response")
 	return response;
 }
 
@@ -89,7 +95,6 @@ function parse_category(cat_name, old_list, new_list, index) {
 	}
 	catch(e) {
 		console.log("Error in category: ", cat_name, " for movie:");
-		console.log(old_list[index]);
 		new_list[index][cat_name] = ''
 	}
 
@@ -97,12 +102,15 @@ function parse_category(cat_name, old_list, new_list, index) {
 
 
 export function parseMovies(movies) {
+	if (!movies) {
+		return []
+	}
 	const no_duplicates = movies.filter((movies, index, self) =>
     						index === self.findIndex((t) => (t.id === movies.id)))
-	var parsed_movies =  Object.assign({}, no_duplicates);
+	var parsed_movies =  Object.assign([], no_duplicates);
 	var cat_names = ['title', 'year', 'slug', 'rating', 'runtime', 'genres', 'large_cover_image'];
 	for (var index  in no_duplicates) {
 		cat_names.forEach((cat_name, i) => parse_category(cat_name, no_duplicates, parsed_movies, index));
 	}
-	return no_duplicates
+	return parsed_movies
 }
