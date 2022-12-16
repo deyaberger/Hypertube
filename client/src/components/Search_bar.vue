@@ -26,7 +26,6 @@ export default {
 									sort_category : textContent.MOVIES.sorting_list.year,
 									order_by      : 'desc',
 									min_rating    : 0,
-									years         : [1980, 2022],
 								}
 		}
 	},
@@ -68,6 +67,11 @@ export default {
 	watch: {
 		form: {
 			handler:function() {
+				if (this.form.title.length > 0) {
+					this.form.genre = '';
+					this.form.min_rating = 0;
+					this.form.quality = '';
+				}
 				this.emit_form()
 			},
 			deep:true
@@ -112,7 +116,7 @@ export default {
 				<p class="filter">Min {{sorting_list.rating[lang_nb]}}</p>
 				<div>
 					<star-rating
-						v-model="form.min_rating"
+						v-model:rating="form.min_rating"
 						:numberOfStars=10
 						:increment="1"
 						:star-size="20"
@@ -151,10 +155,10 @@ export default {
 				</div>
 			</div>
 			<button v-if="form.order_by == 'desc'" class="btn a_to_z" @click="order" type="button">
-					ASC <b-icon-arrow-up></b-icon-arrow-up>
+					DESC <b-icon-arrow-down></b-icon-arrow-down>
 				</button>
 				<button v-else class="btn a_to_z" @click="order" type="button">
-					DESC <b-icon-arrow-down></b-icon-arrow-down>
+					ASC <b-icon-arrow-up></b-icon-arrow-up>
 				</button>
 
 		</div>

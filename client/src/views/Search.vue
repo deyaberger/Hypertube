@@ -13,21 +13,34 @@ export default {
 	data() {
 		const store = useStore()
 		return {
-			form : '',
-			text_content : textContent.MOVIES,
-			movies	     : null,
-			currentPage  : 1,
-			rows         : 0,
-			perPage      : 0,
+			form              : '',
+			text_content      : textContent.MOVIES,
+			movies            : [],
+			movies_slice      : [],
+			limit			  : 50,
+			number_of_results : 0,
+			movie_count		  : 0,
+			currentPage       : 1,
+			rows              : 0,
+			perPage           : 9,
 		}
 	},
 	methods: {
+		getMoviesSlice() {
+			var start = (this.currentPage - 1) * this.perPage
+			var end = start + this.perPage
+			this.movies_slice = this.movies.slice(start, end)
+		},
 		async getMoviesResponse() {
 			try {
-				let res = await getMovies(this.form, this.currentPage);
+				this.movies = []
+				this.movies_slice = []
+				let res = await getMovies(this.form, this.currentPage, this.limit);
 				if (res.status == 200) {
 					this.movies = parseMovies(res.data.data.movies);
-					this.rows = res.data.data.movie_count;
+					this.number_of_results = this.movies.length;
+					this.rows = this.number_of_results;
+					this.getMoviesSlice()
 				}
 				else {
 					console.log(res.code, res.data)
@@ -43,6 +56,7 @@ export default {
 			this.form = form;
 			this.getMoviesResponse();
 		},
+
 	},
 	computed: {
 	...mapState({
@@ -51,6 +65,14 @@ export default {
 	},
 	mounted() {
 		this.getMoviesResponse();
+	},
+	watch: {
+		currentPage: {
+			handler:function() {
+				this.getMoviesSlice()
+			},
+			deep:true
+		},
 	}
 }
 
@@ -62,18 +84,16 @@ export default {
 		<SearchBar @search_form="getForm"/>
 		<div class="results_container">
 			<div class="search_header">
-				<div>{{form}}, {{currentPage}}</div>
 				<div class="title">{{text_content.recommendations[lang_nb]}}:</div>
-				<div class="number_of_results">{{rows}} {{text_content.results[lang_nb]}}</div>
+				<div class="number_of_results">{{perPage * currentPage}}/{{number_of_results}} {{text_content.results[lang_nb]}}</div>
 			</div>
-			<SearchResults :movie_list="movies"/>
+			<SearchResults :movie_list="movies_slice"/>
 			<div class="pagination overflow-auto">
 			<div>
 				<b-pagination
 					v-model="currentPage"
 					:total-rows="rows"
 					:per-page="perPage"
-					@click="getMoviesResponse"
 					first-number
 					class="custom_pagination"
 				></b-pagination>

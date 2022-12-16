@@ -1,7 +1,7 @@
 <script>
 import { mapState } from 'vuex';
 import textContent from "../assets/language_dict/language_dict.json"
-import {parseImage} from "../functions/get_movies"
+import { timeConvert } from "../functions/utils.js"
 
 export default {
 	props: {
@@ -10,6 +10,7 @@ export default {
 	data() {
 		return {
 			text_content : textContent.MOVIES,
+			timeConvert  : timeConvert,
 		}
 	},
 	computed: mapState({
@@ -20,11 +21,12 @@ export default {
 </script>
 
 <template>
-		<div class="row movies justify-content-md-center">
-			<!-- <router-link :to="'/movie/' + movie.title" class="col-md-4 movie-card" v-for="movie in movie_list" :key="movie" style="text-decoration: none"> -->
-			<div class="col-md-4 movie-card" v-for="movie in movie_list" :key="movie" style="text-decoration: none">
+	<div class="row movies justify-content-md-center">
+		<div v-if="movie_list.length == 0" class = "col-md-auto">
+			<b-spinner label="Loading..." variant="success" class="mt-5"></b-spinner>
+		</div>
+			<router-link v-else :to="'/movie/' + movie.id" class="col-md-4 movie-card" v-for="movie in movie_list" :key="movie" style="text-decoration: none">
 				<div class="movie-header">
-						<!-- <img class="movie-image" src="../assets/missing_cover.jpeg"> -->
 						<img class="movie-image" :src="movie.large_cover_image" alt="movie_image"  onerror="this.src='../src/assets/missing_cover.jpeg';"/>
 						<b-icon-info-circle-fill class="h2 header-icon"></b-icon-info-circle-fill>
 				</div>
@@ -44,7 +46,7 @@ export default {
 						</div>
 						<div class="info-section">
 							<label>{{text_content.time[lang_nb]}}</label>
-							<span class="time">{{movie.runtime}}</span>
+							<span class="time">{{timeConvert(movie.runtime)}}</span>
 						</div>
 						<div class="info-section">
 							<label>{{text_content.rating[lang_nb]}}</label>
@@ -52,8 +54,7 @@ export default {
 						</div>
 					</div>
 				</div>
-				</div>
-			<!-- </router-link> -->
+			</router-link>
 		</div>
 </template>
 
@@ -65,6 +66,7 @@ export default {
 </style>
 
 <style lang="css">
+
 
 .page-link.active, .active > .page-link {
 	background-color: black;

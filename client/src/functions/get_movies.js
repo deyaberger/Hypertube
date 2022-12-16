@@ -1,6 +1,27 @@
 import axios from "axios"
 
-export const getMovies = async (form, page) => {
+export const getMovie = async (id) => {
+	console.log("Getting specific research")
+	let request = {
+		url: "https://yts.torrentbay.to/api/v2/movie_details.json",
+		method: "get",
+		headers: {
+			'Access-Control-Allow-Origin': '*',
+			"Content-type"               : "application/json",
+		},
+        params: {
+			"movie_id" : id,
+			"with_images" : true,
+			"with_cast" : true,
+        }
+	};
+
+	const response = await axios(request);
+	console.log("got response")
+	return response;
+}
+
+export const getMovies = async (form, page, limit) => {
 	console.log("Getting specific research")
 	let request = {
 		url: "https://yts.torrentbay.to/api/v2/list_movies.json",
@@ -16,7 +37,8 @@ export const getMovies = async (form, page) => {
 			"genre" : form.genre[0],
 			"sort_by" : form.sort_category[0],
 			'quality' : form.quality,
-			'order_by' : form.order_by
+			'order_by' : form.order_by,
+			"limit"   : limit,
         }
 	};
 
