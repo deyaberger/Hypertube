@@ -1,4 +1,4 @@
-
+const bcrypt = require('bcrypt')
 
 const buildPatchQuery = (table, data) => {
     if (Object.keys(data).length === 0) return null; // Or return what you want
@@ -18,6 +18,10 @@ const buildPatchArgs = (id, data) => {
     }).join(', ');
     args.push(id)
     return args
+}
+
+const hashPassword = (password) => {
+    return bcrypt.hashSync(password, 8);
 }
 
 
@@ -55,7 +59,9 @@ module.exports = (db_pool) => {
             try {
                 console.log('req.params: ', req.params)
                 console.log('req.body: ', req.body)
-                changes = req.body
+                if (Object.keys(req.body).includes('pass')) {
+                    req.body.pass = hashPassword(req.body.pass)
+                }
                 let update_string = buildPatchQuery('users', req.body)
                 let update_args = buildPatchArgs(req.params.id, req.body)
                 console.log("UPDAAAAAAAA:\n" , update_string)
