@@ -4,16 +4,18 @@ const placeholder = async (req, res) => {
 }
 
 module.exports = (db_pool) => {
-    const user_controller = require("../controllers/user.controller")(db_pool)
+    const user_controller  = require("../controllers/user.controller" )(db_pool)
+    const movie_controller = require("../controllers/movie.controller")(db_pool)
     console.log(user_controller)
+    console.log(movie_controller)
     var router = require("express").Router();
 
     router.post  ("oauth/token"                , placeholder)
     router.get   ("/users"                     , user_controller.get_users)
     router.get   ("/users/:id"                 , user_controller.get_user_by_id)
     router.patch ("/users/:id"                 , user_controller.patch_user)
-    router.get   ("/movies"                    , placeholder)
-    router.get   ("/movies/:id"                , placeholder)
+    router.get   ("/movies"                    , movie_controller.get_movies)
+    router.get   ("/movies/:id"                , movie_controller.get_movie_by_id)
     router.get   ("/comments"                  , placeholder)
     router.get   ("/comments/:id"              , placeholder)
     router.patch ("/comments/:id"              , placeholder)

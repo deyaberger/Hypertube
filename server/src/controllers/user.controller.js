@@ -42,13 +42,13 @@ module.exports = (db_pool) => {
 
         get_user_by_id : async(req, res) => {
             try {
-                let [users, ] = await db_pool.query("\
+                let [user, ] = await db_pool.query("\
                     SELECT username, mail, picture   \
                         FROM users                   \
-                        WHERE user.id=?",
+                        WHERE id=?",
                     req.params.id)
 
-                res.status(200).send({data: users})
+                res.status(200).send({data: user})
             }
             catch (e) {
                 throw(e)
@@ -66,9 +66,9 @@ module.exports = (db_pool) => {
                 let update_args = buildPatchArgs(req.params.id, req.body)
                 console.log("UPDAAAAAAAA:\n" , update_string)
                 console.log("\nargs:\n" , update_args)
-                let [users, ] = await db_pool.query(update_string, update_args)
+                let [update_result, ] = await db_pool.query(update_string, update_args)
 
-                res.status(200).send({data: users})
+                res.status(200).send({data: update_result})
             }
             catch (e) {
                 throw(e)

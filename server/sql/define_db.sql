@@ -45,7 +45,7 @@ create table comments
     text      varchar(400) not null,
     author_id int          not null,
     movie_id  int          not null,
-    date      datetime     not null,
+    date      timestamp default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP,
     constraint comments_id_uindex
         unique (id),
     constraint comments_movies_id_fk
