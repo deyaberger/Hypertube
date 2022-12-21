@@ -10,8 +10,8 @@ module.exports = (db_pool) => {
 
     router.post  ("oauth/token"                , placeholder)
     router.get   ("/users"                     , user_controller.get_users)
-    router.get   ("/users/:id"                 , placeholder)
-    router.patch ("/users/:id"                 , placeholder)
+    router.get   ("/users/:id"                 , user_controller.get_user_by_id)
+    router.patch ("/users/:id"                 , user_controller.patch_user)
     router.get   ("/movies"                    , placeholder)
     router.get   ("/movies/:id"                , placeholder)
     router.get   ("/comments"                  , placeholder)
