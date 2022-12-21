@@ -56,13 +56,11 @@ module.exports = (db_pool) => {
                 console.log('req.params: ', req.params)
                 console.log('req.body: ', req.body)
                 changes = req.body
-                let update_string = buildPatchQuery('users', req.params.id, changes)
-                console.log("UPDAAAAAAAA: " , update_string)
-                let [users, ] = await db_pool.query("\
-                    UPDATE username, mail, picture   \
-                        FROM users                   \
-                        WHERE user.id=?",
-                    req.params.id)
+                let update_string = buildPatchQuery('users', req.body)
+                let update_args = buildPatchArgs(req.params.id, req.body)
+                console.log("UPDAAAAAAAA:\n" , update_string)
+                console.log("\nargs:\n" , update_args)
+                let [users, ] = await db_pool.query(update_string, update_args)
 
                 res.status(200).send({data: users})
             }
