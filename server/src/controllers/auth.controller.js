@@ -23,15 +23,6 @@ const buildPatchArgs = (id, data) => {
     return args
 }
 
-const hashPassword = (password) => {
-    return bcrypt.hashSync(password, 8);
-}
-
-
-            
-const { privateKey, publicKey } = crypto.generateKeyPairSync('ec', {
-    namedCurve: 'sect239k1'
-});
 
 module.exports = (db_pool) => {
     const auth_functions = require('./auth')(db_pool)
@@ -79,7 +70,7 @@ module.exports = (db_pool) => {
                 let is_password_ok = await auth_functions.check_password(user, req.body.password)
                 if (is_password_ok) {
                     let token = auth_functions.create_access_token(user.id)
-                    return res.status(200).send(token)
+                    return res.status(200).send({token: token})
                 }
 
                 return res.status(201).send("Signin failed")
@@ -132,7 +123,7 @@ module.exports = (db_pool) => {
                     return res.sendStatus(200)
                 }
                 console.log("the request for pass reset failed")
-                return res.sendStatus(200)
+                return res.sendStatus(400)
             }
             catch (e) {
                 console.log("REQUIERT RESET ERROR:")
@@ -151,7 +142,7 @@ module.exports = (db_pool) => {
                 if (reset_success) {
                     return res.sendStatus(200)
                 }
-                return res.sendStatus(206)
+                return res.sendStatus(400)
 
             }
             catch (e) {
