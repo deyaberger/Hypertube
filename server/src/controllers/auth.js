@@ -11,7 +11,6 @@ const hashPassword = (password) => {
     return bcrypt.hashSync(password, 8);
 }
 
-
 module.exports = (db_pool) => {
     return {
         signup: async (username, f_name, l_name, mail, pass, pic, lang) => {
@@ -26,11 +25,13 @@ module.exports = (db_pool) => {
             return insert_res
         },
 
+
         create_access_token : (userid) => {
             console.log("Creating token for user %d.", userid);
 
             return jwt.sign({userid: userid}, process.env.TOKEN_SECRET, {expiresIn: 86400 });
         },
+
 
         get_user_from_username: async (username) => {
             console.log("getting user from name: %s.", username)
@@ -46,6 +47,7 @@ module.exports = (db_pool) => {
             return user_res[0]
         },
 
+
         get_user_from_mail: async (mail) => {
             console.log("getting user from mail: %s.", mail)
             let [user_res, ] = await db_pool.query("\
@@ -60,6 +62,7 @@ module.exports = (db_pool) => {
             return user_res[0]
         },
 
+
         check_password : async (user, password) => {
             console.log("checking password: ", user.pass, password)
             if (user == undefined) {
@@ -72,6 +75,7 @@ module.exports = (db_pool) => {
             }
             return false
         },
+
 
         request_new_pass : async (mail) => {
             console.log("Reset pass: ", mail)
@@ -106,6 +110,7 @@ module.exports = (db_pool) => {
 
             return true
         },
+
 
         reset_pass : async(hash, new_pass) => {
             console.log("resetting password")
