@@ -22,8 +22,19 @@ module.exports = (db_pool) => {
     return {
         get_user_by_id: async (userid) => {
             [users, ] = await db_pool.query("\
-            SELECT id, first_name, last_name, mail, language, picture, username FROM users \
-            WHERE id=?;",
+                SELECT                                        \
+                    users.id,                                 \
+                    first_name,                               \
+                    last_name,                                \
+                    mail,                                     \
+                    language,                                 \
+                    picture,                                  \
+                    username,                                 \
+                    GROUP_CONCAT(wm.movie_imdb_id) as watched \
+                FROM users                                    \
+                    LEFT JOIN watched_movies wm               \
+                        on users.id = wm.user_id              \
+                WHERE users.id=?;",
             userid)
 
             if (users.length == 1) {
