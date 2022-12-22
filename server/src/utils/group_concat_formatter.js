@@ -21,7 +21,4 @@ function transform_csv_lists_to_arrays(data, attributes_to_transform) {
 	return data
 }
 
-module.exports = {
-    csv_to_array,
-    transform_csv_lists_to_arrays
-}
+module.exports = transform_csv_lists_to_arrays
