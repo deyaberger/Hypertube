@@ -42,6 +42,8 @@ sections:
   description: ''
   position: 1
   questions:
+  
+  
   - id: 171634
     name: Preliminary instructions
     guidelines: |2
@@ -67,6 +69,8 @@ sections:
     - id: 479958
       percentage: 0
       name: Web
+  
+  
   - id: 171635
     name: Security
     guidelines: |2
@@ -92,6 +96,8 @@ sections:
   description: ''
   position: 2
   questions:
+  
+  
   - id: 171636
     name: Creation and management of user account
     guidelines: |2
@@ -119,6 +125,8 @@ sections:
     - id: 479961
       percentage: 5
       name: DB & Data
+  
+  
   - id: 171637
     name: User registration
     guidelines: |2
@@ -150,6 +158,8 @@ sections:
   description: ''
   position: 3
   questions:
+  
+  
   - id: 171638
     name: Access
     guidelines: |2
@@ -165,6 +175,8 @@ sections:
     - id: 479967
       percentage: 2
       name: Group & interpersonal
+  
+  
   - id: 171639
     name: Default layout
     guidelines: |2
@@ -185,6 +197,8 @@ sections:
     - id: 479969
       percentage: 5
       name: DB & Data
+  
+  
   - id: 171640
     name: Miniatures
     guidelines: |2
@@ -208,6 +222,8 @@ sections:
     - id: 479972
       percentage: 5
       name: DB & Data
+  
+  
   - id: 171641
     name: Pagination and sorting out
     guidelines: |2
@@ -229,6 +245,8 @@ sections:
     - id: 479975
       percentage: 5
       name: DB & Data
+  
+  
   - id: 171642
     name: Search
     guidelines: |2
@@ -261,6 +279,8 @@ sections:
   description: ''
   position: 4
   questions:
+  
+  
   - id: 171643
     name: Access
     guidelines: |2
@@ -276,6 +296,8 @@ sections:
     - id: 479981
       percentage: 2
       name: Group & interpersonal
+  
+  
   - id: 171644
     name: Informations about the video
     guidelines: |2
@@ -299,6 +321,8 @@ sections:
     - id: 479983
       percentage: 10
       name: DB & Data
+  
+  
   - id: 171645
     name: Downloading a video
     guidelines: |2
@@ -321,6 +345,8 @@ sections:
     - id: 479986
       percentage: 10
       name: DB & Data
+  
+  
   - id: 171646
     name: Video conversion
     guidelines: |2
@@ -347,6 +373,8 @@ sections:
     - id: 479989
       percentage: 5
       name: DB & Data
+  
+  
   - id: 171647
     name: Saving videos
     guidelines: |2
@@ -368,6 +396,8 @@ sections:
     - id: 479992
       percentage: 10
       name: DB & Data
+  
+  
   - id: 171648
     name: Subtitles
     guidelines: |2
@@ -397,6 +427,8 @@ sections:
   description: ''
   position: 5
   questions:
+  
+  
   - id: 171649
     name: Basic API checks
     guidelines: |
@@ -414,6 +446,8 @@ sections:
     - id: 479998
       percentage: 5
       name: DB & Data
+  
+  
   - id: 171650
     name: Users
     guidelines: |
@@ -432,6 +466,8 @@ sections:
     - id: 480001
       percentage: 5
       name: DB & Data
+  
+  
   - id: 171651
     name: Movies & comments
     guidelines: |
@@ -450,6 +486,8 @@ sections:
     - id: 480004
       percentage: 5
       name: DB & Data
+  
+  
   - id: 171652
     name: Disabled calls
     guidelines: |
@@ -473,6 +511,8 @@ sections:
   description: ''
   position: 6
   questions:
+  
+  
   - id: 171653
     name: Look & feel
     guidelines: |2
@@ -495,6 +535,8 @@ sections:
     - id: 480010
       percentage: 42
       name: Group & interpersonal
+  
+  
   - id: 171654
     name: Compatibility
     guidelines: |2
@@ -510,6 +552,8 @@ sections:
     - id: 480012
       percentage: 2
       name: Group & interpersonal
+  
+  
   - id: 171655
     name: Mobile
     guidelines: |2
@@ -531,6 +575,8 @@ sections:
   description: ''
   position: 7
   questions:
+  
+  
   - id: 171656
     name: API RESTful
     guidelines: |2
@@ -549,6 +595,8 @@ sections:
     - id: 480016
       percentage: 10
       name: DB & Data
+  
+  
   - id: 171657
     name: Other bonuses
     guidelines: |2
