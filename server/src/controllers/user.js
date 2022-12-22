@@ -1,32 +1,27 @@
-const buildPatchQuery = (table, data) => {
-    if (Object.keys(data).length === 0) return null; // Or return what you want
-    let query = `UPDATE ${table} SET `;
-    query += Object.keys(data).map((key) => {
-        const valueToSet = typeof data[key] === 'string' ? `'${data[key]}'` : data[key];
-        return `${key}=?`;
-    }).join(', ');
-    return query + ` WHERE id=?;`;
-}
-
-const buildPatchArgs = (id, data) => {
-    if (Object.keys(data).length === 0) return null; // Or return what you want
-    let args = []
-    Object.keys(data).map((key) => {
-        args.push(data[key])
-    }).join(', ');
-    args.push(id)
-    return args
-}
+const { buildPatchQuery, buildPatchArgs } = require('../utils/update_args')
+const transform_csv_lists_to_arrays       = require("../utils/group_concat_formatter")
 
 module.exports = (db_pool) => {
     return {
         get_user_by_id: async (userid) => {
             [users, ] = await db_pool.query("\
-            SELECT id, first_name, last_name, mail, language, picture, username FROM users \
-            WHERE id=?;",
+                SELECT                                               \
+                    users.id,                                        \
+                    first_name,                                      \
+                    last_name,                                       \
+                    mail,                                            \
+                    language,                                        \
+                    picture,                                         \
+                    username,                                        \
+                    GROUP_CONCAT(wm.movie_imdb_id) as watched_movies \
+                FROM users                                           \
+                    LEFT JOIN watched_movies wm                      \
+                        on users.id = wm.user_id                     \
+                WHERE users.id=?;",
             userid)
 
             if (users.length == 1) {
+                transform_csv_lists_to_arrays(users[0], ['watched_movies'])
                 return users[0]
             }
             

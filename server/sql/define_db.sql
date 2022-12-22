@@ -36,6 +36,8 @@ create table watched_movies
     movie_imdb_id  varchar(100)          not null,
     date           timestamp default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP,
     
+    constraint no_duplicate_watches
+        unique (user_id, movie_imdb_id),
     constraint watched_users_id_fk
         foreign key (user_id) references users (id)
             on update cascade on delete cascade
