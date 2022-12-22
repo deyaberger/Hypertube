@@ -9,17 +9,18 @@ create table users
     picture    varchar(300)               null,
     username   varchar(100)               not null,
 
-    constraint users_id_uindex   unique (id),
-    constraint users_mail_uindex unique (mail)
+    constraint users_id_uindex     unique (id),
+    constraint users_name_uindex   unique (username),
+    constraint users_mail_uindex   unique (mail)
 );
 
 
 create table comments
 (
     id             int auto_increment primary key,
-    text           varchar(400) not null,
+    content        varchar(400) not null,
     author_id      int          not null,
-    movie_imdb_id  int          not null,
+    movie_imdb_id  varchar(100)          not null,
     date           timestamp default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP,
 
     constraint comments_id_uindex
@@ -32,7 +33,7 @@ create table comments
 create table watched_movies
 (
     user_id        int          not null,
-    movie_imdb_id  int          not null,
+    movie_imdb_id  varchar(100)          not null,
     date           timestamp default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP,
     
     constraint watched_users_id_fk

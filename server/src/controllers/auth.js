@@ -29,7 +29,7 @@ module.exports = (db_pool) => {
         create_access_token : (userid) => {
             console.log("Creating token for user %d.", userid);
 
-            return jwt.sign({userid: userid}, process.env.TOKEN_SECRET, {expiresIn: 86400 });
+            return jwt.sign({user_id: userid}, process.env.TOKEN_SECRET, {expiresIn: 86400 });
         },
 
 
@@ -64,7 +64,7 @@ module.exports = (db_pool) => {
 
 
         check_password : async (user, password) => {
-            console.log("checking password: ", user.pass, password)
+            console.log("checking password: ", user)
             if (user == undefined) {
                 return false
                 throw_err_with_code("user doesnt exist", "MISSING_USER")
