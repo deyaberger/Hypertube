@@ -4,7 +4,9 @@ module.exports = (db_pool) => {
     const auth_controller = require("../controllers/auth.controller")(db_pool)
     var router = require("express").Router();
 
-    router.get("/myuser", auth_controller.authenticateToken, user_controller.get_my_user)
+    router.get  ("/me"      , auth_controller.authenticateToken, user_controller.get_my_user     )
+    router.patch("/update"  , auth_controller.authenticateToken, user_controller.update_user_info)
+    router.get  ("/:user_id", auth_controller.authenticateToken, user_controller.get_other_user  )
 
     return router
 }

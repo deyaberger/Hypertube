@@ -83,8 +83,8 @@ module.exports = (db_pool) => {
 
 
         print_id: async (req, res) => {
-            console.log("ID identified: %d.", req.userid)
-            res.status(200).send({userid: req.userid})
+            console.log("ID identified: %d.", req.user_id)
+            res.status(200).send({userid: req.user_id})
         },
 
 
@@ -92,17 +92,18 @@ module.exports = (db_pool) => {
             try {
                 const authHeader = req.headers['authorization']
                 const token = authHeader && authHeader.split(' ')[1]
+                // console.log("token: ", token)
               
                 if (token == null) return res.sendStatus(401)
-                jwt.verify(token, process.env.TOKEN_SECRET, (err, userid) => {
-                    console.log(err)
+                jwt.verify(token, process.env.TOKEN_SECRET, (err, decoded) => {
+                    if (err != null) console.log(err)
               
                     if (err) {
                         return res.sendStatus(403)
                     }
-              
-                    req.userid = userid.userid
-                    console.log("Authenthicated user %o.", userid.userid)
+                    // console.log(decoded)              
+                    req.user_id = decoded.user_id
+                    console.log("Authenthicated user %o.", decoded.user_id)
                     next()
                 })
             }
