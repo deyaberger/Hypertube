@@ -53,12 +53,13 @@ const router = createRouter({
 		component: Edit_profile,
 	},
 	{
-		path: "/movie/:moviename",
+		path: "/movie/:id",
 		name: "movie",
 		props: true,
 		component: SingleMovie,
 	},
   ]
 })
+
 
 export default router

@@ -1,8 +1,7 @@
 <script>
 import { mapState } from 'vuex';
 import textContent from "../assets/language_dict/language_dict.json"
-import { getMovies } from "../functions/get_all_movies.js"
-
+import { timeConvert } from "../functions/utils.js"
 
 export default {
 	props: {
@@ -11,34 +10,35 @@ export default {
 	data() {
 		return {
 			text_content : textContent.MOVIES,
+			timeConvert  : timeConvert,
 		}
 	},
 	computed: mapState({
       	lang_nb  : state =>  state.lang_nb,
     }),
-	mounted()  {
-		// const res = getMovies();
-		// console.log(res.data)
-	}
+
 }
 </script>
 
 <template>
-		<div class="row movies justify-content-md-center">
-			<router-link :to="'/movie/' + movie.title" class="col-md-4 movie-card" v-for="movie in movie_list" :key="movie" style="text-decoration: none">
+	<div class="row movies justify-content-md-center">
+		<div v-if="movie_list == null" class = "col-md-auto">
+			<b-spinner label="Loading..." variant="success" class="mt-5"></b-spinner>
+		</div>
+			<router-link v-else :to="'/movie/' + movie.id" class="col-md-4 movie-card" v-for="movie in movie_list" :key="movie" style="text-decoration: none">
 				<div class="movie-header">
-						<img class="movie-image" :src="movie.large_cover_image"/>
+						<img class="movie-image" :src="movie.large_cover_image" alt="movie_image"  onerror="this.src='../src/assets/missing_cover.jpeg';"/>
 						<b-icon-info-circle-fill class="h2 header-icon"></b-icon-info-circle-fill>
 				</div>
 				<div class="movie-content">
 					<div class="movie-content-header">
-						<h3 class="movie-title">{{movie.title}}</h3>
+						<h3 class="movie-title text-truncate">{{movie.title}}</h3>
 					</div>
 					<hr class="solid">
 					<div class="movie-info">
 						<div class="info-section">
 							<label>{{text_content.genre[lang_nb]}}</label>
-							<span>{{movie.genres[0]}}</span>
+							<span>{{movie.genres}}</span>
 						</div>
 						<div class="info-section">
 							<label>{{text_content.year[lang_nb]}}</label>
@@ -46,7 +46,7 @@ export default {
 						</div>
 						<div class="info-section">
 							<label>{{text_content.time[lang_nb]}}</label>
-							<span class="time">{{movie.runtime}}</span>
+							<span class="time">{{timeConvert(movie.runtime)}}</span>
 						</div>
 						<div class="info-section">
 							<label>{{text_content.rating[lang_nb]}}</label>
@@ -66,6 +66,7 @@ export default {
 </style>
 
 <style lang="css">
+
 
 .page-link.active, .active > .page-link {
 	background-color: black;

@@ -95,7 +95,7 @@ export default {
       </div>
     </form>
   </div>
-  
+
 </template>
 
 
@@ -103,5 +103,4 @@ export default {
 @import "../assets/shared_scss/login.scss";
 @import "../assets/shared_scss/shared.scss";
 
-  
 </style>
