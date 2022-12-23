@@ -24,18 +24,18 @@ module.exports = (db_pool) => {
         },
 
         stream_local: async (req, res) => {
+            // TODO: Refresh the file inactivity timer
 
-            let local_files = await torrent_functions.get_local_files(req.params.imdb_id)
+            console.log("Local stream")
+            let local_file_paf = await torrent_functions.get_local_file_path(req.params.local_file_id)
+            local_file_paf = "./torrents/" + local_file_paf
 
             const range = req.headers.range;
-
             if (!range) {
                 return res.status(400).send("Requires Range header");
             }
 
-            let is_already_dl = await torrent_functions.check_video_downloaded('lol')
-
-            const videoSize = fs.statSync(video_paf).size;
+            const videoSize = fs.statSync(local_file_paf).size;
 
 
             console.log("rang: ", range)
@@ -51,7 +51,7 @@ module.exports = (db_pool) => {
 
             res.writeHead(206, headers);
 
-            const videoStream = fs.createReadStream(video_paf, { start, end });
+            const videoStream = fs.createReadStream(local_file_paf, { start, end });
             videoStream.pipe(res);
         }
     }
