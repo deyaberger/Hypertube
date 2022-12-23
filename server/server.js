@@ -30,6 +30,13 @@ app.use("/api/comments", comment_router)
 
 
 
+// Create the comment router, (injecting the connection pool) and add it to the server
+const movie_router = require("./src/routes/movie.routes")(connection_pool)
+app.use("/api/movies", movie_router)
+
+
+
+
 // Start the server
 const PORT = process.env.PORT || 8071;
 app.listen(PORT, () => {
