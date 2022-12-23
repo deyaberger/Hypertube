@@ -43,6 +43,16 @@ create table watched_movies
             on update cascade on delete cascade
 );
 
+create table downloaded_movies
+(
+    id            int auto_increment  primary key,
+    movie_imdb_id varchar(100)          not null,
+    file_path     varchar(500)          not null,
+    file_size     bigint                not null,
+    date          timestamp default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP
+);
+
+
 create table reset_pass
 (
     user_id      int                                 null,

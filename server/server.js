@@ -38,7 +38,7 @@ app.use("/api/movies", movie_router)
 
 // Create the comment router, (injecting the connection pool) and add it to the server
 const torrent_router = require("./src/routes/torrent.routes")(connection_pool)
-app.use("/test/torrent", torrent_router)
+app.use("/api/torrent", torrent_router)
 
 
 

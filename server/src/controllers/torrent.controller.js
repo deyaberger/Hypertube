@@ -3,7 +3,7 @@ const fs = require("fs");
 const CHUNK_SIZE = 10 ** 6; // 1MB
 const video_paf = '/home/joep/Downloads/torrents/Avengers.mp4'
 module.exports = (db_pool) => {
-    const user_functions = require('./user')(db_pool)
+    const torrent_functions = require('./torrent')(db_pool)
 
     return {
         get_page : async (req, res) => {
@@ -11,11 +11,29 @@ module.exports = (db_pool) => {
             res.sendFile(__dirname + "/video.html");
         },
 
-        stream: async (req, res) => {
-            const range = req.headers.range;
-            if (!range) {
-                res.status(400).send("Requires Range header");
+        async get_local_files(req, res) {
+            try {
+                let local_files = await torrent_functions.get_local_files(req.params.imdb_id)
+
+                // TODO: purge fs info
+                res.status(200).send({local_files: local_files})
             }
+            catch (e) {
+                throw(e)
+            }
+        },
+
+        stream_local: async (req, res) => {
+
+            let local_files = await torrent_functions.get_local_files(req.params.imdb_id)
+
+            const range = req.headers.range;
+
+            if (!range) {
+                return res.status(400).send("Requires Range header");
+            }
+
+            let is_already_dl = await torrent_functions.check_video_downloaded('lol')
 
             const videoSize = fs.statSync(video_paf).size;
 
