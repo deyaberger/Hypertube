@@ -1,4 +1,5 @@
 const axios = require('axios')
+const { remove_duplicates: remove_duplicates } = require('../utils/parse_movies')
 
 module.exports = (db_pool) => {
     return {
@@ -39,43 +40,59 @@ module.exports = (db_pool) => {
                 }
             };
         
-            const response = await axios(request);
-            return response.data.data;
+            let response
+            response        = await axios(request);
+            response        = response.data.data
+            response.movies = remove_duplicates(response.movies);
+
+            return response;
         },
 
 
         search_movies : async (query_term, minimum_rating, genre, quality, sort_by, page, limit, order_by) => {
-            console.log("Searching movies with params:\n",
-            {
-                "page"           : page,
-                "minimum_rating" : minimum_rating,
-                "query_term"     : query_term,
-                "genre"          : genre,
-                "sort_by"        : sort_by,
-                'quality'        : quality,
-                'order_by'       : order_by,
-                "limit"          : limit,
-            });
+            // console.log("Searching movies with params:\n",
+            // {
+            //     "query_term"    : query_term,
+            //     "minimum_rating": minimum_rating,
+            //     "genre"         : genre,
+            //     "quality"       : quality,
+            //     "sort_by"       : sort_by,
+            //     "page"          : page,
+            //     "limit"         : limit,
+            //     "order_by"      : order_by
+            // });
 
             let request = {
                 url: "https://yts.torrentbay.to/api/v2/list_movies.json",
                 method: "get",
                 headers: {
                     'Access-Control-Allow-Origin': '*',
-                    "Content-type" : "application/json",
+                    "Content-type"               : "application/json",
+                    "Accept-Encoding"            : "gzip,deflate,compress"
                 },
                 params: {
-                    "page"           : page,
-                    "minimum_rating" : minimum_rating,
-                    "query_term"     : query_term,
-                    "genre"          : genre,
-                    "sort_by"        : sort_by,
-                    'quality'        : quality,
-                    'order_by'       : order_by,
-                    "limit"          : limit,
+                    "query_term"    : query_term,
+                    "minimum_rating": minimum_rating,
+                    "genre"         : genre,
+                    "quality"       : quality,
+                    "sort_by"       : sort_by,
+                    "page"          : page,
+                    "limit"         : limit,
+                    "order_by"      : order_by
                 }
             };
-            const response = await axios(request);
+
+            let response
+
+            response        = await axios(request);
+            response        = response.data.data
+
+            if (response.movies == undefined || response.movies.length == 0) {
+                response.movies = []
+            }
+
+            response.movies = remove_duplicates(response.movies);
+
             return response;
         }
     }

@@ -6,6 +6,7 @@ module.exports = (db_pool) => {
     var router = require("express").Router();
 
     router.get  ("/home/:page" , auth_controller.authenticateToken, movie_controller.get_homepage)
+    router.get  ("/search"     , auth_controller.authenticateToken, movie_controller.search)
 
     return router
 }
