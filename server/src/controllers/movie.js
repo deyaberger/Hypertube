@@ -24,31 +24,6 @@ module.exports = (db_pool) => {
         },
 
         
-        get_movies_homepage: async (page, limit) => {
-            console.log("Getting list of movies");
-            let request = {
-                url: "https://yts.torrentbay.to/api/v2/list_movies.json",
-                method: "get",
-                headers: {
-                    'Access-Control-Allow-Origin': '*',
-                    "Content-type"               : "application/json",
-                    "Accept-Encoding"            : "gzip,deflate,compress"
-                },
-                params: {
-                    "page"  : page,
-                    "limit" : limit,
-                }
-            };
-        
-            let response
-            response        = await axios(request);
-            response        = response.data.data
-            response.movies = remove_duplicates(response.movies);
-
-            return response;
-        },
-
-
         search_movies : async (query_term, minimum_rating, genre, quality, sort_by, page, limit, order_by) => {
             // console.log("Searching movies with params:\n",
             // {
@@ -84,8 +59,8 @@ module.exports = (db_pool) => {
 
             let response
 
-            response        = await axios(request);
-            response        = response.data.data
+            response = await axios(request);
+            response = response.data.data
 
             if (response.movies == undefined || response.movies.length == 0) {
                 response.movies = []
