@@ -1,6 +1,6 @@
 const axios = require('axios')
-const webtorrent = require('webtorrent')
-const client = new webtorrent()
+const tor_client = require('torrent-client')
+const client = new tor_client()
 
 module.exports = (db_pool) => {
     
@@ -58,7 +58,7 @@ module.exports = (db_pool) => {
                     console.log("paf: ", torrent.files[i].path)
                 }
             }
-            return file
+            return file.path
         }
     }
 }
