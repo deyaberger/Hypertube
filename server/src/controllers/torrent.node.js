@@ -36,7 +36,7 @@ module.exports = (db_pool) => {
 
         add_torrent(magnet, ready_callback) {
             let torrent = client.addTorrent(magnet);
-            torrent.once('torrent:ready', ready_callback)
+            torrent.once('torrent:ready', () => ready_callback(torrent))
         },
 
 
@@ -57,9 +57,9 @@ module.exports = (db_pool) => {
             });
             var infoHash;
             if (hash.length === 40) {
-                infoHash = new Buffer(hash, 'hex');
+                infoHash = new Buffer.from(hash, 'hex');
             } else {
-                infoHash = new Buffer(base32.decode(hash), 'binary');
+                infoHash = new Buffer.from(base32.decode(hash), 'binary');
             }
             let found_torrent = client.torrents[infoHash]
 
@@ -79,10 +79,9 @@ module.exports = (db_pool) => {
                 {
                     largest = torrent.files[i].length
                     file = torrent.files[i];
-                    console.log("paf: ", torrent.files[i].path)
                 }
             }
-            return file
+            return file.path
         }
     }
 }
