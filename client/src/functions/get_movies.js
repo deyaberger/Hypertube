@@ -53,6 +53,40 @@ export const getMovies = async (form, page, limit) => {
 	return response;
 }
 
+export const getMoviesNew = async (form, page, limit, token) => {
+	console.log("Getting list of movies");
+	var genre = ""
+	var category = ""
+	if (form.genre) {
+		genre = form.genre[0];
+	}
+	if (form.sort_category) {
+		category = form.sort_category[0];
+	}
+	let request = {
+		url: `http://127.0.0.1:8071/api/movies/search`,
+		method: "get",
+		headers: {
+			'Access-Control-Allow-Origin': '*',
+			"Content-type"               : "application/json",
+			'Authorization'				 : `Bearer ${token}`
+		},
+        params: {
+			"page" : page,
+			"minimum_rating" : form.min_rating,
+			"query_term" : form.title,
+			"genre" : genre,
+			"sort_by" : category,
+			'quality' : form.quality,
+			'order_by' : form.order_by,
+			"limit"   : limit,
+		}
+	};
+
+	const response = await axios(request);
+	return response;
+}
+
 
 const get_resquest = async(url, params) => {
 	let request = {
