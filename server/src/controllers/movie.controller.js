@@ -15,6 +15,18 @@ module.exports = (db_pool) => {
             }
         },
 
+        get_movie_details: async (req, res) => {
+            try {
+                let imdb_id = Number(req.params.imdb_id)
+                let movie = await movie_functions.get_movie_by_imdb_id(imdb_id)
+
+                res.status(200).send(movie)
+            }
+            catch (e) {
+                throw(e)
+            }
+        },
+
 
         search : async (req, res) => {
             try {
