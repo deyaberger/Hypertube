@@ -1,9 +1,9 @@
 <script>
-import { mapState } from 'vuex';
+import { mapState }      from 'vuex';
 import check_signup_form from "../stores/login_validation"
-import textContent from "../assets/language_dict/language_dict.json"
-import NetworkButtons from "../components/Networks_buttons.vue"
-
+import textContent       from "../assets/language_dict/language_dict.json"
+import NetworkButtons    from "../components/Networks_buttons.vue"
+import { signup }        from '../functions/auth'
 
 export default {
 	components: {
@@ -37,7 +37,7 @@ export default {
 			this.visible = !this.visible
 		},
 		
-		onSubmit(e){
+		async onSubmit(e){
 			e.preventDefault();
 			const form = {
 				"username"             : this.username,
@@ -51,6 +51,8 @@ export default {
 				"connect_with_twitter" : false,
 			}
 			const sign_in_res = check_signup_form(form);
+			let res = await signup(this.username, this.firstname, this.lastname, this.email, this.password)
+			console.log("signup res: %o", res)
 			if (!sign_in_res.connection_error) {
 				console.log("ALL good") /* Connect to website */
 				console.log(form)

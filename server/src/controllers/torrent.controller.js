@@ -62,8 +62,8 @@ module.exports = (db_pool) => {
             
             torrent_functions.add_torrent(magnet, (torrent) => {
                 let files = [];
+                console.log("added magnet")
                 torrent.files.forEach(function(data) {
-        
                     files.push({
                         name: data.path.slice('torrents/'.length),
                         length: data.length
@@ -80,12 +80,14 @@ module.exports = (db_pool) => {
 
             let magnet = req.params.magnet;
             magnet =  "magnet:?xt=urn:btih:EA17E6BE92962A403AC1C638D2537DCF1E564D26&dn=Avengers%3A%20Infinity%20War&tr=udp://open.demonii.com:1337/announce&tr=udp://tracker.openbittorrent.com:80&tr=udp://tracker.coppersurfer.tk:6969&tr=udp://glotorrents.pw:6969/announce&tr=udp://tracker.opentrackr.org:1337/announce&tr=udp://torrent.gresille.org:80/announce&tr=udp://p4p.arenabg.com:1337&tr=udp://tracker.leechers-paradise.org:6969"
-
+            magnet = "magnet:?xt=urn:btih:39EADCF205DE494B341250D8E0ABC525F58C6151&dn=test&tr=udp://open.demonii.com:1337/announce&tr=udp://tracker.openbittorrent.com:80&tr=udp://tracker.coppersurfer.tk:6969&tr=udp://glotorrents.pw:6969/announce&tr=udp://tracker.opentrackr.org:1337/announce&tr=udp://torrent.gresille.org:80/announce&tr=udp://p4p.arenabg.com:1337&tr=udp://tracker.leechers-paradise.org:6969"
             let tor = torrent_functions.get_torrent(magnet);
             if (tor == undefined || tor == null || tor.ready == false) {
                 console.log("Tor not ready")
                 return res.sendStatus(400)
             }
+
+            console.log(torrent_functions.get_subtitles(tor))
             
             let paf = torrent_functions.get_largest_file(tor);
             paf = torrent_functions.to_relative_path(paf)

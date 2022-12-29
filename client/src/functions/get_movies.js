@@ -10,9 +10,9 @@ export const getMovie = async (id) => {
 			"Content-type"               : "application/json",
 		},
         params: {
-			"movie_id" : id,
+			"movie_id"    : id,
 			"with_images" : true,
-			"with_cast" : true,
+			"with_cast"   : true,
         }
 	};
 
