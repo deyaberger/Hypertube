@@ -3,6 +3,7 @@ import { mapState } from 'vuex';
 import check_sign_in_form from "../stores/login_validation"
 import textContent from "../assets/language_dict/language_dict.json"
 import NetworkButtons from "../components/Networks_buttons.vue"
+import { signin }        from '../functions/auth'
 
 
 export default {
@@ -30,18 +31,22 @@ export default {
 			this.visible = !this.visible
 		},
 
-		onSubmit(e){
+		async onSubmit(e){
 			e.preventDefault();
 			const form = {
 				"username" : this.username,
 				"password" : this.password
 			}
-			const sign_in_res = check_sign_in_form(form);
-			this.connection_error = sign_in_res.connection_error;
-			if (!this.connection_error) {
-				console.log("ALL good") /* Connect to website */
+      try {
+        let sign_in_res = await signin(this.username, this.password)
+        console.log("signin response: ", sign_in_res)
+        this.$cookies.set('token', sign_in_res.data.token)
 			}
-		},
+      catch (e) {
+        console.log("error in signin: \n", e)
+      }
+    }
+
 	},
 }
 </script>
