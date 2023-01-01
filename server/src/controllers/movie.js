@@ -23,6 +23,29 @@ module.exports = (db_pool) => {
             return response;
         },
 
+        get_movie_by_imdb_id : async (imdb_id) => {
+            console.log("Getting specific movie details")
+            let request = {
+                url: "https://yts.torrentbay.to/api/v2/movie_details.json",
+                method: "get",
+                headers: {
+                    'Access-Control-Allow-Origin': '*',
+                    "Content-type"               : "application/json",
+                },
+                params: {
+                    "imdb_id"     : imdb_id,
+                    "with_images" : true,
+                    "with_cast"   : true,
+                }
+            };
+            console.log("lol")
+            const response = await axios(request);
+            console.log("lil")
+            console.log("got movie details: ", response)
+            console.log("lil")
+
+            return response;
+        },
         
         search_movies : async (query_term, minimum_rating, genre, quality, sort_by, page, limit, order_by) => {
             // console.log("Searching movies with params:\n",

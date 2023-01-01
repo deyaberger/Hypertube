@@ -1,6 +1,6 @@
 import axios from "axios"
 
-export const getMovie = async (id) => {
+export const getMovie = async (imdb_id) => {
 	console.log("Getting specific movie")
 	let request = {
 		url: "https://yts.torrentbay.to/api/v2/movie_details.json",
@@ -10,15 +10,34 @@ export const getMovie = async (id) => {
 			"Content-type"               : "application/json",
 		},
         params: {
-			"movie_id" : id,
+			"imdb_id"     : imdb_id,
 			"with_images" : true,
-			"with_cast" : true,
+			"with_cast"   : true,
         }
 	};
 
 	const response = await axios(request);
 	return response;
 }
+
+
+export const get_movie_by_imdb_id = async (imdb_id, token) => {
+	console.log("Getting specific movie details")
+	let request = {
+		url: `http://127.0.0.1:8071/api/movies/details/${imdb_id}`,
+		method: "get",
+		headers: {
+			'Access-Control-Allow-Origin': '*',
+			"Content-type"               : "application/json",
+			'Authorization'				 : `Bearer ${token}`
+		}
+	};
+
+	const response = await axios(request);
+	console.log("got movie details: ", response.data)
+	return response;
+}
+
 
 export const getMovies = async (form, page, limit) => {
 	console.log("Getting list of movies");
@@ -36,6 +55,40 @@ export const getMovies = async (form, page, limit) => {
 		headers: {
 			'Access-Control-Allow-Origin': '*',
 			"Content-type"               : "application/json",
+		},
+        params: {
+			"page" : page,
+			"minimum_rating" : form.min_rating,
+			"query_term" : form.title,
+			"genre" : genre,
+			"sort_by" : category,
+			'quality' : form.quality,
+			'order_by' : form.order_by,
+			"limit"   : limit,
+		}
+	};
+
+	const response = await axios(request);
+	return response;
+}
+
+export const getMoviesNew = async (form, page, limit, token) => {
+	console.log("Getting list of movies");
+	var genre = ""
+	var category = ""
+	if (form.genre) {
+		genre = form.genre[0];
+	}
+	if (form.sort_category) {
+		category = form.sort_category[0];
+	}
+	let request = {
+		url: `http://127.0.0.1:8071/api/movies/search`,
+		method: "get",
+		headers: {
+			'Access-Control-Allow-Origin': '*',
+			"Content-type"               : "application/json",
+			'Authorization'				 : `Bearer ${token}`
 		},
         params: {
 			"page" : page,

@@ -35,14 +35,33 @@ module.exports = (db_pool) => {
         add_torrent(magnet, ready_callback) {
             client.add(
                 torrentId = magnet,
-                {path     : "./torrents",                            
-                strategy  : "sequential" },
+                {
+                    path      : "./torrents",                            
+                    strategy  : "sequential"
+                },
                 ready_callback);
         },
 
 
         get_torrent(magnet) {
             return client.get(magnet)
+        },
+
+
+        is_torrent_ready_to_watch(magnet) {
+            torrent = client.get(magnet)
+            return torrent.timeRemaining < 1000 * 60 * 30
+        },
+
+
+        get_torrent_stats(magnet) {
+            torrent = client.get(magnet)
+            return {
+                time_remaining : torrent.timeRemaining / 1000,
+                progress       : torrent.progress,
+                numPeers       : torrent.numPeers,
+                downloadSpeed  : torrent.downloadSpeed
+            }
         },
 
 
@@ -59,6 +78,54 @@ module.exports = (db_pool) => {
                 }
             }
             return file.path
+        },
+
+
+        set_subtitles_high_priority(torrent) {
+            let file            
+            for(i = 0; i < torrent.files.length; i++)
+            {
+                file = torrent.files[i]
+                if(file.path.endsWith(".srt"))
+                {
+                    file.select(100)
+                }
+            }
+        },
+
+
+        are_subtitles_downloaded(torrent) {
+            let subs = []
+            let file
+            
+            for(i = 0; i < torrent.files.length; i++)
+            {
+                file = torrent.files[i]
+                if(file.path.endsWith(".srt") && !file.done)
+                {
+                    return false
+                }
+            }
+            return true
+        },
+
+
+        get_subtitles(torrent) {
+            let subs = []
+            let file
+            
+            for(i = 0; i < torrent.files.length; i++)
+            {
+                file = torrent.files[i]
+                if(file.path.endsWith(".srt") && file.done)
+                {
+                    subs.push({
+                        name:file.name,
+                        path: file.path
+                    })
+                }
+            }
+            return subs
         }
     }
 }

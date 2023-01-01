@@ -1,14 +1,14 @@
 <script>
 import { mapState } from 'vuex';
 import vue3StarRatings from "vue3-star-ratings";
-import {getMovie, parseMovies} from "../functions/get_movies";
+import {getMovie, parseMovies, get_movie_by_imdb_id} from "../functions/get_movies";
 import { timeConvert } from "../functions/utils.js";
 import StarRating from 'vue-star-rating';
 
 
 export default {
 	props: {
-		id: String,
+		imdb_id: String,
 	},
 	data() {
 		return {
@@ -28,9 +28,10 @@ export default {
 	methods: {
 		async getMovieResponse() {
 			try {
-				let res = await getMovie(this.id);
+				console.log("IMDB ID: ", this.imdb_id)
+				let res = await get_movie_by_imdb_id(this.imdb_id, this.$cookies.get('token'));
 				if (res.status == 200) {
-					this.movie = parseMovies([res.data.data.movie])[0];
+					this.movie = parseMovies([res.data.movie])[0];
 				}
 				else {
 					console.log(res.code, res.data)

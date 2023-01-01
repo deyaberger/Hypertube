@@ -12,8 +12,13 @@ import router from './router';
 
 const app = createApp(App)
 
+import VueCookies from 'vue3-cookies'
+
+app.use(VueCookies);
+
 app.use(createPinia())
 app.use(router)
+
 
 app.use(BootstrapVue3);
 app.use(BootstrapIconsPlugin);
