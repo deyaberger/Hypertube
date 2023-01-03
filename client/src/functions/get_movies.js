@@ -74,6 +74,7 @@ export const getMovies = async (form, page, limit) => {
 
 export const getMoviesNew = async (form, page, limit, token) => {
 	console.log("Getting list of movies");
+	console.log("token = ", token)
 	var genre = ""
 	var category = ""
 	if (form.genre) {
@@ -103,6 +104,7 @@ export const getMoviesNew = async (form, page, limit, token) => {
 	};
 
 	const response = await axios(request);
+	console.log("response dans front: ", response)
 	return response;
 }
 

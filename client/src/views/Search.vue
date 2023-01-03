@@ -37,8 +37,8 @@ export default {
 				this.movies_slice = null
 				// let res = await getMovies(this.form, this.currentPage, this.limit);
 				let res = await getMoviesNew(this.form, this.currentPage, this.limit, this.$cookies.get('token'));
-				console.log("got movies :", res)
 				if (res.status == 200) {
+					console.log("got movies :", res)
 					this.movies = parseMovies(res.data.movies);
 					this.number_of_results = this.movies.length;
 					this.rows = this.number_of_results;

@@ -29,7 +29,9 @@ export default {
 		async getMovieResponse() {
 			try {
 				console.log("IMDB ID: ", this.imdb_id)
+				console.log("TOKEN = ", this.$cookies.get('token'))
 				let res = await get_movie_by_imdb_id(this.imdb_id, this.$cookies.get('token'));
+				console.log("MOVIE RES = ", res)
 				if (res.status == 200) {
 					this.movie = parseMovies([res.data.movie])[0];
 				}

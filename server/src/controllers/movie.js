@@ -31,6 +31,7 @@ module.exports = (db_pool) => {
                 headers: {
                     'Access-Control-Allow-Origin': '*',
                     "Content-type"               : "application/json",
+                    "Accept-Encoding"            : "gzip,deflate,compress"
                 },
                 params: {
                     "imdb_id"     : imdb_id,
@@ -48,18 +49,6 @@ module.exports = (db_pool) => {
         },
         
         search_movies : async (query_term, minimum_rating, genre, quality, sort_by, page, limit, order_by) => {
-            // console.log("Searching movies with params:\n",
-            // {
-            //     "query_term"    : query_term,
-            //     "minimum_rating": minimum_rating,
-            //     "genre"         : genre,
-            //     "quality"       : quality,
-            //     "sort_by"       : sort_by,
-            //     "page"          : page,
-            //     "limit"         : limit,
-            //     "order_by"      : order_by
-            // });
-
             let request = {
                 url: "https://yts.torrentbay.to/api/v2/list_movies.json",
                 method: "get",
@@ -80,9 +69,8 @@ module.exports = (db_pool) => {
                 }
             };
 
-            let response
-
-            response = await axios(request);
+            let response = await axios(request);
+			console.log("THIS IS THE RESPNSE: ", response)
             response = response.data.data
 
             if (response.movies == undefined || response.movies.length == 0) {
