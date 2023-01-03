@@ -43,7 +43,6 @@ module.exports = (db_pool) => {
             if (user_res.length == 0) {
                 return null
             }
-
             return user_res[0]
         },
 

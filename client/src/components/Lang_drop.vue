@@ -2,10 +2,14 @@
 import { mapState } from 'vuex';
 
 export default {
+	data() {
+		return {
+			language_options: ["eng", "fr"]
+		}
+	},
 	computed : mapState({
       lang_nb         : state =>  state.lang_nb,
       language        : state =>  state.language,
-      language_options: state =>  state.language_options,
     }),
 	methods: {
 		change_language(new_language) {

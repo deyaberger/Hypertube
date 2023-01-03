@@ -10,6 +10,12 @@ export default {
 		text_content : textContent.NAV
       }
     },
+	methods : {
+		logout() {
+			this.$store.commit('SET_CONNECTION', false)
+			this.$router.push('/sign_in')
+		}
+	},
 	computed: mapState({
       user_connected  : state =>  state.user_connected,
       lang_nb         : state =>  state.lang_nb,
@@ -42,7 +48,7 @@ export default {
 		</b-nav-item>
 		<LangDrop></LangDrop>
 		<b-nav-item>
-			<router-link to="/" class="nav-link">{{text_content.logout[lang_nb]}} <b-icon-arrow-bar-right /></router-link>
+			<router-link to="/" class="nav-link" @click="logout()">{{text_content.logout[lang_nb]}} <b-icon-arrow-bar-right /></router-link>
 		</b-nav-item>
       </b-navbar-nav>
     </b-collapse>

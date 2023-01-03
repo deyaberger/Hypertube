@@ -1,7 +1,7 @@
 import axios from 'axios'
 
-export const signup = async function(username, firstname, lastname, email, password) {
-    console.log("Signin up")
+export const signup = async function(form) {
+    console.log("Signin up : ", form)
 	let request = {
 		url: "http://127.0.0.1:8071/api/auth/signup",
 		method: "POST",
@@ -10,11 +10,11 @@ export const signup = async function(username, firstname, lastname, email, passw
 			"Content-type" : "application/json",
 		},
         data: JSON.stringify({
-            "username"  : username,
-            "firstName" : firstname,
-            "lastName"  : lastname,
-            "mail"      : email,
-            "password"  : password,
+            "username"  : form.username,
+            "firstName" : form.firstname,
+            "lastName"  : form.lastname,
+            "mail"      : form.email,
+            "password"  : form.password,
         })
 	};
 
@@ -23,7 +23,7 @@ export const signup = async function(username, firstname, lastname, email, passw
 }
 
 
-export const signin = async function(username, password) {
+export const signin = async function(form) {
     console.log("Signin in")
 	let request = {
 		url: "http://127.0.0.1:8071/api/auth/signin",
@@ -33,8 +33,8 @@ export const signin = async function(username, password) {
 			"Content-type" : "application/json",
 		},
         data: JSON.stringify({
-            "username"  : username,
-            "password"  : password,
+            "username"  : form.username,
+            "password"  : form.password,
         })
 	};
 
