@@ -12,23 +12,23 @@ export default {
 
 	data() {
 		return {
-			visible: false,
-			text_content : textContent.SIGNUP,
-			username  : '',
-			firstname : '',
-			lastname  : '',
-			email     : '',
-			password  : '',
+			visible          : false,
+			text_content     : textContent.SIGNUP,
+			username         : '',
+			firstname        : '',
+			lastname         : '',
+			email            : '',
+			password         : '',
+			email_error      : false,
+			lastname_error   : false,
+			mdp_error        : false,
+			connection_error : false,
+			username_error   : false,
+			firstname_error  : false
 		}
 	},
 
 	computed: mapState({
-		username_error  : state => state.username_error,
-		firstname_error : state => state.firstname_error,
-		lastname_error  : state => state.lastname_error,
-		email_error     : state => state.email_error,
-		mdp_error       : state => state.mdp_error,
-		connection_error: state => state.connection_error,
 		lang_nb		    : state => state.lang_nb
 	}),
 

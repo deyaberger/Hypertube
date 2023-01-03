@@ -37,14 +37,21 @@ export default {
 				"username" : this.username,
 				"password" : this.password
 			}
-      try {
-        let sign_in_res = await signin(this.username, this.password)
-        console.log("signin response: ", sign_in_res)
-        this.$cookies.set('token', sign_in_res.data.token)
+		try {
+			let sign_in_res = await signin(this.username, this.password)
+			if (sign_in_res.status != 200) {
+				this.connection_error = true
+				console.log("error in signin: \n", sign_in_res)
 			}
-      catch (e) {
-        console.log("error in signin: \n", e)
-      }
+			else {
+				console.log("signin response: ", sign_in_res)
+				this.$cookies.set('token', sign_in_res.data.token)
+			}
+		}
+		catch (e) {
+			this.connection_error = True
+			console.log("error in signin: \n", e)
+		}
     }
 
 	},

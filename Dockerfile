@@ -2,7 +2,7 @@ FROM ubuntu:20.04
 
 RUN apt-get update -y
 RUN apt-get upgrade -y
-RUN apt-get install vim git curl wget systemctl zsh -y
+RUN apt-get install vim git curl wget systemctl zsh gpg -y
 ENV DEBIAN_FRONTEND noninteractive
 RUN apt install mysql-server -y
 ENV DEBIAN_FRONTEND text

@@ -12,7 +12,9 @@
 		"-u",
 		"root",
 		"--network",
-		"host"
+		"host",
+		"-p", 
+		"6666:3306"
 		// "-v",
 		// "hypertube-db:/etc/hypdb"
 	]
