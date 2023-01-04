@@ -13,6 +13,11 @@ INSERT INTO movies
 VALUES ('thor', 5, 2020, 0.8, 'en');
 
 
+INSERT INTO movies_info
+	(id, movie_imdb_id, title)
+VALUES (1, 2, 'bella vidaa');
+
+
 INSERT INTO comments
     (text, author_id, movie_id)
 VALUES ('It suuucks', 1, 1);

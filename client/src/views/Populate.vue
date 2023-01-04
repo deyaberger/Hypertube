@@ -20,7 +20,7 @@ export default {
 		console.log("res cote front: ", res)
 		this.yts_total = res.data.total;
 		this.yts_count = res.data.count;
-		this.time = Math.round((Date.now() - start) / 1000);
+		this.time = Math.round((Date.now() - start) / 100);
 		this.yts_done = true;
 		this.yts_on = false;
 	}
@@ -37,7 +37,7 @@ export default {
 			<span v-if="yts_done"><b-icon-check class="h2 green" variant="success"/></span>
 			<span v-else><b-spinner variant="success"></b-spinner></span>
 		</p>
-		<p v-if="yts_on || yts_done">Time Spent:{{time}}min</p>
+		<p v-if="yts_on || yts_done">Time Spent:{{time}}sec</p>
       </div>
   </div>
 

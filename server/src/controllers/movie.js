@@ -1,6 +1,7 @@
 const axios = require('axios')
 const { remove_duplicates: remove_duplicates } = require('../utils/parse_movies')
 
+
 const create_request = (url, params) => {
 	let request = {
 		url: url,
@@ -12,6 +13,16 @@ const create_request = (url, params) => {
 		params: params
 	}
 	return request;
+}
+
+
+const post_movie = async (db_pool, movie_imdb_id, title, imbd_rate, release_year, genre, cover_image) => {
+	[movie, ] = await db_pool.query("\
+	INSERT INTO movies_info (movie_imdb_id, title, imbd_rate, release_year, genre, cover_image) \
+	VALUES               (?       ,?              ,?  ,?, ?, ?           );",
+	[movie_imdb_id, title, imbd_rate, release_year, genre, cover_image])
+
+	return movie
 }
 
 module.exports = (db_pool) => {
@@ -95,6 +106,8 @@ module.exports = (db_pool) => {
             return response;
         },
 
+		
+
 
 		search_all_movies : async (source) => {
 			console.log("loooooool")
@@ -105,12 +118,31 @@ module.exports = (db_pool) => {
 			let page_nb = 1;
 			let count = 0;
 			let total = 0;
-			while (page_nb < 3) {
+			while (page_nb < 2) {
 				let request = create_request(url, {"page" : page_nb});
-				console.log("REQUEST = ", request)
 				let response = await axios(request);
-				count += response.data.data.movies.length;
-				total = response.data.data.movie_count;
+				let data = response.data.data
+				count += data.movies.length;
+				total = data.movie_count;
+				for (let index in data.movies) {
+					let movie = data.movies[index]
+					try {
+						let movie_post  = await post_movie(
+							db_pool,
+							movie.imdb_code,
+							movie.title,
+							movie.rating,
+							movie.year,
+							"romantique",
+							movie.large_cover_image
+							)
+						console.log("movie_post : ", movie_post)
+					}
+					catch(e) {
+						console.log("skipping: ", e)
+					}
+
+				}
 				page_nb += 1;
 			}
 			response = {"total" : total, "pages_done" : page_nb, "count" : count}

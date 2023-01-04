@@ -52,6 +52,17 @@ create table downloaded_movies
     date          timestamp default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP
 );
 
+create table movies_info
+(
+    id                 int auto_increment primary key,
+    movie_imdb_id      varchar(100)			 not null,
+	title              varchar(500)			 not null,
+	imbd_rate		   float				 not null,
+	release_year	   int					 not null,
+	genre			   varchar(100)			 not null,
+	cover_image		   varchar(500)			 not null
+);
+
 
 create table reset_pass
 (
