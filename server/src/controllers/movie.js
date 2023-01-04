@@ -1,9 +1,9 @@
 const axios = require('axios')
 const { remove_duplicates: remove_duplicates } = require('../utils/parse_movies')
 
-const get_resquest = async(params) => {
+const create_request = (url, params) => {
 	let request = {
-		url: 'https://yts.torrentbay.to/api/v2/list_movies.json',
+		url: url,
 		method: "get",
 		headers: {
 			'Access-Control-Allow-Origin': '*',
@@ -11,8 +11,7 @@ const get_resquest = async(params) => {
 		},
 		params: params
 	}
-	const response = await axios(request);
-	return response;
+	return request;
 }
 
 module.exports = (db_pool) => {
@@ -94,68 +93,28 @@ module.exports = (db_pool) => {
             response.movies = remove_duplicates(response.movies);
 
             return response;
+        },
+
+
+		search_all_movies : async (source) => {
+			console.log("loooooool")
+			let url = null;
+			if (source == "yts") {
+				url = "https://yts.torrentbay.to/api/v2/list_movies.json"            
+            }
+			let page_nb = 1;
+			let count = 0;
+			let total = 0;
+			while (page_nb < 3) {
+				let request = create_request(url, {"page" : page_nb});
+				console.log("REQUEST = ", request)
+				let response = await axios(request);
+				count += response.data.data.movies.length;
+				total = response.data.data.movie_count;
+				page_nb += 1;
+			}
+			response = {"total" : total, "pages_done" : page_nb, "count" : count}
+            return response;
         }
-
-
-		
-
-		// search_movies : async (query_term, minimum_rating, genre, quality, sort_by, page, limit, order_by) => {
-        //     params = {"page" : 1};
-		// 	let response = await get_resquest(params);
-		// 	let data = response.data.data;
-		// 	const goal = data.movie_count;
-		// 	let results = 0;
-		// 	let page_nb = 1;
-		// 	let pages = [];
-		// 	const fs = require('fs')
-		// 	let errors = []
-		// 	while (results < goal) {
-		// 		console.log("page_nb: ", page_nb);
-		// 		params = {"page" : page_nb};
-		// 		try {
-		// 			let response = await get_resquest(params);
-		// 			let data = response.data.data;
-		// 			pages.push(data);
-		// 			results += data.movies.length;
-		// 			console.log("results: ", results, "/", goal);
-		// 			page_nb += 1;
-		// 			fs.writeFile('./movies.json', final_data, err => {
-		// 				if (err) {
-		// 				  throw err
-		// 				}
-		// 				console.log('JSON data is saved.')
-		// 			  })
-		// 		}
-		// 		catch {
-		// 			console.log('skipping page ****** : ', page_nb);
-		// 			errors.push(page_nb);
-		// 			page_nb += 1;
-		// 		}
-		// 	}
-
-		// 	const final_data = JSON.stringify(pages);
-		// 	const final_errors = JSON.stringify(errors);
-		// 	fs.writeFile('./movies.json', final_data, err => {
-		// 		if (err) {
-		// 		  throw err
-		// 		}
-		// 		console.log('JSON data is saved.')
-		// 	  })
-		// 	fs.writeFile('./errors.json', final_errors, err => {
-		// 	if (err) {
-		// 		throw err
-		// 	}
-		// 	console.log('JSON data is saved.')
-		// 	})
-			  
-
-
-
-		// 	// console.log("THIS IS THE RESPNSE: ", response)
-        //     // response = response.data.data
-		// 	response  = null;
-
-        //     return response;
-        // }
     }
 }

@@ -1,7 +1,7 @@
 <script>
 import { mapState } from 'vuex';
 import vue3StarRatings from "vue3-star-ratings";
-import {getMovie, parseMovies, get_movie_by_imdb_id} from "../functions/get_movies";
+import {parseMovies, get_movie_by_imdb_id} from "../functions/get_movies";
 import { timeConvert } from "../functions/utils.js";
 import StarRating from 'vue-star-rating';
 

@@ -1,26 +1,5 @@
 import axios from "axios"
 
-export const getMovie = async (imdb_id) => {
-	console.log("Getting specific movie")
-	let request = {
-		url: "https://yts.torrentbay.to/api/v2/movie_details.json",
-		method: "get",
-		headers: {
-			'Access-Control-Allow-Origin': '*',
-			"Content-type"               : "application/json",
-		},
-        params: {
-			"imdb_id"     : imdb_id,
-			"with_images" : true,
-			"with_cast"   : true,
-        }
-	};
-
-	const response = await axios(request);
-	return response;
-}
-
-
 export const get_movie_by_imdb_id = async (imdb_id, token) => {
 	console.log("Getting specific movie details")
 	let request = {
@@ -35,40 +14,6 @@ export const get_movie_by_imdb_id = async (imdb_id, token) => {
 
 	const response = await axios(request);
 	console.log("got movie details: ", response.data)
-	return response;
-}
-
-
-export const getMovies = async (form, page, limit) => {
-	console.log("Getting list of movies");
-	var genre = ""
-	var category = ""
-	if (form.genre) {
-		genre = form.genre[0];
-	}
-	if (form.sort_category) {
-		category = form.sort_category[0];
-	}
-	let request = {
-		url: "https://yts.torrentbay.to/api/v2/list_movies.json",
-		method: "get",
-		headers: {
-			'Access-Control-Allow-Origin': '*',
-			"Content-type"               : "application/json",
-		},
-        params: {
-			"page" : page,
-			"minimum_rating" : form.min_rating,
-			"query_term" : form.title,
-			"genre" : genre,
-			"sort_by" : category,
-			'quality' : form.quality,
-			'order_by' : form.order_by,
-			"limit"   : limit,
-		}
-	};
-
-	const response = await axios(request);
 	return response;
 }
 
@@ -105,6 +50,26 @@ export const getMoviesNew = async (form, page, limit, token) => {
 
 	const response = await axios(request);
 	console.log("response dans front: ", response)
+	return response;
+}
+
+// JUST A TEST
+export const get_all_movies = async (source, token) => {
+	console.log("Getting all movies from : ", source);
+	let request = {
+		url: `http://127.0.0.1:8071/api/movies/populate`,
+		method: "get",
+		headers: {
+			'Access-Control-Allow-Origin': '*',
+			"Content-type"               : "application/json",
+			'Authorization'				 : `Bearer ${token}`
+		},
+        params: {
+			"source" : source,
+		}
+	};
+
+	const response = await axios(request);
 	return response;
 }
 

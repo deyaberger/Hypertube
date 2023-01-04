@@ -3,7 +3,7 @@ import SearchBar from '../components/Search_bar.vue'
 import SearchResults from '../components/Search_results.vue'
 import { mapState, useStore } from 'vuex';
 import textContent from "../assets/language_dict/language_dict.json"
-import { getMovies, getMoviesNew, parseMovies } from "../functions/get_movies"
+import { getMoviesNew, parseMovies } from "../functions/get_movies"
 
 export default {
 	components: {

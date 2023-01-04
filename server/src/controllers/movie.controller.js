@@ -46,6 +46,20 @@ module.exports = (db_pool) => {
             catch (e) {
                 throw(e)
             }
+        },
+
+
+		get_all_movies : async (req, res) => {
+            try {
+                console.log("searching movies all")
+                let source = req.query.source
+                let infos = await movie_functions.search_all_movies(source)
+                res.status(200).send(infos)
+            }
+            catch (e) {
+                throw(e)
+            }
         }
+
     }
 }
