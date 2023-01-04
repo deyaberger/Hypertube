@@ -1,6 +1,20 @@
 const axios = require('axios')
 const { remove_duplicates: remove_duplicates } = require('../utils/parse_movies')
 
+const get_resquest = async(params) => {
+	let request = {
+		url: 'https://yts.torrentbay.to/api/v2/list_movies.json',
+		method: "get",
+		headers: {
+			'Access-Control-Allow-Origin': '*',
+			"Content-type"               : "application/json",
+		},
+		params: params
+	}
+	const response = await axios(request);
+	return response;
+}
+
 module.exports = (db_pool) => {
     return {
         get_movie_by_yts_id: async (yts_movie_id) => {
@@ -81,5 +95,67 @@ module.exports = (db_pool) => {
 
             return response;
         }
+
+
+		
+
+		// search_movies : async (query_term, minimum_rating, genre, quality, sort_by, page, limit, order_by) => {
+        //     params = {"page" : 1};
+		// 	let response = await get_resquest(params);
+		// 	let data = response.data.data;
+		// 	const goal = data.movie_count;
+		// 	let results = 0;
+		// 	let page_nb = 1;
+		// 	let pages = [];
+		// 	const fs = require('fs')
+		// 	let errors = []
+		// 	while (results < goal) {
+		// 		console.log("page_nb: ", page_nb);
+		// 		params = {"page" : page_nb};
+		// 		try {
+		// 			let response = await get_resquest(params);
+		// 			let data = response.data.data;
+		// 			pages.push(data);
+		// 			results += data.movies.length;
+		// 			console.log("results: ", results, "/", goal);
+		// 			page_nb += 1;
+		// 			fs.writeFile('./movies.json', final_data, err => {
+		// 				if (err) {
+		// 				  throw err
+		// 				}
+		// 				console.log('JSON data is saved.')
+		// 			  })
+		// 		}
+		// 		catch {
+		// 			console.log('skipping page ****** : ', page_nb);
+		// 			errors.push(page_nb);
+		// 			page_nb += 1;
+		// 		}
+		// 	}
+
+		// 	const final_data = JSON.stringify(pages);
+		// 	const final_errors = JSON.stringify(errors);
+		// 	fs.writeFile('./movies.json', final_data, err => {
+		// 		if (err) {
+		// 		  throw err
+		// 		}
+		// 		console.log('JSON data is saved.')
+		// 	  })
+		// 	fs.writeFile('./errors.json', final_errors, err => {
+		// 	if (err) {
+		// 		throw err
+		// 	}
+		// 	console.log('JSON data is saved.')
+		// 	})
+			  
+
+
+
+		// 	// console.log("THIS IS THE RESPNSE: ", response)
+        //     // response = response.data.data
+		// 	response  = null;
+
+        //     return response;
+        // }
     }
 }
