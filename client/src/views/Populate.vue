@@ -21,7 +21,7 @@ export default {
 			this.minutes = Math.round(this.time / 60) % (60 * 60)
 			this.hours = Math.round(this.time / (60 * 60))
 		},
-		async Populate(source) {
+		async fetch_data(source) {
 			this.yts_total = 0;
 			this.yts_count = 0;
 			const start = Date.now();
@@ -33,10 +33,8 @@ export default {
 			catch(e) {
 				console.log(i)
 			}
-			let i = 230;
-			if (i > 1) {
-				this.yts_count = (20 * i)
-			}
+			let i = 1;
+			this.yts_count = (20 * (i - 1))
 			while (this.yts_count < this.yts_total) {
 				let res = await get_all_movies(source, i);
 				try {
@@ -55,6 +53,9 @@ export default {
 			this.yts_on = false;
 			console.log("Stoped at page: ", i)
 		}
+		async add_to_db(source) {
+			let res = await add_json_to_db(source);
+		}
 	}
 }
 </script>
@@ -63,12 +64,15 @@ export default {
   <div class="container homemade-container">
       <h2 class="mb-4 text-center">Populate DB:</h2>
       <div class="col-md-12 text-center mt-4">
-        <button class="submit_button" @click="Populate('yts')">YTS</button>
+        <button class="submit_button" @click="fetch_data('yts')">FETCH YTS data</button>
 		<p v-if="yts_on || yts_done" class="mt-4">Fetching data: {{yts_count}} / {{yts_total}}
 			<span v-if="yts_done"><b-icon-check class="h2 green" variant="success"/></span>
 			<span v-else><b-spinner variant="success"></b-spinner></span>
 		</p>
 		<p v-if="yts_on || yts_done">Time Spent:{{hours}}:{{minutes}}:{{seconds}}</p>
+      </div>
+	  <div class="col-md-12 text-center mt-4">
+        <button class="submit_button" @click="add_to_db('yts')">Add YTS to BDD</button>
       </div>
   </div>
 

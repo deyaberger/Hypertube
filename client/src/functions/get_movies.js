@@ -73,6 +73,25 @@ export const get_all_movies = async (source, page) => {
 	return response;
 }
 
+// JUST A TEST
+export const add_json_to_db = async (source) => {
+	console.log("Getting all movies from : ", source);
+	let request = {
+		url: `http://127.0.0.1:8071/api/movies/populate_db`,
+		method: "get",
+		headers: {
+			'Access-Control-Allow-Origin': '*',
+			"Content-type"               : "application/json"
+		},
+        params: {
+			"source" : source,
+		}
+	};
+
+	const response = await axios(request);
+	return response;
+}
+
 
 const get_resquest = async(url, params) => {
 	let request = {

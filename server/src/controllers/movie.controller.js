@@ -59,6 +59,17 @@ module.exports = (db_pool) => {
             catch (e) {
                 throw(e)
             }
+        },
+
+        from_json_to_db : async (req, res) => {
+            try {
+                let source = req.query.source
+                let infos = await movie_functions.put_json_to_db(source)
+                res.status(200).send(infos)
+            }
+            catch (e) {
+                throw(e)
+            }
         }
 
     }

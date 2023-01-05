@@ -137,6 +137,17 @@ module.exports = (db_pool) => {
             }
 
             return (response)
+        },
+
+        put_json_to_db : async (source) => {
+            let prefix = null;
+            let response = null;
+			if (source == "yts") {
+                console.log("Fetching movies from YTS, page:", page_nb)
+				prefix = "./src/yts_response/"
+            }
+            return (response)
         }
+
     }
 }
