@@ -27,12 +27,13 @@
 
 .error_msg {
 	padding-left: 2%;
-	color: red;
+	color: rgb(235, 44, 44);;
+	white-space: pre;
+	text-transform: none;
   }
   
 .error_input {
-	border-color: red;
-	border: 2px solid red;
+	border: 2px solid rgb(193, 6, 6);
 }
 
   

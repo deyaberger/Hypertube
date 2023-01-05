@@ -2,6 +2,7 @@
   "name": "hypertube2",
   "version": "0.0.0",
   "scripts": {
+    "start": "vite",
     "dev": "vite",
     "build": "run-p type-check build-only",
     "preview": "vite preview --port 4173",
@@ -20,7 +21,8 @@
     "vue-tweet": "^2.0.2",
     "vue3-cookies": "^1.0.6",
     "vue3-star-ratings": "^1.1.0",
-    "vuex": "^4.0.2"
+    "vuex": "^4.0.2",
+    "vuex-persistedstate": "^4.1.0"
   },
   "devDependencies": {
     "@braid/vue-formulate": "^2.5.3",

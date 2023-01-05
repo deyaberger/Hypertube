@@ -1,6 +1,5 @@
 <script>
 import { mapState }      from 'vuex';
-import check_signup_form from "../stores/login_validation"
 import textContent       from "../assets/language_dict/language_dict.json"
 import NetworkButtons    from "../components/Networks_buttons.vue"
 import { signup }        from '../functions/auth'
@@ -12,23 +11,23 @@ export default {
 
 	data() {
 		return {
-			visible: false,
-			text_content : textContent.SIGNUP,
-			username  : '',
-			firstname : '',
-			lastname  : '',
-			email     : '',
-			password  : '',
+			visible          : false,
+			text_content     : textContent.SIGNUP,
+			username         : '',
+			firstname        : '',
+			lastname         : '',
+			email            : '',
+			password         : '',
+			username_error   : false,
+			firstname_error  : false,
+			lastname_error   : false,
+			email_error      : false,
+			mdp_error        : false,
+			connection_error : false
 		}
 	},
 
 	computed: mapState({
-		username_error  : state => state.username_error,
-		firstname_error : state => state.firstname_error,
-		lastname_error  : state => state.lastname_error,
-		email_error     : state => state.email_error,
-		mdp_error       : state => state.mdp_error,
-		connection_error: state => state.connection_error,
 		lang_nb		    : state => state.lang_nb
 	}),
 
@@ -50,12 +49,28 @@ export default {
 				"connect_with_42"      : false,
 				"connect_with_twitter" : false,
 			}
-			const sign_in_res = check_signup_form(form);
-			let res = await signup(this.username, this.firstname, this.lastname, this.email, this.password)
-			console.log("signup res: %o", res)
-			if (!sign_in_res.connection_error) {
-				console.log("ALL good") /* Connect to website */
-				console.log(form)
+			try {
+				let sign_up_res = await signup(form)
+				console.log("sign_up res: ", sign_up_res)
+				if (sign_up_res.status == 200) {
+					console.log("Adding token to cookies")
+					this.$cookies.set('token', sign_up_res.data.token)
+					this.$store.commit('SET_CONNECTION', true)
+					this.$router.push('/search')
+				}
+				else {
+					this.connection_error = true
+					this.username_error = sign_up_res.data.username_error
+					this.firstname_error = sign_up_res.data.firstName_error
+					this.lastname_error = sign_up_res.data.lastName_error
+					this.email_error = sign_up_res.data.mail_error
+					this.mdp_error = sign_up_res.data.password_error
+					console.log("error in signup")
+				}
+			}
+			catch (e) {
+				this.connection_error = true
+				console.log("error in signup: \n", e)
 			}
 		},
 	},
@@ -134,6 +149,7 @@ export default {
 					</span>
 				</div>
 				<p class="error_msg" v-show="mdp_error">{{text_content.error_pwd[lang_nb]}}</p>
+
 			</div>
 			<div class="col-md-12 text-center mt-5">
 				<p class="error_msg" v-show="connection_error">{{text_content.error_co[lang_nb]}}</p>

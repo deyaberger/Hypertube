@@ -1,0 +1,1 @@
+- check if string are sortable: for torrent quality for example, or image size

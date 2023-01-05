@@ -1,6 +1,5 @@
 <script>
 import { mapState } from 'vuex';
-import check_sign_in_form from "../stores/login_validation"
 import textContent from "../assets/language_dict/language_dict.json"
 import NetworkButtons from "../components/Networks_buttons.vue"
 import { signin }        from '../functions/auth'
@@ -13,11 +12,11 @@ export default {
 
 	data() {
 		return {
-		visible: false,
-		username: '',
-		password: '',
-		connection_error : false,
-		text_content : textContent.SIGNIN
+			visible: false,
+			username: '',
+			password: '',
+			connection_error : false,
+			text_content : textContent.SIGNIN
 		}
 	},
 
@@ -37,15 +36,25 @@ export default {
 				"username" : this.username,
 				"password" : this.password
 			}
-      try {
-        let sign_in_res = await signin(this.username, this.password)
-        console.log("signin response: ", sign_in_res)
-        this.$cookies.set('token', sign_in_res.data.token)
+			try {
+				let sign_in_res = await signin(form)
+				console.log("Sign in res:", sign_in_res)
+				if (sign_in_res.status == 200) {
+					console.log("Adding token to cookies")
+					this.$cookies.set('token', sign_in_res.data.token)
+					this.$store.commit('SET_CONNECTION', true)
+					this.$router.push('/search')
+				}
+				else {
+					this.connection_error = true
+					console.log("error in signin")
+				}
 			}
-      catch (e) {
-        console.log("error in signin: \n", e)
-      }
-    }
+			catch (e) {
+				this.connection_error = true
+				console.log("error in signin: \n", e)
+			}
+		}
 
 	},
 }

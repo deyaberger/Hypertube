@@ -7,6 +7,8 @@ import Search from "../views/Search.vue";
 import Profile from "../views/Profile.vue";
 import SingleMovie from "../views/Single_movie.vue";
 import Edit_profile from "../views/Edit_profile.vue";
+import Populate from "../views/Populate.vue";
+
 
 
 const router = createRouter({
@@ -58,6 +60,12 @@ const router = createRouter({
 		props: true,
 		component: SingleMovie,
 	},
+	{
+		path: "/populate",
+		name: "populate",
+		component: Populate,
+	},
+	
   ]
 })
 
