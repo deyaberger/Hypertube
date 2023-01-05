@@ -51,9 +51,9 @@ module.exports = (db_pool) => {
 
 		get_all_movies : async (req, res) => {
             try {
-                console.log("searching movies all")
                 let source = req.query.source
-                let infos = await movie_functions.search_all_movies(source)
+                let page = req.query.page
+                let infos = await movie_functions.search_all_movies(source, page)
                 res.status(200).send(infos)
             }
             catch (e) {

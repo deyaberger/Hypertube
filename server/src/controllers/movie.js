@@ -42,7 +42,7 @@ module.exports = (db_pool) => {
                     "with_cast"   : true,
                 }
             };
-        
+
             const response = await axios(request);
             return response;
         },
@@ -71,7 +71,7 @@ module.exports = (db_pool) => {
 
             return response;
         },
-        
+
         search_movies : async (query_term, minimum_rating, genre, quality, sort_by, page, limit, order_by) => {
             let request = {
                 url: "https://yts.torrentbay.to/api/v2/list_movies.json",
@@ -106,47 +106,37 @@ module.exports = (db_pool) => {
             return response;
         },
 
-		
 
 
-		search_all_movies : async (source) => {
-			console.log("loooooool")
+
+		search_all_movies : async (source, page_nb) => {
 			let url = null;
+            let response = null;
 			if (source == "yts") {
-				url = "https://yts.torrentbay.to/api/v2/list_movies.json"            
+                console.log("Fetching movies from YTS, page:", page_nb)
+				url = "https://yts.torrentbay.to/api/v2/list_movies.json"
             }
-			let page_nb = 1;
-			let count = 0;
-			let total = 0;
-			while (page_nb < 2) {
-				let request = create_request(url, {"page" : page_nb});
-				let response = await axios(request);
-				let data = response.data.data
-				count += data.movies.length;
-				total = data.movie_count;
-				for (let index in data.movies) {
-					let movie = data.movies[index]
-					try {
-						let movie_post  = await post_movie(
-							db_pool,
-							movie.imdb_code,
-							movie.title,
-							movie.rating,
-							movie.year,
-							"romantique",
-							movie.large_cover_image
-							)
-						console.log("movie_post : ", movie_post)
-					}
-					catch(e) {
-						console.log("skipping: ", e)
-					}
+            var fs = require('fs');
+            let request = create_request(url, {"page" : page_nb});
+            try {
+                response = await axios(request);
+                response = response.data.data;
+                var file_path = "./src/yts_response/yts_page" + page_nb + ".json"
+                fs.writeFile(file_path, JSON.stringify(response), function(err) {
+                    if (err) {
+                        console.log(err);
+                    }
+                });
+            }
+            catch(e) {
+                let data_to_append = JSON.stringify({"page_nb" : page_nb, "type" : "req error", "msg" : e, "res" : response})
+                fs.appendFile('./src/yts_response/log.txt', data_to_append, function (err) {
+                    if (err) throw err;
+                    console.log('Saved!');
+                  });
+            }
 
-				}
-				page_nb += 1;
-			}
-			response = {"total" : total, "pages_done" : page_nb, "count" : count}
-            return response;
+            return (response)
         }
     }
 }

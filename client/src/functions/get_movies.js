@@ -54,18 +54,18 @@ export const getMoviesNew = async (form, page, limit, token) => {
 }
 
 // JUST A TEST
-export const get_all_movies = async (source, token) => {
+export const get_all_movies = async (source, page) => {
 	console.log("Getting all movies from : ", source);
 	let request = {
 		url: `http://127.0.0.1:8071/api/movies/populate`,
 		method: "get",
 		headers: {
 			'Access-Control-Allow-Origin': '*',
-			"Content-type"               : "application/json",
-			'Authorization'				 : `Bearer ${token}`
+			"Content-type"               : "application/json"
 		},
         params: {
 			"source" : source,
+			"page"   : page,
 		}
 	};
 

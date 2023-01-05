@@ -12,3 +12,8 @@ cd client && \
 npm i && \
 npm start
 ```
+
+# On your own machine :
+```
+docker volume create hyper-db
+```

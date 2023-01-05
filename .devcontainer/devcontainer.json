@@ -11,10 +11,10 @@
 	"runArgs": [
 		"-u",
 		"root",
-		"--network",
-		"host",
-		// "-p", 
-		// "6666:3306"
+		// "--network",
+		// "host"
+		"-p",
+		"6666:3306"
 		// "-v",
 		// "hypertube-db:/etc/hypdb"
 	],
