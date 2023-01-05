@@ -61,10 +61,11 @@ module.exports = (db_pool) => {
             }
         },
 
-        from_json_to_db : async (req, res) => {
+        from_json_to_db : (req, res) => {
             try {
                 let source = req.query.source
-                let infos = await movie_functions.put_json_to_db(source)
+                let page = req.query.page
+                let infos = movie_functions.put_json_to_db(source, page)
                 res.status(200).send(infos)
             }
             catch (e) {

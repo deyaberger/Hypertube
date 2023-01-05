@@ -139,14 +139,48 @@ module.exports = (db_pool) => {
             return (response)
         },
 
-        put_json_to_db : async (source) => {
+        parse_movie_data : (data) => {
+            var yts_id = data.hasOwnProperty("id") ? data.id : null;
+            var imbd_code = data.hasOwnProperty("imdb_code") ? data.imdb_code : null;
+            var title = data.hasOwnProperty("title") ? data.title : null;
+            var imbd_rate = data.hasOwnProperty("imbd_rate") ? data.imbd_rate : 0;
+            var year = data.hasOwnProperty("year") ? data.year : null;
+            var runtime = data.hasOwnProperty("runtime") ? data.runtime : 0;
+            var language = data.hasOwnProperty("language") ? data.language : "eng";
+            var summary = data.hasOwnProperty("summary") ? data.summary : "Summary unavailable";
+            var image_1 = data.hasOwnProperty("image_1") ? data.image_1 : null;
+            var image_2 = data.hasOwnProperty("image_2") ? data.image_2 : null;
+            var image_3 = data.hasOwnProperty("image_3") ? data.image_3 : null;
+
+        },
+
+        post_movie : async (yts_id, imbd_code, title, imbd_rate, year, time_minute, language, summary, image_1, image_2, image_3) => {
+            [movie, ] = await db_pool.query("\
+            INSERT INTO movies_info ((id, yts_id, imbd_code, title, imbd_rate, year, time_minute, language, summary, image_1, image_2, image_3)) \
+            VALUES               (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);",
+            [(yts_id, imbd_code, title, imbd_rate, year, time_minute, language, summary, image_1, image_2, image_3)])
+
+            return movie
+        },
+
+        put_json_to_db : (source, page_nb) => {
             let prefix = null;
-            let response = null;
+            let data = null;
+            var fs = require('fs');
 			if (source == "yts") {
-                console.log("Fetching movies from YTS, page:", page_nb)
-				prefix = "./src/yts_response/"
+                console.log("Adding data to DB, page:", page_nb)
+				prefix = "./src/yts_response/yts_page"
+                file_path = prefix + page_nb + ".json"
+                fs.readFile(file_path, 'utf8', function(err, data){
+                        data = JSON.parse(data)
+                        for (let movie in data.movies) {
+                            movie_res =  post_movie(movie)
+                        }
+                        // data = JSON.stringify(data, null, 4)
+                        console.log("DATA read from file: ", data)
+                });
             }
-            return (response)
+            return (data)
         }
 
     }

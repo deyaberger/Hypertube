@@ -4,6 +4,8 @@ service mysql start && \
 ```
 ```
 cd server && \
+mkdir src/yts_response/ \
+touch src/yts_response/log.txt \
 npm i && \
 npm start
 ```

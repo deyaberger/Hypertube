@@ -55,7 +55,7 @@ export const getMoviesNew = async (form, page, limit, token) => {
 
 // JUST A TEST
 export const get_all_movies = async (source, page) => {
-	console.log("Getting all movies from : ", source);
+	console.log("Getting all movies from : ", source, ", page:", page);
 	let request = {
 		url: `http://127.0.0.1:8071/api/movies/populate`,
 		method: "get",
@@ -74,8 +74,8 @@ export const get_all_movies = async (source, page) => {
 }
 
 // JUST A TEST
-export const add_json_to_db = async (source) => {
-	console.log("Getting all movies from : ", source);
+export const add_json_to_db = async (source, page) => {
+	console.log("Getting all movies from : ", source, ", page:", page);
 	let request = {
 		url: `http://127.0.0.1:8071/api/movies/populate_db`,
 		method: "get",
@@ -85,6 +85,7 @@ export const add_json_to_db = async (source) => {
 		},
         params: {
 			"source" : source,
+			"page"   : page,
 		}
 	};
 
