@@ -14,7 +14,9 @@ export default {
 			hours                 : 0,
 			db_on                 : false,
 			db_done               : false,
+			db_error			  : false,
 			current_page		  : 1,
+			db_stop				  : false,
 		}
 	},
 	methods: {
@@ -57,19 +59,49 @@ export default {
 			console.log("Stoped at page: ", this.current_page - 1)
 		},
 
+		Stop(source) {
+			this.stop = true;
+		},
+
 
 		async add_to_db(source) {
+			this.stop = false;
+			this.db_error = false;
 			this.db_on = true;
 			this.db_done = false;
+			let duplicates = 0;
+			let missing_file = 0;
 			this.current_page = 1;
-			this.total_pages = 3;
-			for (this.current_page; this.current_page < this.total_pages; this.current_page++) {
+			// this.current_page = 2221;
+			// this.total_pages = 3;
+			this.total_pages = 2368;
+			const start = Date.now();
+			for (this.current_page; this.current_page < this.total_pages + 1; this.current_page++) {
+				console.log("SENDING SOMEHTING:")
 				let res = await add_json_to_db(source, this.current_page);
+				if (res == null || res.status != 200) {
+					this.db_error = true;
+					break;
+				}
+				if (this.stop == true) {
+					break;
+				}
+				if (res.data.msg == "duplicate") {
+					duplicates += 1;
+				}
+				else if (res.data.msg == "missing_file") {
+					missing_file += 1;
+				}
+				this.get_time_spent(start);
 			}
-			let res = await add_json_to_db(source, this.current_page);
+			this.get_time_spent(start);
+			console.log("Duplicates: ", duplicates);
+			console.log("missing_file: ", missing_file);
 			this.db_on = false;
 			this.db_done = true;
+
 		}
+
 	}
 }
 </script>
@@ -86,11 +118,18 @@ export default {
 		<p v-if="yts_on || yts_done">Time Spent:{{hours}}:{{minutes}}:{{seconds}}</p>
       </div>
 	  <div class="col-md-12 text-center mt-4">
-        <button class="submit_button" @click="add_to_db('yts')">Add YTS to BDD</button>
-		<p v-if="db_on || db_done" class="mt-4">Putting data to db: {{current_page}} / {{total_pages}}
-			<span v-if="db_done"><b-icon-check class="h2 green" variant="success"/></span>
-			<span v-else><b-spinner variant="success"></b-spinner></span>
+        <button class="submit_button" @click="add_to_db('yts')" v-if="!db_on">
+			Add YTS to BDD
+		</button>
+		<button class="submit_button" @click="Stop('yts')" v-else>
+			Stop
+		</button>
+		<p v-if="db_on || db_done" class="mt-4">Putting data to db: {{current_page - 1}} / {{total_pages}}
+			<span v-if="db_done && !db_error"><b-icon-check class="h2 green" variant="success"/></span>
+			<span v-if="!db_done && !db_error"><b-spinner variant="success"></b-spinner></span>
+			<span v-if="db_error"><b-icon-exclamation-circle-fill class="red" variant="danger"></b-icon-exclamation-circle-fill></span>
 		</p>
+		<p v-if="db_on || db_done || db_error">Time Spent:{{hours}}:{{minutes}}:{{seconds}}</p>
       </div>
   </div>
 </template>
@@ -101,6 +140,10 @@ export default {
 
 .green {
 	color: rgb(12, 198, 12);
+}
+
+.red {
+	color: red
 }
 
 .container {
