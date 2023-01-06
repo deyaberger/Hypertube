@@ -1,5 +1,5 @@
 <script>
-import { get_all_movies, add_json_to_db } from "../functions/get_movies"
+import { get_all_movies, add_json_to_db } from "../functions/populate_db.js"
 
 export default {
 	data() {
@@ -13,7 +13,8 @@ export default {
 			minutes               : 0,
 			hours                 : 0,
 			db_on                 : false,
-			db_done               : false
+			db_done               : false,
+			current_page		  : 1,
 		}
 	},
 	methods: {
@@ -29,17 +30,17 @@ export default {
 			const start = Date.now();
 			this.yts_movie_count = 0;
 			this.yts_currently_fetched = 0;
-			let current_page = 1;
+			this.current_page = 1;
 
 			this.yts_on = true;
 			let res = await get_all_movies(source, 1);
 			this.yts_movie_count = res.data.movie_count;
 
 
-			this.yts_currently_fetched = (20 * (current_page - 1))
+			this.yts_currently_fetched = (20 * (this.current_page - 1))
 			this.yts_movie_count = 50; // TO DELETE
 			while (this.yts_currently_fetched < this.yts_movie_count) {
-				let res = await get_all_movies(source, current_page);
+				let res = await get_all_movies(source, this.current_page);
 				try {
 					this.yts_currently_fetched += res.data.movies.length;
 				}
@@ -48,24 +49,24 @@ export default {
 					break;
 				}
 				this.get_time_spent(start);
-				current_page += 1;
+				this.current_page += 1;
 			}
 			this.get_time_spent(start);
 			this.yts_done = true;
 			this.yts_on = false;
-			console.log("Stoped at page: ", current_page - 1)
+			console.log("Stoped at page: ", this.current_page - 1)
 		},
 
 
 		async add_to_db(source) {
 			this.db_on = true;
 			this.db_done = false;
-			let current_page = 1;
+			this.current_page = 1;
 			this.total_pages = 3;
-			for (current_page; current_page < this.total_pages; current_page++) {
-				let res = await add_json_to_db(source, current_page);
+			for (this.current_page; this.current_page < this.total_pages; this.current_page++) {
+				let res = await add_json_to_db(source, this.current_page);
 			}
-			let res = await add_json_to_db(source, current_page);
+			let res = await add_json_to_db(source, this.current_page);
 			this.db_on = false;
 			this.db_done = true;
 		}

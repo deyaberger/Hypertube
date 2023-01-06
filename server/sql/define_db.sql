@@ -1,4 +1,4 @@
-create table hyperdb.movies
+create table movies
 (
     id             mediumint auto_increment
         primary key,
@@ -18,7 +18,7 @@ create table hyperdb.movies
         unique (yts_id)
 );
 
-create table hyperdb.genres
+create table genres
 (
     id       mediumint auto_increment
         primary key,
@@ -27,11 +27,11 @@ create table hyperdb.genres
     constraint id
         unique (id),
     constraint genres_movies_id_fk
-        foreign key (movie_id) references hyperdb.movies (id)
+        foreign key (movie_id) references movies (id)
             on update cascade on delete cascade
 );
 
-create table hyperdb.images
+create table images
 (
     id       mediumint auto_increment
         primary key,
@@ -41,11 +41,11 @@ create table hyperdb.images
     constraint id
         unique (id),
     constraint images_movies_id_fk
-        foreign key (movie_id) references hyperdb.movies (id)
+        foreign key (movie_id) references movies (id)
             on update cascade on delete cascade
 );
 
-create table hyperdb.torrents
+create table torrents
 (
     id         mediumint auto_increment
         primary key,
@@ -64,11 +64,11 @@ create table hyperdb.torrents
     constraint url
         unique (url),
     constraint torrents_movies_id_fk
-        foreign key (movie_id) references hyperdb.movies (id)
+        foreign key (movie_id) references movies (id)
             on update cascade on delete cascade
 );
 
-create table hyperdb.users
+create table users
 (
     id         mediumint auto_increment
         primary key,
@@ -89,7 +89,7 @@ create table hyperdb.users
         unique (username)
 );
 
-create table hyperdb.comments
+create table comments
 (
     id       int auto_increment
         primary key,
@@ -100,14 +100,14 @@ create table hyperdb.comments
     constraint comments_id_uindex
         unique (id),
     constraint comments_movie_fk
-        foreign key (movie_id) references hyperdb.movies (id)
+        foreign key (movie_id) references movies (id)
             on update cascade on delete cascade,
     constraint comments_user_fk
-        foreign key (user_id) references hyperdb.users (id)
+        foreign key (user_id) references users (id)
             on update cascade on delete cascade
 );
 
-create table hyperdb.favorite_movies
+create table favorite_movies
 (
     id       mediumint auto_increment
         primary key,
@@ -118,14 +118,14 @@ create table hyperdb.favorite_movies
     constraint no_duplicate_favorites
         unique (movie_id, user_id),
     constraint favorite_movies_movies_id_fk
-        foreign key (movie_id) references hyperdb.movies (id)
+        foreign key (movie_id) references movies (id)
             on update cascade on delete cascade,
     constraint favorite_movies_users_id_fk
-        foreign key (user_id) references hyperdb.users (id)
+        foreign key (user_id) references users (id)
             on update cascade on delete cascade
 );
 
-create table hyperdb.follows
+create table follows
 (
     id          mediumint auto_increment
         primary key,
@@ -136,24 +136,24 @@ create table hyperdb.follows
     constraint no_duplicate_follows
         unique (followed_id, follower_id),
     constraint follows_followed_fk
-        foreign key (followed_id) references hyperdb.users (id)
+        foreign key (followed_id) references users (id)
             on update cascade on delete cascade,
     constraint follows_follower_fk
-        foreign key (follower_id) references hyperdb.users (id)
+        foreign key (follower_id) references users (id)
             on update cascade on delete cascade
 );
 
-create table hyperdb.reset_pass
+create table reset_pass
 (
     user_id      mediumint                           null,
     id_hash      varchar(300)                        null,
     last_updated timestamp default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP,
     constraint user_reset___fk
-        foreign key (user_id) references hyperdb.users (id)
+        foreign key (user_id) references users (id)
             on delete cascade
 );
 
-create table hyperdb.watched_movies
+create table watched_movies
 (
     id       mediumint auto_increment
         primary key,
@@ -164,10 +164,10 @@ create table hyperdb.watched_movies
     constraint no_duplicate_watches
         unique (movie_id, user_id),
     constraint watched_movies_movies_id_fk
-        foreign key (movie_id) references hyperdb.movies (id)
+        foreign key (movie_id) references movies (id)
             on update cascade on delete cascade,
     constraint watched_movies_users_id_fk
-        foreign key (user_id) references hyperdb.users (id)
+        foreign key (user_id) references users (id)
             on update cascade on delete cascade
 );
 
