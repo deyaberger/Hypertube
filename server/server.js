@@ -44,6 +44,8 @@ const torrent_router = require("./src/routes/torrent.routes")(connection_pool)
 app.use("/api/torrent", torrent_router)
 
 
+const populate_router = require("./src/routes/populate.routes")(connection_pool)
+app.use("/api/populate", populate_router)
 
 
 
