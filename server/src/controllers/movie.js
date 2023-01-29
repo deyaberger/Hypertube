@@ -48,27 +48,38 @@ module.exports = (db_pool) => {
             return response;
         },
 
-        search_movies : async (query_term, minimum_rating, genre, quality, min_year, max_year, language, order_by, asc_or_desc) => {
+        search_movies : async (searching_user_id, query_term, minimum_rating, genre, quality, min_year, max_year, language, order_by, asc_or_desc) => {
+            order_by       = order_by       ? order_by       : 'max_seeds'
+            asc_or_desc    = asc_or_desc    ? asc_or_desc    : 'ASC'
+            genre          = genre          ? genre          : '%',
+            quality        = quality        ? quality        : '%',
+            minimum_rating = minimum_rating ? minimum_rating : 0,
+            min_year       = min_year       ? min_year       : 0,
+            max_year       = max_year       ? max_year       : 10000,
+            language       = language       ? language       : '%',
+            query_term     = query_term     ? query_term     : ''
+
             console.log("Searching movies: ", {
                 query_term    : query_term,
                 minimum_rating: minimum_rating ,
                 genre         : genre ,
+                min_year      : min_year,
+                max_year      : max_year,
                 quality       : quality ,
                 order_by      : order_by,
                 asc_or_desc   : asc_or_desc
             })
-            order_by ? order_by : 'max_seeds'
-            asc_or_desc ? asc_or_desc : 'ASC'
             try {
                 let [movies, ] = await db_pool.query(`
-                SELECT movies.id, yts_id, imdb_code, title, imdb_rating, year, length_minutes, language, summary, MAX(torrents.seeds) as max_seeds, count(favorite_movies.id) as fav
+                WITH genres_agg AS (SELECT movie_id, json_arrayagg(genres.name) as genres_list from genres GROUP BY movie_id)
+                SELECT movies.id, yts_id, imdb_code, title, imdb_rating, year, length_minutes, language, summary, genres_list, MAX(torrents.seeds) as max_seeds, MAX(torrents.quality) as max_quality
                     FROM movies
                 
-                    LEFT JOIN genres
+                    INNER JOIN genres
                         ON movies.id = genres.movie_id
                         AND genres.name LIKE ?
                 
-                    LEFT JOIN torrents
+                    INNER JOIN torrents
                         ON movies.id = torrents.movie_id
                         AND torrents.quality LIKE ?
                 
@@ -76,16 +87,19 @@ module.exports = (db_pool) => {
                         ON movies.id = favorite_movies.movie_id
                         AND favorite_movies.user_id = ?
 
+                    LEFT JOIN genres_agg
+                        ON movies.id = genres_agg.movie_id
+                
                     WHERE imdb_rating >= ?
                         AND year >= ?
                         AND year <= ?
-                        AND language = ?
+                        AND language LIKE ?
                         AND LOWER(title) LIKE LOWER('%?%')
-                    GROUP BY movies.id
-                ORDER BY ${order_by} ${asc_or_desc}
+                    GROUP BY movies.id, imdb_rating
+                ORDER BY ${order_by} ${asc_or_desc};
                 `, [genre          ? genre          : '%',
                     quality        ? quality        : '%',
-                    req.user_id,
+                    searching_user_id,
                     minimum_rating ? minimum_rating : 0,
                     min_year       ? min_year       : 0,
                     max_year       ? max_year       : 10000,
