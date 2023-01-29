@@ -1,6 +1,12 @@
 # Api endpoints
 
-All api endpoints are prefixed with `/api`
+All api endpoints are prefixed with `/api`.  
+All calls that require auth can return error codes / messages present in `/auth/get_id`.  
+**Required Headers for endpoints demanding auth :**
+
+```js
+'Authorization' : 'Bearer TOKEN'
+```
 
 ## [`/auth`](./api/auth.md)
 
@@ -8,7 +14,7 @@ All api endpoints are prefixed with `/api`
 - `/signin`
 - `/forgot_pass/:mail`
 - `/reset_pass`
-- `/getid`
+- `/get_id`
 
 
 ## [`/movies`](./api/movies.md)

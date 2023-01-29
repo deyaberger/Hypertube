@@ -52,7 +52,7 @@ Auth required: `False`
 
 
 ****
-## `/forgotpass/:mail`
+## `/forgot_pass/:mail`
 
 Request a password reset, get a link by mail.
 
@@ -71,7 +71,7 @@ Information (**hash code** required for reset)is sent to the mail address.
 
 
 ****
-## `/resetpass`
+## `/reset_pass`
 
 Reset password.
 
@@ -83,7 +83,7 @@ Method: `POST`
 - hash (hash from `forgotpass`)
 
 ****
-## `/getid`
+## `/get_id`
 
 Method: `GET`  
 Auth required: `True`  
@@ -102,3 +102,8 @@ Auth required: `True`
 }
 ```
 
+**Status codes**:
+
+- 200 : OK
+- 401 : Missing token
+- 403 : Error decoding token
