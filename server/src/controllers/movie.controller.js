@@ -4,10 +4,8 @@ module.exports = (db_pool) => {
     return {
         get_homepage : async (req, res) => {
             try {
-                let page = Number(req.params.page)
-                let limit = 20
-                let movies = await movie_functions.search_movies(undefined, undefined, undefined, undefined, 'download_count', page, limit, 'desc')
-
+                let movies = await movie_functions.get_movies_homepage()
+                console.log("got movies",movies)
                 res.status(200).send(movies)
             }
             catch (e) {
