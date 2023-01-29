@@ -3,7 +3,7 @@ import SearchBar from '../components/Search_bar.vue'
 import SearchResults from '../components/Search_results.vue'
 import { mapState, useStore } from 'vuex';
 import textContent from "../assets/language_dict/language_dict.json"
-import { getMoviesNew, parseMovies } from "../functions/get_movies"
+import { getMoviesNew, parseMovies, getHomePage } from "../functions/get_movies"
 
 export default {
 	components: {
@@ -21,7 +21,7 @@ export default {
 			movie_count		  : 0,
 			currentPage       : 1,
 			rows              : 0,
-			perPage           : 9,
+			perPage           : 24,
 			user_choice       : 0,
 		}
 	},
@@ -30,6 +30,27 @@ export default {
 			var start = (this.currentPage - 1) * this.perPage
 			var end = start + this.perPage
 			this.movies_slice = this.movies.slice(start, end)
+		},
+		async get_home_page() {
+			try {
+				console.log("getting home page")
+				this.movies = null
+				this.movies_slice = null
+				let res = await getHomePage(this.$cookies.get('token'));
+				if (res.status == 200) {
+					this.movies = res.data
+					this.number_of_results = this.movies.length;
+					this.rows = this.number_of_results;
+					this.getMoviesSlice()
+				}
+				else {
+					console.log(res.code, res.data)
+					throw("Unknow error code getting movies")
+				}
+			}
+			catch (e) {
+				throw(e)
+			}
 		},
 		async getMoviesResponse() {
 			try {
@@ -57,10 +78,13 @@ export default {
 			console.log("GETTING FORMM")
 			let form = JSON.parse(JSON.stringify(value));
 			this.form = form;
-			this.getMoviesResponse();
+			// this.getMoviesResponse();
 			this.user_choice += 1;
 		},
 
+	},
+	mounted() {
+		this.get_home_page()
 	},
 	computed: {
 	...mapState({

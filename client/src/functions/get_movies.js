@@ -17,6 +17,21 @@ export const get_movie_by_imdb_id = async (imdb_id, token) => {
 	return response;
 }
 
+export const getHomePage = async(token) => {
+	let request = {
+		url: `http://127.0.0.1:8071/api/movies/home`,
+		method: "get",
+		headers: {
+			'Access-Control-Allow-Origin': '*',
+			"Content-type"               : "application/json",
+			'Authorization'				 : `Bearer ${token}`
+		}
+	};
+	const response = await axios(request);
+	console.log("response dans front: ", response)
+	return response;
+}
+
 
 export const getMoviesNew = async (form, page, limit, token) => {
 	console.log("Getting list of movies");
@@ -37,15 +52,15 @@ export const getMoviesNew = async (form, page, limit, token) => {
 			"Content-type"               : "application/json",
 			'Authorization'				 : `Bearer ${token}`
 		},
-        params: {
-			"page" : page,
+        params               : {
+			"page"           : page,
 			"minimum_rating" : form.min_rating,
-			"query_term" : form.title,
-			"genre" : genre,
-			"sort_by" : category,
-			'quality' : form.quality,
-			'order_by' : form.order_by,
-			"limit"   : limit,
+			"query_term"     : form.title,
+			"genre"          : genre,
+			"sort_by"        : category,
+			'quality'        : form.quality,
+			'order_by'       : form.order_by,
+			"limit"          : limit,
 		}
 	};
 
