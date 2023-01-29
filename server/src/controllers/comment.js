@@ -28,9 +28,9 @@ module.exports = (db_pool) => {
 
         get_comment_by_movie_imdb_id: async (movie_imdb_id) => {
             console.log("getting comments for movie id: ", movie_imdb_id);
-            [comments, ] = await db_pool.query("\
-            SELECT * FROM comments \
-            WHERE movie_imdb_id=?;",
+            [comments, ] = await db_pool.query(`
+            SELECT * FROM comments 
+            WHERE movie_imdb_id=?;`,
             movie_imdb_id)
 
             console.log("Found comments for movie: ", comments)

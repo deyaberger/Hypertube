@@ -39,13 +39,27 @@ module.exports = (db_pool) => {
                 let order_by       = req.query.order_by
                 let asc_or_desc    = req.query.asc_or_desc
 
-                let movies = await movie_functions.search_movies(req.user_id, query_term, minimum_rating, genre, quality, min_year, max_year, language, order_by, asc_or_desc)
+                let movies = await movie_functions.search_movies(query_term, minimum_rating, genre, quality, min_year, max_year, language, order_by, asc_or_desc)
                 res.status(200).send(movies)
             }
             catch (e) {
                 throw(e)
             }
-        }
+        },
+
+        set_movie_watched: async (req, res) => {
+            try {
+                let movie_id = Number(req.params.movie_id)
+                let movie = await movie_functions.set_watched(req.user_id, movie_id)
+                res.status(200).send(movie)
+            }
+            catch (e) {
+                if (e.code == 'ER_DUP_ENTRY') {
+                    res.status(201).send({message: 'Already set as watched', code: "PLACEHOLDER"})
+                }
+                throw(e)
+            }
+        },
 
     }
 }

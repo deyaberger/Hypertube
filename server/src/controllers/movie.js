@@ -130,5 +130,20 @@ module.exports = (db_pool) => {
                 throw (e)
             }
         },
+
+        set_watched: async (user_id, movie_id) => {
+            console.log("Setting movie %d watched by user %d.", movie_id, user_id)
+            try {
+                let [insert_res, ] = await db_pool.query(`
+                    INSERT INTO watched_movies (movie_id, user_id)
+                    VALUES (?, ?)
+                `, [movie_id, user_id])
+                console.log("Insert result: ", insert_res)
+                return insert_res;
+            }
+            catch (e) {
+                throw (e)
+            }
+        }
     }
 }
