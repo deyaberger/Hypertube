@@ -49,44 +49,20 @@ module.exports = (db_pool) => {
         },
 
         search_movies : async (query_term, minimum_rating, genre, quality, sort_by, page, limit, order_by) => {
-            let request = {
-                url: "https://yts.torrentbay.to/api/v2/list_movies.json",
-                method: "get",
-                headers: {
-                    'Access-Control-Allow-Origin': '*',
-                    "Content-type"               : "application/json",
-                    "Accept-Encoding"            : "gzip,deflate,compress"
-                },
-                params: {
-                    "query_term"    : query_term,
-                    "minimum_rating": minimum_rating,
-                    "genre"         : genre,
-                    "quality"       : quality,
-                    "sort_by"       : sort_by,
-                    "page"          : page,
-                    "limit"         : limit,
-                    "order_by"      : order_by
-                }
-            };
-
-            let response = await axios(request);
-			console.log("THIS IS THE RESPNSE: ", response)
-            response = response.data.data
-
-            if (response.movies == undefined || response.movies.length == 0) {
-                response.movies = []
-            }
-
-            response.movies = remove_duplicates(response.movies);
-
-            return response;
-        },
-
-        get_movies_homepage: async () => {
-            console.log("Getting specific movie")
+            console.log("Searching movies: ", {
+                query_term    : query_term,
+                minimum_rating: minimum_rating ,
+                genre         : genre ,
+                quality       : quality ,
+                sort_by       : sort_by ,
+                page          : page ,
+                limit         : limit ,
+                order_by      : order_by
+            })
             try {
                 let [movies, ] = await db_pool.query(`
-                select id, yts_id, imdb_code, title, imdb_rating, year, length_minutes, language, summary from movies
+                SELECT id, yts_id, imdb_code, title, imdb_rating, year, length_minutes, language, summary 
+                    FROM movies
                 ORDER BY imdb_rating DESC
                 `)
                 return movies;
@@ -94,7 +70,22 @@ module.exports = (db_pool) => {
             catch (e) {
                 throw (e)
             }
+        },
 
+        get_movies_homepage: async () => {
+            console.log("Getting movies homepage")
+            try {
+                let [movies, ] = await db_pool.query(`
+                select movies.id, yts_id, imdb_code, title, imdb_rating, year, length_minutes, language, summary, json_objectagg(IFNULL(images.size, ''), images.url) as movie_images
+                FROM movies LEFT JOIN images
+                    ON movies.id = images.movie_id
+                GROUP BY movies.id
+                `)
+                return movies;
+            }
+            catch (e) {
+                throw (e)
+            }
         },
     }
 }
