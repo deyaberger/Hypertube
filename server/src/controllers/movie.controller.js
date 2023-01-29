@@ -29,16 +29,17 @@ module.exports = (db_pool) => {
         search : async (req, res) => {
             try {
                 console.log("searching movies")
-                let page           = req.query.page
-                let limit          = req.query.limit
-                let minimum_rating = req.query.minimum_rating
                 let query_term     = req.query.query_term
+                let minimum_rating = req.query.minimum_rating
                 let genre          = req.query.genre
-                let sort_by        = req.query.sort_by
                 let quality        = req.query.quality
+                let min_year       = req.query.min_year
+                let max_year       = req.query.max_year
+                let language       = req.query.language
                 let order_by       = req.query.order_by
+                let asc_or_desc    = req.query.asc_or_desc
 
-                let movies = await movie_functions.search_movies(query_term, minimum_rating, genre, quality, sort_by, page, limit, order_by)
+                let movies = await movie_functions.search_movies(query_term, minimum_rating, genre, quality, min_year, max_year, language, order_by, asc_or_desc)
                 res.status(200).send(movies)
             }
             catch (e) {

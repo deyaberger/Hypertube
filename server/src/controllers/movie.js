@@ -48,23 +48,44 @@ module.exports = (db_pool) => {
             return response;
         },
 
-        search_movies : async (query_term, minimum_rating, genre, quality, sort_by, page, limit, order_by) => {
+        search_movies : async (query_term, minimum_rating, genre, quality, min_year, max_year, language, order_by, asc_or_desc) => {
             console.log("Searching movies: ", {
                 query_term    : query_term,
                 minimum_rating: minimum_rating ,
                 genre         : genre ,
                 quality       : quality ,
-                sort_by       : sort_by ,
-                page          : page ,
-                limit         : limit ,
-                order_by      : order_by
+                order_by      : order_by,
+                asc_or_desc   : asc_or_desc
             })
+            order_by ? order_by : 'max_seeds'
+            asc_or_desc ? asc_or_desc : 'ASC'
             try {
                 let [movies, ] = await db_pool.query(`
-                SELECT id, yts_id, imdb_code, title, imdb_rating, year, length_minutes, language, summary 
+                SELECT movies.id, yts_id, imdb_code, title, imdb_rating, year, length_minutes, language, summary, MAX(torrents.seeds) as max_seeds
                     FROM movies
-                ORDER BY imdb_rating DESC
-                `)
+                
+                    INNER JOIN genres
+                        ON movies.id = genres.movie_id
+                        AND genres.name LIKE ?
+                
+                    LEFT JOIN torrents
+                        ON movies.id = torrents.movie_id
+                        AND torrents.quality LIKE ?
+                
+                    WHERE imdb_rating >= ?
+                        AND year >= ?
+                        AND year <= ?
+                        AND language = ?
+                        AND LOWER(title) LIKE LOWER('%?%')
+                    GROUP BY movies.id
+                ORDER BY ${order_by} ${asc_or_desc}
+                `, [genre          ? genre          : '%',
+                    quality        ? quality        : '%',
+                    minimum_rating ? minimum_rating : 0,
+                    min_year       ? min_year       : 0,
+                    max_year       ? max_year       : 10000,
+                    language       ? language       : '%',
+                    query_term     ? query_term     : ''])
                 return movies;
             }
             catch (e) {
