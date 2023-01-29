@@ -48,6 +48,7 @@ All calls that require auth can return error codes / messages present in `/auth/
 
 - `/all`
 - `/add/:movie_id`
+- `/remove/:movie_id`
 
 
 ## [`/torrent`](./api/torrent.md)

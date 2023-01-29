@@ -12,13 +12,21 @@ Auth required: `True`
 **Request Body**:
 
 ```js
-
+{
+    content: 'I like this movie!'
+}
 ```
 
 **Response data**:
 
 ```js
-
+{
+    id
+    content
+    user_id
+    movie_id
+    date
+}
 ```
 
 **Status codes**:
@@ -35,13 +43,22 @@ Auth required: `True`
 **Request Body**:
 
 ```js
-
+{
+    content: 'I dont like this movie anymore !'
+}
 ```
 
 **Response data**:
 
 ```js
-
+{
+    id
+    content
+    user_id
+    movie_id
+    date
+}
+MAY CHANGE
 ```
 
 **Status codes**:
@@ -55,15 +72,13 @@ Auth required: `True`
 Method: `DELETE`  
 Auth required: `True`
 
-**Request Body**:
-
-```js
-
-```
-
 **Response data**:
 
 ```js
+{
+    message: 'sql message if error.',
+    code: 'SUCCESS or sql error code.'
+}
 
 ```
 
@@ -78,16 +93,18 @@ Auth required: `True`
 Method: `GET`  
 Auth required: `True`
 
-**Request Body**:
-
-```js
-
-```
-
 **Response data**:
 
 ```js
-
+comments: [
+    {
+        id
+        content
+        user_id
+        movie_id
+        date
+    }
+]
 ```
 
 **Status codes**:
@@ -101,16 +118,18 @@ Auth required: `True`
 Method: `GET`  
 Auth required: `True`
 
-**Request Body**:
-
-```js
-
-```
-
 **Response data**:
 
 ```js
-
+comments: [
+    {
+        id
+        content
+        user_id
+        movie_id
+        date
+    }
+]
 ```
 
 **Status codes**:
