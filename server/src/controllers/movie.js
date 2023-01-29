@@ -71,22 +71,22 @@ module.exports = (db_pool) => {
             })
             try {
                 let [movies, ] = await db_pool.query(`
-                WITH 
+                WITH
                     genres_agg AS (SELECT movie_id, json_arrayagg(genres.name) as genres_list from genres GROUP BY movie_id)
                 SELECT movies.id, yts_id, imdb_code, title, imdb_rating, year, length_minutes, language, summary, genres_list, MAX(torrents.seeds) as max_seeds, MAX(t.quality) as max_quality
                     FROM movies
-                
+
                     INNER JOIN genres
                         ON movies.id = genres.movie_id
                         AND genres.name LIKE ?
-                
+
                     INNER JOIN torrents
                         ON movies.id = torrents.movie_id
                         AND torrents.quality LIKE ?
 
                     LEFT JOIN torrents t
                         ON movies.id = t.movie_id
-                        
+
                     LEFT JOIN favorite_movies
                         ON movies.id = favorite_movies.movie_id
                         AND favorite_movies.user_id = ?
@@ -119,10 +119,15 @@ module.exports = (db_pool) => {
             console.log("Getting movies homepage")
             try {
                 let [movies, ] = await db_pool.query(`
-                select movies.id, yts_id, imdb_code, title, imdb_rating, year, length_minutes, language, summary, json_objectagg(IFNULL(images.size, ''), images.url) as movie_images
-                FROM movies LEFT JOIN images
-                    ON movies.id = images.movie_id
+                WITH aggregate_genres as (SELECT movie_id, JSON_ARRAYAGG(name) as genres_list
+                    from genres
+                    group by movie_id)
+                SELECT movies.id, yts_id, imdb_code, title, imdb_rating, year, length_minutes, language, summary, genres_list, json_objectagg(IFNULL(images.size, ''), images.url) as images_list
+                FROM movies
+                    LEFT JOIN aggregate_genres ON movies.id = aggregate_genres.movie_id
+                    LEFT JOIN images ON movies.id = images.movie_id
                 GROUP BY movies.id
+                ORDER BY movies.imdb_rating DESC
                 `)
                 return movies;
             }
