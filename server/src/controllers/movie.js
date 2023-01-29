@@ -61,7 +61,7 @@ module.exports = (db_pool) => {
             asc_or_desc ? asc_or_desc : 'ASC'
             try {
                 let [movies, ] = await db_pool.query(`
-                SELECT movies.id, yts_id, imdb_code, title, imdb_rating, year, length_minutes, language, summary, MAX(torrents.seeds) as max_seeds
+                SELECT movies.id, yts_id, imdb_code, title, imdb_rating, year, length_minutes, language, summary, MAX(torrents.seeds) as max_seeds, count(favorite_movies.id) as fav
                     FROM movies
                 
                     LEFT JOIN genres
