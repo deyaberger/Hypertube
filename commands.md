@@ -1,3 +1,5 @@
+Kill HOST MYSQL
+
 ```
 service mysql start && \
 /workspaces/Hypertube/server/sql/create_user_table_docker.sh

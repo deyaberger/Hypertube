@@ -100,10 +100,10 @@ module.exports = (db_pool) => {
                 let is_password_ok = await auth_functions.check_password(user, req.body.password)
                 if (is_password_ok) {
                     let token = auth_functions.create_access_token(user.id)
-                    return res.status(200).send({token: token})
+                    return res.status(200).send({message: "Login Sucess", token: token})
                 }
 
-                return res.status(201).send("Signin failed")
+                return res.status(201).send({message: "Signin failed", token: token})
             }
             catch (e) {
                 console.log("\n\nError in signin.\n\n")
@@ -124,7 +124,7 @@ module.exports = (db_pool) => {
                 console.log(req.headers)
                 console.log("authing:", authHeader)
                 const token = authHeader && authHeader.split(' ')[1]
-                // console.log("token: ", token)
+                console.log("token: ", token)
               
                 if (token == null) return res.sendStatus(401)
                 jwt.verify(token, process.env.TOKEN_SECRET, (err, decoded) => {

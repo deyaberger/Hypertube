@@ -88,11 +88,10 @@ module.exports = (db_pool) => {
             }
             else {
                 user = user_res[0]
-
             }
 
             if (user == null) {
-                console.log("MISSING YSEr")
+                console.log("MISSING USER")
                 return false
             }
 
