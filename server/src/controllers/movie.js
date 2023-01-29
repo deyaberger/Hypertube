@@ -64,7 +64,7 @@ module.exports = (db_pool) => {
                 SELECT movies.id, yts_id, imdb_code, title, imdb_rating, year, length_minutes, language, summary, MAX(torrents.seeds) as max_seeds
                     FROM movies
                 
-                    INNER JOIN genres
+                    LEFT JOIN genres
                         ON movies.id = genres.movie_id
                         AND genres.name LIKE ?
                 
@@ -72,6 +72,10 @@ module.exports = (db_pool) => {
                         ON movies.id = torrents.movie_id
                         AND torrents.quality LIKE ?
                 
+                    LEFT JOIN favorite_movies
+                        ON movies.id = favorite_movies.movie_id
+                        AND favorite_movies.user_id = ?
+
                     WHERE imdb_rating >= ?
                         AND year >= ?
                         AND year <= ?
@@ -81,6 +85,7 @@ module.exports = (db_pool) => {
                 ORDER BY ${order_by} ${asc_or_desc}
                 `, [genre          ? genre          : '%',
                     quality        ? quality        : '%',
+                    req.user_id,
                     minimum_rating ? minimum_rating : 0,
                     min_year       ? min_year       : 0,
                     max_year       ? max_year       : 10000,
