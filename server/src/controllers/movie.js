@@ -71,8 +71,9 @@ module.exports = (db_pool) => {
             })
             try {
                 let [movies, ] = await db_pool.query(`
-                WITH genres_agg AS (SELECT movie_id, json_arrayagg(genres.name) as genres_list from genres GROUP BY movie_id)
-                SELECT movies.id, yts_id, imdb_code, title, imdb_rating, year, length_minutes, language, summary, genres_list, MAX(torrents.seeds) as max_seeds, MAX(torrents.quality) as max_quality
+                WITH 
+                    genres_agg AS (SELECT movie_id, json_arrayagg(genres.name) as genres_list from genres GROUP BY movie_id)
+                SELECT movies.id, yts_id, imdb_code, title, imdb_rating, year, length_minutes, language, summary, genres_list, MAX(torrents.seeds) as max_seeds, MAX(t.quality) as max_quality
                     FROM movies
                 
                     INNER JOIN genres
@@ -82,19 +83,22 @@ module.exports = (db_pool) => {
                     INNER JOIN torrents
                         ON movies.id = torrents.movie_id
                         AND torrents.quality LIKE ?
-                
+
+                    LEFT JOIN torrents t
+                        ON movies.id = t.movie_id
+                        
                     LEFT JOIN favorite_movies
                         ON movies.id = favorite_movies.movie_id
                         AND favorite_movies.user_id = ?
 
                     LEFT JOIN genres_agg
                         ON movies.id = genres_agg.movie_id
-                
+
                     WHERE imdb_rating >= ?
                         AND year >= ?
                         AND year <= ?
                         AND language LIKE ?
-                        AND LOWER(title) LIKE LOWER('%?%')
+                        AND LOWER(title) LIKE LOWER('%${query_term}%')
                     GROUP BY movies.id, imdb_rating
                 ORDER BY ${order_by} ${asc_or_desc};
                 `, [genre          ? genre          : '%',
@@ -103,8 +107,7 @@ module.exports = (db_pool) => {
                     minimum_rating ? minimum_rating : 0,
                     min_year       ? min_year       : 0,
                     max_year       ? max_year       : 10000,
-                    language       ? language       : '%',
-                    query_term     ? query_term     : ''])
+                    language       ? language       : '%'])
                 return movies;
             }
             catch (e) {
