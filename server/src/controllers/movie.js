@@ -80,7 +80,21 @@ module.exports = (db_pool) => {
             response.movies = remove_duplicates(response.movies);
 
             return response;
-        }
+        },
 
+        get_movies_homepage: async () => {
+            console.log("Getting specific movie")
+            try {
+                let [movies, ] = await db_pool.query(`
+                select id, yts_id, imdb_code, title, imdb_rating, year, length_minutes, language, summary from movies
+                ORDER BY imdb_rating DESC
+                `)
+                return movies;
+            }
+            catch (e) {
+                throw (e)
+            }
+
+        },
     }
 }
