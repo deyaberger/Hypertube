@@ -27,7 +27,7 @@ export default {
 		</div>
 			<router-link v-else :to="'/movie/' + movie.imdb_code" class="col-md-4 movie-card" v-for="movie in movie_list" :key="movie" style="text-decoration: none">
 				<div class="movie-header">
-						<img class="movie-image" :src="movie.large_cover_image" alt="movie_image"  onerror="this.src='../src/assets/missing_cover.jpeg';"/>
+						<img class="movie-image" :src="movie.images_list[1]" alt="movie_image"  onerror="this.src='../src/assets/missing_cover.jpeg';"/>
 						<b-icon-info-circle-fill class="h2 header-icon"></b-icon-info-circle-fill>
 				</div>
 				<div class="movie-content">
@@ -38,7 +38,7 @@ export default {
 					<div class="movie-info">
 						<div class="info-section">
 							<label>{{text_content.genre[lang_nb]}}</label>
-							<span>{{movie.genres}}</span>
+							<span>{{movie.genres_list[0]}}</span>
 						</div>
 						<div class="info-section">
 							<label>{{text_content.year[lang_nb]}}</label>
@@ -46,11 +46,11 @@ export default {
 						</div>
 						<div class="info-section">
 							<label>{{text_content.time[lang_nb]}}</label>
-							<span class="time">{{timeConvert(movie.runtime)}}</span>
+							<span class="time">{{timeConvert(movie.length_minutes)}}</span>
 						</div>
 						<div class="info-section">
 							<label>{{text_content.rating[lang_nb]}}</label>
-							<span>{{movie.rating}}/10</span>
+							<span>{{movie.imdb_rating}}/10</span>
 						</div>
 					</div>
 				</div>
