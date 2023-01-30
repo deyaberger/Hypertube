@@ -5,7 +5,6 @@ import textContent from "../assets/language_dict/language_dict.json";
 import StarRating from 'vue-star-rating';
 
 
-
 export default {
 	components: {
 		Slider,
@@ -21,11 +20,12 @@ export default {
 			quality_list       : ['1080p', '720p'],
 			form               : {
 									title         : '',
+									min_rating    : 0,
 									genre         : '',
 									quality       : '1080p',
-									sort_category : textContent.MOVIES.sorting_list.year,
-									order_by      : 'desc',
-									min_rating    : 0,
+									min_year      : 1920,
+									sort_category : 'year',
+									asc_or_desc   : 'desc',
 								}
 		}
 	},
@@ -37,11 +37,11 @@ export default {
 			this.$emit('search_form', this.form);
 		},
 		order() {
-			if (this.form.order_by == 'desc') {
-				this.form.order_by = 'asc'
+			if (this.form.asc_or_desc == 'desc') {
+				this.form.asc_or_desc = 'asc'
 			}
 			else {
-				this.form.order_by = 'desc'
+				this.form.asc_or_desc = 'desc'
 			}
 		},
 		update_genre(genre) {
@@ -66,6 +66,7 @@ export default {
 				if (this.form.title.length > 0) {
 					this.form.genre = '';
 					this.form.min_rating = 0;
+					this.form.min_year = 1920;
 					this.form.quality = '';
 				}
 				this.emit_form()
@@ -106,6 +107,20 @@ export default {
 						:class="{ active: genre == form.genre }"
 					></b-icon-x>
 			</div>
+			<div class = "nav-item">
+				<hr class="solid">
+				<div class="col filter_item">
+					<p class="filter">Min Year:</p>
+					<Slider
+						class="green_slider"
+						v-model="form.min_year"
+						:min="1920"
+						:max="2023"
+						:step="10"
+						tooltipPosition="bottom"
+						/>
+				</div>
+			</div>
 			</div>
 			<div class = "nav-item">
 				<hr class="solid">
@@ -123,7 +138,7 @@ export default {
 			</div>
 			<div class = "nav-item">
 				<hr class="solid">
-				<h2>{{text_content.quality[lang_nb]}}</h2>
+				<p class="filter">Min {{text_content.quality[lang_nb]}}</p>
 				<div class="row">
 				<div
 					v-for="quality in quality_list" :key="quality"
@@ -151,7 +166,7 @@ export default {
 					>{{sort_category[lang_nb]}}</a>
 				</div>
 			</div>
-			<button v-if="form.order_by == 'desc'" class="btn a_to_z" @click="order" type="button">
+			<button v-if="form.asc_or_desc == 'desc'" class="btn a_to_z" @click="order" type="button">
 					DESC <b-icon-arrow-down></b-icon-arrow-down>
 				</button>
 				<button v-else class="btn a_to_z" @click="order" type="button">

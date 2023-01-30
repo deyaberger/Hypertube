@@ -13,7 +13,7 @@ export const get_movie_by_imdb_id = async (imdb_id, token) => {
 	};
 
 	const response = await axios(request);
-	console.log("got movie details: ", response.data)
+	// console.log("got movie details: ", response.data)
 	return response;
 }
 
@@ -28,9 +28,37 @@ export const getHomePage = async(token) => {
 		}
 	};
 	const response = await axios(request);
-	console.log("response dans front: ", response)
+	// console.log("response dans front: ", response)
 	return response;
 }
+
+
+export const getMovies = async(form , language, id, token) => {
+	let request = {
+		url: `http://127.0.0.1:8071/api/movies/search`,
+		method: "get",
+		headers: {
+			'Access-Control-Allow-Origin': '*',
+			"Content-type"               : "application/json",
+			'Authorization'				 : `Bearer ${token}`
+		},
+		params               : {
+			"id"             : id,
+			"query_term"     : form.title,
+			"minimum_rating" : form.min_rating,
+			"genre"          : form.genre[0],
+			'quality'        : form.quality,
+			'min_year'       : form.min_year,
+			'language'       : language,
+			"asc_or_desc"    : form.asc_or_desc,
+			"sort_by"        : form.sort_category
+		}
+	};
+	const response = await axios(request);
+	// console.log("response dans front: ", response)
+	return response;
+}
+
 
 
 export const getMoviesNew = async (form, page, limit, token) => {
@@ -65,7 +93,7 @@ export const getMoviesNew = async (form, page, limit, token) => {
 	};
 
 	const response = await axios(request);
-	console.log("response dans front: ", response)
+	// console.log("response dans front: ", response)
 	return response;
 }
 

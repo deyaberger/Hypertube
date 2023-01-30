@@ -29,6 +29,7 @@
 		"error_last_name"  :["Please enter a last name", "Merci d'indiquer votre nom de famille"],
 		"create_email"     :["Your email address:", "Adresse email:"],
 		"error_email"      :["Please enter a valid email address", "Adresse invalide"],
+		"error_email_dup"  :["Email already in use", "Email déjà pris"],
 		"create_pwd"       :["Create a password:", "Créer un mot de passe:"],
 		"pwd"              :["password", "motdepasse"],
 		"error_pwd"        :[

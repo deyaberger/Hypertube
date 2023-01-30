@@ -22,6 +22,7 @@ export default {
 			firstname_error  : false,
 			lastname_error   : false,
 			email_error      : false,
+			email_error_text : textContent.SIGNUP.error_email,
 			mdp_error        : false,
 			connection_error : false
 		}
@@ -35,7 +36,7 @@ export default {
 		password_visibility() {
 			this.visible = !this.visible
 		},
-		
+
 		async onSubmit(e){
 			e.preventDefault();
 			const form = {
@@ -55,6 +56,7 @@ export default {
 				if (sign_up_res.status == 200) {
 					console.log("Adding token to cookies")
 					this.$cookies.set('token', sign_up_res.data.token)
+					this.$store.commit('SET_USER_ID', sign_up_res.data.id)
 					this.$store.commit('SET_CONNECTION', true)
 					this.$router.push('/search')
 				}
@@ -64,8 +66,9 @@ export default {
 					this.firstname_error = sign_up_res.data.firstName_error
 					this.lastname_error = sign_up_res.data.lastName_error
 					this.email_error = sign_up_res.data.mail_error
+					this.email_error_text = this.text_content.error_email_dup
 					this.mdp_error = sign_up_res.data.password_error
-					console.log("error in signup")
+					console.log("error in signuiiip")
 				}
 			}
 			catch (e) {
@@ -128,7 +131,7 @@ export default {
 				name="email"
 				placeholder="email@adress.com"
 				/>
-				<p class="error_msg" v-show="email_error">{{text_content.error_email[lang_nb]}}</p>
+				<p class="error_msg" v-show="email_error">{{email_error_text[lang_nb]}}</p>
 			</div>
 			<div class="input mt-2">
 				<label class = "mb-2" for="password">{{text_content.create_pwd[lang_nb]}}</label>

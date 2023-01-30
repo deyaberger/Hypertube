@@ -5,7 +5,7 @@ module.exports = (db_pool) => {
         get_homepage : async (req, res) => {
             try {
                 let movies = await movie_functions.get_movies_homepage()
-                console.log("got movies",movies)
+                // console.log("got movies",movies)
                 res.status(200).send(movies)
             }
             catch (e) {
@@ -29,17 +29,17 @@ module.exports = (db_pool) => {
         search : async (req, res) => {
             try {
                 console.log("searching movies")
-                let query_term     = req.query.query_term
-                let minimum_rating = req.query.minimum_rating
-                let genre          = req.query.genre
-                let quality        = req.query.quality
-                let min_year       = req.query.min_year
-                let max_year       = req.query.max_year
-                let language       = req.query.language
-                let order_by       = req.query.order_by
-                let asc_or_desc    = req.query.asc_or_desc
-
-                let movies = await movie_functions.search_movies(query_term, minimum_rating, genre, quality, min_year, max_year, language, order_by, asc_or_desc)
+                let searching_user_id = req.query.id
+                let query_term        = req.query.query_term
+                let minimum_rating    = req.query.minimum_rating
+                let genre             = req.query.genre
+                let quality           = req.query.quality
+                let min_year          = req.query.min_year
+                let language          = req.query.language
+                let asc_or_desc       = req.query.asc_or_desc
+                let sort_by          = req.query.sort_by
+                console.log("searching_user_id, query_term, minimum_rating, genre, quality, min_year, language, sort_by, asc_or_desc", searching_user_id, query_term, minimum_rating, genre, quality, min_year, language, asc_or_desc, sort_by)
+                let movies = await movie_functions.search_movies(searching_user_id, query_term, minimum_rating, genre, quality, min_year, 2022, language, asc_or_desc, sort_by)
                 res.status(200).send(movies)
             }
             catch (e) {

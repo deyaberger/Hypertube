@@ -42,6 +42,7 @@ export default {
 				if (sign_in_res.status == 200) {
 					console.log("Adding token to cookies")
 					this.$cookies.set('token', sign_in_res.data.token)
+					this.$store.commit('SET_USER_ID', sign_in_res.data.id)
 					this.$store.commit('SET_CONNECTION', true)
 					this.$router.push('/search')
 				}

@@ -3,7 +3,7 @@ import SearchBar from '../components/Search_bar.vue'
 import SearchResults from '../components/Search_results.vue'
 import { mapState, useStore } from 'vuex';
 import textContent from "../assets/language_dict/language_dict.json"
-import { getMoviesNew, parseMovies, getHomePage } from "../functions/get_movies"
+import { getMovies, parseMovies, getHomePage } from "../functions/get_movies"
 
 export default {
 	components: {
@@ -44,7 +44,7 @@ export default {
 					this.getMoviesSlice()
 				}
 				else {
-					console.log(res.code, res.data)
+					// console.log(res.code, res.data)
 					throw("Unknow error code getting movies")
 				}
 			}
@@ -56,17 +56,14 @@ export default {
 			try {
 				this.movies = null
 				this.movies_slice = null
-				// let res = await getMovies(this.form, this.currentPage, this.limit);
-				let res = await getMoviesNew(this.form, this.currentPage, this.limit, this.$cookies.get('token'));
+				let res = await getMovies(this.form, this.lang_nb, this.user_id, this.$cookies.get('token'));
 				if (res.status == 200) {
-					console.log("got movies :", res)
-					this.movies = parseMovies(res.data.movies);
+					this.movies = res.data
 					this.number_of_results = this.movies.length;
 					this.rows = this.number_of_results;
 					this.getMoviesSlice()
 				}
 				else {
-					console.log(res.code, res.data)
 					throw("Unknow error code getting movies")
 				}
 			}
@@ -89,6 +86,7 @@ export default {
 	computed: {
 	...mapState({
       	lang_nb  : state =>  state.lang_nb,
+      	user_id  : state =>  state.user_id,
     }),
 	},
 	watch: {
@@ -98,7 +96,6 @@ export default {
 			},
 			deep:true
 		}
-
 	}
 }
 

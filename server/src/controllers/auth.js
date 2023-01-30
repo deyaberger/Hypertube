@@ -15,14 +15,19 @@ module.exports = (db_pool) => {
     return {
         signup: async (username, f_name, l_name, mail, pass, pic, lang) => {
             let pass_hash = hashPassword(pass)
-            let [insert_res, ] = await db_pool.query(
-                "\
-                INSERT INTO users (first_name, last_name, mail , pass      , language , picture, username)\
-                    VALUES        (?         , ?        , ?    , ?         , ?        , ?      , ?       );",
-                                  [f_name    , l_name   , mail , pass_hash , lang     , pic    , username]
-            )
-            console.log("Signup user: %s,\nResult: %o\n", username, insert_res)
-            return insert_res
+            try {
+                let [insert_res, ] = await db_pool.query(
+                    "\
+                    INSERT INTO users (first_name, last_name, mail , pass      , language , picture, username)\
+                        VALUES        (?         , ?        , ?    , ?         , ?        , ?      , ?       );",
+                                      [f_name    , l_name   , mail , pass_hash , lang     , pic    , username]
+                )
+                console.log("Signup user: %s,\nResult: %o\n", username, insert_res)
+                return insert_res
+            }
+            catch(e) {
+                throw e
+            }
         },
 
 
@@ -38,8 +43,8 @@ module.exports = (db_pool) => {
             let [user_res, ] = await db_pool.query("\
                 SELECT * FROM users \
                 WHERE username=?;",
-                [username]) 
-            
+                [username])
+
             if (user_res.length == 0) {
                 return null
             }
@@ -52,8 +57,8 @@ module.exports = (db_pool) => {
             let [user_res, ] = await db_pool.query("\
                 SELECT * FROM users \
                 WHERE mail=?;",
-                [mail]) 
-            
+                [mail])
+
             if (user_res.length == 0) {
                 return null
             }
@@ -81,7 +86,7 @@ module.exports = (db_pool) => {
             let [user_res, ] = await db_pool.query("\
             SELECT * FROM users \
             WHERE mail=?;",
-            [mail]) 
+            [mail])
             let user
             if (user_res.length == 0) {
                 user = null
@@ -95,7 +100,7 @@ module.exports = (db_pool) => {
                 return false
             }
 
-            let hash = hashPassword(user.id.toString(), 8) 
+            let hash = hashPassword(user.id.toString(), 8)
             await db_pool.query(
                 "INSERT INTO reset_pass \
                 (user_id, id_hash) \
