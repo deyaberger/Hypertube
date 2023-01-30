@@ -97,7 +97,7 @@ export default {
 			<div class="search_header">
 				<div v-if="user_research > 1" class="title">Research:</div>
 				<div v-else class="title">{{text_content.recommendations[lang_nb]}}:</div>
-				<div v-if="number_of_results > 0" class="number_of_results">{{movies_slice.length}}/{{number_of_results}} {{text_content.results[lang_nb]}}</div>
+				<div v-if="number_of_results > 0" class="number_of_results">{{movies_slice ? movies_slice.length : 0}}/{{number_of_results}} {{text_content.results[lang_nb]}}</div>
 				<div v-else class="number_of_results">{{number_of_results}} {{text_content.results[lang_nb]}}</div>
 
 			</div>

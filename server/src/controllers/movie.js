@@ -66,7 +66,7 @@ module.exports = (db_pool) => {
                 min_year      : min_year,
                 max_year      : max_year,
                 quality       : quality ,
-                sort_by      : sort_by,
+                sort_by       : sort_by,
                 asc_or_desc   : asc_or_desc
             })
             try {
@@ -81,10 +81,12 @@ module.exports = (db_pool) => {
                         AND genres.name LIKE ?
                     LEFT JOIN aggregate_genres ON movies.id = aggregate_genres.movie_id
                     LEFT JOIN images ON movies.id = images.movie_id
+                    WHERE imdb_rating >= ?
                 GROUP BY movies.id
-                ORDER BY movies.imdb_rating DESC
+                ORDER BY ${sort_by} ${asc_or_desc}
                 LIMIT 26 OFFSET 0
-                `, [genre          ? genre          : '%'])
+                `, [genre          ? genre          : '%',
+                    minimum_rating ? minimum_rating : '%'])
                 return movies;
             }
             catch (e) {
