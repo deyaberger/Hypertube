@@ -47,7 +47,6 @@ export default {
 				if (res.status == 200) {
 					this.movies = res.data
 					this.number_of_results = this.movies.length;
-					this.rows = this.number_of_results;
 					this.getMoviesSlice()
 				}
 				else {
@@ -98,7 +97,7 @@ export default {
 			<div class="search_header">
 				<div v-if="user_research > 1" class="title">Research:</div>
 				<div v-else class="title">{{text_content.recommendations[lang_nb]}}:</div>
-				<div v-if="number_of_results > 0" class="number_of_results">{{perPage * currentPage}}/{{number_of_results}} {{text_content.results[lang_nb]}}</div>
+				<div v-if="number_of_results > 0" class="number_of_results">{{movies_slice.length}}/{{number_of_results}} {{text_content.results[lang_nb]}}</div>
 				<div v-else class="number_of_results">{{number_of_results}} {{text_content.results[lang_nb]}}</div>
 
 			</div>
@@ -107,7 +106,7 @@ export default {
 			<div v-if="number_of_results > 0">
 				<b-pagination
 					v-model="currentPage"
-					:total-rows="rows"
+					:total-rows="number_of_results"
 					:per-page="perPage"
 					first-number
 					class="custom_pagination"
