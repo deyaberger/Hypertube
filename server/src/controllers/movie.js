@@ -128,6 +128,7 @@ module.exports = (db_pool) => {
                     LEFT JOIN images ON movies.id = images.movie_id
                 GROUP BY movies.id
                 ORDER BY movies.imdb_rating DESC
+                LIMIT 24 OFFSET 0
                 `)
                 return movies;
             }

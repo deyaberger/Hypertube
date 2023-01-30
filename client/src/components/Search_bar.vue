@@ -82,9 +82,9 @@ export default {
 		<div class="sidebar_menu">
 			<button @click="show = !show" class="btn navbar-nav ms-auto"><b-icon-filter-left class = "h1 show_bar"></b-icon-filter-left></button>
 			<div v-if="show">
-			<form @submit="submit">
+			<form @submit="submit" class="search-form">
 				<div class = "nav-item input-group">
-					<input class = "input_text" type="text" v-model="tmp_title" v-on:keyup.enter="form.title = tmp_title"/>
+					<input class="input_text" type="text" v-model="tmp_title" v-on:keyup.enter="form.title = tmp_title"/>
 					<span class="input-group-btn">
 						<button class="btn search_icon" type="submit">
 							<b-icon-search color="white" @click="form.title = tmp_title"></b-icon-search>
@@ -182,8 +182,10 @@ export default {
 	font-size: 1.4rem;
 }
 
+
 .quality {
 	text-transform: lowercase
 }
+
 
 </style>
