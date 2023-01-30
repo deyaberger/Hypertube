@@ -22,7 +22,7 @@ export default {
 			currentPage       : 1,
 			rows              : 0,
 			perPage           : 24,
-			user_choice       : 0,
+			user_research     : 0,
 		}
 	},
 	methods: {
@@ -31,32 +31,19 @@ export default {
 			var end = start + this.perPage
 			this.movies_slice = this.movies.slice(start, end)
 		},
-		async get_home_page() {
+		async getFormResults() {
 			try {
-				console.log("getting home page")
 				this.movies = null
 				this.movies_slice = null
-				let res = await getHomePage(this.$cookies.get('token'));
-				if (res.status == 200) {
-					this.movies = res.data
-					this.number_of_results = this.movies.length;
-					this.rows = this.number_of_results;
-					this.getMoviesSlice()
+				let res = null
+				if (this.user_research == true) {
+					console.log("getting homepage")
+					res = await getHomePage(this.$cookies.get('token'));
 				}
 				else {
-					// console.log(res.code, res.data)
-					throw("Unknow error code getting movies")
+					console.log("getting getting form results")
+					res = await getMovies(this.form, this.lang_nb, this.user_id, this.$cookies.get('token'));
 				}
-			}
-			catch (e) {
-				throw(e)
-			}
-		},
-		async getMoviesResponse() {
-			try {
-				this.movies = null
-				this.movies_slice = null
-				let res = await getMovies(this.form, this.lang_nb, this.user_id, this.$cookies.get('token'));
 				if (res.status == 200) {
 					this.movies = res.data
 					this.number_of_results = this.movies.length;
@@ -71,17 +58,13 @@ export default {
 				throw(e)
 			}
 		},
-		getForm(value) {
-			console.log("GETTING FORMM")
+		update_form(value) {
+			console.log("updating form")
 			let form = JSON.parse(JSON.stringify(value));
 			this.form = form;
-			// this.getMoviesResponse();
-			this.user_choice += 1;
+			this.user_research += 1
 		},
 
-	},
-	mounted() {
-		this.get_home_page()
 	},
 	computed: {
 	...mapState({
@@ -95,6 +78,12 @@ export default {
 				this.getMoviesSlice()
 			},
 			deep:true
+		},
+		form: {
+			handler:function() {
+				this.getFormResults()
+			},
+			deep:true
 		}
 	}
 }
@@ -104,10 +93,10 @@ export default {
 
 <template>
 	<div>
-		<SearchBar @search_form="getForm"/>
+		<SearchBar @search_form="update_form"/>
 		<div class="results_container">
 			<div class="search_header">
-				<div v-if="user_choice > 1" class="title">Research:</div>
+				<div v-if="user_research > 1" class="title">Research:</div>
 				<div v-else class="title">{{text_content.recommendations[lang_nb]}}:</div>
 				<div v-if="number_of_results > 0" class="number_of_results">{{perPage * currentPage}}/{{number_of_results}} {{text_content.results[lang_nb]}}</div>
 				<div v-else class="number_of_results">{{number_of_results}} {{text_content.results[lang_nb]}}</div>
