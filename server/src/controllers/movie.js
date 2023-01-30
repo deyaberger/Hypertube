@@ -49,7 +49,7 @@ module.exports = (db_pool) => {
         },
 
         search_movies : async (searching_user_id, query_term, minimum_rating, genre, quality, min_year, max_year, language, asc_or_desc, sort_by) => {
-            sort_by       = sort_by       ? sort_by       : 'max_seeds'
+            sort_by        = sort_by       ? sort_by       : 'max_seeds'
             asc_or_desc    = asc_or_desc    ? asc_or_desc    : 'ASC'
             genre          = genre          ? genre          : '%',
             quality        = quality        ? quality        : '%',
@@ -82,11 +82,14 @@ module.exports = (db_pool) => {
                     LEFT JOIN aggregate_genres ON movies.id = aggregate_genres.movie_id
                     LEFT JOIN images ON movies.id = images.movie_id
                     WHERE imdb_rating >= ?
+                        AND year >= ?
+                        AND LOWER(title) LIKE LOWER('%${query_term}%')
                 GROUP BY movies.id
                 ORDER BY ${sort_by} ${asc_or_desc}
                 LIMIT 26 OFFSET 0
                 `, [genre          ? genre          : '%',
-                    minimum_rating ? minimum_rating : '%'])
+                    minimum_rating ? minimum_rating : '%',
+                    min_year       ? min_year       : '%'])
                 return movies;
             }
             catch (e) {

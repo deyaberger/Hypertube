@@ -24,7 +24,7 @@ export default {
 									genre         : '',
 									quality       : '1080p',
 									min_year      : 1920,
-									sort_category : 'year',
+									sort_category : ['year'],
 									asc_or_desc   : 'desc',
 								}
 		}
@@ -63,12 +63,6 @@ export default {
 	watch: {
 		form: {
 			handler:function() {
-				if (this.form.title.length > 0) {
-					this.form.genre = '';
-					this.form.min_rating = 0;
-					this.form.min_year = 1920;
-					this.form.quality = '';
-				}
 				this.emit_form()
 			},
 			deep:true
