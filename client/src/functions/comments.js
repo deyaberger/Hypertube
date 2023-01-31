@@ -9,7 +9,7 @@ export const Parse_Comments = (data) => {
 			"content" : data[i].content,
 			"date" : data[i].date,
 			"username" : data[i].username,
-			"rating" : 6.5, //TO BE CHANGED
+			"rating" : data[i].rating
 		});
 	  }
 	console.log("COMMMMMENNNTS: ", comments)
@@ -50,7 +50,7 @@ export const Post_Comment = async(movie_id, content, rating, token) => {
 		params : {
 			"movie_id" : movie_id,
 			"content" : content,
-			// "content" : content, ADDD RATING IN FUTURE
+			"rating" : rating
 		}
 	};
 	const response = await axios(request);

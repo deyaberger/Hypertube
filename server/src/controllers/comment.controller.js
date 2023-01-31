@@ -5,13 +5,11 @@ module.exports = (db_pool) => {
         post_comment : async (req, res) => {
             console.log("Post comment req: ", req)
             try {
-                let author_id     = Number(req.user_id)
+                let user_id       = Number(req.user_id)
                 let movie_id      = Number(req.query.movie_id)
-                let content       = Number(req.query.content)
-                console.log("Post comment: ", author_id, movie_id, content)
-
-                let comment_id   = await comment_functions.post_comment(author_id, movie_id, content)
-                console.log("comment id: ", comment_id)
+                let content       = req.query.content
+                let rating        = Number(req.query.rating)
+                let comment_id   = await comment_functions.post_comment(user_id, movie_id, content, rating)
                 res.status(200).send({comment_id: comment_id})
             }
             catch (e) {

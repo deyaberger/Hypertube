@@ -30,7 +30,7 @@ module.exports = (db_pool) => {
             console.log("getting comments for movie id: ", movie_id);
             try {
                 [comments, ] = await db_pool.query(`
-                SELECT content, DATE_FORMAT(date, '%Y-%m-%d %T') as date, u.username
+                SELECT content, DATE_FORMAT(date, '%Y-%m-%d %T') as date, u.username, rating
                 FROM comments
                     LEFT JOIN users u on comments.user_id = u.id
                 WHERE comments.movie_id = ?
@@ -46,11 +46,11 @@ module.exports = (db_pool) => {
         },
 
 
-        post_comment: async (user_id, movie_id, content) => {
+        post_comment: async (user_id, movie_id, content, rating) => {
             [comments, ] = await db_pool.query("\
-            INSERT INTO comments (content , author_id     , movie_id) \
-            VALUES               (?       ,?              ,?         );",
-            [content, user_id, movie_id])
+            INSERT INTO comments (content, user_id, movie_id, rating) \
+            VALUES               (      ?,         ?,        ?,      ?);",
+                                 [content, user_id, movie_id, rating])
 
             return comments.insertId
         }

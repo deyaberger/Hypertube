@@ -5,7 +5,7 @@ module.exports = (db_pool) => {
 
     var router               = require ("express").Router();
 
-    router.post("/"                    , auth_controller.authenticateToken, comment_controller.post_comment           )
+    router.post("/post/:movie_id"      , auth_controller.authenticateToken, comment_controller.post_comment           )
     router.get ("/user/:author_id"     , auth_controller.authenticateToken, comment_controller.get_comments_from_user )
     router.get ("/movie/:movie_id"     , auth_controller.authenticateToken, comment_controller.get_comments_from_movie)
 
