@@ -4,7 +4,13 @@ function _parse_form_for_back(form, lang_nb) {
 	const title       = form.title;
 	const min_rating  = form.min_rating;
 	const genre       = form.genre;
-	const quality     = form.quality;
+	let quality = 720
+	if (form.quality == '4k') {
+		quality = 2160
+	}
+	else if (form.quality == '1080p') {
+		quality = 1080
+	}
 	const min_year    = form.min_year;
 	const language    = lang_nb == 0 ? 'en' : 'fr';
 	const asc_or_desc = form.asc_or_desc;

@@ -25,12 +25,11 @@ module.exports = (db_pool) => {
 
         search : async (req, res) => {
             try {
-                console.log("searching movies")
                 let searching_user_id = req.query.id
                 let query_term        = req.query.query_term
                 let minimum_rating    = req.query.minimum_rating
                 let genre             = req.query.genre
-                let quality           = req.query.quality
+                let quality           = 1080
                 let min_year          = req.query.min_year
                 let max_year          = req.query.max_year
                 let language          = req.query.language
