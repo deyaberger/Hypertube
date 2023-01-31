@@ -115,12 +115,12 @@ export default {
 		<div class="results_container">
 			<div class="search_header">
 				<div v-if="user_research > 1" class="title">
-					<p>{{ text_content.research[lang_nb] }}:</p>
+					<p class="actual">{{ text_content.research[lang_nb] }}:</p>
 					<p class="nav-link">or</p>
 					<a class="nav-link active" href="#" @click="from_research_to_reco()">{{text_content.see_reco[lang_nb]}}</a>
 				</div>
 				<div v-else class="title">
-					<p>{{text_content.recommendations[lang_nb]}}:</p>
+					<p class="actual">{{text_content.recommendations[lang_nb]}}:</p>
 					<p class="nav-link">or</p>
 					<a class="nav-link active" href="#" @click="from_reco_to_research()">{{text_content.see_all[lang_nb]}}</a>
 				</div>
@@ -128,7 +128,7 @@ export default {
 				<div v-else class="number_of_results">{{number_of_results}} {{text_content.results[lang_nb]}}</div>
 
 			</div>
-			<SearchResults :movie_list="movies_slice"/>
+			<SearchResults :movie_list="movies_slice" class="search_res"/>
 			<div class="pagination overflow-auto">
 			<div v-if="number_of_results > 0">
 				<b-pagination
@@ -176,11 +176,127 @@ export default {
 
 .search_header {
 	height: 30px;
-	margin: 5%;
+	margin-left: 5%;
+	margin-right: 5%;
+	margin-top: 2%;
+	margin-bottom: 8%;
 	letter-spacing: 3.5px;
 	font-family: 'Roboto', sans-serif;
 	text-transform: uppercase;
 	text-align: center;
+}
+
+@media screen and (max-width: 1550px) {
+	.search_header {
+	margin-bottom: 10%;
+	}
+}
+
+@media screen and (max-width: 1350px) {
+	.search_header {
+	margin-bottom: 15%;
+	}
+}
+
+@media screen and (max-width: 980px) {
+	.number_of_results {
+		font-size: 12px;
+		letter-spacing: 2.5px;
+	}
+	.actual {
+		font-size: 14px;
+		margin-bottom: 5px;
+		margin-top: 6%;
+
+	}
+	.nav-link {
+		font-size: 12px;
+	}
+}
+
+@media screen and (max-width: 890px) {
+	.search_header {
+		margin-bottom: 20%;
+	}
+	.nav-link.active {
+		margin-bottom: 5%;
+	}
+}
+
+
+@media screen and (max-width: 770px) {
+	.small_sidebar + .results_container > .search_res {
+		margin-left: 25%;
+		margin-right:  25%;
+	}
+}
+
+
+@media screen and (max-width: 690px) {
+	.results_container {
+		margin-left: 250px;
+		width: calc(100% - 250px);
+	}
+	.search_header {
+	margin-bottom: 25%;
+	}
+	.nav-link.active {
+		margin-bottom: 7%;
+	}
+	.actual {
+		font-size: 12px;
+		margin-bottom: 5%;
+
+	}
+	.nav-link {
+		font-size: 10px;
+	}
+	.small_sidebar + .results_container > .search_res {
+		margin-left: 20%;
+		margin-right:  20%;
+	}
+}
+
+
+@media screen and (max-width: 590px) {
+	.results_container {
+		margin-left: 150px;
+		width: calc(100% - 150px);
+	}
+	.small_sidebar + .results_container > .search_res {
+		margin-left: 10%;
+		margin-right:  10%;
+	}
+}
+
+
+
+@media screen and (max-width: 510px) {
+	.search_header {
+	margin-bottom: 30%;
+	}
+
+	.nav-link.active {
+		margin-bottom: 10%;
+	}
+
+	.actual {
+		font-size: 10px;
+		margin-bottom: 3%;
+
+	}
+	.nav-link {
+		font-size: 8px;
+	}
+}
+
+@media screen and (max-width: 440px) {
+	.search_header {
+	margin-bottom: 40%;
+	}
+	.nav-link.active {
+		margin-bottom: 15%;
+	}
 }
 
 
@@ -191,30 +307,6 @@ export default {
 }
 
 
-@media screen and (max-width: 590px) {
-	.number_of_results {
-		font-size: 12px;
-		letter-spacing: 2.5px;
-		margin-top: 7%;
-	}
-}
-
-
-@media screen and (max-width: 690px) {
-	.results_container {
-		margin-left: 250px;
-		width: calc(100% - 250px);
-	}
-}
-
-
-@media screen and (max-width: 590px) {
-	.results_container {
-		margin-left: 150px;
-		width: calc(100% - 150px);
-	}
-
-}
 
 .pagination {
 	justify-content: center;
