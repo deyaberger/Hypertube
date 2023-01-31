@@ -2,7 +2,7 @@
 import { mapState }      from 'vuex';
 import textContent       from "../assets/language_dict/language_dict.json"
 import NetworkButtons    from "../components/Networks_buttons.vue"
-import { SignUp }        from '../functions/auth'
+import { Sign_Up }        from '../functions/auth'
 
 export default {
 	components: {
@@ -29,7 +29,8 @@ export default {
 	},
 
 	computed: mapState({
-		lang_nb		    : state => state.lang_nb
+		lang_nb    : state => state.lang_nb,
+		user_token : state =>  state.user_token,
 	}),
 
 	methods: {
@@ -51,12 +52,11 @@ export default {
 				"connect_with_twitter" : false,
 			}
 			try {
-				let sign_up_res = await SignUp(form)
+				let sign_up_res = await Sign_Up(form)
 				console.log("sign_up res: ", sign_up_res)
 				if (sign_up_res.status == 200) {
-					console.log("Adding token to cookies")
-					this.$cookies.set('token', sign_up_res.data.token)
-					this.$store.commit('SET_USER_ID', sign_up_res.data.id)
+					console.log("Adding token to state")
+					this.$store.commit('SET_USER_TOKEN', sign_up_res.data.token)
 					this.$store.commit('SET_CONNECTION', true)
 					this.$router.push('/search')
 				}

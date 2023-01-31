@@ -1,12 +1,11 @@
 <script>
 import { ref, computed } from 'vue'
-import { mapState, useStore } from 'vuex';
+import { mapState } from 'vuex';
 import textContent from "../assets/language_dict/language_dict.json"
 
 
 export default {
 	data() {
-		const store = useStore()
 		return {
 			visible        : false,
 			username       : '',
@@ -16,7 +15,8 @@ export default {
 	},
 	computed: mapState({
 		lang_nb: state => state.lang_nb,
-		mdp_error: state => state.mdp_error,
+		user_token : state =>  state.user_token,
+		mdp_error: state => state.mdp_error, // TO BE CHAAAAAAAAAAAANGED!!!
 	}),
 	methods: {
 		update_password_visibility() {

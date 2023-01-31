@@ -66,7 +66,7 @@ module.exports = (db_pool) => {
                 let result = await auth_functions.signup(username, firstName, lastName, mail, password, 'pic', 'en')
                 let id = result.insertId
                 let token = auth_functions.create_access_token(id)
-                res.status(200).send({message: "Successfully created user.", token: token, id : id})
+                res.status(200).send({message: "Successfully created user.", token: token})
             }
             catch (e) {
                 if (e.code == 'ER_DUP_ENTRY') {
@@ -107,7 +107,7 @@ module.exports = (db_pool) => {
                 let is_password_ok = await auth_functions.check_password(user, req.body.password)
                 if (is_password_ok) {
                     let token = auth_functions.create_access_token(user.id)
-                    return res.status(200).send({message: "Login Sucess", token: token, id : user.id})
+                    return res.status(200).send({message: "Login Sucess", token: token})
                 }
 
                 return res.status(201).send({message: "Signin failed", token: token})

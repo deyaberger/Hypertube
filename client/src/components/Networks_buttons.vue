@@ -8,7 +8,8 @@ export default {
 		type : String,
 	},
 	computed: mapState({
-		lang_nb: state => state.lang_nb,
+		lang_nb    : state => state.lang_nb,
+		user_token : state =>  state.user_token,
 	}),
 	methods: {
 		get_button_content() {

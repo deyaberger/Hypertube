@@ -1,7 +1,7 @@
 <script>
 import { mapState } from 'vuex';
 import textContent from "../assets/language_dict/language_dict.json"
-import { timeConvert } from "../functions/utils.js"
+import { Get_Formatted_Time } from "../functions/utils.js"
 
 export default {
 	props: {
@@ -10,11 +10,12 @@ export default {
 	data() {
 		return {
 			text_content : textContent.MOVIES,
-			timeConvert  : timeConvert,
+			Get_Formatted_Time  : Get_Formatted_Time,
 		}
 	},
 	computed: mapState({
-      	lang_nb  : state =>  state.lang_nb,
+		lang_nb    : state =>  state.lang_nb,
+		user_token : state =>  state.user_token,
     }),
 
 }
@@ -46,7 +47,7 @@ export default {
 						</div>
 						<div class="info-section">
 							<label>{{text_content.time[lang_nb]}}</label>
-							<span class="time">{{timeConvert(movie.length_minutes)}}</span>
+							<span class="time">{{Get_Formatted_Time(movie.length_minutes)}}</span>
 						</div>
 						<div class="info-section">
 							<label>{{text_content.rating[lang_nb]}}</label>

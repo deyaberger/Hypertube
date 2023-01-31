@@ -1,5 +1,5 @@
 <script>
-import { get_all_movies, add_json_to_db } from "../functions/populate_db.js"
+import { Get_All_Movies, Dump_Json_To_DB } from "../functions/populate_db.js"
 
 export default {
 	data() {
@@ -35,14 +35,14 @@ export default {
 			this.current_page = 1;
 
 			this.yts_on = true;
-			let res = await get_all_movies(source, 1);
+			let res = await Get_All_Movies(source, 1);
 			this.yts_movie_count = res.data.movie_count;
 
 
 			this.yts_currently_fetched = (20 * (this.current_page - 1))
 			this.yts_movie_count = 50; // TO DELETE
 			while (this.yts_currently_fetched < this.yts_movie_count) {
-				let res = await get_all_movies(source, this.current_page);
+				let res = await Get_All_Movies(source, this.current_page);
 				try {
 					this.yts_currently_fetched += res.data.movies.length;
 				}
@@ -78,7 +78,7 @@ export default {
 			const start = Date.now();
 			for (this.current_page; this.current_page < this.total_pages + 1; this.current_page++) {
 				console.log("SENDING SOMEHTING:")
-				let res = await add_json_to_db(source, this.current_page);
+				let res = await Dump_Json_To_DB(source, this.current_page);
 				if (res == null || res.status != 200) {
 					this.db_error = true;
 					break;

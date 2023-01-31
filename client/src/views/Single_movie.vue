@@ -1,8 +1,8 @@
 <script>
 import { mapState } from 'vuex';
 import vue3StarRatings from "vue3-star-ratings";
-import {parseMovies, get_movie_by_imdb_id} from "../functions/get_movies";
-import { timeConvert } from "../functions/utils.js";
+// import {get_movie_by_imdb_id} from "../functions/movies";
+import { Get_Formatted_Time } from "../functions/utils.js";
 import StarRating from 'vue-star-rating';
 
 
@@ -15,7 +15,7 @@ export default {
 			movie : [],
 			user_comment: "",
 			user_rating : 0,
-			timeConvert  : timeConvert,
+			Get_Formatted_Time  : Get_Formatted_Time,
 	}
 	},
 	components: {
@@ -23,17 +23,19 @@ export default {
 		StarRating
 	},
 	computed: mapState({
-		lang_nb: state => state.lang_nb,
+		lang_nb    : state => state.lang_nb,
+		user_token : state =>  state.user_token,
 	}),
 	methods: {
 		async get_movie_details() {
 			try {
 				console.log("IMDB ID: ", this.imdb_id)
-				console.log("TOKEN = ", this.$cookies.get('token'))
-				let res = await get_movie_by_imdb_id(this.imdb_id, this.$cookies.get('token'));
+				console.log("TOKEN = ", this.user_token)
+				// let res = await get_movie_by_imdb_id(this.imdb_id, this.$cookies.get('token'));
 				console.log("MOVIE RES = ", res)
 				if (res.status == 200) {
-					this.movie = parseMovies([res.data.movie])[0];
+					// this.movie = parseMovies([res.data.movie])[0]; TO BE REPLACED
+
 				}
 				else {
 					console.log(res.code, res.data)
@@ -98,7 +100,7 @@ export default {
 			</div>
 			<div class="col infos">
 				<b-icon-clock-fill class="icon time"></b-icon-clock-fill>
-				<span class="infos_content">{{timeConvert(movie.runtime)}}</span>
+				<span class="infos_content">{{Get_Formatted_Time(movie.runtime)}}</span>
 			</div>
 			<div class="col infos">
 				<span class="infos_content"><b-icon-star-fill class="icon score"></b-icon-star-fill></span>

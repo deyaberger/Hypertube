@@ -1,9 +1,9 @@
 <script>
 import SearchBar from '../components/Search_bar.vue'
 import SearchResults from '../components/Search_results.vue'
-import { mapState, useStore } from 'vuex';
+import { mapState } from 'vuex';
 import textContent from "../assets/language_dict/language_dict.json"
-import { getMovies, parseMovies, getHomePage } from "../functions/get_movies"
+import { Get_Movies_Research, Get_Recommendations } from "../functions/movies"
 
 export default {
 	components: {
@@ -38,11 +38,11 @@ export default {
 				let res = null
 				if (this.user_research == true) {
 					console.log("getting homepage")
-					res = await getHomePage(this.$cookies.get('token'));
+					res = await Get_Recommendations(this.user_token);
 				}
 				else {
 					console.log("getting getting form results")
-					res = await getMovies(this.form, this.lang_nb, this.user_id, this.$cookies.get('token'));
+					res = await Get_Movies_Research(this.form, this.lang_nb, this.user_id, this.user_token);
 				}
 				if (res.status == 200) {
 					this.movies = res.data
@@ -67,8 +67,8 @@ export default {
 	},
 	computed: {
 	...mapState({
-      	lang_nb  : state =>  state.lang_nb,
-      	user_id  : state =>  state.user_id,
+      	lang_nb    : state =>  state.lang_nb,
+      	user_token : state =>  state.user_token,
     }),
 	},
 	watch: {

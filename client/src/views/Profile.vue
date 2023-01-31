@@ -1,6 +1,5 @@
 <script>
 import { mapState } from 'vuex';
-import fakeData from "../assets/fake_library/fake_data_search_results.json";
 import textContent from "../assets/language_dict/language_dict.json";
 import SearchResults from '../components/Search_results.vue'
 
@@ -18,7 +17,8 @@ export default {
 		}
 	},
 	computed: mapState({
-      	lang_nb  : state =>  state.lang_nb,
+		lang_nb    : state =>  state.lang_nb,
+		user_token : state =>  state.user_token,
     }),
 	methods: {
 		update_follow() {
