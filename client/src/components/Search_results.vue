@@ -1,7 +1,7 @@
 <script>
 import { mapState } from 'vuex';
 import textContent from "../assets/language_dict/language_dict.json"
-import { timeConvert } from "../functions/utils.js"
+import { Get_Formatted_Time } from "../functions/utils.js"
 
 export default {
 	props: {
@@ -10,11 +10,12 @@ export default {
 	data() {
 		return {
 			text_content : textContent.MOVIES,
-			timeConvert  : timeConvert,
+			Get_Formatted_Time  : Get_Formatted_Time,
 		}
 	},
 	computed: mapState({
-      	lang_nb  : state =>  state.lang_nb,
+		lang_nb    : state =>  state.lang_nb,
+		user_token : state =>  state.user_token,
     }),
 
 }
@@ -25,9 +26,9 @@ export default {
 		<div v-if="movie_list == null" class = "col-md-auto">
 			<b-spinner label="Loading..." variant="success" class="mt-5"></b-spinner>
 		</div>
-			<router-link v-else :to="'/movie/' + movie.imdb_code" class="col-md-4 movie-card" v-for="movie in movie_list" :key="movie" style="text-decoration: none">
+			<router-link v-else :to="'/movie/' + movie.id" class="col-md-4 movie-card" v-for="movie in movie_list" :key="movie" style="text-decoration: none">
 				<div class="movie-header">
-						<img class="movie-image" :src="movie.large_cover_image" alt="movie_image"  onerror="this.src='../src/assets/missing_cover.jpeg';"/>
+						<img class="movie-image" :src="movie.images_list[1]" alt="movie_image"  onerror="this.src='../src/assets/missing_cover.jpeg';"/>
 						<b-icon-info-circle-fill class="h2 header-icon"></b-icon-info-circle-fill>
 				</div>
 				<div class="movie-content">
@@ -38,7 +39,7 @@ export default {
 					<div class="movie-info">
 						<div class="info-section">
 							<label>{{text_content.genre[lang_nb]}}</label>
-							<span>{{movie.genres}}</span>
+							<span>{{movie.genres_list[0]}}</span>
 						</div>
 						<div class="info-section">
 							<label>{{text_content.year[lang_nb]}}</label>
@@ -46,11 +47,11 @@ export default {
 						</div>
 						<div class="info-section">
 							<label>{{text_content.time[lang_nb]}}</label>
-							<span class="time">{{timeConvert(movie.runtime)}}</span>
+							<span class="time">{{Get_Formatted_Time(movie.length_minutes)}}</span>
 						</div>
 						<div class="info-section">
 							<label>{{text_content.rating[lang_nb]}}</label>
-							<span>{{movie.rating}}/10</span>
+							<span>{{movie.imdb_rating}}/10</span>
 						</div>
 					</div>
 				</div>

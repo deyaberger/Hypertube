@@ -1,4 +1,4 @@
-export function timeConvert(n) {
+export function Get_Formatted_Time(n) {
     var num = n;
     var hours = (num / 60);
     var rhours = Math.floor(hours);

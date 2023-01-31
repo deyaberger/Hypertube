@@ -10,6 +10,7 @@ const store = createStore({
 	  language         : 'eng',
 	  lang_nb		   : 0,
 	  user_connected   : false,
+	  user_token	   : null,
     }
   },
   mutations: {
@@ -19,6 +20,9 @@ const store = createStore({
 	},
 	SET_CONNECTION(state, connection_status) {
 		state.user_connected = connection_status
+	},
+	SET_USER_TOKEN(state, token) {
+		state.user_token = token
 	},
   }
 })

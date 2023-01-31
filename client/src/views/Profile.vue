@@ -1,6 +1,5 @@
 <script>
 import { mapState } from 'vuex';
-import fakeData from "../assets/fake_library/fake_data_search_results.json";
 import textContent from "../assets/language_dict/language_dict.json";
 import SearchResults from '../components/Search_results.vue'
 
@@ -18,10 +17,11 @@ export default {
 		}
 	},
 	computed: mapState({
-      	lang_nb  : state =>  state.lang_nb,
+		lang_nb    : state =>  state.lang_nb,
+		user_token : state =>  state.user_token,
     }),
 	methods: {
-		Change_follow() {
+		update_follow() {
 			this.followed = !this.followed
 		}
 	}
@@ -43,7 +43,7 @@ export default {
 						style="z-index: 1;">
 						<router-link to="/edit_profile" class="nav-link">Edit profile</router-link>
 					</button>
-					<button v-else type="button" class="btn btn-outline-dark" :class="{'btn-dark': followed}" @click="Change_follow" data-mdb-ripple-color="dark"
+					<button v-else type="button" class="btn btn-outline-dark" :class="{'btn-dark': followed}" @click="update_follow" data-mdb-ripple-color="dark"
 						style="z-index: 1;">
 						<span v-if="!followed">Follow</span>
 						<span v-else>Unfollow</span>

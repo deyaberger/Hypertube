@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-export const signup = async function(form) {
+export const Sign_Up = async function(form) {
     console.log("Signin up : ", form)
 	let request = {
 		url: "http://127.0.0.1:8071/api/auth/signup",
@@ -8,7 +8,7 @@ export const signup = async function(form) {
 		headers: {
 			'Access-Control-Allow-Origin': '*',
 			"Content-type" : "application/json",
-			'Accept-Encoding': 'gzip, deflate, br',
+			// 'Accept-Encoding': 'gzip, deflate, br',
 		},
         data: JSON.stringify({
             "username"  : form.username,
@@ -24,7 +24,7 @@ export const signup = async function(form) {
 }
 
 
-export const signin = async function(form) {
+export const Sign_In = async function(form) {
     console.log("Signin in")
 	let request = {
 		url: "http://127.0.0.1:8071/api/auth/signin",
@@ -32,7 +32,7 @@ export const signin = async function(form) {
 		headers: {
 			'Access-Control-Allow-Origin': '*',
 			"Content-type" : "application/json",
-			'Accept-Encoding': 'gzip, deflate, br',
+			// 'Accept-Encoding': 'gzip, deflate, br',
 		},
         data: JSON.stringify({
             "username"  : form.username,

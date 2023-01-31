@@ -8,10 +8,11 @@ export default {
 		type : String,
 	},
 	computed: mapState({
-		lang_nb: state => state.lang_nb,
+		lang_nb    : state => state.lang_nb,
+		user_token : state =>  state.user_token,
 	}),
 	methods: {
-		ButtonContent() {
+		get_button_content() {
 			if (this.type == "signup") {
 				return textContent.SIGNUP.sign_up_with[this.lang_nb]
 			}
@@ -23,19 +24,19 @@ export default {
 
 <template>
 	<button class="mt-3 loginBtn loginBtn--facebook">
-		{{ButtonContent()}}Facebook
+		{{get_button_content()}}Facebook
 	</button>
 	<span>
 		<button class="loginBtn loginBtn--google">
-			{{ButtonContent()}}Google
+			{{get_button_content()}}Google
 		</button>
 	</span>
 	<button class="mt-3 loginBtn loginBtn--42">
-		{{ButtonContent()}}42
+		{{get_button_content()}}42
 	</button>
 	<span>
 		<button class="mt-3 loginBtn loginBtn--twitter">
-			{{ButtonContent()}}twitter
+			{{get_button_content()}}twitter
 		</button>
 	</span>
 </template>

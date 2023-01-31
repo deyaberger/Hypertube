@@ -1,21 +1,21 @@
 <script>
 import { mapState } from 'vuex';
 import vue3StarRatings from "vue3-star-ratings";
-import {parseMovies, get_movie_by_imdb_id} from "../functions/get_movies";
-import { timeConvert } from "../functions/utils.js";
+import {Get_Single_Movie_Details} from "../functions/movies";
+import { Get_Formatted_Time } from "../functions/utils.js";
 import StarRating from 'vue-star-rating';
 
 
 export default {
 	props: {
-		imdb_id: String,
+		id: Number,
 	},
 	data() {
 		return {
 			movie : [],
 			user_comment: "",
 			user_rating : 0,
-			timeConvert  : timeConvert,
+			Get_Formatted_Time  : Get_Formatted_Time,
 	}
 	},
 	components: {
@@ -23,17 +23,19 @@ export default {
 		StarRating
 	},
 	computed: mapState({
-		lang_nb: state => state.lang_nb,
+		lang_nb    : state => state.lang_nb,
+		user_token : state =>  state.user_token,
 	}),
 	methods: {
-		async getMovieResponse() {
+		async get_movie_details() {
 			try {
-				console.log("IMDB ID: ", this.imdb_id)
-				console.log("TOKEN = ", this.$cookies.get('token'))
-				let res = await get_movie_by_imdb_id(this.imdb_id, this.$cookies.get('token'));
+				console.log("IMDB ID: ", this.id)
+				console.log("TOKEN = ", this.user_token)
+				let res = await Get_Single_Movie_Details(this.id, this.user_token);
 				console.log("MOVIE RES = ", res)
 				if (res.status == 200) {
-					this.movie = parseMovies([res.data.movie])[0];
+					// this.movie = parseMovies([res.data.movie])[0]; TO BE REPLACED
+
 				}
 				else {
 					console.log(res.code, res.data)
@@ -67,13 +69,14 @@ export default {
 
 	},
 	mounted() {
-		this.getMovieResponse();
+		this.get_movie_details();
 	},
 }
 </script>
 
 <template>
 	<div class="homemade-container">
+		<p>HELLLO {{ id }}</p>
 		<div class="row justify-content-md-center">
 			<div v-if="movie.length == 0" class="col-md-auto">
 						<b-spinner label="Loading..." variant="success" class="mt-5"></b-spinner>
@@ -98,7 +101,7 @@ export default {
 			</div>
 			<div class="col infos">
 				<b-icon-clock-fill class="icon time"></b-icon-clock-fill>
-				<span class="infos_content">{{timeConvert(movie.runtime)}}</span>
+				<span class="infos_content">{{Get_Formatted_Time(movie.runtime)}}</span>
 			</div>
 			<div class="col infos">
 				<span class="infos_content"><b-icon-star-fill class="icon score"></b-icon-star-fill></span>
