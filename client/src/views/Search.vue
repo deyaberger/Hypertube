@@ -26,12 +26,12 @@ export default {
 		}
 	},
 	methods: {
-		getMoviesSlice() {
+		get_movies_page_slice() {
 			var start = (this.currentPage - 1) * this.perPage
 			var end = start + this.perPage
 			this.movies_slice = this.movies.slice(start, end)
 		},
-		async getFormResults() {
+		async get_form_results() {
 			try {
 				this.movies = null
 				this.movies_slice = null
@@ -47,7 +47,7 @@ export default {
 				if (res.status == 200) {
 					this.movies = res.data
 					this.number_of_results = this.movies.length;
-					this.getMoviesSlice()
+					this.get_movies_page_slice()
 				}
 				else {
 					throw("Unknow error code getting movies")
@@ -74,13 +74,13 @@ export default {
 	watch: {
 		currentPage: {
 			handler:function() {
-				this.getMoviesSlice()
+				this.get_movies_page_slice()
 			},
 			deep:true
 		},
 		form: {
 			handler:function() {
-				this.getFormResults()
+				this.get_form_results()
 			},
 			deep:true
 		}

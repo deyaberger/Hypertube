@@ -15,7 +15,7 @@ export default {
       	lang_nb  : state =>  state.lang_nb,
     }),
 	methods: {
-		Change_follow() {
+		update_follow() {
 			this.followed = !this.followed
 		}
 	}

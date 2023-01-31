@@ -21,7 +21,7 @@ export default {
       	lang_nb  : state =>  state.lang_nb,
     }),
 	methods: {
-		Change_follow() {
+		update_follow() {
 			this.followed = !this.followed
 		}
 	}
@@ -43,7 +43,7 @@ export default {
 						style="z-index: 1;">
 						<router-link to="/edit_profile" class="nav-link">Edit profile</router-link>
 					</button>
-					<button v-else type="button" class="btn btn-outline-dark" :class="{'btn-dark': followed}" @click="Change_follow" data-mdb-ripple-color="dark"
+					<button v-else type="button" class="btn btn-outline-dark" :class="{'btn-dark': followed}" @click="update_follow" data-mdb-ripple-color="dark"
 						style="z-index: 1;">
 						<span v-if="!followed">Follow</span>
 						<span v-else>Unfollow</span>

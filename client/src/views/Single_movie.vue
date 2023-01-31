@@ -26,7 +26,7 @@ export default {
 		lang_nb: state => state.lang_nb,
 	}),
 	methods: {
-		async getMovieResponse() {
+		async get_movie_details() {
 			try {
 				console.log("IMDB ID: ", this.imdb_id)
 				console.log("TOKEN = ", this.$cookies.get('token'))
@@ -67,7 +67,7 @@ export default {
 
 	},
 	mounted() {
-		this.getMovieResponse();
+		this.get_movie_details();
 	},
 }
 </script>

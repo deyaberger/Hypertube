@@ -5,7 +5,6 @@ import textContent from "../assets/language_dict/language_dict.json"
 
 export default {
 	data() {
-		const store = useStore()
 		return {
 			text_content : textContent.RESETPASS
 		}

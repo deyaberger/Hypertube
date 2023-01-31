@@ -19,7 +19,7 @@ export default {
 		mdp_error: state => state.mdp_error,
 	}),
 	methods: {
-		password_visibility() {
+		update_password_visibility() {
 			this.visible = !this.visible
 		},
 	},
@@ -43,7 +43,7 @@ export default {
 					:placeholder="text_content.pwd[lang_nb]"
 					>
 					<span class="input-group-btn">
-						<button class="btn" v-on:click="password_visibility" type="button">
+						<button class="btn" v-on:click="update_password_visibility" type="button">
 							<b-icon-eye-fill v-if="!visible"></b-icon-eye-fill>
 							<b-icon-eye-slash-fill v-else></b-icon-eye-slash-fill>
 						</button>
@@ -63,5 +63,5 @@ export default {
 	@import "../assets/shared_scss/login.scss";
 	@import "../assets/shared_scss/shared.scss";
 
-	
+
 </style>

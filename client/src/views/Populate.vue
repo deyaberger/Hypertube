@@ -59,7 +59,7 @@ export default {
 			console.log("Stoped at page: ", this.current_page - 1)
 		},
 
-		Stop(source) {
+		stop_process(source) {
 			this.stop = true;
 		},
 
@@ -121,7 +121,7 @@ export default {
         <button class="submit_button" @click="add_to_db('yts')" v-if="!db_on">
 			Add YTS to BDD
 		</button>
-		<button class="submit_button" @click="Stop('yts')" v-else>
+		<button class="submit_button" @click="stop_process('yts')" v-else>
 			Stop
 		</button>
 		<p v-if="db_on || db_done" class="mt-4">Putting data to db: {{current_page - 1}} / {{total_pages}}

@@ -22,9 +22,9 @@ export default {
 									title         : '',
 									min_rating    : 0,
 									genre         : '',
-									quality       : '1080p',
-									min_year      : 1920,
-									sort_category : ['year'],
+									quality       : '',
+									min_year      : 1900,
+									sort_by       : 'title',
 									asc_or_desc   : 'desc',
 								}
 		}
@@ -43,6 +43,9 @@ export default {
 			else {
 				this.form.asc_or_desc = 'desc'
 			}
+		},
+		is_current_sort_category() {
+			return true
 		},
 		update_genre(genre) {
 			this.form.genre = genre
@@ -108,7 +111,7 @@ export default {
 					<Slider
 						class="green_slider"
 						v-model="form.min_year"
-						:min="1920"
+						:min="1900"
 						:max="2023"
 						:step="10"
 						tooltipPosition="bottom"
@@ -132,7 +135,7 @@ export default {
 			</div>
 			<div class = "nav-item">
 				<hr class="solid">
-				<p class="filter">Min {{text_content.quality[lang_nb]}}</p>
+				<p class="filter">{{text_content.quality[lang_nb]}}</p>
 				<div class="row">
 				<div
 					v-for="quality in quality_list" :key="quality"
@@ -155,7 +158,7 @@ export default {
 					href="#"
 					v-for="sort_category in sorting_list" :key="sort_category"
 					class="nav-link"
-					:class="{ active: sort_category[0] == form.sort_category[0] }"
+					:class="{ active: is_current_sort_category() }"
 					@click="update_sort_cat(sort_category)"
 					>{{sort_category[lang_nb]}}</a>
 				</div>

@@ -37,7 +37,7 @@ export default {
 			this.visible = !this.visible
 		},
 
-		async onSubmit(e){
+		async on_submit(e){
 			e.preventDefault();
 			const form = {
 				"username"             : this.username,
@@ -83,7 +83,7 @@ export default {
 
 <template>
 	<div class="container homemade-container ">
-		<form @submit="onSubmit">
+		<form @submit="on_submit">
 			<h2 class="mb-4 text-center">{{text_content.sign_up[lang_nb]}}:</h2>
 			<div class="input mb-2">
 				<label class = "mb-2" for="username">{{text_content.create_user[lang_nb]}}</label>
