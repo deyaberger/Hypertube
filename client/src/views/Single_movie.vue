@@ -2,6 +2,7 @@
 import { mapState } from 'vuex';
 import vue3StarRatings from "vue3-star-ratings";
 import {Get_Single_Movie_Details, Parse_Single_Movie} from "../functions/movies";
+import { Get_Comments_By_Movie_ID, Parse_Comments } from "../functions/comments";
 import { Get_Formatted_Time } from "../functions/utils.js";
 import StarRating from 'vue-star-rating';
 
@@ -13,6 +14,7 @@ export default {
 	data() {
 		return {
 			movie : [],
+			comments : [],
 			user_comment: "",
 			user_rating : 0,
 			Get_Formatted_Time  : Get_Formatted_Time,
@@ -27,10 +29,24 @@ export default {
 		user_token : state =>  state.user_token,
 	}),
 	methods: {
+		async get_comments() {
+			try {
+				let res = await Get_Comments_By_Movie_ID(this.movie_id, this.user_token);
+				console.log("MOVIE COMMENTS = ", res)
+				if (res.status == 200) {
+					this.comments = Parse_Comments(res.data);
+				}
+				else {
+					console.log(res.code, res.data)
+					throw("Unknow error code getting movies")
+				}
+			}
+			catch (e) {
+				throw(e)
+			}
+		},
 		async get_movie_details() {
 			try {
-				console.log("ID: ", this.movie_id)
-				console.log("TOKEN = ", this.user_token)
 				let res = await Get_Single_Movie_Details(this.movie_id, this.user_token);
 				console.log("MOVIE RES = ", res)
 				if (res.status == 200) {
@@ -73,6 +89,7 @@ export default {
 	},
 	mounted() {
 		this.get_movie_details();
+		this.get_comments()
 	},
 }
 </script>
@@ -153,19 +170,19 @@ export default {
 				Send review
 			</button>
 		</div>
-		<div v-for="comment in movie.list_comments" :key="comment" class="row people_reviews">
+		<div v-for="comment in comments" :key="comment" class="row people_reviews">
 			<hr class="solid">
 			<div class="col-3 rating">
 				<b-icon-star-fill class="icon score"></b-icon-star-fill>
 				<span><span class="big">{{comment.rating}}</span>/10</span>
 			</div>
-			<div class="col-3 username">
-				@{{comment.name}}
+			<div class="col username">
+				@{{comment.username}}
 			</div>
-			<div class="col time">
-				<span>{{comment.date}} {{comment.hour}}</span>
+			<div class="col-3 time">
+				<span>{{comment.date}}</span>
 			</div>
-			<div class="comment">'{{comment.comment}}'</div>
+			<div class="comment">'{{comment.content}}'</div>
 		</div>
 	</div>
 </template>
@@ -174,5 +191,9 @@ export default {
 
 <style lang="scss" scoped>
 @import "../assets/shared_scss/single_movie.scss";
+
+.time {
+	text-align: end;
+}
 
 </style>

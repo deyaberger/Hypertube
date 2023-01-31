@@ -7,7 +7,7 @@ module.exports = (db_pool) => {
 
     router.post("/"                    , auth_controller.authenticateToken, comment_controller.post_comment           )
     router.get ("/user/:author_id"     , auth_controller.authenticateToken, comment_controller.get_comments_from_user )
-    router.get ("/movie/:movie_imdb_id", auth_controller.authenticateToken, comment_controller.get_comments_from_movie)
+    router.get ("/movie/:movie_id"     , auth_controller.authenticateToken, comment_controller.get_comments_from_movie)
 
     return router
 }
