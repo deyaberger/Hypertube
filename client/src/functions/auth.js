@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-export const signup = async function(form) {
+export const SignUp = async function(form) {
     console.log("Signin up : ", form)
 	let request = {
 		url: "http://127.0.0.1:8071/api/auth/signup",
@@ -24,7 +24,7 @@ export const signup = async function(form) {
 }
 
 
-export const signin = async function(form) {
+export const SignIn = async function(form) {
     console.log("Signin in")
 	let request = {
 		url: "http://127.0.0.1:8071/api/auth/signin",

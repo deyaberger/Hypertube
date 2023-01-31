@@ -2,7 +2,7 @@
 import { mapState } from 'vuex';
 import textContent from "../assets/language_dict/language_dict.json"
 import NetworkButtons from "../components/Networks_buttons.vue"
-import { signin }        from '../functions/auth'
+import { SignIn }        from '../functions/auth'
 
 
 export default {
@@ -37,7 +37,7 @@ export default {
 				"password" : this.password
 			}
 			try {
-				let sign_in_res = await signin(form)
+				let sign_in_res = await SignIn(form)
 				console.log("Sign in res:", sign_in_res)
 				if (sign_in_res.status == 200) {
 					console.log("Adding token to cookies")

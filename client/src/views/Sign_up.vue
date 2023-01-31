@@ -2,7 +2,7 @@
 import { mapState }      from 'vuex';
 import textContent       from "../assets/language_dict/language_dict.json"
 import NetworkButtons    from "../components/Networks_buttons.vue"
-import { signup }        from '../functions/auth'
+import { SignUp }        from '../functions/auth'
 
 export default {
 	components: {
@@ -51,7 +51,7 @@ export default {
 				"connect_with_twitter" : false,
 			}
 			try {
-				let sign_up_res = await signup(form)
+				let sign_up_res = await SignUp(form)
 				console.log("sign_up res: ", sign_up_res)
 				if (sign_up_res.status == 200) {
 					console.log("Adding token to cookies")
