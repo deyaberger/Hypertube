@@ -34,7 +34,8 @@ module.exports = (db_pool) => {
                 FROM comments
                     LEFT JOIN users u on comments.user_id = u.id
                 WHERE comments.movie_id = ?
-                GROUP BY comments.id;`,
+                GROUP BY comments.id
+                ORDER BY date DESC;`,
                 movie_id)
                 return comments
             }

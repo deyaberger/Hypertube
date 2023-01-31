@@ -2,7 +2,7 @@
 import { mapState } from 'vuex';
 import vue3StarRatings from "vue3-star-ratings";
 import {Get_Single_Movie_Details, Parse_Single_Movie} from "../functions/movies";
-import { Get_Comments_By_Movie_ID, Parse_Comments } from "../functions/comments";
+import { Get_Comments_By_Movie_ID, Parse_Comments, Post_Comment } from "../functions/comments";
 import { Get_Formatted_Time } from "../functions/utils.js";
 import StarRating from 'vue-star-rating';
 
@@ -61,16 +61,21 @@ export default {
 				throw(e)
 			}
 		},
-		addReview(comment, rating) {
-			const d = new Date();
-			const complete_info = {
-				"name"    : "test",
-				"date"    : d.toDateString(),
-				"hour"    : d.toLocaleTimeString(),
-				"rating"  : rating,
-				"comment" : comment,
+		async post_comment(content, rating) {
+			try {
+				let res = await Post_Comment(this.movie_id, content, rating, this.user_token)
+				console.log("Comment post RES = ", res)
+				if (res.status == 200) {
+					this.get_comments();
+				}
+				else {
+					console.log(res.code, res.data)
+					throw("Unknow error code getting movies")
+				}
 			}
-			this.movie.list_comments.unshift(complete_info);
+			catch (e) {
+				throw(e)
+			}
 		},
 
 		reviewComplete() {
@@ -163,7 +168,7 @@ export default {
 				rows="3"
 				max-rows="6"
 				></b-form-textarea>
-			<button @click="addReview(user_comment, user_rating)"
+			<button @click="post_comment(user_comment, user_rating)"
 				:disabled="!reviewComplete()"
 				class="submit_button"
 				type = "submit">
