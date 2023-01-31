@@ -49,7 +49,7 @@ module.exports = (db_pool) => {
         },
 
         search_movies : async (searching_user_id, query_term, minimum_rating, genre, quality, min_year, max_year, language, asc_or_desc, sort_by) => {
-            sort_by        = sort_by       ? sort_by       : 'max_seeds'
+            sort_by        = sort_by        ? sort_by        : 'max_seeds'
             asc_or_desc    = asc_or_desc    ? asc_or_desc    : 'ASC'
             genre          = genre          ? genre          : '%',
             quality        = quality        ? quality        : '%',
@@ -71,15 +71,20 @@ module.exports = (db_pool) => {
             })
             try {
                 let [movies, ] = await db_pool.query(`
-                WITH aggregate_genres as (SELECT movie_id, JSON_ARRAYAGG(name) as genres_list
-                    from genres
-                    group by movie_id)
-                SELECT movies.id, yts_id, imdb_code, title, imdb_rating, year, length_minutes, language, summary, genres_list, json_objectagg(IFNULL(images.size, ''), images.url) as images_list
+                WITH aggregate_genres as (SELECT movie_id, JSON_ARRAYAGG(name) as genres_list from genres group by movie_id),
+                    aggregate_quality as (SELECT movie_id, JSON_ARRAYAGG(quality) as quality_list from torrents group by movie_id)
+                SELECT movies.id, yts_id, imdb_code, title, imdb_rating, year, length_minutes, language, summary, genres_list, json_objectagg(IFNULL(images.size, ''), images.url) as images_list, MAX(t.seeds) as max_seeds, quality_list
                     FROM movies
                     INNER JOIN genres
                         ON movies.id = genres.movie_id
                         AND genres.name LIKE ?
+                    INNER JOIN torrents
+                        ON movies.id = torrents.movie_id
+                        AND torrents.quality >= ?
+                    LEFT JOIN torrents t
+                        ON movies.id = t.movie_id
                     LEFT JOIN aggregate_genres ON movies.id = aggregate_genres.movie_id
+                    LEFT JOIN aggregate_quality ON movies.id = aggregate_quality.movie_id
                     LEFT JOIN images ON movies.id = images.movie_id
                     WHERE imdb_rating >= ?
                         AND year >= ?
@@ -88,6 +93,7 @@ module.exports = (db_pool) => {
                 ORDER BY ${sort_by} ${asc_or_desc}
                 LIMIT 26 OFFSET 0
                 `, [genre          ? genre          : '%',
+                    quality        ? quality        : '%',
                     minimum_rating ? minimum_rating : '%',
                     min_year       ? min_year       : '%'])
                 return movies;

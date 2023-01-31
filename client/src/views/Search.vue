@@ -41,7 +41,7 @@ export default {
 					res = await Get_Recommendations(this.user_token);
 				}
 				else {
-					console.log("getting getting form results")
+					console.log("getting form results")
 					res = await Get_Movies_Research(this.form, this.lang_nb, this.user_token);
 				}
 				if (res.status == 200) {
