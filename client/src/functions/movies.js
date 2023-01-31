@@ -23,6 +23,22 @@ function _parse_form_for_back(form, lang_nb) {
 
 }
 
+export const Parse_Single_Movie = (data) => {
+	const res = data[0]
+	let parsed_data = {
+		"title"             : res.title,
+		"genres"            : res.genres_list,
+		"large_cover_image" : res.images_list[0],
+		"list_comments"     : [],
+		"year"              : res.year,
+		"runtime"           : res.length_minutes,
+		"rating"            : res.imdb_rating,
+		"summary"           : res.summary,
+		"cast"              : [],
+	}
+	return parsed_data
+}
+
 export const Get_Recommendations = async(token) => {
 	let request = {
 		url: `http://127.0.0.1:8071/api/movies/home`,
@@ -66,6 +82,9 @@ export const Get_Single_Movie_Details = async(movie_id , token) => {
 			'Access-Control-Allow-Origin': '*',
 			"Content-type"               : "application/json",
 			'Authorization'				 : `Bearer ${token}`
+		},
+		params : {
+			"movie_id" : movie_id
 		}
 	};
 	const response = await axios(request);

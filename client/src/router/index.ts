@@ -55,7 +55,7 @@ const router = createRouter({
 		component: Edit_profile,
 	},
 	{
-		path: "/movie/:id",
+		path: "/movie/:movie_id",
 		name: "movie",
 		props: true,
 		component: SingleMovie,

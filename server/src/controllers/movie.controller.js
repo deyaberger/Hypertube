@@ -5,7 +5,6 @@ module.exports = (db_pool) => {
         get_homepage : async (req, res) => {
             try {
                 let movies = await movie_functions.get_movies_homepage()
-                // console.log("got movies",movies)
                 res.status(200).send(movies)
             }
             catch (e) {
@@ -15,9 +14,7 @@ module.exports = (db_pool) => {
 
         get_movie_details: async (req, res) => {
             try {
-                let imdb_id = Number(req.params.imdb_id)
-                let movie = await movie_functions.get_movie_by_imdb_id(imdb_id)
-
+                let movie = await movie_functions.get_movie(Number(req.query.movie_id))
                 res.status(200).send(movie)
             }
             catch (e) {
@@ -39,7 +36,6 @@ module.exports = (db_pool) => {
                 let language          = req.query.language
                 let asc_or_desc       = req.query.asc_or_desc
                 let sort_by          = req.query.sort_by
-                console.log("searching_user_id, query_term, minimum_rating, genre, quality, min_year, language, sort_by, asc_or_desc", searching_user_id, query_term, minimum_rating, genre, quality, min_year, language, asc_or_desc, sort_by)
                 let movies = await movie_functions.search_movies(searching_user_id, query_term, minimum_rating, genre, quality, min_year, max_year, language, asc_or_desc, sort_by)
                 res.status(200).send(movies)
             }
@@ -50,7 +46,7 @@ module.exports = (db_pool) => {
 
         set_movie_watched: async (req, res) => {
             try {
-                let movie_id = Number(req.params.movie_id)
+                let movie_id = Number(req.query.movie_id)
                 let movie = await movie_functions.set_watched(req.user_id, movie_id)
                 res.status(200).send(movie)
             }

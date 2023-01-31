@@ -1,14 +1,14 @@
 <script>
 import { mapState } from 'vuex';
 import vue3StarRatings from "vue3-star-ratings";
-import {Get_Single_Movie_Details} from "../functions/movies";
+import {Get_Single_Movie_Details, Parse_Single_Movie} from "../functions/movies";
 import { Get_Formatted_Time } from "../functions/utils.js";
 import StarRating from 'vue-star-rating';
 
 
 export default {
 	props: {
-		id: Number,
+		movie_id: String,
 	},
 	data() {
 		return {
@@ -29,13 +29,12 @@ export default {
 	methods: {
 		async get_movie_details() {
 			try {
-				console.log("IMDB ID: ", this.id)
+				console.log("ID: ", this.movie_id)
 				console.log("TOKEN = ", this.user_token)
-				let res = await Get_Single_Movie_Details(this.id, this.user_token);
+				let res = await Get_Single_Movie_Details(this.movie_id, this.user_token);
 				console.log("MOVIE RES = ", res)
 				if (res.status == 200) {
-					// this.movie = parseMovies([res.data.movie])[0]; TO BE REPLACED
-
+					this.movie = Parse_Single_Movie(res.data);
 				}
 				else {
 					console.log(res.code, res.data)
@@ -65,6 +64,10 @@ export default {
 			}
 			console.log("review incomplete")
 			return false
+		},
+
+		get_separator(index, text_list) {
+			return (index < text_list.length - 1 ? ", " : "")
 		}
 
 	},
@@ -76,7 +79,6 @@ export default {
 
 <template>
 	<div class="homemade-container">
-		<p>HELLLO {{ id }}</p>
 		<div class="row justify-content-md-center">
 			<div v-if="movie.length == 0" class="col-md-auto">
 						<b-spinner label="Loading..." variant="success" class="mt-5"></b-spinner>
@@ -93,7 +95,7 @@ export default {
 		<div class="row general_infos-container align-items-center">
 			<div class="col infos">
 				<b-icon-camera-reels-fill class="icon genre"></b-icon-camera-reels-fill>
-				<span class="infos_content">{{movie.genres}}</span>
+				<span v-for="(genre, index) in movie.genres" class="infos_content">{{genre}}{{get_separator(index, movie.genres)}}</span>
 			</div>
 			<div class="col infos">
 				<b-icon-calendar2-minus-fill class="icon year"></b-icon-calendar2-minus-fill>
@@ -110,7 +112,7 @@ export default {
 		</div>
 		<div class="row summary_container">
 			<div class="col">
-				<p class="summary">{{movie.description_full}}</p>
+				<p class="summary">{{movie.summary}}</p>
 			</div>
 		</div>
 		<div class="row cast_container">
