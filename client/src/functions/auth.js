@@ -8,7 +8,7 @@ export const Sign_Up = async function(form) {
 		headers: {
 			'Access-Control-Allow-Origin': '*',
 			"Content-type" : "application/json",
-			'Accept-Encoding': 'gzip, deflate, br',
+			// 'Accept-Encoding': 'gzip, deflate, br',
 		},
         data: JSON.stringify({
             "username"  : form.username,
@@ -32,7 +32,7 @@ export const Sign_In = async function(form) {
 		headers: {
 			'Access-Control-Allow-Origin': '*',
 			"Content-type" : "application/json",
-			'Accept-Encoding': 'gzip, deflate, br',
+			// 'Accept-Encoding': 'gzip, deflate, br',
 		},
         data: JSON.stringify({
             "username"  : form.username,

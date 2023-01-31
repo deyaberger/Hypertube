@@ -45,8 +45,10 @@ export default {
 				this.form.asc_or_desc = 'desc'
 			}
 		},
-		is_current_sort_category() {
-			return true
+		is_current_sort_category(category) {
+			if (category == this.form.sort_by)
+				return true
+			return false
 		},
 		update_genre(genre) {
 			this.form.genre = genre
@@ -54,8 +56,8 @@ export default {
 		update_quality(quality) {
 			this.form.quality = quality
 		},
-		update_sort_cat(cat) {
-			this.form.sort_category = cat
+		update_sort_cat(category) {
+			this.form.sort_by = category
 		},
 		submit(e) {
 			e.preventDefault()
@@ -157,11 +159,11 @@ export default {
 				<div class="row justify-temp-md-center">
 					<a
 					href="#"
-					v-for="sort_category in sorting_list" :key="sort_category"
+					v-for="(value, key) in sorting_list"
 					class="nav-link"
-					:class="{ active: is_current_sort_category() }"
-					@click="update_sort_cat(sort_category)"
-					>{{sort_category[lang_nb]}}</a>
+					:class="{ active: is_current_sort_category(key)}"
+					@click="update_sort_cat(key)"
+					>{{value[lang_nb]}}</a>
 				</div>
 			</div>
 			<button v-if="form.asc_or_desc == 'desc'" class="btn a_to_z" @click="order" type="button">

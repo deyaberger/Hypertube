@@ -42,7 +42,7 @@ export default {
 				}
 				else {
 					console.log("getting getting form results")
-					res = await Get_Movies_Research(this.form, this.lang_nb, this.user_id, this.user_token);
+					res = await Get_Movies_Research(this.form, this.lang_nb, this.user_token);
 				}
 				if (res.status == 200) {
 					this.movies = res.data

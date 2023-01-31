@@ -2,7 +2,7 @@
 import { mapState }      from 'vuex';
 import textContent       from "../assets/language_dict/language_dict.json"
 import NetworkButtons    from "../components/Networks_buttons.vue"
-import { Sign_Up }        from '../functions/auth'
+import { Sign_Up }       from '../functions/auth'
 
 export default {
 	components: {
