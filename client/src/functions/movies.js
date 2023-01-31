@@ -55,3 +55,20 @@ export const Get_Movies_Research = async(form , lang_nb, token) => {
 	// console.log("response dans front: ", response)
 	return response;
 }
+
+
+
+export const Get_Single_Movie_Details = async(movie_id , token) => {
+	let request = {
+		url: `http://127.0.0.1:8071/api/movies/details/:${movie_id}`,
+		method: "get",
+		headers: {
+			'Access-Control-Allow-Origin': '*',
+			"Content-type"               : "application/json",
+			'Authorization'				 : `Bearer ${token}`
+		}
+	};
+	const response = await axios(request);
+	// console.log("response dans front: ", response)
+	return response;
+}

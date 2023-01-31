@@ -26,7 +26,7 @@ export default {
 		<div v-if="movie_list == null" class = "col-md-auto">
 			<b-spinner label="Loading..." variant="success" class="mt-5"></b-spinner>
 		</div>
-			<router-link v-else :to="'/movie/' + movie.imdb_code" class="col-md-4 movie-card" v-for="movie in movie_list" :key="movie" style="text-decoration: none">
+			<router-link v-else :to="'/movie/' + movie.id" class="col-md-4 movie-card" v-for="movie in movie_list" :key="movie" style="text-decoration: none">
 				<div class="movie-header">
 						<img class="movie-image" :src="movie.images_list[1]" alt="movie_image"  onerror="this.src='../src/assets/missing_cover.jpeg';"/>
 						<b-icon-info-circle-fill class="h2 header-icon"></b-icon-info-circle-fill>

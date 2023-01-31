@@ -146,7 +146,6 @@ export default {
 
 
 <style lang="scss" scoped>
-
 .nav-link {
 	color: rgb(143, 142, 142);
 	font-size: small;

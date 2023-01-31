@@ -197,5 +197,6 @@ module.exports = (db_pool) => {
                 throw (e)
             }
         }
+
     }
 }

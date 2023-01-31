@@ -55,7 +55,7 @@ const router = createRouter({
 		component: Edit_profile,
 	},
 	{
-		path: "/movie/:imdb_id",
+		path: "/movie/:id",
 		name: "movie",
 		props: true,
 		component: SingleMovie,
@@ -65,7 +65,7 @@ const router = createRouter({
 		name: "populate",
 		component: Populate,
 	},
-	
+
   ]
 })
 
