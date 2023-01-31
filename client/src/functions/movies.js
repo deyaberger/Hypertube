@@ -2,8 +2,8 @@ import axios from "axios"
 
 function _parse_form_for_back(form, lang_nb) {
 	const title       = form.title;
-	const min_rating  = form.min_rating == "rating" ? "imdb_rating" : form.min_rating;
-	const genre       = form.genre[0];
+	const min_rating  = form.min_rating;
+	const genre       = form.genre;
 	const quality     = form.quality;
 	const min_year    = form.min_year;
 	const language    = lang_nb == 0 ? 'en' : 'fr';

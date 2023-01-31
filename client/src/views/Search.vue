@@ -36,7 +36,7 @@ export default {
 				this.movies = null
 				this.movies_slice = null
 				let res = null
-				if (this.user_research == true) {
+				if (this.user_research < 1) {
 					console.log("getting homepage")
 					res = await Get_Recommendations(this.user_token);
 				}
@@ -63,6 +63,25 @@ export default {
 			this.form = form;
 			this.user_research += 1
 		},
+		reset_form() {
+			this.form = {
+				title         : '',
+				min_rating    : 0,
+				genre         : '',
+				quality       : '',
+				min_year      : 1900,
+				sort_by       : 'title',
+				asc_or_desc   : 'asc',
+			}
+		},
+		from_research_to_reco() {
+			this.user_research = 0,
+			this.reset_form()
+		},
+		from_reco_to_research() {
+			this.user_research = 2,
+			this.reset_form()
+		}
 
 	},
 	computed: {
@@ -95,8 +114,16 @@ export default {
 		<SearchBar @search_form="update_form"/>
 		<div class="results_container">
 			<div class="search_header">
-				<div v-if="user_research > 1" class="title">Research:</div>
-				<div v-else class="title">{{text_content.recommendations[lang_nb]}}:</div>
+				<div v-if="user_research > 1" class="title">
+					<p>{{ text_content.research[lang_nb] }}:</p>
+					<p class="nav-link">or</p>
+					<a class="nav-link active" href="#" @click="from_research_to_reco()">{{text_content.see_reco[lang_nb]}}</a>
+				</div>
+				<div v-else class="title">
+					<p>{{text_content.recommendations[lang_nb]}}:</p>
+					<p class="nav-link">or</p>
+					<a class="nav-link active" href="#" @click="from_reco_to_research()">{{text_content.see_all[lang_nb]}}</a>
+				</div>
 				<div v-if="number_of_results > 0" class="number_of_results">{{movies_slice ? movies_slice.length : 0}}/{{number_of_results}} {{text_content.results[lang_nb]}}</div>
 				<div v-else class="number_of_results">{{number_of_results}} {{text_content.results[lang_nb]}}</div>
 
@@ -120,6 +147,18 @@ export default {
 
 <style lang="scss" scoped>
 
+.nav-link {
+	color: rgb(143, 142, 142);
+	font-size: small;
+}
+.nav-link.active {
+	font-weight    : bold;
+	text-decoration: underline;
+}
+
+.nav-link.active:focus, .nav-link.active:hover {
+	color: white;
+}
 
 .results_container {
 	position: absolute;

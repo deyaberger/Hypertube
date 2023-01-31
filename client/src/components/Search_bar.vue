@@ -25,7 +25,7 @@ export default {
 									quality       : '',
 									min_year      : 1900,
 									sort_by       : 'title',
-									asc_or_desc   : 'desc',
+									asc_or_desc   : 'asc',
 								}
 		}
 	},
@@ -90,7 +90,8 @@ export default {
 			<div v-if="show">
 			<form @submit="submit" class="search-form">
 				<div class = "nav-item input-group">
-					<input class="input_text" type="text" v-model="tmp_title" v-on:keyup.enter="form.title = tmp_title"/>
+					<input class="input_text" type="text" v-model="tmp_title" v-on:keyup.enter="form.title = tmp_title"
+					:placeholder="text_content.title_research[lang_nb]"/>
 					<span class="input-group-btn">
 						<button class="btn search_icon" type="submit">
 							<b-icon-search color="white" @click="form.title = tmp_title"></b-icon-search>
@@ -129,7 +130,7 @@ export default {
 			</div>
 			<div class = "nav-item">
 				<hr class="solid">
-				<p class="filter">Min {{sorting_list.rating[lang_nb]}}</p>
+				<p class="filter">Min {{sorting_list.imdb_rating[lang_nb]}}</p>
 				<div>
 					<star-rating
 						v-model:rating="form.min_rating"
