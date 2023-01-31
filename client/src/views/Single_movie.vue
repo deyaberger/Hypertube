@@ -143,7 +143,7 @@ export default {
 				<span class="infos_content">{{Get_Formatted_Time(movie.runtime)}}</span>
 			</div>
 			<div class="col infos">
-				<span class="infos_content"><b-icon-star-fill class="icon score"></b-icon-star-fill></span>
+				<span class="infos_content"><b-icon-star-fill class="icon score" :class="get_rating_level(movie.rating)"></b-icon-star-fill></span>
 				<span class="infos_content"><span class="big">{{movie.rating}}</span>/10</span>
 			</div>
 		</div>

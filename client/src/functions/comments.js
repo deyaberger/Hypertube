@@ -2,6 +2,9 @@ import axios from "axios"
 
 export const Parse_Comments = (data) => {
 	data = data.comments
+	if (data.length == 0) {
+		return data
+	}
 	console.log("DATTTe: ", data[0].date, typeof(data[0].date))
 	let comments = []
 	for (let i = 0; i < data.length; i++) {
