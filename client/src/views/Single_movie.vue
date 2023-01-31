@@ -1,7 +1,7 @@
 <script>
 import { mapState } from 'vuex';
 import vue3StarRatings from "vue3-star-ratings";
-import {Get_Single_Movie_Details, Parse_Single_Movie} from "../functions/movies";
+import { Get_Single_Movie_Details, Parse_Single_Movie } from "../functions/movies";
 import { Get_Comments_By_Movie_ID, Parse_Comments, Post_Comment } from "../functions/comments";
 import { Get_Formatted_Time } from "../functions/utils.js";
 import StarRating from 'vue-star-rating';
@@ -61,12 +61,18 @@ export default {
 				throw(e)
 			}
 		},
+		reset_comment_input() {
+			this.user_comment = ''
+			this.user_rating = 0
+
+		},
 		async post_comment(content, rating) {
 			try {
 				let res = await Post_Comment(this.movie_id, content, rating, this.user_token)
 				console.log("Comment post RES = ", res)
 				if (res.status == 200) {
 					this.get_comments();
+					this.reset_comment_input();
 				}
 				else {
 					console.log(res.code, res.data)
@@ -89,6 +95,15 @@ export default {
 
 		get_separator(index, text_list) {
 			return (index < text_list.length - 1 ? ", " : "")
+		},
+		get_rating_level(rating) {
+			if (rating <= 3.5) {
+				return "bad"
+			}
+			if (rating <= 7) {
+				return "bof"
+			}
+			return null
 		}
 
 	},
@@ -178,7 +193,7 @@ export default {
 		<div v-for="comment in comments" :key="comment" class="row people_reviews">
 			<hr class="solid">
 			<div class="col-3 rating">
-				<b-icon-star-fill class="icon score"></b-icon-star-fill>
+				<b-icon-star-fill class="icon score" :class="get_rating_level(comment.rating)"></b-icon-star-fill>
 				<span><span class="big">{{comment.rating}}</span>/10</span>
 			</div>
 			<div class="col username">
@@ -199,6 +214,14 @@ export default {
 
 .time {
 	text-align: end;
+}
+
+.icon.score.bof {
+	color: rgba(255, 196, 0, 0.671)
+}
+
+.icon.score.bad {
+	color: rgba(255, 0, 0, 0.671)
 }
 
 </style>
