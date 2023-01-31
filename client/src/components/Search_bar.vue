@@ -50,6 +50,11 @@ export default {
 				return true
 			return false
 		},
+		is_current_genre(genre) {
+			if (genre == this.form.genre)
+				return true
+			return false
+		},
 		update_genre(genre) {
 			this.form.genre = genre
 		},
@@ -96,15 +101,15 @@ export default {
 			<div class = "nav-item">
 				<h2>{{text_content.genre[lang_nb]}}</h2>
 				<div
-					v-for="genre in genre_list" :key="genre"
+					v-for="(value, key) in genre_list"
 					class="nav-link"
-					:class="{ active: genre == form.genre }"
+					:class="{ active: is_current_genre(key)}"
 				>
-					<span @click="update_genre(genre)" class="touchable"> {{ genre[lang_nb] }} </span>
+					<span @click="update_genre(key)" class="touchable"> {{ value[lang_nb] }} </span>
 					<b-icon-x
-						@click="update_genre()"
+						@click="update_genre('')"
 						class = "remove touchable"
-						:class="{ active: genre == form.genre }"
+						:class="{ active: is_current_genre(key)}"
 					></b-icon-x>
 			</div>
 			<div class = "nav-item">
