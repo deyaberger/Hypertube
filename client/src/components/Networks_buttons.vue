@@ -23,22 +23,20 @@ export default {
 </script>
 
 <template>
-	<button class="mt-3 loginBtn loginBtn--facebook">
-		{{get_button_content()}}Facebook
-	</button>
-	<span>
+	<div>
+		<button class="mt-3 loginBtn loginBtn--facebook">
+			{{get_button_content()}}Facebook
+		</button>
 		<button class="loginBtn loginBtn--google">
 			{{get_button_content()}}Google
 		</button>
-	</span>
-	<button class="mt-3 loginBtn loginBtn--42">
-		{{get_button_content()}}42
-	</button>
-	<span>
+		<b-button class="mt-3 loginBtn loginBtn--42" href="https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-d9dacf000ec83ce78969bfcecc2f140477302481ff4eb6f746eea81b16b00e75&redirect_uri=http%3A%2F%2Flocalhost%3A5173%2Fsignin&response_type=code">
+			{{get_button_content()}}42
+		</b-button>
 		<button class="mt-3 loginBtn loginBtn--twitter">
 			{{get_button_content()}}twitter
 		</button>
-	</span>
+	</div>
 </template>
 
 <style scoped>

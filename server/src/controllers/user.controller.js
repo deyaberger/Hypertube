@@ -52,39 +52,6 @@ module.exports = (db_pool) => {
                 throw(e)
             }
         },
-        get_watched_movies : async (req, res) => {
-            console.log("get watch movies")
-            try {
-                let userid = req.query.user_id == undefined ? req.user_id  : Number(req.query.user_id)
-                let watched = await user_functions.get_watched(userid)
-
-                if (watched == null) {
-                    return res.sendStatus(500)
-                }
-
-                return res.status(200).send(watched)
-            }
-            catch (e) {
-                throw (e)
-            }
-        },
-
-        get_watched_movies_ids : async (req, res) => {
-            console.log("get watch movies")
-            try {
-                let userid = req.user_id
-                let watched = await user_functions.get_watched_ids(userid)
-
-                if (watched == null) {
-                    return res.sendStatus(500)
-                }
-
-                return res.status(200).send(watched)
-            }
-            catch (e) {
-                throw (e)
-            }
-        },
         update_first_name : async(req, res) => {
             try {
                 let user_id = req.user_id
@@ -165,45 +132,24 @@ module.exports = (db_pool) => {
                 throw(e)
             }
         },
-        set_watched : async(req, res) => {
-            console.log("Set watched\n")
+        upload_image : async(req, res) => {
+            console.log("**** IN upload image")
             try {
                 let user_id = req.user_id
-                let movie_id  = Number(req.params.movie_id)
-                let watched_res  = await user_functions.post_watched(user_id, movie_id)
-                if (watched_res.affectedRows == 1) {
-                    return res.status(200).send({message: "successfully added movie to watched"})
+                console.log("rew: ", req.file)
+                // console.log("req: ", req.body.file)
+                // let url  = req.file.filename
+                let url  = ""
+                console.log("URL: ", url)
+                let upload_res = await user_functions.upload_profile_pic(user_id, url)
+                if (upload_res.affectedRows == 1) {
+                    return res.status(200).send({message: "successfully added profile pic"})
                 }
+                return upload_res
             }
             catch (e) {
                 throw(e)
             }
         },
-        set_unwatched : async(req, res) => {
-            console.log("Set unwatched\n")
-            try {
-                let user_id = req.user_id
-                let movie_id  = Number(req.params.movie_id)
-                let watched_res  = await user_functions.delete_watched(user_id, movie_id)
-                if (watched_res.affectedRows == 1) {
-                    return res.status(200).send({message: "successfully deleted movie from watched"})
-                }
-            }
-            catch (e) {
-                throw(e)
-            }
-        },
-        is_watched : async(req, res) => {
-            console.log("is watched")
-            try {
-                let user_id = req.user_id
-                let movie_id  = Number(req.params.movie_id)
-                let watched_res  = await user_functions.is_watched_movie(user_id, movie_id)
-                return res.status(200).send({message: watched_res})
-            }
-            catch(e) {
-                throw (e)
-            }
-        }
     }
 }

@@ -10,6 +10,15 @@ export default {
 		NetworkButtons
 	},
 
+
+  props: {
+		oauth_token: {
+      type: String,
+      default: null
+		},
+	},
+
+
 	data() {
 		return {
 			visible: false,
@@ -20,11 +29,13 @@ export default {
 		}
 	},
 
+
 	computed: mapState({
 		user_connected: state =>  state.user_connected,
 		lang_nb       : state => state.lang_nb,
 		user_token    : state =>  state.user_token,
 	}),
+
 
 	methods: {
 		password_visibility() {
@@ -56,8 +67,21 @@ export default {
 				console.log("error in signin: \n", e)
 			}
 		}
-
 	},
+
+  async mounted() {
+		if (this.oauth_token != null) {
+  		console.log("Oauth signin: ", this.oauth_token)
+			try {
+        this.$store.commit('SET_USER_TOKEN', this.oauth_token)
+        this.$store.commit('SET_CONNECTION', true)
+        this.$router.push('/search')
+			}
+			catch (e) {
+				console.log("Oauth signup issue")
+			}
+		}
+	}
 }
 </script>
 
@@ -104,11 +128,11 @@ export default {
         <button class="submit_button" type = "submit">{{text_content.sign_in[lang_nb]}}</button>
         <div class = "m-3">{{text_content.or[lang_nb]}}</div>
       </div>
-	  <NetworkButtons type="signin"></NetworkButtons>
-      <div class="change_page mt-3 text-center">
-        <router-link to="/sign_up">{{text_content.no_account[lang_nb]}}</router-link>
-      </div>
     </form>
+    <NetworkButtons type="signin"></NetworkButtons>
+    <div class="change_page mt-3 text-center">
+      <router-link to="/sign_up">{{text_content.no_account[lang_nb]}}</router-link>
+    </div>
   </div>
 
 </template>

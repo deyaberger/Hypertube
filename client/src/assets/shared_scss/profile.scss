@@ -100,6 +100,13 @@
 	visibility: visible;
 }
 
+.profile_pic {
+	object-fit: cover;
+	width: 195px;
+	height: 195px;
+	border-radius: 10px;;
+}
+
 .change_icon {
 	visibility: hidden;
 	color: rgba(0, 0, 0, 0.878);

@@ -1,5 +1,27 @@
 Kill HOST MYSQL
 
+# Start API
+
+using this [TORRENT_API](https://github.com/Ryuk-me/Torrent-Api-py).  
+with this `.env` in the source of that repo:  
+
+```bash
+REDIS_URI=CHECK_ENCRYPTED_ENV
+PYTHON_ENV=dev
+CACHE_EXPIRATION=100000
+```
+
+```bash
+python main.py
+```
+
+# Scrape
+
+
+```bash
+cd server/scraper
+node scrape.py
+```
 
 ```bash
 cd /etc/mysql/mysql.conf.d
