@@ -52,7 +52,6 @@ hr {
 .header-icon {
 	visibility: hidden;
 	color: rgba(0, 0, 0, 0.878);
-	// box-shadow: -2px -2px 10px 5px #202525;
 	border-radius: 35px;
 	background-color: white;
 	position: absolute;
@@ -63,8 +62,15 @@ hr {
 	margin: auto auto auto auto;
 	font-size: 54px;
 	opacity: .85;
+}
 
+.header-icon.seen {
+	visibility: unset;
+	box-shadow: 0px 0px 0px 10px #0de0e0;
+}
 
+.movie-image.seen {
+	opacity: 0.7;
 }
 
 .movie-card:hover {

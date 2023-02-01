@@ -90,7 +90,6 @@ export default {
 			else {
 				console.log("show all")
 			}
-			// do something
 		}
 	},
 	computed: {

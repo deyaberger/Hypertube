@@ -11,6 +11,7 @@ export default {
 		return {
 			text_content : textContent.MOVIES,
 			Get_Formatted_Time  : Get_Formatted_Time,
+			is_seen_movie : false // To be deleted
 		}
 	},
 	methods: {
@@ -18,10 +19,15 @@ export default {
 			// Do something
 			return true
 		},
-		test() {
+		is_favorite(movie) {
 			// Do something
-			return true
+			return Boolean(Math.round(Math.random()));
+		},
+		is_seen (movie) {
+			this.is_seen_movie = Boolean(Math.round(Math.random()));
+			return this.is_seen_movie
 		}
+
 
 	},
 	computed: mapState({
@@ -40,8 +46,9 @@ export default {
 			<div v-else class="col-md-4 movie-card" v-for="movie in movie_list" :key="movie" style="text-decoration: none">
 				<router-link :to="'/movie/' + movie.id">
 				<div class="movie-header">
-						<img class="movie-image" :src="movie.images_list[1]" alt="movie_image"  onerror="this.src='../src/assets/missing_cover.jpeg';"/>
-						<b-icon-info-circle-fill class="h2 header-icon"></b-icon-info-circle-fill>
+						<img :class="is_seen(movie) ? 'movie-image seen' : 'movie-image'" :src="movie.images_list[1]" alt="movie_image"  onerror="this.src='../src/assets/missing_cover.jpeg';"/>
+						<b-icon-play-circle-fill v-if="is_seen_movie" class="h2 header-icon seen"></b-icon-play-circle-fill>
+						<b-icon-info-circle-fill v-else class="h2 header-icon"></b-icon-info-circle-fill>
 				</div>
 				</router-link>
 				<div class="movie-content">
@@ -52,7 +59,7 @@ export default {
 					<div class="movie-info">
 						<div class="info-section">
 							<label class="fav_label">Fav</label>
-							<div v-if="test() == true" class="btn-group" role="group" aria-label="Basic example"  data-toggle="tooltip" data-placement="top" title="Remove from favorites">
+							<div v-if="is_favorite(movie)" class="btn-group" role="group" aria-label="Basic example"  data-toggle="tooltip" data-placement="top" title="Remove from favorites">
 								<b-icon-heart-fill class="h2 favorites" @click="update_favorite(movie)"></b-icon-heart-fill>
 							</div>
 							<div v-else class="btn-group" role="group" aria-label="Basic example"  data-toggle="tooltip" data-placement="top" title="Add to favorites">
