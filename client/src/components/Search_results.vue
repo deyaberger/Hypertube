@@ -23,7 +23,8 @@ export default {
 			// Do something
 			return Boolean(Math.round(Math.random()));
 		},
-		is_seen (movie) {
+		is_seen () {
+			// TO BE CHANGED: generates the following warning : Maximum recursive updates exceeded in component <RouterLink>
 			this.is_seen_movie = Boolean(Math.round(Math.random()));
 			return this.is_seen_movie
 		}
@@ -46,7 +47,7 @@ export default {
 			<div v-else class="col-md-4 movie-card" v-for="movie in movie_list" :key="movie" style="text-decoration: none">
 				<router-link :to="'/movie/' + movie.id">
 				<div class="movie-header">
-						<img :class="is_seen(movie) ? 'movie-image seen' : 'movie-image'" :src="movie.images_list[1]" alt="movie_image"  onerror="this.src='../src/assets/missing_cover.jpeg';"/>
+						<img :class="is_seen() ? 'movie-image seen' : 'movie-image'" :src="movie.images_list[1]" alt="movie_image"  onerror="this.src='../src/assets/missing_cover.jpeg';"/>
 						<b-icon-play-circle-fill v-if="is_seen_movie" class="h2 header-icon seen"></b-icon-play-circle-fill>
 						<b-icon-info-circle-fill v-else class="h2 header-icon"></b-icon-info-circle-fill>
 				</div>
