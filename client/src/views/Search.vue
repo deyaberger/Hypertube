@@ -23,6 +23,7 @@ export default {
 			rows              : 0,
 			perPage           : 24,
 			user_research     : 0,
+			only_show_fav	  : false
 		}
 	},
 	methods: {
@@ -81,8 +82,7 @@ export default {
 		from_reco_to_research() {
 			this.user_research = 2,
 			this.reset_form()
-		}
-
+		},
 	},
 	computed: {
 	...mapState({
@@ -124,9 +124,11 @@ export default {
 					<p class="nav-link">or</p>
 					<a class="nav-link active" href="#" @click="from_reco_to_research()">{{text_content.see_all[lang_nb]}}</a>
 				</div>
-				<div v-if="number_of_results > 0" class="number_of_results">{{movies_slice ? movies_slice.length : 0}}/{{number_of_results}} {{text_content.results[lang_nb]}}</div>
-				<div v-else class="number_of_results">{{number_of_results}} {{text_content.results[lang_nb]}}</div>
-
+				<div class = "row">
+					<div v-if="number_of_results > 0" class="number_of_results col-11">{{movies_slice ? movies_slice.length : 0}}/{{number_of_results}} {{text_content.results[lang_nb]}}</div>
+					<div v-else class="number_of_results col-11">{{number_of_results}} {{text_content.results[lang_nb]}}</div>
+					<div class="show_favorites col"><b-form-checkbox v-model="only_show_fav" switch data-toggle="tooltip" data-placement="top" :title="only_show_fav ? 'show all movies' : 'only show favorites'"></b-form-checkbox></div>
+				</div>
 			</div>
 			<SearchResults :movie_list="movies_slice" class="search_res"/>
 			<div class="pagination overflow-auto">
@@ -146,6 +148,11 @@ export default {
 
 
 <style lang="scss" scoped>
+
+.form-check > *, .form-switch > * {
+	cursor: pointer;
+}
+
 .nav-link {
 	color: rgb(143, 142, 142);
 	font-size: small;
@@ -305,6 +312,10 @@ export default {
 	text-align: left;
 }
 
+.show_favorites {
+	margin-top: 3%;
+	align-items: right;
+}
 
 
 .pagination {
