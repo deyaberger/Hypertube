@@ -26,23 +26,31 @@ module.exports = (db_pool) => {
         },
 
 
-        get_comment_by_movie_imdb_id: async (movie_imdb_id) => {
-            console.log("getting comments for movie id: ", movie_imdb_id);
-            [comments, ] = await db_pool.query(`
-            SELECT * FROM comments
-            WHERE movie_imdb_id=?;`,
-            movie_imdb_id)
+        get_comment_by_movie_id: async (movie_id) => {
+            console.log("getting comments for movie id: ", movie_id);
+            try {
+                [comments, ] = await db_pool.query(`
+                SELECT content, DATE_FORMAT(date, '%Y-%m-%d %T') as date, u.username, rating
+                FROM comments
+                    LEFT JOIN users u on comments.user_id = u.id
+                WHERE comments.movie_id = ?
+                GROUP BY comments.id
+                ORDER BY date DESC;`,
+                movie_id)
+                return comments
+            }
+            catch(e) {
+                throw(e)
 
-            // console.log("Found comments for movie: ", comments)
-            return comments
+            }
         },
 
 
-        post_comment: async (user_id, movie_imdb_id, content) => {
+        post_comment: async (user_id, movie_id, content, rating) => {
             [comments, ] = await db_pool.query("\
-            INSERT INTO comments (content , author_id     , movie_imdb_id) \
-            VALUES               (?       ,?              ,?             );",
-            [content, user_id, movie_imdb_id])
+            INSERT INTO comments (content, user_id, movie_id, rating) \
+            VALUES               (      ?,         ?,        ?,      ?);",
+                                 [content, user_id, movie_id, rating])
 
             return comments.insertId
         }

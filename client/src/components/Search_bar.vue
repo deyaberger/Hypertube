@@ -17,7 +17,7 @@ export default {
 			genre_list         : textContent.MOVIES.genre_list,
 			sorting_list       : textContent.MOVIES.sorting_list,
 			tmp_title		   : '',
-			quality_list       : ['1080p', '720p'],
+			quality_list       : ['720p', '1080p', '4k'],
 			form               : {
 									title         : '',
 									min_rating    : 0,

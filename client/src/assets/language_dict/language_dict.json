@@ -95,7 +95,6 @@
 			"imdb_rating" : ["rating", "note"],
 			"year"        : ["year", "année"],
 			"title"       : ["title", "titre"],
-			"peers"       : ["peers", "peers"],
 			"seeds"       : ["seeds", "seeds"]
 		}
 

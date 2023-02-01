@@ -4,11 +4,17 @@ function _parse_form_for_back(form, lang_nb) {
 	const title       = form.title;
 	const min_rating  = form.min_rating;
 	const genre       = form.genre;
-	const quality     = form.quality;
+	let quality = 720
+	if (form.quality == '4k') {
+		quality = 2160
+	}
+	else if (form.quality == '1080p') {
+		quality = 1080
+	}
 	const min_year    = form.min_year;
 	const language    = lang_nb == 0 ? 'en' : 'fr';
 	const asc_or_desc = form.asc_or_desc;
-	const sort_by     = form.sort_by;
+	const sort_by     = form.sort_by == "seeds" ? "max_seeds" : form.sort_by;
 	const params               = {
 		"query_term"     : title,
 		"minimum_rating" : min_rating,
@@ -21,6 +27,22 @@ function _parse_form_for_back(form, lang_nb) {
 	}
 	return params
 
+}
+
+export const Parse_Single_Movie = (data) => {
+	const res = data[0]
+	let parsed_data = {
+		"title"             : res.title,
+		"genres"            : res.genres_list,
+		"large_cover_image" : res.images_list[0],
+		"list_comments"     : [],
+		"year"              : res.year,
+		"runtime"           : res.length_minutes,
+		"rating"            : res.imdb_rating,
+		"summary"           : res.summary,
+		"cast"              : [],
+	}
+	return parsed_data
 }
 
 export const Get_Recommendations = async(token) => {
@@ -41,6 +63,7 @@ export const Get_Recommendations = async(token) => {
 
 export const Get_Movies_Research = async(form , lang_nb, token) => {
 	const params = _parse_form_for_back(form, lang_nb)
+	console.log("params: ", params)
 	let request = {
 		url: `http://127.0.0.1:8071/api/movies/search`,
 		method: "get",
@@ -66,6 +89,9 @@ export const Get_Single_Movie_Details = async(movie_id , token) => {
 			'Access-Control-Allow-Origin': '*',
 			"Content-type"               : "application/json",
 			'Authorization'				 : `Bearer ${token}`
+		},
+		params : {
+			"movie_id" : movie_id
 		}
 	};
 	const response = await axios(request);
