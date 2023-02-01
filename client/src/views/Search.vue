@@ -36,7 +36,7 @@ export default {
 				this.movies = null
 				this.movies_slice = null
 				let res = null
-				if (this.user_research < 1) {
+				if (this.user_research <= 1) {
 					console.log("getting homepage")
 					res = await Get_Recommendations(this.user_token);
 				}
