@@ -2,7 +2,7 @@
 import { mapState } from 'vuex';
 import textContent from "../assets/language_dict/language_dict.json";
 import SearchResults from '../components/Search_results.vue';
-import { Get_User_Details, Get_User_Fav_Movies } from "../functions/user"
+import { Get_User_Details, Get_User_Fav_Movies, Get_User_Watched_Movies } from "../functions/user"
 
 
 
@@ -37,6 +37,8 @@ export default {
 			console.log("USER INFO: ", this.user)
 			res = await Get_User_Fav_Movies(this.user_token);
 			this.fav_movies = res.data
+			res = await Get_User_Watched_Movies(this.user_token);
+			this.watched_movies = res.data
 		}
 	},
 	mounted() {
@@ -94,7 +96,11 @@ export default {
 				<div class="card-body p-4 text-black">
 					<p class="lead fw-normal mb-1">Favorite Movies</p>
 					<SearchResults :movie_list="fav_movies"/>
-					</div>
+				</div>
+				<div class="card-body p-4 text-black">
+					<p class="lead fw-normal mb-1">Continue to watch</p>
+					<SearchResults :movie_list="watched_movies"/>
+				</div>
 				</div>
 			</div>
 		</div>

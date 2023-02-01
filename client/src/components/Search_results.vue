@@ -21,15 +21,12 @@ export default {
 			return true
 		},
 		async is_favorite(movie) {
-			console.log("movie id: ", movie.id)
 			let res = await Is_Fav_Movie(this.user_token, movie.id)
-			console.log("res.data.is_fav ", res.data.is_fav)
 			if (res.data.is_fav == 1) {
-				console.log("returning TRUE")
+				console.log("movie_title ", movie.title)
+				console.log("res.data.is_fav: ", res.data.is_fav)
 				return true
 			}
-			console.log("returning falllse")
-
 			return false
 		},
 		is_seen () {

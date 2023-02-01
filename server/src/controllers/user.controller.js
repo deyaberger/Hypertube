@@ -20,7 +20,7 @@ module.exports = (db_pool) => {
         },
 
         get_other_user : async (req, res) => {
-            console.log("in get_my_user")
+            console.log("in get_other_user")
             try {
                 let user_id = req.params.user_id
                 let user = await user_functions.get_user_by_id(user_id)
@@ -28,7 +28,7 @@ module.exports = (db_pool) => {
                 if (user == null) {
                     return res.sendStatus(500)
                 }
-                
+
                 delete user.mail
                 return res.status(200).send(user)
             }
@@ -47,6 +47,22 @@ module.exports = (db_pool) => {
             }
             catch (e) {
                 throw(e)
+            }
+        },
+        get_watched_movies : async (req, res) => {
+            console.log("get watch movies")
+            try {
+                let userid = req.user_id
+                let watched = await user_functions.get_watched(userid)
+
+                if (watched == null) {
+                    return res.sendStatus(500)
+                }
+
+                return res.status(200).send(watched)
+            }
+            catch (e) {
+                throw (e)
             }
         },
 
