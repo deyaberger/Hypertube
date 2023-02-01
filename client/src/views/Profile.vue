@@ -1,7 +1,9 @@
 <script>
 import { mapState } from 'vuex';
 import textContent from "../assets/language_dict/language_dict.json";
-import SearchResults from '../components/Search_results.vue'
+import SearchResults from '../components/Search_results.vue';
+import { Get_User_Details } from "../functions/user"
+
 
 
 export default {
@@ -10,10 +12,12 @@ export default {
 	},
 	data() {
 		return {
-			text_content : textContent.MOVIES,
-			movie_list   : fakeData.movie_list,
-			own_profile : true,
-			followed : false,
+			text_content     : textContent.MOVIES,
+			user			 : null,
+			watched_movies   : null,
+			fav_movies		 : null,
+			own_profile 	 : true,
+			followed 		 : false,
 		}
 	},
 	computed: mapState({
@@ -23,20 +27,31 @@ export default {
 	methods: {
 		update_follow() {
 			this.followed = !this.followed
+		},
+		async get_user_data() {
+			this.watched_movies = null
+			this.fav_movies = null
+			let res = null
+			res = await Get_User_Details(this.user_token);
+			this.user = res.data
+			console.log("USER INFO: ", this.user)
 		}
+	},
+	mounted() {
+		this.get_user_data()
 	}
 }
 </script>
 
 <template>
-	<section class="h-100 gradient-custom-2">
+	<section v-if="user" class="h-100 gradient-custom-2">
 		<div class="container py-5 h-100">
 			<div class="row d-flex justify-content-center align-items-center h-100">
 			<div class="col col-lg-9 col-xl-7">
 				<div class="card">
 				<div class="rounded-top text-white d-flex flex-row" style="background-color: #000; height:200px;">
 					<div class="ms-4 mt-5 d-flex flex-column" style="width: 150px;">
-					<img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-profiles/avatar-1.webp"
+					<img :src="user.picture"
 						alt="Generic placeholder image" class="img-fluid img-thumbnail mt-4 mb-2"
 						style="width: 150px; z-index: 1">
 					<button v-if="own_profile" type="button" class="btn btn-outline-dark" data-mdb-ripple-color="dark"
@@ -50,8 +65,8 @@ export default {
 					</button>
 					</div>
 					<div class="ms-3 main_info" style="margin-top: 130px;">
-					<h5>Andy Horwitz</h5>
-					<p>New York</p>
+					<h5>{{user.first_name}} {{user.last_name}}</h5>
+					<p>@{{user.username}}</p>
 					</div>
 				</div>
 				<div class="p-4 text-black" style="background-color: #f8f9fa;">
@@ -70,9 +85,7 @@ export default {
 					<div>
 					<p class="lead fw-normal mb-1">About</p>
 					<div class="p-4" style="background-color: #f8f9fa;">
-						<p class="font-italic mb-1">Web Developer</p>
-						<p class="font-italic mb-1">Lives in New York</p>
-						<p class="font-italic mb-0">Photographer</p>
+						<p class="font-italic mb-1">{{user.bio ? user.bio : 'Nothing to be said about the mysterious ' + user.first_name}}</p>
 					</div>
 					</div>
 				</div>
