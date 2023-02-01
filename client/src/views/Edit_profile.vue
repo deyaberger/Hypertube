@@ -11,7 +11,9 @@ export default {
 			user			 : null,
 			own_profile 	 : true,
 			first_name_is_saved : false,
+			last_name_is_saved : false,
 			first_name_error : false,
+			last_name_error : false,
 		}
 	},
 	computed: mapState({
@@ -20,17 +22,28 @@ export default {
     }),
 	methods: {
 		async get_user_data() {
+			console.log("getting user data:")
 			this.watched_movies = null
 			this.fav_movies = null
 			let res = null
 			res = await Get_User_Details(this.user_token);
 			this.user = res.data
+			console.log("USER: ", this.user)
 		},
 		save_first_name() {
 			this.first_name_is_saved = true
 			// add to db
 			// if db error:
 			// this.first_name_error = true
+		},
+		modify_first_name() {
+			this.first_name_is_saved = !this.first_name_is_saved
+		},
+		save_last_name() {
+			this.last_name_is_saved = true
+		},
+		modify_last_name() {
+			this.last_name_is_saved = !this.last_name_is_saved
 		}
 	},
 	mounted() {
@@ -48,13 +61,18 @@ export default {
 				<div class="rounded-top text-white d-flex flex-row" style="background-color: #000; height:200px;">
 					<div class="ms-4 mt-5 d-flex flex-column" style="width: 150px;">
 					<div class="profile_header mt-4" >
-						<img :src="profile_pic"	alt="profile pic" class="img-fluid img-thumbnail profile_pic" onerror="this.src='../src/assets/background2.jpg';">
+						<img :src="user.picture"	alt="profile pic" class="img-fluid img-thumbnail profile_pic" onerror="this.src='../src/assets/generic_profile_pic.jpg';">
 						<b-icon-arrow-repeat  class="h2 change_icon"></b-icon-arrow-repeat>
 					</div>
 					<span><button class="btn btn-dark remove_pic"><b-icon-trash/></button></span>
 					</div>
-							<div class="ms-3 main_info" >
-							<div class="input-group">
+					<div class="ms-3 main_info" >
+						<div v-if="first_name_is_saved">
+							<span class ="h3 name">{{ user.first_name }}
+							<b-icon-pen class="modify h5" @click="modify_first_name()"></b-icon-pen>
+							</span>
+						</div>
+						<div  v-else class="input-group">
 							<input
 								v-model = "user.first_name"
 								class="form-control"
@@ -68,11 +86,27 @@ export default {
 								</button>
 							</span>
 						</div>
-						<b-form-input
-							v-model="user.last_name"
-							placeholder="Enter your city"
-							class="dark_input"
-						></b-form-input>
+						<div class="mt-3">
+						<div v-if="last_name_is_saved">
+							<span class ="h3 name">{{ user.last_name }}
+							<b-icon-pen class="modify h5" @click="modify_last_name()"></b-icon-pen>
+							</span>
+						</div>
+						<div  v-else class="input-group">
+							<input
+								v-model = "user.last_name"
+								class="form-control"
+								:class="{ error_input : last_name_error}"
+								name="password"
+								:placeholder="user.last_name"
+							>
+							<span class="input-group-btn align-items-center">
+								<button class="btn check_button" type="button">
+									<b-icon-check class="h2 m-1 check" @click="save_last_name()"></b-icon-check >
+								</button>
+							</span>
+						</div>
+						</div>
 					</div>
 				</div>
 
@@ -121,9 +155,23 @@ export default {
 
 <style scoped>
 
+.modify {
+	color: white;
+	margin-bottom: 3%;
+	cursor: pointer
+}
+.modify:hover {
+	transform: scale(1.3);
+}
 .check_button {
 	border-color: white;
 	padding: 0
+}
+
+
+.check_button:hover .check {
+	transform: scale(1.2);
+	color: rgb(113, 238, 113);
 }
 .input-group > * {
 	background-color: black;
@@ -133,6 +181,8 @@ export default {
 .check {
 	color: green
 }
+
+
 
 
 .profile_header {
@@ -184,6 +234,14 @@ export default {
 
 .main_info {
 	margin-top: 90px;
+}
+
+.name
+{
+	text-transform: capitalize;
+	color: white;
+	margin-right: 5%;
+
 }
 
 .remove {

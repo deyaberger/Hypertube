@@ -8,7 +8,7 @@ module.exports = (db_pool) => {
             WITH aggregate_genres as (SELECT user_id, JSON_ARRAYAGG(movie_id) as watched_movies
                 from watched_movies
                 group by user_id)
-            SELECT users.id, first_name, last_name, mail, language, picture, username, JSON_ARRAYAGG(fm.movie_id) as favorite_movies, watched_movies
+            SELECT users.id, first_name, last_name, mail, language, picture, username, bio, JSON_ARRAYAGG(fm.movie_id) as favorite_movies, watched_movies
             FROM users
             LEFT JOIN aggregate_genres wm
                 on users.id = wm.user_id
