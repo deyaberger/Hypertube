@@ -10,8 +10,8 @@ export default {
 			text_content : textContent.MOVIES,
 			user                : null,
 			own_profile         : true,
-			first_name_is_saved : false,
-			last_name_is_saved  : false,
+			first_name_is_saved : true,
+			last_name_is_saved  : true,
 			first_name_error    : false,
 			last_name_error     : false,
 			bio_is_saved        : true,
@@ -115,14 +115,10 @@ export default {
 				</div>
 
 				<div class="p-4 text-black" style="background-color: #f8f9fa;">
-					<div class="d-flex justify-content-end text-center py-1">
-					<div class="px-3">
-						<p class="mb-1 h5">1026</p>
-						<p class="small text-muted mb-0">Followers</p>
-					</div>
+					<div class="justify-content-start text-center py-1">
 					<div>
-						<p class="mb-1 h5">478</p>
-						<p class="small text-muted mb-0">Following</p>
+						<p class="small text-muted mb-0">email</p>
+						<p class="mb-1 h5  email">{{ user.mail }}<b-icon-pen class="modify h5 mail"></b-icon-pen></p>
 					</div>
 					</div>
 				</div>
@@ -131,6 +127,9 @@ export default {
 					<p class="lead fw-normal mb-1">About</p>
 					<div class="p-4" style="background-color: #f8f9fa;">
 						<div v-if="bio_is_saved">
+						<p class="font-italic mb-1 about">{{ user.bio }}<b-icon-pen class="modify h5 bio" @click="modify_bio()"></b-icon-pen></p>
+						</div>
+						<div v-else>
 							<b-form-textarea
 								id="textarea"
 								v-model = "user.bio"
@@ -140,9 +139,7 @@ export default {
 							<button class="btn check_button bio" type="button" @click="save_bio()">Save
 							</button>
 						</div>
-						<div v-else>
-						<p class="font-italic mb-1 about">{{ user.bio }}<b-icon-pen class="modify h5 bio" @click="modify_bio()"></b-icon-pen></p>
-						</div>
+
 					</div>
 					</div>
 				</div>
@@ -178,8 +175,15 @@ export default {
 	cursor: pointer
 }
 
-.about {
+.about, .email {
 	position: relative;
+}
+
+.modify.mail {
+	color: black;
+	position: absolute;
+	margin-top: -1%;
+	margin-left: 1%;
 }
 
 .modify.bio {
@@ -188,6 +192,8 @@ export default {
 	right: 0;
 	top: 0;
 }
+
+
 .modify:hover {
 	transform: scale(1.3);
 }

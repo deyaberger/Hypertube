@@ -57,7 +57,7 @@ export default {
 					<div class="ms-4 mt-5 d-flex flex-column" style="width: 150px;">
 					<img :src="user.picture"
 						alt="Generic placeholder image" class="img-fluid img-thumbnail mt-4 mb-2"
-						style="width: 150px; z-index: 1">
+						style="width: 150px; z-index: 1" onerror="this.src='../src/assets/generic_profile_pic.jpg';">
 					<button v-if="own_profile" type="button" class="btn btn-outline-dark edit" data-mdb-ripple-color="dark"
 						style="z-index: 1;">
 						<router-link to="/edit_profile" class="nav-link"><b-icon-pen></b-icon-pen> Edit profile</router-link>
@@ -150,6 +150,7 @@ export default {
 }
 
 .edit {
+	border: none;
 	background: linear-gradient(to right, rgba(251, 194, 235, 1), rgba(166, 193, 238, 1));
 }
 
