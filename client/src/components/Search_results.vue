@@ -2,6 +2,7 @@
 import { mapState } from 'vuex';
 import textContent from "../assets/language_dict/language_dict.json"
 import { Get_Formatted_Time } from "../functions/utils.js"
+import { Is_Fav_Movie } from "../functions/user.js"
 
 export default {
 	props: {
@@ -19,17 +20,23 @@ export default {
 			// Do something
 			return true
 		},
-		is_favorite(movie) {
-			// Do something
-			return Boolean(Math.round(Math.random()));
+		async is_favorite(movie) {
+			console.log("movie id: ", movie.id)
+			let res = await Is_Fav_Movie(this.user_token, movie.id)
+			console.log("res.data.is_fav ", res.data.is_fav)
+			if (res.data.is_fav == 1) {
+				console.log("returning TRUE")
+				return true
+			}
+			console.log("returning falllse")
+
+			return false
 		},
 		is_seen () {
 			// TO BE CHANGED: generates the following warning : Maximum recursive updates exceeded in component <RouterLink>
 			this.is_seen_movie = Boolean(Math.round(Math.random()));
 			return this.is_seen_movie
 		}
-
-
 	},
 	computed: mapState({
 		lang_nb    : state =>  state.lang_nb,
@@ -47,7 +54,8 @@ export default {
 			<div v-else class="col-md-4 movie-card" v-for="movie in movie_list" :key="movie" style="text-decoration: none">
 				<router-link :to="'/movie/' + movie.id">
 				<div class="movie-header">
-						<img :class="is_seen() ? 'movie-image seen' : 'movie-image'" :src="movie.images_list[1]" alt="movie_image"  onerror="this.src='../src/assets/missing_cover.jpeg';"/>
+						<!-- <img :class="is_seen() ? 'movie-image seen' : 'movie-image'" :src="movie.images_list[1]" alt="movie_image"  onerror="this.src='../src/assets/missing_cover.jpeg';"/> -->
+						<img :class="'movie-image'" :src="movie.images_list[1]" alt="movie_image"  onerror="this.src='../src/assets/missing_cover.jpeg';"/>
 						<b-icon-play-circle-fill v-if="is_seen_movie" class="h2 header-icon seen"></b-icon-play-circle-fill>
 						<b-icon-info-circle-fill v-else class="h2 header-icon"></b-icon-info-circle-fill>
 				</div>
@@ -60,7 +68,7 @@ export default {
 					<div class="movie-info">
 						<div class="info-section">
 							<label class="fav_label">Fav</label>
-							<div v-if="is_favorite(movie)" class="btn-group" role="group" aria-label="Basic example"  data-toggle="tooltip" data-placement="top" title="Remove from favorites">
+							<div v-if="is_favorite(movie) == true" class="btn-group" role="group" aria-label="Basic example"  data-toggle="tooltip" data-placement="top" title="Remove from favorites">
 								<b-icon-heart-fill class="h2 favorites" @click="update_favorite(movie)"></b-icon-heart-fill>
 							</div>
 							<div v-else class="btn-group" role="group" aria-label="Basic example"  data-toggle="tooltip" data-placement="top" title="Add to favorites">

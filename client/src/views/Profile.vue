@@ -36,6 +36,7 @@ export default {
 			this.user = res.data
 			console.log("USER INFO: ", this.user)
 			res = await Get_User_Fav_Movies(this.user_token);
+			this.fav_movies = res.data
 		}
 	},
 	mounted() {
