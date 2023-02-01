@@ -8,12 +8,13 @@ export default {
 	data() {
 		return {
 			text_content : textContent.MOVIES,
-			user			 : null,
-			own_profile 	 : true,
+			user                : null,
+			own_profile         : true,
 			first_name_is_saved : false,
-			last_name_is_saved : false,
-			first_name_error : false,
-			last_name_error : false,
+			last_name_is_saved  : false,
+			first_name_error    : false,
+			last_name_error     : false,
+			bio_is_saved        : true,
 		}
 	},
 	computed: mapState({
@@ -32,9 +33,6 @@ export default {
 		},
 		save_first_name() {
 			this.first_name_is_saved = true
-			// add to db
-			// if db error:
-			// this.first_name_error = true
 		},
 		modify_first_name() {
 			this.first_name_is_saved = !this.first_name_is_saved
@@ -44,6 +42,12 @@ export default {
 		},
 		modify_last_name() {
 			this.last_name_is_saved = !this.last_name_is_saved
+		},
+		save_bio() {
+			this.bio_is_saved = !this.bio_is_saved
+		},
+		modify_bio() {
+			this.bio_is_saved = !this.bio_is_saved
 		}
 	},
 	mounted() {
@@ -126,7 +130,19 @@ export default {
 					<div>
 					<p class="lead fw-normal mb-1">About</p>
 					<div class="p-4" style="background-color: #f8f9fa;">
-						<p class="font-italic mb-1">{{ user.bio }}</p>
+						<div v-if="bio_is_saved">
+							<b-form-textarea
+								id="textarea"
+								v-model = "user.bio"
+								name="password"
+								:placeholder="user.bio"
+							></b-form-textarea>
+							<button class="btn check_button bio" type="button" @click="save_bio()">Save
+							</button>
+						</div>
+						<div v-else>
+						<p class="font-italic mb-1 about">{{ user.bio }}<b-icon-pen class="modify h5 bio" @click="modify_bio()"></b-icon-pen></p>
+						</div>
 					</div>
 					</div>
 				</div>
@@ -155,10 +171,22 @@ export default {
 
 <style scoped>
 
+
 .modify {
 	color: white;
 	margin-bottom: 3%;
 	cursor: pointer
+}
+
+.about {
+	position: relative;
+}
+
+.modify.bio {
+	color: black;
+	position: absolute;
+	right: 0;
+	top: 0;
 }
 .modify:hover {
 	transform: scale(1.3);
@@ -168,6 +196,16 @@ export default {
 	padding: 0
 }
 
+.check_button.bio {
+	color: rgb(48, 47, 47);
+	margin-left: 1%;
+	margin: 0px;
+	margin-top: 10px;
+	padding: 5px;
+	padding-right : 20px;
+	padding-left : 20px;
+	background :linear-gradient(to right, rgba(251, 194, 235, 1), rgba(166, 193, 238, 1));
+}
 
 .check_button:hover .check {
 	transform: scale(1.2);
@@ -181,8 +219,6 @@ export default {
 .check {
 	color: green
 }
-
-
 
 
 .profile_header {
