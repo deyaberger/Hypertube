@@ -23,7 +23,7 @@ app.use("/api/auth", auth_router)
 
 // Create the user router, (injecting the connection pool) and add it to the server
 const user_router = require("./src/routes/user.routes")(connection_pool)
-app.use("/api/users", user_router)
+app.use("/api/user", user_router)
 
 
 
