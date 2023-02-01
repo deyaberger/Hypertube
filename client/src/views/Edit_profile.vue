@@ -1,14 +1,17 @@
 <script>
 import { mapState } from 'vuex';
 import textContent from "../assets/language_dict/language_dict.json"
+import { Get_User_Details} from "../functions/user"
+
 
 export default {
 	data() {
 		return {
 			text_content : textContent.MOVIES,
-			name: 'Andy Horwitz',
-			city: 'New York',
-			profile_pic : 'https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-profiles/avatar-1.webp'
+			user			 : null,
+			own_profile 	 : true,
+			first_name_is_saved : false,
+			first_name_error : false,
 		}
 	},
 	computed: mapState({
@@ -16,15 +19,28 @@ export default {
 		user_token : state =>  state.user_token,
     }),
 	methods: {
-		update_follow() {
-			this.followed = !this.followed
+		async get_user_data() {
+			this.watched_movies = null
+			this.fav_movies = null
+			let res = null
+			res = await Get_User_Details(this.user_token);
+			this.user = res.data
+		},
+		save_first_name() {
+			this.first_name_is_saved = true
+			// add to db
+			// if db error:
+			// this.first_name_error = true
 		}
+	},
+	mounted() {
+		this.get_user_data()
 	}
 }
 </script>
 
 <template>
-	<section class="h-100 gradient-custom-2">
+	<section v-if="user" class="h-100 gradient-custom-2">
 		<div class="container py-5 h-100">
 			<div class="row d-flex justify-content-center align-items-center h-100">
 			<div class="col col-lg-9 col-xl-7">
@@ -32,20 +48,28 @@ export default {
 				<div class="rounded-top text-white d-flex flex-row" style="background-color: #000; height:200px;">
 					<div class="ms-4 mt-5 d-flex flex-column" style="width: 150px;">
 					<div class="profile_header mt-4" >
-						<img :src="profile_pic" id="test"
-							alt="Generic placeholder image" class="img-fluid img-thumbnail profile_pic">
+						<img :src="profile_pic"	alt="profile pic" class="img-fluid img-thumbnail profile_pic" onerror="this.src='../src/assets/background2.jpg';">
 						<b-icon-arrow-repeat  class="h2 change_icon"></b-icon-arrow-repeat>
 					</div>
 					<span><button class="btn btn-dark remove_pic"><b-icon-trash/></button></span>
 					</div>
-					<div class="ms-3 main_info" >
+							<div class="ms-3 main_info" >
+							<div class="input-group">
+							<input
+								v-model = "user.first_name"
+								class="form-control"
+								:class="{ error_input : first_name_error}"
+								name="password"
+								:placeholder="user.first_name"
+							>
+							<span class="input-group-btn align-items-center">
+								<button class="btn check_button" type="button">
+									<b-icon-check class="h2 m-1 check" @click="save_first_name()"></b-icon-check >
+								</button>
+							</span>
+						</div>
 						<b-form-input
-							v-model="name"
-							placeholder="Enter your name"
-							class="dark_input"
-						></b-form-input>
-						<b-form-input
-							v-model="city"
+							v-model="user.last_name"
 							placeholder="Enter your city"
 							class="dark_input"
 						></b-form-input>
@@ -68,9 +92,7 @@ export default {
 					<div>
 					<p class="lead fw-normal mb-1">About</p>
 					<div class="p-4" style="background-color: #f8f9fa;">
-						<p class="font-italic mb-1">Web Developer</p>
-						<p class="font-italic mb-1">Lives in New York</p>
-						<p class="font-italic mb-0">Photographer</p>
+						<p class="font-italic mb-1">{{ user.bio }}</p>
 					</div>
 					</div>
 				</div>
@@ -98,6 +120,20 @@ export default {
 
 
 <style scoped>
+
+.check_button {
+	border-color: white;
+	padding: 0
+}
+.input-group > * {
+	background-color: black;
+	color: white;
+}
+
+.check {
+	color: green
+}
+
 
 .profile_header {
 	width: 150px;
@@ -178,11 +214,15 @@ export default {
 
 .remove_pic {
 	position: absolute;
-	top: 37%;
+	top: 180px;
 	left: 150px;
 	z-index: 2;
 	background-color: black;
 	color: red;
+}
+
+.error_input {
+	border: 2px solid rgb(193, 6, 6);
 }
 
 </style>

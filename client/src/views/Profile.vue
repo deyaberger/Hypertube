@@ -58,9 +58,9 @@ export default {
 					<img :src="user.picture"
 						alt="Generic placeholder image" class="img-fluid img-thumbnail mt-4 mb-2"
 						style="width: 150px; z-index: 1">
-					<button v-if="own_profile" type="button" class="btn btn-outline-dark" data-mdb-ripple-color="dark"
+					<button v-if="own_profile" type="button" class="btn btn-outline-dark edit" data-mdb-ripple-color="dark"
 						style="z-index: 1;">
-						<router-link to="/edit_profile" class="nav-link">Edit profile</router-link>
+						<router-link to="/edit_profile" class="nav-link"><b-icon-pen></b-icon-pen> Edit profile</router-link>
 					</button>
 					<button v-else type="button" class="btn btn-outline-dark" :class="{'btn-dark': followed}" @click="update_follow" data-mdb-ripple-color="dark"
 						style="z-index: 1;">
@@ -94,11 +94,11 @@ export default {
 					</div>
 				</div>
 				<div class="card-body p-4 text-black">
-					<p class="lead fw-normal mb-1">Favorite Movies</p>
+					<p class="lead fw-normal mb-1">Favorite Movies:</p>
 					<SearchResults :movie_list="fav_movies"/>
 				</div>
 				<div class="card-body p-4 text-black">
-					<p class="lead fw-normal mb-1">Continue to watch</p>
+					<p class="lead fw-normal mb-1">Continue to watch:</p>
 					<SearchResults :movie_list="watched_movies"/>
 				</div>
 				</div>
@@ -141,14 +141,22 @@ export default {
 }
 
 
-.btn-dark > *, .btn-outline-dark:hover > * {
-	color: white;
+.btn-dark > * {
+	color: rgb(0, 0, 0);
 }
 
-.btn-dark:hover {
+.btn-dark:hover  {
 	background: rgba(0, 0, 0, 0.642);
 }
 
+.edit {
+	background: linear-gradient(to right, rgba(251, 194, 235, 1), rgba(166, 193, 238, 1));
+}
+
+.edit:hover {
+	color: black;
+	opacity: 0.9
+}
 
 .gradient-custom-2 {
 /* fallback for old browsers */
