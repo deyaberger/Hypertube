@@ -48,6 +48,10 @@ const populate_router = require("./src/routes/populate.routes")(connection_pool)
 app.use("/api/populate", populate_router)
 
 
+const favorites_router = require("./src/routes/favorites.routes")(connection_pool)
+app.use("/api/favorites", favorites_router)
+
+
 
 // Start the server
 const PORT = process.env.PORT || 8071;
