@@ -83,6 +83,15 @@ export default {
 			this.user_research = 2,
 			this.reset_form()
 		},
+		show_favorites() {
+			if (this.only_show_fav == true) {
+				console.log("only show favs")
+			}
+			else {
+				console.log("show all")
+			}
+			// do something
+		}
 	},
 	computed: {
 	...mapState({
@@ -100,6 +109,12 @@ export default {
 		form: {
 			handler:function() {
 				this.get_form_results()
+			},
+			deep:true
+		},
+		only_show_fav: {
+			handler:function() {
+				this.show_favorites()
 			},
 			deep:true
 		}
