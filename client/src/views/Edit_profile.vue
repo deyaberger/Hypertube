@@ -21,7 +21,8 @@ export default {
 			first_name_error    : false,
 			last_name_error     : false,
 			bio_is_saved        : true,
-			empty_bio			: false
+			empty_bio			: false,
+			email_is_saved		: true,
 		}
 	},
 	computed: mapState({
@@ -66,6 +67,12 @@ export default {
 		},
 		modify_bio() {
 			this.bio_is_saved = !this.bio_is_saved
+		},
+		modify_mail() {
+			this.email_is_saved = !this.email_is_saved
+		},
+		save_mail() {
+			this.email_is_saved = !this.email_is_saved
 		}
 	},
 	mounted() {
@@ -141,16 +148,33 @@ export default {
 							<p>@{{user.username}}</p>
 						</div>
 						<div class="col-7">
-							<p class="small text-muted mb-0">email</p>
-							<p class="mb-1 h5  email">{{ user.mail }}<b-icon-pen class="modify h5 mail"></b-icon-pen></p>
+							<div>
+								<p class="small text-muted mb-0">email</p>
+								<p v-if="email_is_saved" class="mb-1 h5  email">{{ user.mail }}<b-icon-pen class="modify h5 mail" @click="modify_mail()"></b-icon-pen></p>
+								<div  v-else class="input-group email">
+								<input
+									v-model = "user.email"
+									class="form-control"
+									:class="{ error_input : email_error}"
+									name="password"
+									:placeholder="user.email"
+								>
+								<span class="input-group-btn align-items-center">
+									<button class="btn check_button  email" type="button">
+										<b-icon-check class="h2 m-1 check" @click="save_mail()"></b-icon-check >
+									</button>
+								</span>
+							</div>
+							</div>
+
 						</div>
 						<div class="col">
 							<p class="small text-muted mb-0">followers</p>
 							<p class="mb-1 h5  email">4156</p>
 						</div>
 						<div class="col">
-							<p class="small text-muted mb-0">followers</p>
-							<p class="mb-1 h5  email">4156</p>
+							<p class="small text-muted mb-0">followed</p>
+							<p class="mb-1 h5  email">375</p>
 						</div>
 						</div>
 					</div>
@@ -264,6 +288,15 @@ export default {
 .input-group > * {
 	background-color: black;
 	color: white;
+}
+
+.input-group.email > * {
+	background-color: white;
+	color: black;
+	margin-left : 15%
+}
+.check_button.email {
+	border-color: rgb(190, 189, 189);
 }
 
 .check {
