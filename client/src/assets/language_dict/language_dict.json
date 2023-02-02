@@ -112,6 +112,7 @@
 		"no_favorites"     :["No favourites, wanna browse some movies?", "Pas de favoris, envie de faire un tour dans notre selection de films?"],
 		"watched"          :["Watched movies", "Films visionnés"],
 		"no_watched"       :["No movie watched yet, wanna browse some movies?", "Pas de film visionné pour l'instant, envie de faire un tour dans notre selection de films?"],
+		"bio_max_length"   :["Max length", "Longeur max"],
 		"save"             :["Save", "sauvegarder"],
 		"request_error"    :["...Humm we are having trouble fetching data for this user, sorry", "...Humm nous n'arrivons pas à trouver la donnée sur cet utilisateur, désolé"],
 		"network_error"    :["...Humm, it looks like the server is down, sorry", "...Humm il semblerait que le server n'est pas allumé, désolé"],

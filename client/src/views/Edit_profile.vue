@@ -282,7 +282,9 @@ export default {
 								v-model = "bio"
 								name="password"
 								:placeholder="bio"
+								:maxlength=499
 							></b-form-textarea>
+							<p class="max_length">{{text_content.bio_max_length[lang_nb]}}: 500</p>
 							<button class="btn check_button bio" type="button" @click="save_bio()">{{text_content.save[lang_nb]}}
 							</button>
 						</div>
@@ -322,6 +324,13 @@ export default {
 
 <style scoped>
 
+.max_length {
+	color: rgb(63, 63, 63);
+	margin-left: 5px;
+	margin-top: 5px;
+	font-size: 12px;
+}
+
 .movies {
 	margin-top: 0px;
 	margin-bottom: 0px;
@@ -348,7 +357,7 @@ export default {
 	color: black;
 	position: absolute;
 	right: 0;
-	top: 0px;
+	top: -17px;
 }
 .modify.bio.empty {
 	top : -15px;

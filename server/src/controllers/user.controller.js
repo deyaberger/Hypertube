@@ -138,6 +138,9 @@ module.exports = (db_pool) => {
                 if (update_res.affectedRows == 1) {
                     return res.status(200).send({message: "successfully changed user email"})
                 }
+                else if (update_res.erno == 'R_DATA_TOO_LONG') {
+                    return res.status(201).send({message: "Can't change email", details: "long"})
+                }
                 return update_res
             }
             catch (e) {
