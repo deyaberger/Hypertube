@@ -42,6 +42,30 @@ export const Update_First_Name = async(token, firstname) => {
 	}
 }
 
+
+export const Update_Last_Name = async(token, lastname) => {
+	let request = {
+		url: `http://127.0.0.1:8071/api/user/update_last_name`,
+		method: "post",
+		headers: {
+			'Access-Control-Allow-Origin': '*',
+			"Content-type"               : "application/json",
+			'Authorization'				 : `Bearer ${token}`
+		},
+		params : {
+			lastname : lastname
+		}
+	};
+	try {
+		const response = await axios(request);
+		return response;
+	}
+	catch(e) {
+		return (e.toJSON())
+	}
+}
+
+
 export const Is_Fav_Movie = async(token, movie_id) => {
 	let request = {
 		url : `http://127.0.0.1:8071/api/favorites/is_fav`,

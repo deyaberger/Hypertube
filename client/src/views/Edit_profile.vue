@@ -2,7 +2,7 @@
 import { mapState } from 'vuex';
 import textContent from "../assets/language_dict/language_dict.json";
 import SearchResults from '../components/Search_results.vue';
-import { Get_User_Details, Get_User_Fav_Movies, Get_User_Watched_Movies, Update_First_Name } from "../functions/user"
+import { Get_User_Details, Get_User_Fav_Movies, Get_User_Watched_Movies, Update_First_Name, Update_Last_Name } from "../functions/user"
 
 
 export default {
@@ -79,16 +79,32 @@ export default {
 			let res = await Update_First_Name(this.user_token, this.first_name)
 			if (res.status == 200) {
 				this.first_name_is_saved = !this.first_name_is_saved
+				this.first_name_error = false
 			}
-			else {
+			else if (res.status == 404){
 				console.log("Error: ", res.message)
 			}
-		},
-		save_last_name() {
-			this.last_name_is_saved = true
+			else if (res.status == 201) {
+				this.first_name_error = true;
+				console.log("Error: ", res.data.message, res.data.details)
+			}
 		},
 		modify_last_name() {
 			this.last_name_is_saved = !this.last_name_is_saved
+		},
+		async save_last_name() {
+			let res = await Update_Last_Name(this.user_token, this.last_name)
+			if (res.status == 200) {
+				this.last_name_is_saved = !this.last_name_is_saved
+				this.last_name_error = false
+			}
+			else if (res.status == 404){
+				console.log("Error: ", res.message)
+			}
+			else if (res.status == 201) {
+				this.last_name_error = true;
+				console.log("Error: ", res.data.message, res.data.details)
+			}
 		},
 		save_bio() {
 			this.bio_is_saved = !this.bio_is_saved
@@ -130,8 +146,8 @@ export default {
 			<div class="row d-flex justify-content-center align-items-start h-100">
 			<div class="col col-lg-9 col-xl-7">
 				<div class="card">
-				<div class="rounded-top text-white d-flex flex-row" style="background-color: #000; height:200px;">
-					<div class="ms-4 mt-5 d-flex flex-column" style="width: 150px;">
+				<div class="rounded-top text-white d-flex flex-row" style="background-color: #000; height:250px;">
+					<div class="ms-4 mt-5 d-flex flex-column" style="width: 200px;">
 					<div class="profile_header mt-4" >
 						<img :src="user.picture" alt="profile pic" class="img-fluid img-thumbnail profile_pic" onerror="this.src='../src/assets/generic_profile_pic.jpg';">
 						<b-icon-arrow-repeat  class="h2 change_icon"></b-icon-arrow-repeat>
@@ -158,6 +174,7 @@ export default {
 								</button>
 							</span>
 						</div>
+						<p class="error_msg" v-show="first_name_error">{{text_content.first_name_error[lang_nb]}}</p>
 						<div class="mt-3">
 						<div v-if="last_name_is_saved">
 							<span class ="h3 name">{{ last_name }}
@@ -178,6 +195,7 @@ export default {
 								</button>
 							</span>
 						</div>
+						<p class="error_msg" v-show="last_name_error">{{text_content.last_name_error[lang_nb]}}</p>
 						</div>
 					</div>
 				</div>
@@ -352,7 +370,7 @@ export default {
 
 
 .profile_header {
-	width: 150px;
+	width: 200px;
 	z-index: 1;
 	position: relative;
 	cursor: pointer;
@@ -436,8 +454,8 @@ export default {
 
 .remove_pic {
 	position: absolute;
-	top: 180px;
-	left: 150px;
+	top: 240px;
+	left: 190px;
 	z-index: 2;
 	background-color: black;
 	color: red;
@@ -446,5 +464,12 @@ export default {
 .error_input {
 	border: 2px solid rgb(193, 6, 6);
 }
+
+.error_msg {
+	padding-left: 2%;
+	color: rgb(235, 44, 44);;
+	white-space: pre;
+	text-transform: none;
+  }
 
 </style>

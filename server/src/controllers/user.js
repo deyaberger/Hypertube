@@ -50,6 +50,20 @@ module.exports = (db_pool) => {
                 throw (e)
             }
         },
+        update_lastname: async(user_id, lastname) => {
+            console.log("in update last_name");
+            try {
+                let [update_result, ] = await db_pool.query(`
+                update users
+                set last_name = ?
+                where id = ?
+                `, [lastname, user_id])
+                return update_result
+            }
+            catch(e) {
+                throw (e)
+            }
+        },
 
 
 
