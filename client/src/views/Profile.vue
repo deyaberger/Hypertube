@@ -18,6 +18,7 @@ export default {
 		return {
 			text_content		: textContent.PROFILE,
 			user                : null,
+			own_profile			: false,
 
 			request_error		: false,
 			network_error		: false,
