@@ -39,12 +39,7 @@ module.exports = (db_pool) => {
                     "with_cast"   : true,
                 }
             };
-            console.log("lol")
             const response = await axios(request);
-            console.log("lil")
-            console.log("got movie details: ", response)
-            console.log("lil")
-
             return response;
         },
 
@@ -218,7 +213,6 @@ module.exports = (db_pool) => {
                 WHERE movies.id = ?
                 GROUP BY movies.id
                 `, [movie_id])
-                console.log("Insert result: ", insert_res)
                 return insert_res;
             }
             catch (e) {

@@ -23,8 +23,6 @@ export default {
 		async is_favorite(movie) {
 			let res = await Is_Fav_Movie(this.user_token, movie.id)
 			if (res.data.is_fav == 1) {
-				console.log("movie_title ", movie.title)
-				console.log("res.data.is_fav: ", res.data.is_fav)
 				return true
 			}
 			return false

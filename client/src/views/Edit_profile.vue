@@ -12,9 +12,12 @@ export default {
 	data() {
 		return {
 			text_content		: textContent.PROFILE,
+			user                : null,
+			request_error		: false,
+			network_error		: false,
+			error_text			: '',
 			watched_movies      : null,
 			fav_movies		    : null,
-			user                : null,
 			own_profile         : true,
 			first_name_is_saved : true,
 			last_name_is_saved  : true,
@@ -36,12 +39,23 @@ export default {
 			this.fav_movies = null
 			let res = null
 			res = await Get_User_Details(this.user_token);
-			this.user = res.data
-			console.log("USER: ", this.user)
-			res = await Get_User_Fav_Movies(this.user_token);
-			this.fav_movies = res.data
-			res = await Get_User_Watched_Movies(this.user_token);
-			this.watched_movies = res.data
+			if (res.status == 200) {
+				this.user = res.data
+				res = await Get_User_Fav_Movies(this.user_token);
+				this.fav_movies = res.data
+				res = await Get_User_Watched_Movies(this.user_token);
+				this.watched_movies = res.data
+			}
+			else if (res.status == 404 || res.status == 201) {
+				this.request_error = true
+				this.error_text = res.status == 404 ?
+					this.text_content.request_error[this.lang_nb] : this.text_content.no_user_found[this.lang_nb]
+			}
+			else if (res.code == 'ERR_NETWORK') {
+				this.network_error = true
+				this.error_text = this.text_content.network_error[this.lang_nb]
+			}
+
 		},
 		save_first_name() {
 			this.first_name_is_saved = true
@@ -82,6 +96,21 @@ export default {
 </script>
 
 <template>
+	<section v-if="network_error || request_error" class="gradient-custom-2">
+		<div class="container py-5 h-100">
+			<div class="row d-flex justify-content-center align-items-start h-100">
+				<div class="col col-lg-9 col-xl-7">
+					<div class="card">
+						<div class="p-4 text-black" style="background-color: #f8f9fa;">
+							<div class="justify-content-center text-center py-1">
+								<p class="lead fw-normal mb-1">{{error_text}}</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
 	<section v-if="user" class="gradient-custom-2">
 		<div class="container py-5 h-100">
 			<div class="row d-flex justify-content-center align-items-start h-100">
@@ -170,11 +199,11 @@ export default {
 						</div>
 						<div class="col">
 							<p class="small text-muted mb-0">{{text_content.followers[lang_nb]}}</p>
-							<p class="mb-1 h5  email">4156</p>
+							<p class="mb-1 h5  email">{{user.followers}}</p>
 						</div>
 						<div class="col">
 							<p class="small text-muted mb-0">{{text_content.followed[lang_nb]}}</p>
-							<p class="mb-1 h5  email">375</p>
+							<p class="mb-1 h5  email">{{user.followed}}</p>
 						</div>
 						</div>
 					</div>

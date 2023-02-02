@@ -10,8 +10,13 @@ export const Get_User_Details = async(token) => {
 			'Authorization'				 : `Bearer ${token}`
 		}
 	};
-	const response = await axios(request);
-	return response;
+	try {
+		const response = await axios(request);
+		return response;
+	}
+	catch(e) {
+		return (e.toJSON())
+	}
 }
 
 export const Is_Fav_Movie = async(token, movie_id) => {

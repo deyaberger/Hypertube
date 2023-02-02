@@ -105,14 +105,17 @@
 		"error_last_name"  :["Please enter a last name", "Merci d'indiquer votre nom de famille"],
 		"error_email"      :["Please enter a valid email address", "Adresse invalide"],
 		"error_email_dup"  :["Email already in use", "Email déjà pris"],
-		"followers"		   :["Followers", "Followers"],
-		"followed"		   :["Followed", "Suivi(e)s"],
-		"about"			   :["About", "A propos"],
-		"favorites"		   :["Favorite movies", "Films favoris"],
-		"no_favorites"	   :["No favourites, wanna browse some movies?", "Pas de favoris, envie de faire un tour dans notre selection de films?"],
-		"watched"		   :["Watched movies", "Films visionnés"],
-		"no_watched"	   :["No movie watched yet, wanna browse some movies?", "Pas de film visionné pour l'instant, envie de faire un tour dans notre selection de films?"],
-		"save"			   :["Save", "sauvegarder"]
+		"followers"        :["Followers", "Followers"],
+		"followed"         :["Followed", "Suivi(e)s"],
+		"about"            :["About", "A propos"],
+		"favorites"        :["Favorite movies", "Films favoris"],
+		"no_favorites"     :["No favourites, wanna browse some movies?", "Pas de favoris, envie de faire un tour dans notre selection de films?"],
+		"watched"          :["Watched movies", "Films visionnés"],
+		"no_watched"       :["No movie watched yet, wanna browse some movies?", "Pas de film visionné pour l'instant, envie de faire un tour dans notre selection de films?"],
+		"save"             :["Save", "sauvegarder"],
+		"request_error"    :["...Humm we are having trouble fetching data for this user, sorry", "...Humm nous n'arrivons pas à trouver la donnée sur cet utilisateur, désolé"],
+		"network_error"    :["...Humm, it looks like the server is down, sorry", "...Humm il semblerait que le server n'est pas allumé, désolé"],
+		"no_user_found"    :["We don't have any data about this user", "Nous n'avons pas de données concernant cet utilisateur"]
 
 	}
 }

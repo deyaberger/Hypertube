@@ -7,11 +7,13 @@ module.exports = (db_pool) => {
             try {
                 let userid = req.user_id
                 let user = await user_functions.get_user_by_id(userid)
-
                 if (user == null) {
                     return res.sendStatus(500)
                 }
-
+                else if ([...new Set(Object.values(user))][0] == null) {
+                    console.log("Nothing about this user")
+                    return res.status(201).send({message:  "Nothing in database about user: " + userid})
+                }
                 return res.status(200).send(user)
             }
             catch (e) {
