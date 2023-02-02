@@ -107,6 +107,8 @@
 		"error_email_dup"  :["Email already in use", "Email déjà pris"],
 		"followers"        :["Followers", "Followers"],
 		"followed"         :["Followed", "Suivi(e)s"],
+		"follow"		   :["Follow", "Suivre"],
+		"unfollow"         :["Unfollow", "Ne plus suivre"],
 		"about"            :["About", "A propos"],
 		"favorites"        :["Favorite movies", "Films favoris"],
 		"no_favorites"     :["No favourites, wanna browse some movies?", "Pas de favoris, envie de faire un tour dans notre selection de films?"],

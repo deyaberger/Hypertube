@@ -52,7 +52,7 @@ export default {
 		parse_modifiable_data() {
 			this.first_name	= this.user.first_name;
 			this.last_name	= this.user.last_name;
-			this.email		= this.user.email;
+			this.email		= this.user.mail;
 			this.bio		= this.user.bio ? this.user.bio : '';
 		},
 		async get_user_data() {
@@ -238,7 +238,7 @@ export default {
 						<div class="col-7">
 							<div>
 								<p class="small text-muted mb-0">email</p>
-								<p v-if="email_is_saved" class="mb-1 h5  email">{{ email }}<b-icon-pen class="modify h5 mail" @click="modify_mail()"></b-icon-pen></p>
+								<p v-if="email_is_saved" class="mb-1 h5  email">{{email}}<b-icon-pen class="modify h5 mail" @click="modify_mail()"></b-icon-pen></p>
 								<div  v-else class="input-group email">
 								<input
 									v-model = "email"
@@ -259,11 +259,11 @@ export default {
 						</div>
 						<div class="col">
 							<p class="small text-muted mb-0">{{text_content.followers[lang_nb]}}</p>
-							<p class="mb-1 h5  email">{{user.followers}}</p>
+							<p class="mb-1 h5">{{user.followers}}</p>
 						</div>
 						<div class="col">
 							<p class="small text-muted mb-0">{{text_content.followed[lang_nb]}}</p>
-							<p class="mb-1 h5  email">{{user.followed}}</p>
+							<p class="mb-1 h5">{{user.followed}}</p>
 						</div>
 						</div>
 					</div>
@@ -309,6 +309,7 @@ export default {
 
 <style lang="scss" scoped>
 @import "../assets/shared_scss/search_results.scss";
+@import "../assets/shared_scss/profile.scss";
 
 </style>
 
@@ -318,195 +319,5 @@ export default {
 	background-color: black;
 	border-color: rgb(99, 97, 97);
 }
-
-</style>
-
-
-<style scoped>
-
-.max_length {
-	color: rgb(63, 63, 63);
-	margin-left: 5px;
-	margin-top: 5px;
-	font-size: 12px;
-}
-
-.movies {
-	margin-top: 0px;
-	margin-bottom: 0px;
-}
-
-.modify {
-	color: white;
-	margin-bottom: 3%;
-	cursor: pointer
-}
-
-.about, .email {
-	position: relative;
-}
-
-.modify.mail {
-	color: black;
-	position: absolute;
-	margin-top: -1%;
-	margin-left: 1%;
-}
-
-.modify.bio {
-	color: black;
-	position: absolute;
-	right: 0;
-	top: -17px;
-}
-.modify.bio.empty {
-	top : -15px;
-}
-
-
-.modify:hover {
-	transform: scale(1.3);
-}
-.check_button {
-	border-color: white;
-	padding: 0
-}
-
-.check_button.bio {
-	color: rgb(48, 47, 47);
-	margin-left: 1%;
-	margin: 0px;
-	margin-top: 10px;
-	padding: 5px;
-	padding-right : 20px;
-	padding-left : 20px;
-	background :linear-gradient(to right, rgba(251, 194, 235, 1), rgba(166, 193, 238, 1));
-}
-
-.check_button:hover .check {
-	transform: scale(1.2);
-	color: rgb(113, 238, 113);
-}
-.input-group > * {
-	background-color: black;
-	color: white;
-}
-
-.input-group.email > * {
-	background-color: white;
-	color: black;
-	margin-left : 15%
-}
-.check_button.email {
-	border-color: rgb(190, 189, 189);
-}
-
-.check {
-	color: green
-}
-
-
-.profile_header {
-	width: 200px;
-	z-index: 1;
-	position: relative;
-	cursor: pointer;
-}
-
-.profile_header:hover {
-	transform:scale(1.03);
-}
-
-.profile_header:hover .profile_pic {
-	background: linear-gradient(to bottom, transparent 10%, black, black);
-}
-
-.profile_header:hover .change_icon {
-	visibility: visible;
-}
-
-.change_icon {
-	visibility: hidden;
-	color: rgba(0, 0, 0, 0.878);
-	border-radius: 35px;
-	background-color: white;
-	position: absolute;
-	top: 0;
-	bottom: 0;
-	left: 0;
-	right: 0;
-	margin: auto auto auto auto;
-	font-size: 50px;
-	opacity: .85;
-	transition: none;
-}
-
-
-
-.col {
-	width: 80%;
-}
-
-.dark_input {
-	background-color:rgb(0, 0, 0);
-	color:white;
-	margin-top:5%;
-}
-
-.main_info {
-	margin-top: 90px;
-}
-
-.name
-{
-	text-transform: capitalize;
-	color: white;
-	margin-right: 5%;
-
-}
-
-.remove {
-	color:white;
-}
-
-
-.movie-content, .movie-image {
-	box-shadow: 0.5px 0px 2px rgba(0, 0, 0, 0.813);
-}
-
-
-.btn-dark > *, .btn-outline-dark:hover > * {
-	color: white;
-}
-
-.btn-dark:hover {
-	background: rgba(0, 0, 0, 0.642);
-}
-
-
-.gradient-custom-2 {
-	background: linear-gradient(to right, rgba(251, 194, 235, 1), rgba(166, 193, 238, 1));
-	height: 100vw;
-}
-
-.remove_pic {
-	position: absolute;
-	top: 240px;
-	left: 190px;
-	z-index: 2;
-	background-color: black;
-	color: red;
-}
-
-.error_input {
-	border: 2px solid rgb(193, 6, 6);
-}
-
-.error_msg {
-	padding-left: 2%;
-	color: rgb(235, 44, 44);;
-	white-space: pre;
-	text-transform: none;
-  }
 
 </style>
