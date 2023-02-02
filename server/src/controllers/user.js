@@ -64,6 +64,21 @@ module.exports = (db_pool) => {
                 throw (e)
             }
         },
+        update_bio: async(user_id, bio) => {
+            console.log("in update bio");
+            try {
+                let [update_result, ] = await db_pool.query(`
+                update users
+                set bio = ?
+                where id = ?
+                `, [bio, user_id])
+                console.log("update_result", update_result)
+                return update_result
+            }
+            catch(e) {
+                throw (e)
+            }
+        },
 
 
 

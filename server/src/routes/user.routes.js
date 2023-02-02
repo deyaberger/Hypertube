@@ -8,6 +8,7 @@ module.exports = (db_pool) => {
     router.get  ("/me"            , auth_controller.authenticateToken, user_controller.get_my_user     )
     router.post  ("/update_first_name", auth_controller.authenticateToken, user_controller.update_first_name)
     router.post  ("/update_last_name", auth_controller.authenticateToken, user_controller.update_last_name)
+    router.post  ("/update_bio", auth_controller.authenticateToken, user_controller.update_bio)
 
     // router.patch("/update"        , auth_controller.authenticateToken, user_controller.update_user_info)
     // router.get  ("/:user_id"      , auth_controller.authenticateToken, user_controller.get_other_user  )

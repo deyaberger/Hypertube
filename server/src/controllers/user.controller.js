@@ -80,7 +80,7 @@ module.exports = (db_pool) => {
                 }
                 let update_res = await user_functions.update_firstname(user_id, new_first_name)
                 if (update_res.affectedRows == 1) {
-                    return res.status(200).send({message: "successfully changed user name"})
+                    return res.status(200).send({message: "successfully changed user firstname"})
                 }
                 return update_res
             }
@@ -101,7 +101,21 @@ module.exports = (db_pool) => {
                 }
                 let update_res = await user_functions.update_lastname(user_id, new_last_name)
                 if (update_res.affectedRows == 1) {
-                    return res.status(200).send({message: "successfully changed user name"})
+                    return res.status(200).send({message: "successfully changed user lastname"})
+                }
+                return update_res
+            }
+            catch (e) {
+                throw(e)
+            }
+        },
+        update_bio : async(req, res) => {
+            try {
+                let user_id = req.user_id
+                let new_bio  = req.query.bio
+                let update_res = await user_functions.update_bio(user_id, new_bio)
+                if (update_res.affectedRows == 1) {
+                    return res.status(200).send({message: "successfully changed user bio"})
                 }
                 return update_res
             }

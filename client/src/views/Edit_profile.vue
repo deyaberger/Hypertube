@@ -2,7 +2,12 @@
 import { mapState } from 'vuex';
 import textContent from "../assets/language_dict/language_dict.json";
 import SearchResults from '../components/Search_results.vue';
-import { Get_User_Details, Get_User_Fav_Movies, Get_User_Watched_Movies, Update_First_Name, Update_Last_Name } from "../functions/user"
+import { Get_User_Details,
+	Get_User_Fav_Movies,
+	Get_User_Watched_Movies,
+	Update_First_Name,
+	Update_Last_Name,
+	Update_Bio } from "../functions/user"
 
 
 export default {
@@ -25,7 +30,7 @@ export default {
 			first_name			: null,
 			last_name			: null,
 			email				: null,
-			bio					: '',
+			bio					: null,
 
 
 			first_name_is_saved : true,
@@ -45,7 +50,7 @@ export default {
 			this.first_name	= this.user.first_name;
 			this.last_name	= this.user.last_name;
 			this.email		= this.user.email;
-			this.bio		= this.user.bio;
+			this.bio		= this.user.bio ? this.user.bio : '';
 		},
 		async get_user_data() {
 			console.log("getting user data:")
@@ -54,6 +59,7 @@ export default {
 			let res = await Get_User_Details(this.user_token);
 			if (res.status == 200) {
 				this.user = res.data
+				console.log("USER: ", this.user)
 				this.parse_modifiable_data();
 				res = await Get_User_Fav_Movies(this.user_token);
 				this.fav_movies = res.data
@@ -106,11 +112,22 @@ export default {
 				console.log("Error: ", res.data.message, res.data.details)
 			}
 		},
-		save_bio() {
-			this.bio_is_saved = !this.bio_is_saved
-		},
 		modify_bio() {
 			this.bio_is_saved = !this.bio_is_saved
+		},
+		async save_bio() {
+			let res = await Update_Bio(this.user_token, this.bio)
+			if (res.status == 200) {
+				this.bio_is_saved = !this.bio_is_saved
+				this.bio_error = false
+			}
+			else if (res.status == 404){
+				console.log("Error: ", res.message)
+			}
+			else if (res.status == 201) {
+				this.bio_error = true;
+				console.log("Error: ", res.data.message, res.data.details)
+			}
 		},
 		modify_mail() {
 			this.email_is_saved = !this.email_is_saved
@@ -251,9 +268,9 @@ export default {
 						<div v-else>
 							<b-form-textarea
 								id="textarea"
-								v-model = "user.bio"
+								v-model = "bio"
 								name="password"
-								:placeholder="user.bio"
+								:placeholder="bio"
 							></b-form-textarea>
 							<button class="btn check_button bio" type="button" @click="save_bio()">{{text_content.save[lang_nb]}}
 							</button>
