@@ -36,6 +36,23 @@ module.exports = (db_pool) => {
             return update_result
         },
 
+        update_firstname: async(user_id, firstname) => {
+            console.log("in update first_name");
+            try {
+                let [update_result, ] = await db_pool.query(`
+                update users
+                set first_name = ?
+                where id = ?
+                `, [firstname, user_id])
+                return update_result
+            }
+            catch(e) {
+                throw (e)
+            }
+        },
+
+
+
         get_watched: async (userid) => {
             console.log("in get wathced");
             [watched, ] = await db_pool.query(`

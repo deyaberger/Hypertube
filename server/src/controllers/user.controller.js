@@ -67,6 +67,27 @@ module.exports = (db_pool) => {
                 throw (e)
             }
         },
+        update_first_name : async(req, res) => {
+            try {
+                let regex_mail = /^\S*$/;
+                let user_id = req.user_id
+                let new_first_name  = req.query.firstname
+                if (new_first_name.match(regex_mail) == null) {
+                    return res.status(201).send({message: "Can't change firstname", details: "whitespaces"})
+                }
+                if (new_first_name.length == 0) {
+                    return res.status(201).send({message: "Can't change firstname", details: "empty"})
+                }
+                let update_res = await user_functions.update_firstname(user_id, new_first_name)
+                if (update_res.affectedRows == 1) {
+                    return res.status(200).send({message: "successfully changed user name"})
+                }
+                return update_res
+            }
+            catch (e) {
+                throw(e)
+            }
+        }
 
     }
 }

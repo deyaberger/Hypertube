@@ -2,7 +2,7 @@
 import { mapState } from 'vuex';
 import textContent from "../assets/language_dict/language_dict.json";
 import SearchResults from '../components/Search_results.vue';
-import { Get_User_Details, Get_User_Fav_Movies, Get_User_Watched_Movies } from "../functions/user"
+import { Get_User_Details, Get_User_Fav_Movies, Get_User_Watched_Movies, Update_First_Name } from "../functions/user"
 
 
 export default {
@@ -12,19 +12,27 @@ export default {
 	data() {
 		return {
 			text_content		: textContent.PROFILE,
+			own_profile         : true,
+
 			user                : null,
 			request_error		: false,
 			network_error		: false,
 			error_text			: '',
+
 			watched_movies      : null,
 			fav_movies		    : null,
-			own_profile         : true,
+
+			first_name			: null,
+			last_name			: null,
+			email				: null,
+			bio					: '',
+
+
 			first_name_is_saved : true,
 			last_name_is_saved  : true,
 			first_name_error    : false,
 			last_name_error     : false,
 			bio_is_saved        : true,
-			empty_bio			: false,
 			email_is_saved		: true,
 		}
 	},
@@ -33,14 +41,20 @@ export default {
 		user_token : state =>  state.user_token,
     }),
 	methods: {
+		parse_modifiable_data() {
+			this.first_name	= this.user.first_name;
+			this.last_name	= this.user.last_name;
+			this.email		= this.user.email;
+			this.bio		= this.user.bio;
+		},
 		async get_user_data() {
 			console.log("getting user data:")
 			this.watched_movies = null
 			this.fav_movies = null
-			let res = null
-			res = await Get_User_Details(this.user_token);
+			let res = await Get_User_Details(this.user_token);
 			if (res.status == 200) {
 				this.user = res.data
+				this.parse_modifiable_data();
 				res = await Get_User_Fav_Movies(this.user_token);
 				this.fav_movies = res.data
 				res = await Get_User_Watched_Movies(this.user_token);
@@ -50,6 +64,7 @@ export default {
 				this.request_error = true
 				this.error_text = res.status == 404 ?
 					this.text_content.request_error[this.lang_nb] : this.text_content.no_user_found[this.lang_nb]
+				console.log("Error: ", res.message)
 			}
 			else if (res.code == 'ERR_NETWORK') {
 				this.network_error = true
@@ -57,11 +72,17 @@ export default {
 			}
 
 		},
-		save_first_name() {
-			this.first_name_is_saved = true
-		},
 		modify_first_name() {
 			this.first_name_is_saved = !this.first_name_is_saved
+		},
+		async save_first_name() {
+			let res = await Update_First_Name(this.user_token, this.first_name)
+			if (res.status == 200) {
+				this.first_name_is_saved = !this.first_name_is_saved
+			}
+			else {
+				console.log("Error: ", res.message)
+			}
 		},
 		save_last_name() {
 			this.last_name_is_saved = true
@@ -70,13 +91,6 @@ export default {
 			this.last_name_is_saved = !this.last_name_is_saved
 		},
 		save_bio() {
-			console.log("this.user.bio: ", this.user.bio)
-			if (this.user.bio.length == 0) {
-				this.empty_bio = true
-			}
-			else {
-				this.empty_bio = false
-			}
 			this.bio_is_saved = !this.bio_is_saved
 		},
 		modify_bio() {
@@ -126,17 +140,17 @@ export default {
 					</div>
 					<div class="ms-3 main_info" >
 						<div v-if="first_name_is_saved">
-							<span class ="h3 name">{{ user.first_name }}
+							<span class ="h3 name">{{ first_name }}
 							<b-icon-pen class="modify h5" @click="modify_first_name()"></b-icon-pen>
 							</span>
 						</div>
 						<div  v-else class="input-group">
 							<input
-								v-model = "user.first_name"
+								v-model = "first_name"
 								class="form-control"
 								:class="{ error_input : first_name_error}"
 								name="password"
-								:placeholder="user.first_name"
+								:placeholder="first_name"
 							>
 							<span class="input-group-btn align-items-center">
 								<button class="btn check_button" type="button">
@@ -146,17 +160,17 @@ export default {
 						</div>
 						<div class="mt-3">
 						<div v-if="last_name_is_saved">
-							<span class ="h3 name">{{ user.last_name }}
+							<span class ="h3 name">{{ last_name }}
 								<b-icon-pen class="modify h5" @click="modify_last_name()"></b-icon-pen>
 							</span>
 						</div>
 						<div  v-else class="input-group">
 							<input
-								v-model = "user.last_name"
+								v-model = "last_name"
 								class="form-control"
 								:class="{ error_input : last_name_error}"
 								name="password"
-								:placeholder="user.last_name"
+								:placeholder="last_name"
 							>
 							<span class="input-group-btn align-items-center">
 								<button class="btn check_button" type="button">
@@ -179,14 +193,14 @@ export default {
 						<div class="col-7">
 							<div>
 								<p class="small text-muted mb-0">email</p>
-								<p v-if="email_is_saved" class="mb-1 h5  email">{{ user.mail }}<b-icon-pen class="modify h5 mail" @click="modify_mail()"></b-icon-pen></p>
+								<p v-if="email_is_saved" class="mb-1 h5  email">{{ email }}<b-icon-pen class="modify h5 mail" @click="modify_mail()"></b-icon-pen></p>
 								<div  v-else class="input-group email">
 								<input
-									v-model = "user.email"
+									v-model = "email"
 									class="form-control"
 									:class="{ error_input : email_error}"
 									name="password"
-									:placeholder="user.email"
+									:placeholder="email"
 								>
 								<span class="input-group-btn align-items-center">
 									<button class="btn check_button  email" type="button">
@@ -214,7 +228,7 @@ export default {
 					<p class="lead fw-normal mb-1">{{text_content.about[lang_nb]}}</p>
 					<div class="p-4" style="background-color: #f8f9fa;">
 						<div v-if="bio_is_saved">
-						<p class="font-italic mb-1 about">{{ user.bio }}<b-icon-pen class="modify h5 bio" :class="empty_bio ? 'empty' : ''" @click="modify_bio()"></b-icon-pen></p>
+						<p class="font-italic mb-1 about">{{ bio }}<b-icon-pen class="modify h5 bio" :class="bio.length == 0 ? 'empty' : ''" @click="modify_bio()"></b-icon-pen></p>
 						</div>
 						<div v-else>
 							<b-form-textarea
