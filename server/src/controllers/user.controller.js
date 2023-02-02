@@ -22,16 +22,17 @@ module.exports = (db_pool) => {
         },
 
         get_other_user : async (req, res) => {
-            console.log("in get_other_user")
+            console.log("in get_other_my_user")
             try {
-                let user_id = req.params.user_id
-                let user = await user_functions.get_user_by_id(user_id)
-
+                let userid = req.params.user_id
+                let user = await user_functions.get_user_by_id(userid)
                 if (user == null) {
                     return res.sendStatus(500)
                 }
-
-                delete user.mail
+                else if ([...new Set(Object.values(user))][0] == null) {
+                    console.log("Nothing about this user")
+                    return res.status(201).send({message:  "Nothing in database about user: " + userid})
+                }
                 return res.status(200).send(user)
             }
             catch (e) {

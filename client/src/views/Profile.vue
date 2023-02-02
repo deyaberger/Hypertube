@@ -2,12 +2,15 @@
 import { mapState } from 'vuex';
 import textContent from "../assets/language_dict/language_dict.json";
 import SearchResults from '../components/Search_results.vue';
-import { Get_User_Details,
+import { Get_Other_User_Details,
 	Get_User_Fav_Movies,
 	Get_User_Watched_Movies } from "../functions/user"
 
 
 export default {
+	props: {
+		user_id: String,
+	},
 	components: {
 		SearchResults
 	},
@@ -35,10 +38,10 @@ export default {
 			this.followed = !this.followed
 		},
 		async get_user_data() {
-			console.log("getting user data:")
+			console.log("getting other user data:")
 			this.watched_movies = null
 			this.fav_movies = null
-			let res = await Get_User_Details(this.user_token);
+			let res = await Get_Other_User_Details(this.user_token, this.user_id);
 			if (res.status == 200) {
 				this.user = res.data
 				console.log("USER: ", this.user)
