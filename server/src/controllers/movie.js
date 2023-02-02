@@ -39,12 +39,7 @@ module.exports = (db_pool) => {
                     "with_cast"   : true,
                 }
             };
-            console.log("lol")
             const response = await axios(request);
-            console.log("lil")
-            console.log("got movie details: ", response)
-            console.log("lil")
-
             return response;
         },
 
@@ -174,7 +169,7 @@ module.exports = (db_pool) => {
                 WITH aggregate_genres as (SELECT movie_id, JSON_ARRAYAGG(name) as genres_list
                     from genres
                     group by movie_id)
-                SELECT movies.id, yts_id, imdb_code, title, imdb_rating, year, length_minutes, language, summary, genres_list, json_objectagg(IFNULL(images.size, ''), images.url) as images_list
+                SELECT movies.id, yts_id, imdb_code, title, imdb_rating, year, length_minutes, language, summary, genres_list, json_objectagg(IFNULL(images.size, ''), images.url) as images_list, movies.id % 2 as is_fav, year % 2 as is_watched
                 FROM movies
                     LEFT JOIN aggregate_genres ON movies.id = aggregate_genres.movie_id
                     LEFT JOIN images ON movies.id = images.movie_id
@@ -218,7 +213,6 @@ module.exports = (db_pool) => {
                 WHERE movies.id = ?
                 GROUP BY movies.id
                 `, [movie_id])
-                console.log("Insert result: ", insert_res)
                 return insert_res;
             }
             catch (e) {

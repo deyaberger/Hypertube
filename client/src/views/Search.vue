@@ -144,7 +144,7 @@ export default {
 					<div class="show_favorites col"><b-form-checkbox v-model="only_show_fav" switch data-toggle="tooltip" data-placement="top" :title="only_show_fav ? 'show all movies' : 'only show favorites'"></b-form-checkbox></div>
 				</div>
 			</div>
-			<SearchResults :movie_list="movies_slice" class="search_res"/>
+			<SearchResults :movie_list="{'profile' : false, 'data' : movies_slice}" class="search_res"/>
 			<div class="pagination overflow-auto">
 			<div v-if="number_of_results > 0">
 				<b-pagination
