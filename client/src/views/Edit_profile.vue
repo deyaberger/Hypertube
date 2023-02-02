@@ -1,13 +1,19 @@
 <script>
 import { mapState } from 'vuex';
-import textContent from "../assets/language_dict/language_dict.json"
-import { Get_User_Details} from "../functions/user"
+import textContent from "../assets/language_dict/language_dict.json";
+import SearchResults from '../components/Search_results.vue';
+import { Get_User_Details, Get_User_Fav_Movies, Get_User_Watched_Movies } from "../functions/user"
 
 
 export default {
+	components: {
+		SearchResults
+	},
 	data() {
 		return {
 			text_content : textContent.MOVIES,
+			watched_movies      : null,
+			fav_movies		    : null,
 			user                : null,
 			own_profile         : true,
 			first_name_is_saved : true,
@@ -31,6 +37,13 @@ export default {
 			res = await Get_User_Details(this.user_token);
 			this.user = res.data
 			console.log("USER: ", this.user)
+			res = await Get_User_Fav_Movies(this.user_token);
+			this.fav_movies = { "profile": true, 'data': res.data}
+			this.fav_movies.profile = true
+			res = await Get_User_Watched_Movies(this.user_token);
+			this.watched_movies = res.data
+			this.fav_movies = { "profile": true, 'data': res.data}
+
 		},
 		save_first_name() {
 			this.first_name_is_saved = true
@@ -163,7 +176,14 @@ export default {
 							<button class="btn check_button bio" type="button" @click="save_bio()">Save
 							</button>
 						</div>
-
+					</div>
+					<div class="card-body p-4 text-black">
+						<p class="lead fw-normal mb-1">Favorite Movies:</p>
+						<SearchResults :movie_list="fav_movies"/>
+					</div>
+					<div class="card-body p-4 text-black">
+						<p class="lead fw-normal mb-1">Continue to watch:</p>
+						<SearchResults :movie_list="watched_movies"/>
 					</div>
 					</div>
 				</div>

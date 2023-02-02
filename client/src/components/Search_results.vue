@@ -12,7 +12,7 @@ export default {
 		return {
 			text_content : textContent.MOVIES,
 			Get_Formatted_Time  : Get_Formatted_Time,
-			is_seen_movie : false // To be deleted
+			is_seen_movie : false, // To be deleted
 		}
 	},
 	methods: {
@@ -48,7 +48,7 @@ export default {
 		<div v-if="movie_list == null" class = "col-md-auto">
 			<b-spinner label="Loading..." variant="success" class="mt-5"></b-spinner>
 		</div>
-			<div v-else class="col-md-4 movie-card" v-for="movie in movie_list" :key="movie" style="text-decoration: none">
+			<div v-else :class="movie_list['profile'] ? 'col-md-4 movie-card profile' :'col-md-4 movie-card'" v-for="movie in movie_list['data']" :key="movie" style="text-decoration: none">
 				<router-link :to="'/movie/' + movie.id">
 				<div class="movie-header">
 						<!-- <img :class="is_seen() ? 'movie-image seen' : 'movie-image'" :src="movie.images_list[1]" alt="movie_image"  onerror="this.src='../src/assets/missing_cover.jpeg';"/> -->
