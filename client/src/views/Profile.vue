@@ -62,10 +62,10 @@ export default {
 						style="z-index: 1;">
 						<router-link to="/edit_profile" class="nav-link"><b-icon-pen></b-icon-pen> Edit profile</router-link>
 					</button>
-					<button v-else type="button" class="btn btn-outline-dark" :class="{'btn-dark': followed}" @click="update_follow" data-mdb-ripple-color="dark"
-						style="z-index: 1;">
+					<button v-else type="button" class="btn follow" :class="{'edit': followed}" @click="update_follow" data-mdb-ripple-color="dark"
+						style="z-index: 1;" data-toggle="tooltip" data-placement="top" :title="followed ? 'Unfollow' : ''">
 						<span v-if="!followed">Follow</span>
-						<span v-else>Unfollow</span>
+						<span v-else>Followed</span>
 					</button>
 					</div>
 					<div class="ms-3 main_info" style="margin-top: 130px;">
@@ -154,9 +154,18 @@ export default {
 	background: linear-gradient(to right, rgba(251, 194, 235, 1), rgba(166, 193, 238, 1));
 }
 
+.follow {
+	border-color: rgb(99, 97, 97);
+}
+
+.follow:hover {
+	border: none;
+	background: linear-gradient(to right, rgba(251, 194, 235, 1), rgba(166, 193, 238, 1));
+}
+
 .edit:hover {
 	color: black;
-	opacity: 0.9
+	opacity: 0.8
 }
 
 .gradient-custom-2 {

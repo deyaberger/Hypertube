@@ -15,6 +15,7 @@ export default {
 			first_name_error    : false,
 			last_name_error     : false,
 			bio_is_saved        : true,
+			empty_bio			: false
 		}
 	},
 	computed: mapState({
@@ -44,6 +45,13 @@ export default {
 			this.last_name_is_saved = !this.last_name_is_saved
 		},
 		save_bio() {
+			console.log("this.user.bio: ", this.user.bio)
+			if (this.user.bio.length == 0) {
+				this.empty_bio = true
+			}
+			else {
+				this.empty_bio = false
+			}
 			this.bio_is_saved = !this.bio_is_saved
 		},
 		modify_bio() {
@@ -57,9 +65,9 @@ export default {
 </script>
 
 <template>
-	<section v-if="user" class="h-100 gradient-custom-2">
+	<section v-if="user" class="gradient-custom-2">
 		<div class="container py-5 h-100">
-			<div class="row d-flex justify-content-center align-items-center h-100">
+			<div class="row d-flex justify-content-center align-items-start h-100">
 			<div class="col col-lg-9 col-xl-7">
 				<div class="card">
 				<div class="rounded-top text-white d-flex flex-row" style="background-color: #000; height:200px;">
@@ -93,7 +101,7 @@ export default {
 						<div class="mt-3">
 						<div v-if="last_name_is_saved">
 							<span class ="h3 name">{{ user.last_name }}
-							<b-icon-pen class="modify h5" @click="modify_last_name()"></b-icon-pen>
+								<b-icon-pen class="modify h5" @click="modify_last_name()"></b-icon-pen>
 							</span>
 						</div>
 						<div  v-else class="input-group">
@@ -115,10 +123,26 @@ export default {
 				</div>
 
 				<div class="p-4 text-black" style="background-color: #f8f9fa;">
-					<div class="justify-content-start text-center py-1">
+					<div class="justify-content-center text-center py-1">
 					<div>
-						<p class="small text-muted mb-0">email</p>
-						<p class="mb-1 h5  email">{{ user.mail }}<b-icon-pen class="modify h5 mail"></b-icon-pen></p>
+						<div class="row">
+						<div class="col">
+							<p class="small text-muted mb-0">username</p>
+							<p>@{{user.username}}</p>
+						</div>
+						<div class="col-7">
+							<p class="small text-muted mb-0">email</p>
+							<p class="mb-1 h5  email">{{ user.mail }}<b-icon-pen class="modify h5 mail"></b-icon-pen></p>
+						</div>
+						<div class="col">
+							<p class="small text-muted mb-0">followers</p>
+							<p class="mb-1 h5  email">4156</p>
+						</div>
+						<div class="col">
+							<p class="small text-muted mb-0">followers</p>
+							<p class="mb-1 h5  email">4156</p>
+						</div>
+						</div>
 					</div>
 					</div>
 				</div>
@@ -127,7 +151,7 @@ export default {
 					<p class="lead fw-normal mb-1">About</p>
 					<div class="p-4" style="background-color: #f8f9fa;">
 						<div v-if="bio_is_saved">
-						<p class="font-italic mb-1 about">{{ user.bio }}<b-icon-pen class="modify h5 bio" @click="modify_bio()"></b-icon-pen></p>
+						<p class="font-italic mb-1 about">{{ user.bio }}<b-icon-pen class="modify h5 bio" :class="empty_bio ? 'empty' : ''" @click="modify_bio()"></b-icon-pen></p>
 						</div>
 						<div v-else>
 							<b-form-textarea
@@ -190,7 +214,10 @@ export default {
 	color: black;
 	position: absolute;
 	right: 0;
-	top: 0;
+	top: 0px;
+}
+.modify.bio.empty {
+	top : -15px;
 }
 
 
@@ -306,10 +333,8 @@ export default {
 
 
 .gradient-custom-2 {
-/* fallback for old browsers */
-	background: #fbc2eb;
-	background: -webkit-linear-gradient(to right, rgba(251, 194, 235, 1), rgba(166, 193, 238, 1));
 	background: linear-gradient(to right, rgba(251, 194, 235, 1), rgba(166, 193, 238, 1));
+	height: 100vw;
 }
 
 .remove_pic {
