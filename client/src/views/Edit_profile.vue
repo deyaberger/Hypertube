@@ -11,7 +11,7 @@ export default {
 	},
 	data() {
 		return {
-			text_content : textContent.MOVIES,
+			text_content		: textContent.PROFILE,
 			watched_movies      : null,
 			fav_movies		    : null,
 			user                : null,
@@ -90,7 +90,7 @@ export default {
 				<div class="rounded-top text-white d-flex flex-row" style="background-color: #000; height:200px;">
 					<div class="ms-4 mt-5 d-flex flex-column" style="width: 150px;">
 					<div class="profile_header mt-4" >
-						<img :src="user.picture"	alt="profile pic" class="img-fluid img-thumbnail profile_pic" onerror="this.src='../src/assets/generic_profile_pic.jpg';">
+						<img :src="user.picture" alt="profile pic" class="img-fluid img-thumbnail profile_pic" onerror="this.src='../src/assets/generic_profile_pic.jpg';">
 						<b-icon-arrow-repeat  class="h2 change_icon"></b-icon-arrow-repeat>
 					</div>
 					<span><button class="btn btn-dark remove_pic"><b-icon-trash/></button></span>
@@ -144,7 +144,7 @@ export default {
 					<div>
 						<div class="row">
 						<div class="col">
-							<p class="small text-muted mb-0">username</p>
+							<p class="small text-muted mb-0">{{text_content.username[lang_nb]}}</p>
 							<p>@{{user.username}}</p>
 						</div>
 						<div class="col-7">
@@ -169,11 +169,11 @@ export default {
 
 						</div>
 						<div class="col">
-							<p class="small text-muted mb-0">followers</p>
+							<p class="small text-muted mb-0">{{text_content.followers[lang_nb]}}</p>
 							<p class="mb-1 h5  email">4156</p>
 						</div>
 						<div class="col">
-							<p class="small text-muted mb-0">followed</p>
+							<p class="small text-muted mb-0">{{text_content.followed[lang_nb]}}</p>
 							<p class="mb-1 h5  email">375</p>
 						</div>
 						</div>
@@ -182,7 +182,7 @@ export default {
 				</div>
 				<div class="card-body p-4 text-black">
 					<div>
-					<p class="lead fw-normal mb-1">About</p>
+					<p class="lead fw-normal mb-1">{{text_content.about[lang_nb]}}</p>
 					<div class="p-4" style="background-color: #f8f9fa;">
 						<div v-if="bio_is_saved">
 						<p class="font-italic mb-1 about">{{ user.bio }}<b-icon-pen class="modify h5 bio" :class="empty_bio ? 'empty' : ''" @click="modify_bio()"></b-icon-pen></p>
@@ -194,19 +194,19 @@ export default {
 								name="password"
 								:placeholder="user.bio"
 							></b-form-textarea>
-							<button class="btn check_button bio" type="button" @click="save_bio()">Save
+							<button class="btn check_button bio" type="button" @click="save_bio()">{{text_content.save[lang_nb]}}
 							</button>
 						</div>
 					</div>
-					<div class="card-body p-4 text-black">
-					<p class="lead fw-normal mb-1">Favorite Movies:</p>
+					</div>
+				</div>
+				<div class="card-body p-4 text-black movies">
+					<p class="lead fw-normal mb-4">{{text_content.favorites[lang_nb]}}:</p>
 					<SearchResults :movie_list="{'profile' : true, 'data' : fav_movies}"/>
 				</div>
-				<div class="card-body p-4 text-black">
-					<p class="lead fw-normal mb-1">Continue to watch:</p>
+				<div class="card-body p-4 text-black movies">
+					<p class="lead fw-normal mb-4">{{text_content.watched[lang_nb]}}:</p>
 					<SearchResults :movie_list="{'profile' : true, 'data' : watched_movies}"/>
-				</div>
-					</div>
 				</div>
 				</div>
 			</div>
@@ -233,6 +233,10 @@ export default {
 
 <style scoped>
 
+.movies {
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
 
 .modify {
 	color: white;

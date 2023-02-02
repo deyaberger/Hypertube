@@ -98,5 +98,21 @@
 			"seeds"       : ["seeds", "seeds"]
 		}
 
+	},
+	"PROFILE" : {
+		"username"         :["username", "pseudo"],
+		"error_first_name" :["Please enter a first name", "Merci d'indiquer votre prénom"],
+		"error_last_name"  :["Please enter a last name", "Merci d'indiquer votre nom de famille"],
+		"error_email"      :["Please enter a valid email address", "Adresse invalide"],
+		"error_email_dup"  :["Email already in use", "Email déjà pris"],
+		"followers"		   :["Followers", "Followers"],
+		"followed"		   :["Followed", "Suivi(e)s"],
+		"about"			   :["About", "A propos"],
+		"favorites"		   :["Favorite movies", "Films favoris"],
+		"no_favorites"	   :["No favourites, wanna browse some movies?", "Pas de favoris, envie de faire un tour dans notre selection de films?"],
+		"watched"		   :["Watched movies", "Films visionnés"],
+		"no_watched"	   :["No movie watched yet, wanna browse some movies?", "Pas de film visionné pour l'instant, envie de faire un tour dans notre selection de films?"],
+		"save"			   :["Save", "sauvegarder"]
+
 	}
 }
