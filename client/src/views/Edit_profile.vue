@@ -7,7 +7,8 @@ import { Get_User_Details,
 	Get_User_Watched_Movies,
 	Update_First_Name,
 	Update_Last_Name,
-	Update_Bio } from "../functions/user"
+	Update_Bio,
+	Update_Email } from "../functions/user"
 
 
 export default {
@@ -35,10 +36,12 @@ export default {
 
 			first_name_is_saved : true,
 			last_name_is_saved  : true,
-			first_name_error    : false,
-			last_name_error     : false,
 			bio_is_saved        : true,
 			email_is_saved		: true,
+
+			first_name_error    : false,
+			last_name_error     : false,
+			email_error		    : false,
 		}
 	},
 	computed: mapState({
@@ -124,16 +127,23 @@ export default {
 			else if (res.status == 404){
 				console.log("Error: ", res.message)
 			}
-			else if (res.status == 201) {
-				this.bio_error = true;
-				console.log("Error: ", res.data.message, res.data.details)
-			}
 		},
 		modify_mail() {
 			this.email_is_saved = !this.email_is_saved
 		},
-		save_mail() {
-			this.email_is_saved = !this.email_is_saved
+		async save_mail() {
+			let res = await Update_Email(this.user_token, this.email)
+			if (res.status == 200) {
+				this.email_is_saved = !this.email_is_saved
+				this.email_error = false
+			}
+			else if (res.status == 404){
+				console.log("Error: ", res.message)
+			}
+			else if (res.status == 201) {
+				this.email_error = true;
+				console.log("Error: ", res.data.message, res.data.details)
+			}
 		}
 	},
 	mounted() {
@@ -243,6 +253,7 @@ export default {
 									</button>
 								</span>
 							</div>
+							<p class="error_msg" v-show="email_error">{{text_content.email_error[lang_nb]}}</p>
 							</div>
 
 						</div>

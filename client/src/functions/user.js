@@ -87,6 +87,28 @@ export const Update_Bio = async(token, bio) => {
 	}
 }
 
+export const Update_Email = async(token, email) => {
+	let request = {
+		url: `http://127.0.0.1:8071/api/user/update_email`,
+		method: "post",
+		headers: {
+			'Access-Control-Allow-Origin': '*',
+			"Content-type"               : "application/json",
+			'Authorization'				 : `Bearer ${token}`
+		},
+		params : {
+			email : email
+		}
+	};
+	try {
+		const response = await axios(request);
+		return response;
+	}
+	catch(e) {
+		return (e.toJSON())
+	}
+}
+
 
 export const Is_Fav_Movie = async(token, movie_id) => {
 	let request = {

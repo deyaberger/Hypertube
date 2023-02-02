@@ -69,10 +69,10 @@ module.exports = (db_pool) => {
         },
         update_first_name : async(req, res) => {
             try {
-                let regex_mail = /^\S*$/;
                 let user_id = req.user_id
                 let new_first_name  = req.query.firstname
-                if (new_first_name.match(regex_mail) == null) {
+                let regex_whitespace = /^\S*$/;
+                if (new_first_name.match(regex_whitespace) == null) {
                     return res.status(201).send({message: "Can't change firstname", details: "whitespaces"})
                 }
                 if (new_first_name.length == 0) {
@@ -90,10 +90,10 @@ module.exports = (db_pool) => {
         },
         update_last_name : async(req, res) => {
             try {
-                let regex_mail = /^\S*$/;
                 let user_id = req.user_id
                 let new_last_name  = req.query.lastname
-                if (new_last_name.match(regex_mail) == null) {
+                let regex_whitespace = /^\S*$/;
+                if (new_last_name.match(regex_whitespace) == null) {
                     return res.status(201).send({message: "Can't change lastname", details: "whitespaces"})
                 }
                 if (new_last_name.length == 0) {
@@ -113,9 +113,30 @@ module.exports = (db_pool) => {
             try {
                 let user_id = req.user_id
                 let new_bio  = req.query.bio
-                let update_res = await user_functions.update_bio(user_id, new_bio)
+                let update_res = await user_functions.update_user_bio(user_id, new_bio)
                 if (update_res.affectedRows == 1) {
                     return res.status(200).send({message: "successfully changed user bio"})
+                }
+                return update_res
+            }
+            catch (e) {
+                throw(e)
+            }
+        },
+        update_email : async(req, res) => {
+            try {
+                let user_id = req.user_id
+                let new_email  = req.query.email
+                let regex_mail = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+                if (new_email.match(regex_mail) == null) {
+                    return res.status(201).send({message: "Can't change email", details: "regex"})
+                }
+                if (new_email.length == 0) {
+                    return res.status(201).send({message: "Can't change email", details: "empty"})
+                }
+                let update_res = await user_functions.update_user_email(user_id, new_email)
+                if (update_res.affectedRows == 1) {
+                    return res.status(200).send({message: "successfully changed user email"})
                 }
                 return update_res
             }

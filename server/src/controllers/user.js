@@ -64,7 +64,7 @@ module.exports = (db_pool) => {
                 throw (e)
             }
         },
-        update_bio: async(user_id, bio) => {
+        update_user_bio: async(user_id, bio) => {
             console.log("in update bio");
             try {
                 let [update_result, ] = await db_pool.query(`
@@ -72,6 +72,21 @@ module.exports = (db_pool) => {
                 set bio = ?
                 where id = ?
                 `, [bio, user_id])
+                console.log("update_result", update_result)
+                return update_result
+            }
+            catch(e) {
+                throw (e)
+            }
+        },
+        update_user_email: async(user_id, email) => {
+            console.log("in update email");
+            try {
+                let [update_result, ] = await db_pool.query(`
+                update users
+                set mail = ?
+                where id = ?
+                `, [email, user_id])
                 console.log("update_result", update_result)
                 return update_result
             }
