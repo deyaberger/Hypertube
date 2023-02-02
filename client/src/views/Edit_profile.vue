@@ -38,12 +38,9 @@ export default {
 			this.user = res.data
 			console.log("USER: ", this.user)
 			res = await Get_User_Fav_Movies(this.user_token);
-			this.fav_movies = { "profile": true, 'data': res.data}
-			this.fav_movies.profile = true
+			this.fav_movies = res.data
 			res = await Get_User_Watched_Movies(this.user_token);
 			this.watched_movies = res.data
-			this.fav_movies = { "profile": true, 'data': res.data}
-
 		},
 		save_first_name() {
 			this.first_name_is_saved = true
@@ -178,13 +175,13 @@ export default {
 						</div>
 					</div>
 					<div class="card-body p-4 text-black">
-						<p class="lead fw-normal mb-1">Favorite Movies:</p>
-						<SearchResults :movie_list="fav_movies"/>
-					</div>
-					<div class="card-body p-4 text-black">
-						<p class="lead fw-normal mb-1">Continue to watch:</p>
-						<SearchResults :movie_list="watched_movies"/>
-					</div>
+					<p class="lead fw-normal mb-1">Favorite Movies:</p>
+					<SearchResults :movie_list="{'profile' : true, 'data' : fav_movies}"/>
+				</div>
+				<div class="card-body p-4 text-black">
+					<p class="lead fw-normal mb-1">Continue to watch:</p>
+					<SearchResults :movie_list="{'profile' : true, 'data' : watched_movies}"/>
+				</div>
 					</div>
 				</div>
 				</div>
