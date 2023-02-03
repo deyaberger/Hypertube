@@ -23,7 +23,10 @@ export default {
 			rows              : 0,
 			perPage           : 24,
 			user_research     : 0,
-			only_show_fav	  : false
+			only_show_fav	  : false,
+			results_height	  : null,
+			sidebar_height	  : null,
+			test			 : 'blu'
 		}
 	},
 	methods: {
@@ -48,7 +51,8 @@ export default {
 				if (res.status == 200) {
 					this.movies = res.data
 					this.number_of_results = this.movies.length;
-					this.get_movies_page_slice()
+					this.get_movies_page_slice();
+					this.matchHeight();
 				}
 				else {
 					throw("Unknow error code getting movies")
@@ -90,6 +94,14 @@ export default {
 			else {
 				console.log("show all")
 			}
+		},
+		matchHeight () {
+			this.results_height = this.$refs.results_container.clientHeight
+			this.sidebar_height = this.$refs.search_bar.clientHeight
+			console.log(this.results_height)
+			console.log(this.sidebar_height)
+			console.log(this.$refs)
+			console.log(this.$refs.results_container.clientHeight)
 		}
 	},
 	computed: {
@@ -125,8 +137,8 @@ export default {
 
 <template>
 	<div>
-		<SearchBar @search_form="update_form"/>
-		<div class="results_container">
+		<SearchBar ref="search_bar" @search_form="update_form" :style="{'min-height' : results_height}"/>
+		<div ref="results_container" class="results_container" :style="{'min-height' : sidebar_height}">
 			<div class="search_header">
 				<div v-if="user_research > 1" class="title">
 					<p class="actual">{{ text_content.research[lang_nb] }}:</p>

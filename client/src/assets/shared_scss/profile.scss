@@ -183,3 +183,41 @@
 	white-space: pre;
 	text-transform: none;
   }
+
+
+
+@media screen and (max-width: 781px) {
+	.gradient-custom-2 {
+		height: 120vw;
+	}
+}
+
+@media screen and (max-width: 681px) {
+	.gradient-custom-2 {
+		height: 140vw;
+	}
+}
+
+@media screen and (max-width: 681px) {
+	.gradient-custom-2 {
+		height: 160vw;
+	}
+}
+
+@media screen and (max-width: 530px) {
+	.gradient-custom-2 {
+		height: 180vw;
+	}
+}
+
+@media screen and (max-width: 470px) {
+	.gradient-custom-2 {
+		height: 220vw;
+	}
+}
+
+@media screen and (max-width: 375px) {
+	.gradient-custom-2 {
+		height: 280vw;
+	}
+}
