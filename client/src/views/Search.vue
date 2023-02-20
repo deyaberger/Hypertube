@@ -24,9 +24,7 @@ export default {
 			perPage           : 24,
 			user_research     : 0,
 			only_show_fav	  : false,
-			results_height	  : null,
-			sidebar_height	  : null,
-			test			 : 'blu'
+			error			  : false,
 		}
 	},
 	methods: {
@@ -52,13 +50,13 @@ export default {
 					this.movies = res.data
 					this.number_of_results = this.movies.length;
 					this.get_movies_page_slice();
-					this.matchHeight();
 				}
 				else {
 					throw("Unknow error code getting movies")
 				}
 			}
 			catch (e) {
+				this.error = true
 				throw(e)
 			}
 		},
@@ -94,14 +92,6 @@ export default {
 			else {
 				console.log("show all")
 			}
-		},
-		matchHeight () {
-			this.results_height = this.$refs.results_container.clientHeight
-			this.sidebar_height = this.$refs.search_bar.clientHeight
-			console.log(this.results_height)
-			console.log(this.sidebar_height)
-			console.log(this.$refs)
-			console.log(this.$refs.results_container.clientHeight)
 		}
 	},
 	computed: {
@@ -137,8 +127,8 @@ export default {
 
 <template>
 	<div>
-		<SearchBar ref="search_bar" @search_form="update_form" :style="{'min-height' : results_height}"/>
-		<div ref="results_container" class="results_container" :style="{'min-height' : sidebar_height}">
+		<SearchBar ref="search_bar" @search_form="update_form"/>
+		<div ref="results_container" class="results_container">
 			<div class="search_header">
 				<div v-if="user_research > 1" class="title">
 					<p class="actual">{{ text_content.research[lang_nb] }}:</p>
@@ -156,7 +146,7 @@ export default {
 					<div class="show_favorites col"><b-form-checkbox v-model="only_show_fav" switch data-toggle="tooltip" data-placement="top" :title="only_show_fav ? 'show all movies' : 'only show favorites'"></b-form-checkbox></div>
 				</div>
 			</div>
-			<SearchResults :movie_list="{'profile' : false, 'data' : movies_slice}" class="search_res"/>
+			<SearchResults :movie_list="{'profile' : false, 'data' : movies_slice, 'error': error}" class="search_res"/>
 			<div class="pagination overflow-auto">
 			<div v-if="number_of_results > 0">
 				<b-pagination
