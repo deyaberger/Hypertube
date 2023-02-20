@@ -11,30 +11,37 @@ export default {
 		return {
 			text_content : textContent.MOVIES,
 			Get_Formatted_Time  : Get_Formatted_Time,
+			fallbackUrl: '../src/assets/missing_cover.jpeg'
 		}
 	},
 	methods: {
 		update_favorite(movie) {
 			return true
-		}
+		},
+		handleError(event) {
+      		event.target.src = this.fallbackUrl;
+    	}
 	},
 	computed: mapState({
 		lang_nb    : state =>  state.lang_nb,
 		user_token : state =>  state.user_token,
     }),
-
 }
 </script>
 
 <template>
 	<div class="row movies justify-content-md-center">
-		<div v-if="movie_list == null" class = "col-md-auto">
+		<div v-if="movie_list['data'] == null && movie_list['error'] == false" class = "col-md-auto">
 			<b-spinner label="Loading..." variant="success" class="mt-5"></b-spinner>
+		</div>
+		<div v-if="movie_list['data'] == null && movie_list['error'] == true" class = "col-md-auto">
+			<p class="error text-center">Server not responding...</p>
+			<img src="https://media.giphy.com/media/W0c3xcZ3F1d0EYYb0f/giphy.gif">
 		</div>
 			<div v-else :class="movie_list['profile'] ? 'col-md-4 movie-card profile' :'col-md-4 movie-card'" v-for="movie in movie_list['data']" :key="movie" style="text-decoration: none">
 				<router-link :to="'/movie/' + movie.id">
 				<div class="movie-header">
-						<img :class="movie.is_watched ? 'movie-image seen' : 'movie-image'" :src="movie.images_list[1]" alt="movie_image"  onerror="this.src='../src/assets/missing_cover.jpeg';"/>
+						<img :class="movie.is_watched ? 'movie-image seen' : 'movie-image'" :src="movie.images_list[1]" alt="movie_image"  :onerror="handleError"/>
 						<b-icon-play-circle-fill v-if="movie.is_watched" class="h2 header-icon seen"></b-icon-play-circle-fill>
 						<b-icon-info-circle-fill v-else class="h2 header-icon"></b-icon-info-circle-fill>
 				</div>
@@ -97,6 +104,14 @@ export default {
 
 .favorites {
 	color: red
+}
+
+.error {
+	font-family: Roboto, sans-serif;
+ 	color: #f6f8fc;
+	text-transform: uppercase;
+	margin-top: 10%;
+	color: pink;
 }
 
 </style>
