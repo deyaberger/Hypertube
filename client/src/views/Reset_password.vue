@@ -1,17 +1,17 @@
 <script>
-import { mapState, useStore } from 'vuex';
+import { mapState } from 'vuex';
 import textContent from "../assets/language_dict/language_dict.json"
 
 
 export default {
 	data() {
-		const store = useStore()
 		return {
 			text_content : textContent.RESETPASS
 		}
 	},
 	computed: mapState({
-		lang_nb		    : state => state.lang_nb
+		lang_nb    : state => state.lang_nb,
+		user_token : state =>  state.user_token,
 	})
 }
 </script>

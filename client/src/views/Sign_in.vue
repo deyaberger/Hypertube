@@ -2,7 +2,7 @@
 import { mapState } from 'vuex';
 import textContent from "../assets/language_dict/language_dict.json"
 import NetworkButtons from "../components/Networks_buttons.vue"
-import { signin }        from '../functions/auth'
+import { Sign_In }        from '../functions/auth'
 
 
 export default {
@@ -22,7 +22,8 @@ export default {
 
 	computed: mapState({
 		user_connected: state =>  state.user_connected,
-		lang_nb: state => state.lang_nb
+		lang_nb       : state => state.lang_nb,
+		user_token    : state =>  state.user_token,
 	}),
 
 	methods: {
@@ -37,11 +38,11 @@ export default {
 				"password" : this.password
 			}
 			try {
-				let sign_in_res = await signin(form)
+				let sign_in_res = await Sign_In(form)
 				console.log("Sign in res:", sign_in_res)
 				if (sign_in_res.status == 200) {
-					console.log("Adding token to cookies")
-					this.$cookies.set('token', sign_in_res.data.token)
+					console.log("Adding token to state")
+					this.$store.commit('SET_USER_TOKEN', sign_in_res.data.token)
 					this.$store.commit('SET_CONNECTION', true)
 					this.$router.push('/search')
 				}

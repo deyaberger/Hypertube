@@ -2,7 +2,7 @@
 import { mapState }      from 'vuex';
 import textContent       from "../assets/language_dict/language_dict.json"
 import NetworkButtons    from "../components/Networks_buttons.vue"
-import { signup }        from '../functions/auth'
+import { Sign_Up }       from '../functions/auth'
 
 export default {
 	components: {
@@ -22,21 +22,23 @@ export default {
 			firstname_error  : false,
 			lastname_error   : false,
 			email_error      : false,
+			email_error_text : textContent.SIGNUP.error_email,
 			mdp_error        : false,
 			connection_error : false
 		}
 	},
 
 	computed: mapState({
-		lang_nb		    : state => state.lang_nb
+		lang_nb    : state => state.lang_nb,
+		user_token : state =>  state.user_token,
 	}),
 
 	methods: {
 		password_visibility() {
 			this.visible = !this.visible
 		},
-		
-		async onSubmit(e){
+
+		async on_submit(e){
 			e.preventDefault();
 			const form = {
 				"username"             : this.username,
@@ -50,11 +52,11 @@ export default {
 				"connect_with_twitter" : false,
 			}
 			try {
-				let sign_up_res = await signup(form)
+				let sign_up_res = await Sign_Up(form)
 				console.log("sign_up res: ", sign_up_res)
 				if (sign_up_res.status == 200) {
-					console.log("Adding token to cookies")
-					this.$cookies.set('token', sign_up_res.data.token)
+					console.log("Adding token to state")
+					this.$store.commit('SET_USER_TOKEN', sign_up_res.data.token)
 					this.$store.commit('SET_CONNECTION', true)
 					this.$router.push('/search')
 				}
@@ -64,8 +66,9 @@ export default {
 					this.firstname_error = sign_up_res.data.firstName_error
 					this.lastname_error = sign_up_res.data.lastName_error
 					this.email_error = sign_up_res.data.mail_error
+					this.email_error_text = this.text_content.error_email_dup
 					this.mdp_error = sign_up_res.data.password_error
-					console.log("error in signup")
+					console.log("error in signuiiip")
 				}
 			}
 			catch (e) {
@@ -80,7 +83,7 @@ export default {
 
 <template>
 	<div class="container homemade-container ">
-		<form @submit="onSubmit">
+		<form @submit="on_submit">
 			<h2 class="mb-4 text-center">{{text_content.sign_up[lang_nb]}}:</h2>
 			<div class="input mb-2">
 				<label class = "mb-2" for="username">{{text_content.create_user[lang_nb]}}</label>
@@ -128,7 +131,7 @@ export default {
 				name="email"
 				placeholder="email@adress.com"
 				/>
-				<p class="error_msg" v-show="email_error">{{text_content.error_email[lang_nb]}}</p>
+				<p class="error_msg" v-show="email_error">{{email_error_text[lang_nb]}}</p>
 			</div>
 			<div class="input mt-2">
 				<label class = "mb-2" for="password">{{text_content.create_pwd[lang_nb]}}</label>

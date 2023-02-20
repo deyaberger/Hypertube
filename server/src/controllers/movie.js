@@ -1,30 +1,6 @@
 const axios = require('axios')
 const { remove_duplicates: remove_duplicates } = require('../utils/parse_movies')
 
-
-const create_request = (url, params) => {
-	let request = {
-		url: url,
-		method: "get",
-		headers: {
-			'Access-Control-Allow-Origin': '*',
-			"Content-type"               : "application/json",
-		},
-		params: params
-	}
-	return request;
-}
-
-
-const post_movie = async (db_pool, movie_imdb_id, title, imbd_rate, release_year, genre, cover_image) => {
-	[movie, ] = await db_pool.query("\
-	INSERT INTO movies_info (movie_imdb_id, title, imbd_rate, release_year, genre, cover_image) \
-	VALUES               (?       ,?              ,?  ,?, ?, ?           );",
-	[movie_imdb_id, title, imbd_rate, release_year, genre, cover_image])
-
-	return movie
-}
-
 module.exports = (db_pool) => {
     return {
         get_movie_by_yts_id: async (yts_movie_id) => {
@@ -63,124 +39,185 @@ module.exports = (db_pool) => {
                     "with_cast"   : true,
                 }
             };
-            console.log("lol")
             const response = await axios(request);
-            console.log("lil")
-            console.log("got movie details: ", response)
-            console.log("lil")
-
             return response;
         },
 
-        search_movies : async (query_term, minimum_rating, genre, quality, sort_by, page, limit, order_by) => {
-            let request = {
-                url: "https://yts.torrentbay.to/api/v2/list_movies.json",
-                method: "get",
-                headers: {
-                    'Access-Control-Allow-Origin': '*',
-                    "Content-type"               : "application/json",
-                    "Accept-Encoding"            : "gzip,deflate,compress"
-                },
-                params: {
-                    "query_term"    : query_term,
-                    "minimum_rating": minimum_rating,
-                    "genre"         : genre,
-                    "quality"       : quality,
-                    "sort_by"       : sort_by,
-                    "page"          : page,
-                    "limit"         : limit,
-                    "order_by"      : order_by
-                }
-            };
+        search_movies : async (searching_user_id, query_term, minimum_rating, genre, quality, min_year, max_year, language, asc_or_desc, sort_by) => {
+            sort_by        = sort_by        ? sort_by        : 'max_seeds'
+            asc_or_desc    = asc_or_desc    ? asc_or_desc    : 'ASC'
+            genre          = genre          ? genre          : '%',
+            quality        = quality        ? quality        : '%',
+            minimum_rating = minimum_rating ? minimum_rating : 0,
+            min_year       = min_year       ? min_year       : 0,
+            max_year       = max_year       ? max_year       : 10000,
+            language       = language       ? language       : '%',
+            query_term     = query_term     ? query_term     : ''
 
-            let response = await axios(request);
-			console.log("THIS IS THE RESPNSE: ", response)
-            response = response.data.data
-
-            if (response.movies == undefined || response.movies.length == 0) {
-                response.movies = []
-            }
-
-            response.movies = remove_duplicates(response.movies);
-
-            return response;
-        },
-
-
-
-
-		search_all_movies : async (source, page_nb) => {
-			let url = null;
-            let response = null;
-			if (source == "yts") {
-                console.log("Fetching movies from YTS, page:", page_nb)
-				url = "https://yts.torrentbay.to/api/v2/list_movies.json"
-            }
-            var fs = require('fs');
-            let request = create_request(url, {"page" : page_nb});
+            console.log("Searching movies: ", {
+                query_term    : query_term,
+                minimum_rating: minimum_rating ,
+                genre         : genre ,
+                min_year      : min_year,
+                max_year      : max_year,
+                quality       : quality ,
+                sort_by       : sort_by,
+                asc_or_desc   : asc_or_desc
+            })
             try {
-                response = await axios(request);
-                response = response.data.data;
-                var file_path = "./src/yts_response/yts_page" + page_nb + ".json"
-                fs.writeFile(file_path, JSON.stringify(response), function(err) {
-                    if (err) {
-                        console.log(err);
-                    }
-                });
+                let [movies, ] = await db_pool.query(`
+                WITH aggregate_genres as (SELECT movie_id, JSON_ARRAYAGG(name) as genres_list from genres group by movie_id),
+                    aggregate_quality as (SELECT movie_id, JSON_ARRAYAGG(quality) as quality_list from torrents group by movie_id)
+                SELECT movies.id, yts_id, imdb_code, title, imdb_rating, year, length_minutes, language, summary, genres_list, json_objectagg(IFNULL(images.size, ''), images.url) as images_list, MAX(t.seeds) as max_seeds, quality_list
+                    FROM movies
+                    INNER JOIN genres
+                        ON movies.id = genres.movie_id
+                        AND genres.name LIKE ?
+                    INNER JOIN torrents
+                        ON movies.id = torrents.movie_id
+                        AND torrents.quality >= ?
+                    LEFT JOIN torrents t
+                        ON movies.id = t.movie_id
+                    LEFT JOIN aggregate_genres ON movies.id = aggregate_genres.movie_id
+                    LEFT JOIN aggregate_quality ON movies.id = aggregate_quality.movie_id
+                    LEFT JOIN images ON movies.id = images.movie_id
+                    WHERE imdb_rating >= ?
+                        AND year >= ?
+                        AND LOWER(title) LIKE LOWER('%${query_term}%')
+                GROUP BY movies.id
+                ORDER BY ${sort_by} ${asc_or_desc}
+                LIMIT 26 OFFSET 0
+                `, [genre          ? genre          : '%',
+                    quality        ? quality        : '%',
+                    minimum_rating ? minimum_rating : '%',
+                    min_year       ? min_year       : '%'])
+                return movies;
             }
-            catch(e) {
-                let data_to_append = JSON.stringify({"page_nb" : page_nb, "type" : "req error", "msg" : e, "res" : response})
-                fs.appendFile('./src/yts_response/log.txt', data_to_append, function (err) {
-                    if (err) throw err;
-                    console.log('Saved!');
-                  });
+            catch (e) {
+                throw (e)
             }
-
-            return (response)
         },
 
-        parse_movie_data : (data) => {
-            var yts_id = data.hasOwnProperty("id") ? data.id : null;
-            var imbd_code = data.hasOwnProperty("imdb_code") ? data.imdb_code : null;
-            var title = data.hasOwnProperty("title") ? data.title : null;
-            var imbd_rate = data.hasOwnProperty("imbd_rate") ? data.imbd_rate : 0;
-            var year = data.hasOwnProperty("year") ? data.year : null;
-            var runtime = data.hasOwnProperty("runtime") ? data.runtime : 0;
-            var language = data.hasOwnProperty("language") ? data.language : "eng";
-            var summary = data.hasOwnProperty("summary") ? data.summary : "Summary unavailable";
-            var image_1 = data.hasOwnProperty("image_1") ? data.image_1 : null;
-            var image_2 = data.hasOwnProperty("image_2") ? data.image_2 : null;
-            var image_3 = data.hasOwnProperty("image_3") ? data.image_3 : null;
+        search_movies_old : async (searching_user_id, query_term, minimum_rating, genre, quality, min_year, max_year, language, order_by, asc_or_desc) => {
+            order_by       = order_by       ? order_by       : 'max_seeds'
+            asc_or_desc    = asc_or_desc    ? asc_or_desc    : 'ASC'
+            genre          = genre          ? genre          : '%',
+            quality        = quality        ? quality        : '%',
+            minimum_rating = minimum_rating ? minimum_rating : 0,
+            min_year       = min_year       ? min_year       : 0,
+            max_year       = max_year       ? max_year       : 10000,
+            language       = language       ? language       : '%',
+            query_term     = query_term     ? query_term     : ''
 
-        },
+            console.log("Searching movies: ", {
+                query_term    : query_term,
+                minimum_rating: minimum_rating ,
+                genre         : genre ,
+                min_year      : min_year,
+                max_year      : max_year,
+                quality       : quality ,
+                order_by      : order_by,
+                asc_or_desc   : asc_or_desc
+            })
+            try {
+                let [movies, ] = await db_pool.query(`
+                WITH
+                    genres_agg AS (SELECT movie_id, json_arrayagg(genres.name) as genres_list from genres GROUP BY movie_id)
+                SELECT movies.id, yts_id, imdb_code, title, imdb_rating, year, length_minutes, language, summary, genres_list, MAX(torrents.seeds) as max_seeds, MAX(t.quality) as max_quality
+                    FROM movies
 
-        post_movie : async (yts_id, imbd_code, title, imbd_rate, year, time_minute, language, summary, image_1, image_2, image_3) => {
-            [movie, ] = await db_pool.query("\
-            INSERT INTO movies_info ((id, yts_id, imbd_code, title, imbd_rate, year, time_minute, language, summary, image_1, image_2, image_3)) \
-            VALUES               (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);",
-            [(yts_id, imbd_code, title, imbd_rate, year, time_minute, language, summary, image_1, image_2, image_3)])
+                    INNER JOIN genres
+                        ON movies.id = genres.movie_id
+                        AND genres.name LIKE ?
 
-            return movie
-        },
+                    INNER JOIN torrents
+                        ON movies.id = torrents.movie_id
+                        AND torrents.quality LIKE ?
+                    LEFT JOIN torrents t
+                        ON movies.id = t.movie_id
 
-        put_json_to_db : (source, page_nb) => {
-            let prefix = null;
-            let data = null;
-            var fs = require('fs');
-			if (source == "yts") {
-                console.log("Adding data to DB, page:", page_nb)
-				prefix = "./src/yts_response/yts_page"
-                file_path = prefix + page_nb + ".json"
-                fs.readFile(file_path, 'utf8', function(err, data){
-                        data = JSON.parse(data)
-                        for (let movie in data.movies) {
-                            movie_res =  post_movie(movie)
-                        }
-                        // data = JSON.stringify(data, null, 4)
-                        console.log("DATA read from file: ", data)
-                });
+                    LEFT JOIN favorite_movies
+                        ON movies.id = favorite_movies.movie_id
+                        AND favorite_movies.user_id = ?
+                    LEFT JOIN genres_agg
+                        ON movies.id = genres_agg.movie_id
+                    WHERE imdb_rating >= ?
+                        AND year >= ?
+                        AND year <= ?
+                        AND language LIKE ?
+                        AND LOWER(title) LIKE LOWER('%${query_term}%')
+                    GROUP BY movies.id, imdb_rating
+                ORDER BY ${order_by} ${asc_or_desc};
+                `, [genre          ? genre          : '%',
+                    quality        ? quality        : '%',
+                    searching_user_id,
+                    minimum_rating ? minimum_rating : 0,
+                    min_year       ? min_year       : 0,
+                    max_year       ? max_year       : 10000,
+                    language       ? language       : '%'])
+                return movies;
             }
-            return (data)
+            catch (e) {
+                throw (e)
+            }
+        },
+
+        get_movies_homepage: async () => {
+            console.log("Getting movies homepage")
+            try {
+                let [movies, ] = await db_pool.query(`
+                WITH aggregate_genres as (SELECT movie_id, JSON_ARRAYAGG(name) as genres_list
+                    from genres
+                    group by movie_id)
+                SELECT movies.id, yts_id, imdb_code, title, imdb_rating, year, length_minutes, language, summary, genres_list, json_objectagg(IFNULL(images.size, ''), images.url) as images_list, movies.id % 2 as is_fav, year % 2 as is_watched
+                FROM movies
+                    LEFT JOIN aggregate_genres ON movies.id = aggregate_genres.movie_id
+                    LEFT JOIN images ON movies.id = images.movie_id
+                GROUP BY movies.id
+                ORDER BY movies.imdb_rating DESC
+                LIMIT 24 OFFSET 0
+                `)
+                return movies;
+            }
+            catch (e) {
+                throw (e)
+            }
+        },
+
+        set_watched: async (user_id, movie_id) => {
+            console.log("Setting movie %d watched by user %d.", movie_id, user_id)
+            try {
+                let [insert_res, ] = await db_pool.query(`
+                    INSERT INTO watched_movies (movie_id, user_id)
+                    VALUES (?, ?)
+                `, [movie_id, user_id])
+                console.log("Insert result: ", insert_res)
+                return insert_res;
+            }
+            catch (e) {
+                throw (e)
+            }
+        },
+
+        get_movie: async (movie_id) => {
+            console.log("Getting movie %d", movie_id)
+            try {
+                let [insert_res, ] = await db_pool.query(`
+                WITH aggregate_genres as (SELECT movie_id, JSON_ARRAYAGG(name) as genres_list
+                    from genres
+                    group by movie_id)
+                SELECT movies.id, yts_id, imdb_code, title, imdb_rating, year, length_minutes, language, summary, genres_list, json_objectagg(IFNULL(images.size, ''), images.url) as images_list
+                FROM movies
+                    LEFT JOIN aggregate_genres ON movies.id = aggregate_genres.movie_id
+                    LEFT JOIN images ON movies.id = images.movie_id
+                WHERE movies.id = ?
+                GROUP BY movies.id
+                `, [movie_id])
+                return insert_res;
+            }
+            catch (e) {
+                throw (e)
+            }
         }
 
     }

@@ -5,11 +5,10 @@ module.exports = (db_pool) => {
 
     var router = require("express").Router();
 
-    router.get  ("/home/:page"       , auth_controller.authenticateToken, movie_controller.get_homepage)
-    router.get  ("/search"           , auth_controller.authenticateToken, movie_controller.search)
-    router.get  ("/details/:imdb_id"  , auth_controller.authenticateToken, movie_controller.get_movie_details)
-    router.get  ("/populate"         , movie_controller.get_all_movies)
-    router.get  ("/populate_db"         , movie_controller.from_json_to_db)
+    router.get  ("/home"              , auth_controller.authenticateToken, movie_controller.get_homepage)
+    router.get  ("/search"            , auth_controller.authenticateToken, movie_controller.search)
+    router.get  ("/details/:movie_id"  , auth_controller.authenticateToken, movie_controller.get_movie_details)
+    router.post ("/set_watched/:movie_id"  , auth_controller.authenticateToken, movie_controller.set_movie_watched)
 
     return router
 }

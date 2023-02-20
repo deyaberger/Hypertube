@@ -11,5 +11,5 @@ SHELL ["usr/bin/bash", "--login", "-i", "-c"]
 RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
 RUN source /root/.bashrc && nvm install 16.13.2
 SHELL ["/bin/bash", "-c"]
-# COPY . /workspaces/Hypertube
+EXPOSE 8071 3306 5173
 RUN usermod -d /var/lib/mysql/ mysql
