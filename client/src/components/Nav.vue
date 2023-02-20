@@ -45,7 +45,7 @@ export default {
 			<router-link to="/search" class="nav-link">{{text_content.movies[lang_nb]}} <b-icon-search/></router-link>
 		</b-nav-item>
         <b-nav-item>
-			<router-link to="/profile" class="nav-link">{{text_content.profile[lang_nb]}} <b-icon-person-circle/></router-link>
+			<router-link to="/my_profile" class="nav-link">{{text_content.profile[lang_nb]}} <b-icon-person-circle/></router-link>
 		</b-nav-item>
 		<LangDrop></LangDrop>
 		<b-nav-item>

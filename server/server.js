@@ -23,7 +23,7 @@ app.use("/api/auth", auth_router)
 
 // Create the user router, (injecting the connection pool) and add it to the server
 const user_router = require("./src/routes/user.routes")(connection_pool)
-app.use("/api/users", user_router)
+app.use("/api/user", user_router)
 
 
 
@@ -46,6 +46,10 @@ app.use("/api/torrent", torrent_router)
 
 const populate_router = require("./src/routes/populate.routes")(connection_pool)
 app.use("/api/populate", populate_router)
+
+
+const favorites_router = require("./src/routes/favorites.routes")(connection_pool)
+app.use("/api/favorites", favorites_router)
 
 
 

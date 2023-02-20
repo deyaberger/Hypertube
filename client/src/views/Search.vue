@@ -23,6 +23,8 @@ export default {
 			rows              : 0,
 			perPage           : 24,
 			user_research     : 0,
+			only_show_fav	  : false,
+			error			  : false,
 		}
 	},
 	methods: {
@@ -36,7 +38,7 @@ export default {
 				this.movies = null
 				this.movies_slice = null
 				let res = null
-				if (this.user_research < 1) {
+				if (this.user_research <= 1) {
 					console.log("getting homepage")
 					res = await Get_Recommendations(this.user_token);
 				}
@@ -47,13 +49,14 @@ export default {
 				if (res.status == 200) {
 					this.movies = res.data
 					this.number_of_results = this.movies.length;
-					this.get_movies_page_slice()
+					this.get_movies_page_slice();
 				}
 				else {
 					throw("Unknow error code getting movies")
 				}
 			}
 			catch (e) {
+				this.error = true
 				throw(e)
 			}
 		},
@@ -81,8 +84,15 @@ export default {
 		from_reco_to_research() {
 			this.user_research = 2,
 			this.reset_form()
+		},
+		show_favorites() {
+			if (this.only_show_fav == true) {
+				console.log("only show favs")
+			}
+			else {
+				console.log("show all")
+			}
 		}
-
 	},
 	computed: {
 	...mapState({
@@ -102,6 +112,12 @@ export default {
 				this.get_form_results()
 			},
 			deep:true
+		},
+		only_show_fav: {
+			handler:function() {
+				this.show_favorites()
+			},
+			deep:true
 		}
 	}
 }
@@ -111,8 +127,8 @@ export default {
 
 <template>
 	<div>
-		<SearchBar @search_form="update_form"/>
-		<div class="results_container">
+		<SearchBar ref="search_bar" @search_form="update_form"/>
+		<div ref="results_container" class="results_container">
 			<div class="search_header">
 				<div v-if="user_research > 1" class="title">
 					<p class="actual">{{ text_content.research[lang_nb] }}:</p>
@@ -124,11 +140,13 @@ export default {
 					<p class="nav-link">or</p>
 					<a class="nav-link active" href="#" @click="from_reco_to_research()">{{text_content.see_all[lang_nb]}}</a>
 				</div>
-				<div v-if="number_of_results > 0" class="number_of_results">{{movies_slice ? movies_slice.length : 0}}/{{number_of_results}} {{text_content.results[lang_nb]}}</div>
-				<div v-else class="number_of_results">{{number_of_results}} {{text_content.results[lang_nb]}}</div>
-
+				<div class = "row">
+					<div v-if="number_of_results > 0" class="number_of_results col-11">{{movies_slice ? movies_slice.length : 0}}/{{number_of_results}} {{text_content.results[lang_nb]}}</div>
+					<div v-else class="number_of_results col-11">{{number_of_results}} {{text_content.results[lang_nb]}}</div>
+					<div class="show_favorites col"><b-form-checkbox v-model="only_show_fav" switch data-toggle="tooltip" data-placement="top" :title="only_show_fav ? 'show all movies' : 'only show favorites'"></b-form-checkbox></div>
+				</div>
 			</div>
-			<SearchResults :movie_list="movies_slice" class="search_res"/>
+			<SearchResults :movie_list="{'profile' : false, 'data' : movies_slice, 'error': error}" class="search_res"/>
 			<div class="pagination overflow-auto">
 			<div v-if="number_of_results > 0">
 				<b-pagination
@@ -146,6 +164,11 @@ export default {
 
 
 <style lang="scss" scoped>
+
+.form-check > *, .form-switch > * {
+	cursor: pointer;
+}
+
 .nav-link {
 	color: rgb(143, 142, 142);
 	font-size: small;
@@ -305,6 +328,10 @@ export default {
 	text-align: left;
 }
 
+.show_favorites {
+	margin-top: 3%;
+	align-items: right;
+}
 
 
 .pagination {
