@@ -2,6 +2,7 @@
 import { mapState } from 'vuex';
 import textContent from "../assets/language_dict/language_dict.json"
 import { Get_Formatted_Time } from "../functions/utils.js"
+import { Remove_From_Favorites, Add_To_Favorites } from "../functions/user.js"
 
 export default {
 	props: {
@@ -15,7 +16,26 @@ export default {
 		}
 	},
 	methods: {
-		update_favorite(movie) {
+		is_fav_movie(id) {
+			if (this.movie_list['profile'] == true) {
+				return true
+			}
+			return this.movie_list['favs'].includes(id)
+		},
+		async update_favorite(movie) {
+			let res = null
+			if (this.is_fav_movie(movie.id)) {
+				res = await Remove_From_Favorites(movie.id, this.user_token)
+				if (res.status == 200) {
+					this.$emit("updating", {"type" : "favorites", "id" : movie.id})
+				}
+			}
+			else {
+				res = await Add_To_Favorites(movie.id, this.user_token)
+				if (res.status == 200) {
+					this.$emit("updating", {"type" : "favorites", "id" : movie.id})
+				}
+			}
 			return true
 		},
 		handleError(event) {
@@ -54,7 +74,7 @@ export default {
 					<div class="movie-info">
 						<div class="info-section">
 							<label class="fav_label">Fav</label>
-							<div v-if="movie.is_fav" class="btn-group" role="group" aria-label="Basic example"  data-toggle="tooltip" data-placement="top" title="Remove from favorites">
+							<div v-if="is_fav_movie(movie.id)" class="btn-group" role="group" aria-label="Basic example"  data-toggle="tooltip" data-placement="top" title="Remove from favorites">
 								<b-icon-heart-fill class="h2 favorites" @click="update_favorite(movie)"></b-icon-heart-fill>
 							</div>
 							<div v-else class="btn-group" role="group" aria-label="Basic example"  data-toggle="tooltip" data-placement="top" title="Add to favorites">

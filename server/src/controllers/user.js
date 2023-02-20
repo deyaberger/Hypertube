@@ -112,5 +112,15 @@ module.exports = (db_pool) => {
             userid)
             return watched
         },
+
+        get_watched_ids: async (userid) => {
+            console.log("in get wathced ids");
+            [watched, ] = await db_pool.query(`
+            SELECT movie_id
+            from watched_movies
+            WHERE user_id = ?`,
+            userid)
+            return watched
+        },
     }
 }

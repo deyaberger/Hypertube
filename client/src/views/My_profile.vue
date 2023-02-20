@@ -144,7 +144,14 @@ export default {
 				this.email_error = true;
 				console.log("Error: ", res.data.message, res.data.details)
 			}
-		}
+		},
+		async updating_movies(value) {
+			let update_info = JSON.parse(JSON.stringify(value));
+			if (update_info['type'] == "favorites") {
+				let res = await Get_User_Fav_Movies(this.user_token);
+				this.fav_movies = res.data
+			}
+		},
 	},
 	mounted() {
 		this.get_user_data()
@@ -293,11 +300,11 @@ export default {
 				</div>
 				<div class="card-body p-4 text-black movies">
 					<p class="lead fw-normal mb-4">{{text_content.favorites[lang_nb]}}:</p>
-					<SearchResults :movie_list="{'profile' : true, 'data' : fav_movies}"/>
+					<SearchResults :movie_list="{'profile' : true, 'data' : fav_movies}" @updating="updating_movies"/>
 				</div>
 				<div class="card-body p-4 text-black movies">
 					<p class="lead fw-normal mb-4">{{text_content.watched[lang_nb]}}:</p>
-					<SearchResults :movie_list="{'profile' : true, 'data' : watched_movies}"/>
+					<SearchResults :movie_list="{'profile' : true, 'data' : watched_movies}" @updating="updating_movies"/>
 				</div>
 				</div>
 			</div>

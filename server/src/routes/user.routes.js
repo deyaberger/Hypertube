@@ -15,6 +15,7 @@ module.exports = (db_pool) => {
     // router.patch("/update"        , auth_controller.authenticateToken, user_controller.update_user_info)
     // router.get  ("/:user_id"      , auth_controller.authenticateToken, user_controller.get_other_user  )
     router.get  ("/watched_movies", auth_controller.authenticateToken, user_controller.get_watched_movies);
+    router.get  ("/watched_movies_id", auth_controller.authenticateToken, user_controller.get_watched_movies_ids);
 
     return router
 }
