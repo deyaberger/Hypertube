@@ -15,6 +15,7 @@ module.exports = (db_pool) => {
         },
 
         from_json_to_db : async (req, res) => {
+			console.log("in from json to db")
             try {
                 let source = req.query.source
                 let page   = req.query.page

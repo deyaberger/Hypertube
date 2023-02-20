@@ -6,7 +6,7 @@ import New_pwd from "../views/New_password.vue";
 import Search from "../views/Search.vue";
 import Profile from "../views/Profile.vue";
 import SingleMovie from "../views/Single_movie.vue";
-import Edit_profile from "../views/Edit_profile.vue";
+import My_profile from "../views/My_profile.vue";
 import Populate from "../views/Populate.vue";
 
 
@@ -50,9 +50,15 @@ const router = createRouter({
 		component: Profile,
 	},
 	{
-		path: "/edit_profile",
+		path: "/my_profile",
 		name: "edit",
-		component: Edit_profile,
+		component: My_profile,
+	},
+  {
+		path: "/profile/:user_id",
+		name: "profile",
+		props: true,
+		component: Profile,
 	},
 	{
 		path: "/movie/:movie_id",
