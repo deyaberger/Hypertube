@@ -231,3 +231,45 @@ export const Add_To_Favorites = async(movie_id, token) => {
 	return response;
 }
 
+export const Set_Watched = async(movie_id, token) => {
+	let request = {
+		url: `http://127.0.0.1:8071/api/user/set_watched/${movie_id}`,
+		method: "post",
+		headers: {
+			'Access-Control-Allow-Origin': '*',
+			"Content-type"               : "application/json",
+			'Authorization'				 : `Bearer ${token}`
+		}
+	};
+	const response = await axios(request);
+	return response;
+}
+
+export const Set_UnWatched = async(movie_id, token) => {
+	let request = {
+		url: `http://127.0.0.1:8071/api/user/set_unwatched/${movie_id}`,
+		method: "post",
+		headers: {
+			'Access-Control-Allow-Origin': '*',
+			"Content-type"               : "application/json",
+			'Authorization'				 : `Bearer ${token}`
+		}
+	};
+	const response = await axios(request);
+	return response;
+}
+
+export const Is_Watched = async(movie_id, token) => {
+	let request = {
+		url: `http://127.0.0.1:8071/api/user/is_watched/${movie_id}`,
+		method: "get",
+		headers: {
+			'Access-Control-Allow-Origin': '*',
+			"Content-type"               : "application/json",
+			'Authorization'				 : `Bearer ${token}`
+		}
+	};
+	const response = await axios(request);
+	return response;
+}
+

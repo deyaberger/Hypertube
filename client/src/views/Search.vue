@@ -29,7 +29,6 @@ export default {
 			user_favs		  : null,
 			user_watched	  : null,
 			saved_movies	  : null,
-			movie_props		  : null
 		}
 	},
 	methods: {

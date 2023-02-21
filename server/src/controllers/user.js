@@ -122,5 +122,38 @@ module.exports = (db_pool) => {
             userid)
             return watched
         },
+
+        post_watched: async (userid, movie_id) => {
+            [added, ] = await db_pool.query(`
+            INSERT into watched_movies (user_id, movie_id)
+            values (?, ?)`,
+            [userid, movie_id])
+            if (added.length == 1) {
+                return added[0]
+            }
+            return added
+        },
+        delete_watched: async (userid, movie_id) => {
+            [removed, ] = await db_pool.query(`
+            DELETE from watched_movies
+            WHERE user_id = ? AND movie_id = ?`,
+            [userid, movie_id])
+            if (removed.length == 1) {
+                return removed[0]
+            }
+            return removed
+        },
+        is_watched_movie: async (userid, movie_id) => {
+            [watched, ] = await db_pool.query(`
+            SELECT 1
+            from watched_movies
+            WHERE user_id = ? AND movie_id = ?`,
+            [userid, movie_id])
+            if (watched.length == 1) {
+                return true
+            }
+            return false
+        }
+
     }
 }
