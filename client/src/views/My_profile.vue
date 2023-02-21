@@ -8,8 +8,9 @@ import { Get_User_Details,
 	Update_First_Name,
 	Update_Last_Name,
 	Update_Bio,
-	Update_Email } from "../functions/user"
-
+	Update_Email,
+	Get_Current_User_Fav_Movies_ID,
+	Get_Current_User_Watched_Movies_ID } from "../functions/user"
 
 export default {
 	components: {
@@ -26,7 +27,9 @@ export default {
 			error_text			: '',
 
 			watched_movies      : null,
+			watched_movies_ids  : [],
 			fav_movies		    : null,
+			fav_movies_ids	    : [],
 
 			first_name			: null,
 			last_name			: null,
@@ -49,6 +52,29 @@ export default {
 		user_token : state =>  state.user_token,
     }),
 	methods: {
+		set_movie_props(movies) {
+			return {
+				'data'    : movies,
+				'profile' : true,
+				'error'   : false,
+				'favs'    : this.fav_movies_ids,
+				'watched' : this.watched_movies_ids,
+			}
+		},
+		exists(movies) {
+			if (movies == null || (movies != null && movies.length == 0)) {
+				return false
+			}
+			return true
+		},
+		async get_user_fav_and_co() {
+			console.log("getting favvsss")
+			let res = await Get_Current_User_Fav_Movies_ID(this.user_token);
+			this.fav_movies_ids = res.data.map(item => item.movie_id);
+			console.log("user favs movies: ", this.fav_movies_ids)
+			res = await Get_Current_User_Watched_Movies_ID(this.user_token);
+			this.watched_movies_ids = res.data.map(item => item.movie_id);
+		},
 		parse_modifiable_data() {
 			this.first_name	= this.user.first_name;
 			this.last_name	= this.user.last_name;
@@ -147,14 +173,31 @@ export default {
 		},
 		async updating_movies(value) {
 			let update_info = JSON.parse(JSON.stringify(value));
-			if (update_info['type'] == "favorites") {
+			let movie_type = update_info['type']
+			let id = update_info['id']
+			if (movie_type == "favorites") {
 				let res = await Get_User_Fav_Movies(this.user_token);
 				this.fav_movies = res.data
+				if (this.fav_movies_ids.includes(id)) {
+					delete this.fav_movies_ids[this.fav_movies_ids.indexOf(id)]
+				}
+				else {
+					this.fav_movies_ids.push(id)
+				}
+			}
+			if (movie_type == "watched") {
+				if (this.watched_movies_ids.includes(id)) {
+					delete this.watched_movies_ids[this.fav_movies_ids.indexOf(id)]
+				}
+				else {
+					this.watched_movies_ids.push(id)
+				}
 			}
 		},
 	},
 	mounted() {
-		this.get_user_data()
+		this.get_user_data();
+		this.get_user_fav_and_co();
 	}
 }
 </script>
@@ -298,13 +341,13 @@ export default {
 					</div>
 					</div>
 				</div>
-				<div class="card-body p-4 text-black movies">
+				<div class="card-body p-4 text-black movies" v-if="exists(fav_movies)">
 					<p class="lead fw-normal mb-4">{{text_content.favorites[lang_nb]}}:</p>
-					<SearchResults :movie_list="{'profile' : true, 'data' : fav_movies}" @updating="updating_movies"/>
+					<SearchResults :movie_list="set_movie_props(fav_movies)" @updating="updating_movies"/>
 				</div>
-				<div class="card-body p-4 text-black movies">
+				<div class="card-body p-4 text-black movies" v-if="exists(watched_movies)">
 					<p class="lead fw-normal mb-4">{{text_content.watched[lang_nb]}}:</p>
-					<SearchResults :movie_list="{'profile' : true, 'data' : watched_movies}" @updating="updating_movies"/>
+					<SearchResults :movie_list="set_movie_props(watched_movies)" @updating="updating_movies"/>
 				</div>
 				</div>
 			</div>

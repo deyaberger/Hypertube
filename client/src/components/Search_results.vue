@@ -17,9 +17,6 @@ export default {
 	},
 	methods: {
 		is_fav_movie(id) {
-			if (this.movie_list['profile'] == true) {
-				return true
-			}
 			return this.movie_list['favs'].includes(id)
 		},
 		is_watched_movie(id) {

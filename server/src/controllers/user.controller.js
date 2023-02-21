@@ -55,7 +55,7 @@ module.exports = (db_pool) => {
         get_watched_movies : async (req, res) => {
             console.log("get watch movies")
             try {
-                let userid = req.user_id
+                let userid = req.query.user_id == undefined ? req.user_id  : Number(req.query.user_id)
                 let watched = await user_functions.get_watched(userid)
 
                 if (watched == null) {
