@@ -17,10 +17,10 @@ export default {
 	},
 	methods: {
 		is_fav_movie(id) {
-			if (this.movie_list['profile'] == true) {
-				return true
-			}
 			return this.movie_list['favs'].includes(id)
+		},
+		is_watched_movie(id) {
+			return this.movie_list['watched'].includes(id)
 		},
 		async update_favorite(movie) {
 			let res = null
@@ -61,8 +61,8 @@ export default {
 			<div v-else :class="movie_list['profile'] ? 'col-md-4 movie-card profile' :'col-md-4 movie-card'" v-for="movie, index in movie_list['data']" style="text-decoration: none">
 				<router-link :to="'/movie/' + movie.id">
 				<div class="movie-header">
-						<img :class="movie.is_watched ? 'movie-image seen' : 'movie-image'" :src="movie.images_list[1]" alt="movie_image"  :onerror="handleError"/>
-						<b-icon-play-circle-fill v-if="movie.is_watched" class="h2 header-icon seen"></b-icon-play-circle-fill>
+						<img :class="is_watched_movie(movie.id) ? 'movie-image seen' : 'movie-image'" :src="movie.images_list[1]" alt="movie_image"  :onerror="handleError"/>
+						<b-icon-play-circle-fill v-if="is_watched_movie(movie.id)" class="h2 header-icon seen"></b-icon-play-circle-fill>
 						<b-icon-info-circle-fill v-else class="h2 header-icon"></b-icon-info-circle-fill>
 				</div>
 				</router-link>

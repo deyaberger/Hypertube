@@ -2,6 +2,7 @@
 import { mapState } from 'vuex';
 import vue3StarRatings from "vue3-star-ratings";
 import { Get_Single_Movie_Details, Parse_Single_Movie } from "../functions/movies";
+import { Set_Watched, Set_UnWatched, Is_Watched } from "../functions/user";
 import { Get_Comments_By_Movie_ID, Parse_Comments, Post_Comment } from "../functions/comments";
 import { Get_Formatted_Time } from "../functions/utils.js";
 import StarRating from 'vue-star-rating';
@@ -18,6 +19,7 @@ export default {
 			user_comment: "",
 			user_rating : 0,
 			Get_Formatted_Time  : Get_Formatted_Time,
+			is_watched : false,
 	}
 	},
 	components: {
@@ -29,6 +31,30 @@ export default {
 		user_token : state =>  state.user_token,
 	}),
 	methods: {
+		async set_watched() {
+			let res = null
+			if (this.is_watched == false) {
+				res = await Set_Watched(this.movie_id, this.user_token)
+			}
+			else {
+				res = await Set_UnWatched(this.movie_id, this.user_token)
+			}
+			if (res.status == 200) {
+				this.is_watched = !this.is_watched
+			}
+		},
+		async favs_and_co() {
+			try {
+				let res = await Is_Watched(this.movie_id, this.user_token);
+				if (res.status == 200) {
+					this.is_watched = res.data['message']
+				}
+			}
+			catch(e) {
+				throw(e)
+			}
+
+		},
 		async get_comments() {
 			try {
 				let res = await Get_Comments_By_Movie_ID(this.movie_id, this.user_token);
@@ -42,6 +68,7 @@ export default {
 				}
 			}
 			catch (e) {
+				console.log("Error in get_comments")
 				throw(e)
 			}
 		},
@@ -58,6 +85,7 @@ export default {
 				}
 			}
 			catch (e) {
+				console.log("Error in get_movie_details")
 				throw(e)
 			}
 		},
@@ -109,7 +137,8 @@ export default {
 	},
 	mounted() {
 		this.get_movie_details();
-		this.get_comments()
+		this.get_comments();
+		this.favs_and_co();
 	},
 }
 </script>
@@ -124,6 +153,18 @@ export default {
 				<img class="movie_image" :src="movie.large_cover_image" alt="movie_image"  onerror="this.src='../src/assets/missing_cover.jpeg';"/>
 			</div>
 		</div>
+		<button v-if="is_watched"
+			@click="set_watched()"
+			class="submit_button"
+			type = "submit">
+			Fake tmp Unwatch button
+		</button>
+		<button v-else
+			@click="set_watched()"
+			class="submit_button"
+			type = "submit">
+			Fake temporary watched button
+		</button>
 		<div class="row movie_name_container">
 			<div class="col">
 				<h1>{{movie.title}}</h1>
@@ -155,7 +196,7 @@ export default {
 		<div class="row cast_container">
 			<div class="col">
 				<span class="infos_title_horizontal">Director: </span>
-				<span class="names">director name</span>
+				<span class="names"></span>
 			</div>
 		</div>
 		<div class="row cast_container">

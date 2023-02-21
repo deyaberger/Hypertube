@@ -4,7 +4,7 @@ import SearchResults from '../components/Search_results.vue'
 import { mapState } from 'vuex';
 import textContent from "../assets/language_dict/language_dict.json"
 import { Get_Movies_Research, Get_Recommendations } from "../functions/movies"
-import { Get_User_Fav_Movies_ID, Get_User_Watched_Movies_ID } from "../functions/user"
+import { Get_Current_User_Fav_Movies_ID, Get_Current_User_Watched_Movies_ID } from "../functions/user"
 
 export default {
 	components: {
@@ -29,7 +29,6 @@ export default {
 			user_favs		  : null,
 			user_watched	  : null,
 			saved_movies	  : null,
-			movie_props		  : null
 		}
 	},
 	methods: {
@@ -44,9 +43,9 @@ export default {
 		},
 		async get_user_fav_and_co() {
 			console.log("getting favvsss")
-			let res = await Get_User_Fav_Movies_ID(this.user_token);
+			let res = await Get_Current_User_Fav_Movies_ID(this.user_token);
 			this.user_favs = res.data.map(item => item.movie_id);
-			res = await Get_User_Watched_Movies_ID(this.user_token);
+			res = await Get_Current_User_Watched_Movies_ID(this.user_token);
 			this.user_watched = res.data.map(item => item.movie_id);
 		},
 		get_movies_page_slice() {

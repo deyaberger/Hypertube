@@ -4,8 +4,9 @@ import textContent from "../assets/language_dict/language_dict.json";
 import SearchResults from '../components/Search_results.vue';
 import { Get_Other_User_Details,
 	Get_User_Fav_Movies,
-	Get_User_Watched_Movies } from "../functions/user"
-
+	Get_User_Watched_Movies,
+	Get_Current_User_Fav_Movies_ID,
+	Get_Current_User_Watched_Movies_ID } from "../functions/user"
 
 export default {
 	props: {
@@ -18,14 +19,15 @@ export default {
 		return {
 			text_content		: textContent.PROFILE,
 			user                : null,
-			own_profile			: false,
 
 			request_error		: false,
 			network_error		: false,
 			error_text			: '',
 
 			watched_movies      : null,
+			watched_movies_ids  : [],
 			fav_movies		    : null,
+			fav_movies_ids	    : [],
 
 			followed			: false
 		}
@@ -40,9 +42,22 @@ export default {
 				'data'    : movies,
 				'profile' : true,
 				'error'   : false,
-				'favs'    : [],
-				'watched' : [],
+				'favs'    : this.fav_movies_ids,
+				'watched' : this.watched_movies_ids,
 			}
+		},
+		exists(movies) {
+			if (movies == null || (movies != null && movies.length == 0)) {
+				return false
+			}
+			return true
+		},
+		async get_user_fav_and_co() {
+			console.log("getting favvsss")
+			let res = await Get_Current_User_Fav_Movies_ID(this.user_token);
+			this.fav_movies_ids = res.data.map(item => item.movie_id);
+			res = await Get_Current_User_Watched_Movies_ID(this.user_token);
+			this.watched_movies_ids = res.data.map(item => item.movie_id);
 		},
 		update_follow() {
 			this.followed = !this.followed
@@ -55,9 +70,9 @@ export default {
 			if (res.status == 200) {
 				this.user = res.data
 				console.log("USER: ", this.user)
-				res = await Get_User_Fav_Movies(this.user_token);
+				res = await Get_User_Fav_Movies(this.user_token, this.user_id);
 				this.fav_movies = res.data
-				res = await Get_User_Watched_Movies(this.user_token);
+				res = await Get_User_Watched_Movies(this.user_token, this.user_id);
 				this.watched_movies = res.data
 			}
 			else if (res.status == 404 || res.status == 201) {
@@ -70,18 +85,32 @@ export default {
 				this.network_error = true
 				this.error_text = this.text_content.network_error[this.lang_nb]
 			}
-
-		}
-	},
-	async updating_movies(value) {
-		let update_info = JSON.parse(JSON.stringify(value));
-		if (update_info['type'] == "favorites") {
-			let res = await Get_User_Fav_Movies(this.user_token);
-			this.fav_movies = res.data
-		}
+		},
+		async updating_movies(value) {
+			let update_info = JSON.parse(JSON.stringify(value));
+			let movie_type = update_info['type']
+			let id = update_info['id']
+			if (movie_type == "favorites") {
+				if (this.fav_movies_ids.includes(id)) {
+					delete this.fav_movies_ids[this.fav_movies_ids.indexOf(id)]
+				}
+				else {
+					this.fav_movies_ids.push(id)
+				}
+			}
+			if (movie_type == "watched") {
+				if (this.watched_movies_ids.includes(id)) {
+					delete this.watched_movies_ids[this.fav_movies_ids.indexOf(id)]
+				}
+				else {
+					this.watched_movies_ids.push(id)
+				}
+			}
+		},
 	},
 	mounted() {
-		this.get_user_data()
+		this.get_user_data();
+		this.get_user_fav_and_co();
 	}
 }
 </script>
@@ -152,11 +181,11 @@ export default {
 					</div>
 					</div>
 				</div>
-				<div class="card-body p-4 text-black movies">
+				<div class="card-body p-4 text-black movies" v-if="exists(fav_movies)">
 					<p class="lead fw-normal mb-4">{{text_content.favorites[lang_nb]}}:</p>
-					<SearchResults :movie_list="set_movie_props(fav_movies)" @updating="updating_movies"/>
+					<SearchResults  :movie_list="set_movie_props(fav_movies)" @updating="updating_movies"/>
 				</div>
-				<div class="card-body p-4 text-black movies">
+				<div class="card-body p-4 text-black movies"  v-if="exists(watched_movies)">
 					<p class="lead fw-normal mb-4">{{text_content.watched[lang_nb]}}:</p>
 					<SearchResults :movie_list="set_movie_props(watched_movies)" @updating="updating_movies"/>
 				</div>
