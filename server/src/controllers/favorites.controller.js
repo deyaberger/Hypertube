@@ -65,7 +65,7 @@ module.exports = (db_pool) => {
             }
         },
         add_to_favs : async(req, res) => {
-            console.log("adding movie to favss")
+            console.log("adding movie to favs")
             try {
                 let userid = req.user_id
                 let movie_id = Number(req.params.movie_id)

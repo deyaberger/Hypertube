@@ -28,10 +28,12 @@ export default {
 			error			  : false,
 			user_favs		  : null,
 			user_watched	  : null,
+			saved_movies	  : null,
+			movie_props		  : null
 		}
 	},
 	methods: {
-		send_movie_list() {
+		set_movie_props() {
 			return {
 				'data'    : this.movies_slice,
 				'profile' : false,
@@ -107,27 +109,37 @@ export default {
 		show_favorites() {
 			if (this.only_show_fav == true) {
 				console.log("only show favs")
+				this.saved_movies  = this.movies
+				this.movies = this.movies.filter(item => this.user_favs.includes(item.id));
+				this.number_of_results = this.movies.length;
+				this.currentPage = 1
+				this.get_movies_page_slice();
 			}
 			else {
+				this.movies = this.saved_movies;
+				this.number_of_results = this.movies.length;
+				this.get_movies_page_slice();
 				console.log("show all")
 			}
 		},
 		async updating_movies(value) {
 			let update_info = JSON.parse(JSON.stringify(value));
-			if (update_info['type'] == "favorites") {
-				if (this.user_favs.includes(update_info['id'])) {
-					this.user_favs.pop(update_info['id'])
+			let movie_type = update_info['type']
+			let id = update_info['id']
+			if (movie_type == "favorites") {
+				if (this.user_favs.includes(id)) {
+					delete this.user_favs[this.user_favs.indexOf(id)]
 				}
 				else {
-					this.user_favs.push(update_info['id'])
+					this.user_favs.push(id)
 				}
 			}
-			if (update_info['type'] == "watched") {
-				if (this.user_watched.includes(update_info['id'])) {
-					this.user_watched.pop(update_info['id'])
+			if (movie_type == "watched") {
+				if (this.user_watched.includes(id)) {
+					delete this.user_watched[this.user_favs.indexOf(id)]
 				}
 				else {
-					this.user_watched.push(update_info['id'])
+					this.user_watched.push(id)
 				}
 			}
 		},
@@ -139,7 +151,7 @@ export default {
     })
 	},
 	created() {
-		this.get_user_fav_and_co()
+		this.get_user_fav_and_co();
 	},
 	watch: {
 		currentPage: {
@@ -187,7 +199,7 @@ export default {
 					<div class="show_favorites col"><b-form-checkbox v-model="only_show_fav" switch data-toggle="tooltip" data-placement="top" :title="only_show_fav ? 'show all movies' : 'only show favorites'"></b-form-checkbox></div>
 				</div>
 			</div>
-			<SearchResults :movie_list="send_movie_list()" class="search_res" @updating="updating_movies"/>
+			<SearchResults :movie_list="set_movie_props()" class="search_res" @updating="updating_movies"/>
 			<div class="pagination overflow-auto">
 			<div v-if="number_of_results > 0">
 				<b-pagination
