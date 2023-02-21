@@ -35,6 +35,15 @@ export default {
 		user_token : state =>  state.user_token,
     }),
 	methods: {
+		set_movie_props(movies) {
+			return {
+				'data'    : movies,
+				'profile' : true,
+				'error'   : false,
+				'favs'    : [],
+				'watched' : [],
+			}
+		},
 		update_follow() {
 			this.followed = !this.followed
 		},
@@ -62,6 +71,13 @@ export default {
 				this.error_text = this.text_content.network_error[this.lang_nb]
 			}
 
+		}
+	},
+	async updating_movies(value) {
+		let update_info = JSON.parse(JSON.stringify(value));
+		if (update_info['type'] == "favorites") {
+			let res = await Get_User_Fav_Movies(this.user_token);
+			this.fav_movies = res.data
 		}
 	},
 	mounted() {
@@ -138,11 +154,11 @@ export default {
 				</div>
 				<div class="card-body p-4 text-black movies">
 					<p class="lead fw-normal mb-4">{{text_content.favorites[lang_nb]}}:</p>
-					<SearchResults :movie_list="{'profile' : true, 'data' : fav_movies}"/>
+					<SearchResults :movie_list="set_movie_props(fav_movies)" @updating="updating_movies"/>
 				</div>
 				<div class="card-body p-4 text-black movies">
 					<p class="lead fw-normal mb-4">{{text_content.watched[lang_nb]}}:</p>
-					<SearchResults :movie_list="{'profile' : true, 'data' : watched_movies}"/>
+					<SearchResults :movie_list="set_movie_props(watched_movies)" @updating="updating_movies"/>
 				</div>
 				</div>
 			</div>

@@ -16,6 +16,14 @@ module.exports = (db_pool) => {
             userid)
             return favorites
         },
+        get_all_favorites_ids: async (userid) => {
+            [favorites, ] = await db_pool.query(`
+            SELECT movie_id
+            FROM favorite_movies
+            WHERE user_id = ?`,
+            userid)
+            return favorites
+        },
         is_favorite_movie: async (userid, movie_id) => {
             [is_fav, ] = await db_pool.query(`
             SELECT COUNT(movies.id) as is_fav
@@ -29,6 +37,27 @@ module.exports = (db_pool) => {
                 return is_fav[0]
             }
             return is_fav
+        },
+        remove_favorite: async (userid, movie_id) => {
+            [removed, ] = await db_pool.query(`
+            DELETE
+            FROM favorite_movies
+            WHERE user_id = ? AND movie_id = ?`,
+            [userid, movie_id])
+            if (removed.length == 1) {
+                return removed[0]
+            }
+            return removed
+        },
+        add_favorite: async (userid, movie_id) => {
+            [added, ] = await db_pool.query(`
+            INSERT into favorite_movies (user_id, movie_id)
+            values (?, ?)`,
+            [userid, movie_id])
+            if (added.length == 1) {
+                return added[0]
+            }
+            return added
         }
     }
 }

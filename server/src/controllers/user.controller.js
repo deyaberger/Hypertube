@@ -68,6 +68,23 @@ module.exports = (db_pool) => {
                 throw (e)
             }
         },
+
+        get_watched_movies_ids : async (req, res) => {
+            console.log("get watch movies")
+            try {
+                let userid = req.user_id
+                let watched = await user_functions.get_watched_ids(userid)
+
+                if (watched == null) {
+                    return res.sendStatus(500)
+                }
+
+                return res.status(200).send(watched)
+            }
+            catch (e) {
+                throw (e)
+            }
+        },
         update_first_name : async(req, res) => {
             try {
                 let user_id = req.user_id
