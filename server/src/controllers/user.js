@@ -154,6 +154,5 @@ module.exports = (db_pool) => {
             }
             return false
         }
-
     }
 }
