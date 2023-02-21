@@ -25,6 +25,9 @@ app.use("/api/auth", auth_router)
 const user_router = require("./src/routes/user.routes")(connection_pool)
 app.use("/api/user", user_router)
 
+// Create the following router, (injecting the connection pool) and add it to the server
+const follows_router = require("./src/routes/follows.routes")(connection_pool)
+app.use("/api/follows", follows_router)
 
 
 // Create the comment router, (injecting the connection pool) and add it to the server

@@ -279,3 +279,82 @@ export const Is_Watched = async(movie_id, token) => {
 	return response;
 }
 
+
+export const Get_User_Followings = async(token, user_id) => {
+	let request = {
+		url: `http://127.0.0.1:8071/api/follows/who_do_you_follow`,
+		method: "get",
+		headers: {
+			'Access-Control-Allow-Origin': '*',
+			"Content-type"               : "application/json",
+			'Authorization'				 : `Bearer ${token}`
+		},
+		params : {
+			"user_id" : user_id
+		}
+	};
+	const response = await axios(request);
+	return response;
+}
+
+export const Get_User_Followers = async(token, user_id) => {
+	let request = {
+		url: `http://127.0.0.1:8071/api/follows/who_follows_you`,
+		method: "get",
+		headers: {
+			'Access-Control-Allow-Origin': '*',
+			"Content-type"               : "application/json",
+			'Authorization'				 : `Bearer ${token}`
+		},
+		params : {
+			"user_id" : user_id
+		}
+	};
+	const response = await axios(request);
+	return response;
+}
+
+
+export const Is_Following = async(token, user_id) => {
+	let request = {
+		url: `http://127.0.0.1:8071/api/follows/is_following/${user_id}`,
+		method: "get",
+		headers: {
+			'Access-Control-Allow-Origin': '*',
+			"Content-type"               : "application/json",
+			'Authorization'				 : `Bearer ${token}`
+		}
+	};
+	const response = await axios(request);
+	return response;
+}
+
+
+export const Follow = async(token, user_id) => {
+	let request = {
+		url: `http://127.0.0.1:8071/api/follows/follow/${user_id}`,
+		method: "post",
+		headers: {
+			'Access-Control-Allow-Origin': '*',
+			"Content-type"               : "application/json",
+			'Authorization'				 : `Bearer ${token}`
+		}
+	};
+	const response = await axios(request);
+	return response;
+}
+
+export const UnFollow = async(token, user_id) => {
+	let request = {
+		url: `http://127.0.0.1:8071/api/follows/unfollow/${user_id}`,
+		method: "post",
+		headers: {
+			'Access-Control-Allow-Origin': '*',
+			"Content-type"               : "application/json",
+			'Authorization'				 : `Bearer ${token}`
+		}
+	};
+	const response = await axios(request);
+	return response;
+}
+

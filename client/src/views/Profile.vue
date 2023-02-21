@@ -6,7 +6,12 @@ import { Get_Other_User_Details,
 	Get_User_Fav_Movies,
 	Get_User_Watched_Movies,
 	Get_Current_User_Fav_Movies_ID,
-	Get_Current_User_Watched_Movies_ID } from "../functions/user"
+	Get_Current_User_Watched_Movies_ID,
+	Get_User_Followers,
+	Get_User_Followings,
+	Is_Following,
+	Follow,
+	UnFollow } from "../functions/user"
 
 export default {
 	props: {
@@ -29,7 +34,9 @@ export default {
 			fav_movies		    : null,
 			fav_movies_ids	    : [],
 
-			followed			: false
+			followed			: false,
+			followers			: 0,
+			followings			: 0,
 		}
 	},
 	computed: mapState({
@@ -52,6 +59,20 @@ export default {
 			}
 			return true
 		},
+		async get_follows() {
+			let res = await Get_User_Followings(this.user_token, this.user_id);
+			if (res.status == 200) {
+				this.followings = String(res.data.count);
+			}
+			res = await Get_User_Followers(this.user_token, this.user_id);
+			if (res.status == 200) {
+				this.followers = String(res.data.count);
+			}
+			res = await Is_Following(this.user_token, this.user_id);
+			if (res.status == 200) {
+				this.followed = res.data.message;
+			}
+		},
 		async get_user_fav_and_co() {
 			console.log("getting favvsss")
 			let res = await Get_Current_User_Fav_Movies_ID(this.user_token);
@@ -59,7 +80,20 @@ export default {
 			res = await Get_Current_User_Watched_Movies_ID(this.user_token);
 			this.watched_movies_ids = res.data.map(item => item.movie_id);
 		},
-		update_follow() {
+		async update_follow() {
+			let res = null
+			if (this.followed == true) {
+				console.log("UNFOLLOWWW")
+				res = await UnFollow(this.user_token, this.user_id);
+				this.get_follows();
+				console.log("follow: ", res)
+			}
+			else {
+				console.log("FOLLOW")
+				res = await Follow(this.user_token, this.user_id);
+				this.get_follows();
+				console.log("unfollow: ", res)
+			}
 			this.followed = !this.followed
 		},
 		async get_user_data() {
@@ -111,6 +145,7 @@ export default {
 	mounted() {
 		this.get_user_data();
 		this.get_user_fav_and_co();
+		this.get_follows();
 	}
 }
 </script>
@@ -155,19 +190,17 @@ export default {
 					<div class="justify-content-center text-center py-1">
 					<div>
 						<div class="row">
-						<div class="col">
+						<div class="col-9 button_container">
 							<button v-if="followed" class="btn check_button followed" @click="update_follow()" type="button" data-toggle="tooltip" data-placement="top" :title="text_content.unfollow[lang_nb]">{{text_content.followed[lang_nb]}}</button>
 							<button v-else class="btn check_button follow" type="button" @click="update_follow()">{{text_content.follow[lang_nb]}}</button>
 						</div>
-						<div class="col-7">
-						</div>
 						<div class="col">
 							<p class="small text-muted mb-0">{{text_content.followers[lang_nb]}}</p>
-							<p class="mb-1 h5">{{user.followers}}</p>
+							<p class="mb-1 h5">{{followers}}</p>
 						</div>
 						<div class="col">
-							<p class="small text-muted mb-0">{{text_content.followed[lang_nb]}}</p>
-							<p class="mb-1 h5">{{user.followed}}</p>
+							<p class="small text-muted mb-0">{{text_content.followings[lang_nb]}}</p>
+							<p class="mb-1 h5">{{followings}}</p>
 						</div>
 						</div>
 					</div>
@@ -201,6 +234,8 @@ export default {
 @import "../assets/shared_scss/search_results.scss";
 @import "../assets/shared_scss/profile.scss";
 
+
+
 .profile_header, .profile_pic {
 	background-color: black;
 	cursor: unset;
@@ -217,12 +252,34 @@ export default {
 
 .check_button {
 	margin-left: 1%;
-	margin: 0px;
 	margin-top: 10px;
 	padding: 5px;
 	width: 200px;
 	color: rgb(48, 47, 47);
+	position: absolute;
+	left: 2%;
 }
+
+@media (max-width: 750px) {
+	.check_button {
+		left: 4%;
+	}
+	.button_container {
+		width: 50%;
+	}
+}
+
+@media (max-width: 470px) {
+	.check_button {
+		left: 6%;
+		width: 100px;
+	}
+	.button_container {
+		width: 40%;
+	}
+}
+
+
 
 .check_button.followed {
 	background :linear-gradient(to right, rgba(251, 194, 235, 1), rgba(166, 193, 238, 1));

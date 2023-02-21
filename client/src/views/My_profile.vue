@@ -312,7 +312,7 @@ export default {
 							<p class="mb-1 h5">{{user.followers}}</p>
 						</div>
 						<div class="col">
-							<p class="small text-muted mb-0">{{text_content.followed[lang_nb]}}</p>
+							<p class="small text-muted mb-0">{{text_content.followings[lang_nb]}}</p>
 							<p class="mb-1 h5">{{user.followed}}</p>
 						</div>
 						</div>
