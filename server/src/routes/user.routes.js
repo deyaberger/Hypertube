@@ -10,14 +10,9 @@ module.exports = (db_pool) => {
     router.post  ("/update_last_name", auth_controller.authenticateToken, user_controller.update_last_name)
     router.post  ("/update_bio", auth_controller.authenticateToken, user_controller.update_bio)
     router.post  ("/update_email", auth_controller.authenticateToken, user_controller.update_email)
+    router.post  ("/upload_image", auth_controller.authenticateToken, user_controller.upload_image)
+
     router.get  ("/profile/:user_id", auth_controller.authenticateToken, user_controller.get_other_user)
-    router.get  ("/watched_movies", auth_controller.authenticateToken, user_controller.get_watched_movies);
-    router.get  ("/watched_movies_id", auth_controller.authenticateToken, user_controller.get_watched_movies_ids);
-
-    router.post  ("/set_watched/:movie_id", auth_controller.authenticateToken, user_controller.set_watched);
-    router.post  ("/set_unwatched/:movie_id", auth_controller.authenticateToken, user_controller.set_unwatched);
-    router.get  ("/is_watched/:movie_id", auth_controller.authenticateToken, user_controller.is_watched);
-
     return router
 }
 

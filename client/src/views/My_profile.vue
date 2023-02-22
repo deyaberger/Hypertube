@@ -10,7 +10,8 @@ import { Get_User_Details,
 		 Update_First_Name,
 		 Update_Last_Name,
 		 Update_Bio,
-		 Update_Email } from "../functions/user"
+		 Update_Email,
+		 Upload_Image } from "../functions/user"
 
 export default {
 	components: {
@@ -200,7 +201,9 @@ export default {
 			const reader = new FileReader();
 			reader.addEventListener("load", () => {
 				this.user.picture = reader.result;
-				console.log("USER piC: ", this.user.picture)
+				const image_data = reader.result.split(",")[1];
+				this.user.picture = `data:image/jpeg;base64,${image_data}`;
+				// console.log("USER piC: ", this.user.picture.split(",")[1])
 			});
 			if (file) {
 				reader.readAsDataURL(file);

@@ -207,3 +207,20 @@ export const UnFollow = async(token, user_id) => {
 	const response = await axios(request);
 	return response;
 }
+
+export const Upload_Image = async(token, image_url) => {
+	let request = {
+		url: `http://127.0.0.1:8071/api/user/upload_image`,
+		method: "post",
+		headers: {
+			'Access-Control-Allow-Origin': '*',
+			"Content-type"               : "application/json",
+			'Authorization'				 : `Bearer ${token}`
+		},
+		params : {
+			"image_url" : image_url
+		}
+	};
+	const response = await axios(request);
+	return response;
+}
