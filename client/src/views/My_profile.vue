@@ -49,10 +49,6 @@ export default {
 			email_error		    : false,
 		}
 	},
-	computed: mapState({
-      	lang_nb  : state =>  state.lang_nb,
-		user_token : state =>  state.user_token,
-    }),
 	methods: {
 		set_movie_props(movies) {
 			return {
@@ -196,18 +192,20 @@ export default {
 				}
 			}
 		},
-		uploadImage(event) {
+		async upload_image(event) {
 			let file = event.target.files[0];
-			const reader = new FileReader();
-			reader.addEventListener("load", () => {
-				this.user.picture = reader.result;
-				const image_data = reader.result.split(",")[1];
-				this.user.picture = `data:image/jpeg;base64,${image_data}`;
-				// console.log("USER piC: ", this.user.picture.split(",")[1])
-			});
-			if (file) {
-				reader.readAsDataURL(file);
-			}
+			// let res = Upload_Image(this.user_token, file)
+			// const reader = new FileReader();
+			// reader.addEventListener("load", async() => {
+			// 	const image_data = reader.result.split(",")[1];
+			// 	console.log("Sending upload image:")
+			// 	let res = await Upload_Image(this.user_token, image_data);
+			// 	this.user.picture = `data:image/jpeg;base64,${image_data}`;
+			// 	// console.log("USER piC: ", this.user.picture.split(",")[1])
+			// });
+			// if (file) {
+			// 	reader.readAsDataURL(file);
+			// }
 		},
 		mimic_click() {
 			this.$refs.fileInput.click();
@@ -216,7 +214,11 @@ export default {
 	mounted() {
 		this.get_user_data();
 		this.get_user_fav_and_co();
-	}
+	},
+	computed: mapState({
+      	lang_nb  : state =>  state.lang_nb,
+		user_token : state =>  state.user_token,
+    }),
 }
 </script>
 
@@ -245,7 +247,7 @@ export default {
 					<div class="ms-4 mt-5 d-flex flex-column" style="width: 200px;">
 					<div class="profile_header mt-4" >
 						<img :src="user.picture" alt="profile pic" class="profile_pic" onerror="this.src='../src/assets/generic_profile_pic.jpg';">
-						<input type="file" ref="fileInput" @change="uploadImage"/>
+						<input type="file" ref="fileInput" @change="upload_image"/>
 						<b-icon-arrow-repeat  class="h2 change_icon" @click="mimic_click"></b-icon-arrow-repeat>
 					</div>
 					<span><button class="btn btn-dark remove_pic"><b-icon-trash/></button></span>

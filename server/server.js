@@ -2,7 +2,7 @@ const express    = require('express')
 const bodyParser = require('body-parser')
 const cors       = require("cors");
 
-const jsonParser = bodyParser.json()
+const jsonParser = bodyParser.json({ limit: '50mb' })
 
 // GET .env file contents
 require('dotenv').config()

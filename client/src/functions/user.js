@@ -208,7 +208,10 @@ export const UnFollow = async(token, user_id) => {
 	return response;
 }
 
-export const Upload_Image = async(token, image_url) => {
+export const Upload_Image = async(token, image_file) => {
+	const formData = new FormData()
+	formData.append('file', image_file)
+	console.log("formData: ", formData)
 	let request = {
 		url: `http://127.0.0.1:8071/api/user/upload_image`,
 		method: "post",
@@ -217,9 +220,7 @@ export const Upload_Image = async(token, image_url) => {
 			"Content-type"               : "application/json",
 			'Authorization'				 : `Bearer ${token}`
 		},
-		params : {
-			"image_url" : image_url
-		}
+		data : formData
 	};
 	const response = await axios(request);
 	return response;

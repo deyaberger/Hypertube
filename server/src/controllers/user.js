@@ -98,7 +98,7 @@ module.exports = (db_pool) => {
             console.log("in update profile pic");
             try {
                 let [update_result, ] = await db_pool.query(`
-                INSERT into users (user_id, picture)
+                INSERT into users (id, picture)
                 values (?, ?)`,
                 [user_id, url])
                 console.log("update_result", update_result)

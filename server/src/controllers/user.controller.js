@@ -133,9 +133,14 @@ module.exports = (db_pool) => {
             }
         },
         upload_image : async(req, res) => {
+            console.log("**** IN upload image")
             try {
                 let user_id = req.user_id
-                let url  = req.query.image_url
+                console.log("rew: ", req.file)
+                // console.log("req: ", req.body.file)
+                // let url  = req.file.filename
+                let url  = ""
+                console.log("URL: ", url)
                 let upload_res = await user_functions.upload_profile_pic(user_id, url)
                 if (upload_res.affectedRows == 1) {
                     return res.status(200).send({message: "successfully added profile pic"})
