@@ -38,7 +38,7 @@ module.exports = (db_pool) => {
             console.log("checking if movie is fav")
             try {
                 let userid = req.user_id
-                let movie_id = req.query.movie_id
+                let movie_id = req.params.movie_id
                 let is_fav = await favorites_functions.is_favorite_movie(userid, movie_id)
                 if (is_fav == null) {
                     return res.sendStatus(500)

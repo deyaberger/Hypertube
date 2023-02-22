@@ -2,16 +2,16 @@
 import { mapState } from 'vuex';
 import textContent from "../assets/language_dict/language_dict.json";
 import SearchResults from '../components/Search_results.vue';
+import { Get_User_Fav_Movies,
+	     Get_User_Watched_Movies,
+	     Get_Current_User_Fav_Movies_ID,
+	     Get_Current_User_Watched_Movies_ID } from '../functions/movies';
 import { Get_Other_User_Details,
-	Get_User_Fav_Movies,
-	Get_User_Watched_Movies,
-	Get_Current_User_Fav_Movies_ID,
-	Get_Current_User_Watched_Movies_ID,
-	Get_User_Followers,
-	Get_User_Followings,
-	Is_Following,
-	Follow,
-	UnFollow } from "../functions/user"
+		 Get_User_Followers,
+		 Get_User_Followings,
+		 Is_Following,
+		 Follow,
+		 UnFollow } from "../functions/user"
 
 export default {
 	props: {

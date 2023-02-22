@@ -54,6 +54,8 @@ app.use("/api/populate", populate_router)
 const favorites_router = require("./src/routes/favorites.routes")(connection_pool)
 app.use("/api/favorites", favorites_router)
 
+const watched_router = require("./src/routes/watched.routes")(connection_pool)
+app.use("/api/watched", watched_router)
 
 
 // Start the server

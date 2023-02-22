@@ -2,15 +2,15 @@
 import { mapState } from 'vuex';
 import textContent from "../assets/language_dict/language_dict.json";
 import SearchResults from '../components/Search_results.vue';
+import { Get_User_Fav_Movies,
+	     Get_User_Watched_Movies,
+	     Get_Current_User_Fav_Movies_ID,
+	     Get_Current_User_Watched_Movies_ID } from '../functions/movies';
 import { Get_User_Details,
-	Get_User_Fav_Movies,
-	Get_User_Watched_Movies,
-	Update_First_Name,
-	Update_Last_Name,
-	Update_Bio,
-	Update_Email,
-	Get_Current_User_Fav_Movies_ID,
-	Get_Current_User_Watched_Movies_ID } from "../functions/user"
+		 Update_First_Name,
+		 Update_Last_Name,
+		 Update_Bio,
+		 Update_Email } from "../functions/user"
 
 export default {
 	components: {
@@ -20,6 +20,7 @@ export default {
 		return {
 			text_content		: textContent.PROFILE,
 			own_profile         : true,
+			selectedFile		: null,
 
 			user                : null,
 			request_error		: false,
@@ -194,6 +195,13 @@ export default {
 				}
 			}
 		},
+		uploadImage(event) {
+			this.selectedFile = event.target.files[0];
+			console.log("in onfile seelect this.selected_file: ", this.selectedFile)
+		},
+		mimic_click() {
+			this.$refs.fileInput.click();
+		}
 	},
 	mounted() {
 		this.get_user_data();
@@ -227,7 +235,8 @@ export default {
 					<div class="ms-4 mt-5 d-flex flex-column" style="width: 200px;">
 					<div class="profile_header mt-4" >
 						<img :src="user.picture" alt="profile pic" class="img-fluid img-thumbnail profile_pic" onerror="this.src='../src/assets/generic_profile_pic.jpg';">
-						<b-icon-arrow-repeat  class="h2 change_icon"></b-icon-arrow-repeat>
+						<input type="file" ref="fileInput" @change="uploadImage"/>
+						<b-icon-arrow-repeat  class="h2 change_icon" @click="mimic_click"></b-icon-arrow-repeat>
 					</div>
 					<span><button class="btn btn-dark remove_pic"><b-icon-trash/></button></span>
 					</div>
@@ -364,6 +373,10 @@ export default {
 </style>
 
 <style lang="css" scoped>
+
+input[type="file"] {
+	display: none;
+}
 
 .page-link.active, .active > .page-link {
 	background-color: black;
