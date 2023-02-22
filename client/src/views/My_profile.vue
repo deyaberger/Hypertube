@@ -20,7 +20,6 @@ export default {
 		return {
 			text_content		: textContent.PROFILE,
 			own_profile         : true,
-			selectedFile		: null,
 
 			user                : null,
 			request_error		: false,
@@ -36,6 +35,7 @@ export default {
 			last_name			: null,
 			email				: null,
 			bio					: null,
+			profile_pic			: null,
 
 
 			first_name_is_saved : true,
@@ -196,8 +196,15 @@ export default {
 			}
 		},
 		uploadImage(event) {
-			this.selectedFile = event.target.files[0];
-			console.log("in onfile seelect this.selected_file: ", this.selectedFile)
+			let file = event.target.files[0];
+			const reader = new FileReader();
+			reader.addEventListener("load", () => {
+				this.user.picture = reader.result;
+				console.log("USER piC: ", this.user.picture)
+			});
+			if (file) {
+				reader.readAsDataURL(file);
+			}
 		},
 		mimic_click() {
 			this.$refs.fileInput.click();
@@ -234,7 +241,7 @@ export default {
 				<div class="rounded-top text-white d-flex flex-row" style="background-color: #000; height:250px;">
 					<div class="ms-4 mt-5 d-flex flex-column" style="width: 200px;">
 					<div class="profile_header mt-4" >
-						<img :src="user.picture" alt="profile pic" class="img-fluid img-thumbnail profile_pic" onerror="this.src='../src/assets/generic_profile_pic.jpg';">
+						<img :src="user.picture" alt="profile pic" class="profile_pic" onerror="this.src='../src/assets/generic_profile_pic.jpg';">
 						<input type="file" ref="fileInput" @change="uploadImage"/>
 						<b-icon-arrow-repeat  class="h2 change_icon" @click="mimic_click"></b-icon-arrow-repeat>
 					</div>

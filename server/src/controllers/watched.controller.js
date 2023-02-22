@@ -1,5 +1,5 @@
 module.exports = (db_pool) => {
-    const watched_functions = require('./user')(db_pool)
+    const watched_functions = require('./watched')(db_pool)
 
     return {
         get_watched_movies : async (req, res) => {
