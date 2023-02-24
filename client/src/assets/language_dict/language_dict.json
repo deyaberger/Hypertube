@@ -90,13 +90,18 @@
 			"Sci-Fi"       : ["Sci-Fi"     , "Science Fiction"],
 			"Thriller"    : ["Thriller"   , "Thriller"],
 			"Western"     : ["Western"    , "Western"]
-	},
+		},
 		"sorting_list"    : {
 			"imdb_rating" : ["rating", "note"],
 			"year"        : ["year", "année"],
 			"title"       : ["title", "titre"],
 			"seeds"       : ["seeds", "seeds"]
-		}
+		},
+		"add_review"	  : ["Add a review", "Ajouter un avis"],
+		"send_review"	  : ["Send review", "Envoyer"],
+		"not_specified"   : ["Not specified", "Pas d'information à ce sujet"],
+		"director"		  : ["Director", "Réalisateur"],
+		"actors"		  : ["Actors", "Acteurs"]
 
 	},
 	"PROFILE" : {

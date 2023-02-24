@@ -9,6 +9,7 @@ import { Get_Single_Movie_Details,
 import { Get_Comments_By_Movie_ID, Parse_Comments, Post_Comment } from "../functions/comments";
 import { Get_Formatted_Time } from "../functions/utils.js";
 import StarRating from 'vue-star-rating';
+import textContent from "../assets/language_dict/language_dict.json"
 
 
 export default {
@@ -17,12 +18,15 @@ export default {
 	},
 	data() {
 		return {
+			text_content : textContent.MOVIES,
 			movie : [],
 			comments : [],
 			user_comment: "",
 			user_rating : 0,
 			Get_Formatted_Time  : Get_Formatted_Time,
 			is_watched : false,
+			fallbackUrl: '../src/assets/missing_cover.jpeg',
+			movie_error : false
 	}
 	},
 	components: {
@@ -83,11 +87,13 @@ export default {
 					this.movie = Parse_Single_Movie(res.data);
 				}
 				else {
+					this.movie_error = true
+					console.log("MOVIE ERROR")
 					console.log(res.code, res.data)
-					throw("Unknow error code getting movies")
 				}
 			}
 			catch (e) {
+				this.movie_error = true
 				console.log("Error in get_movie_details")
 				throw(e)
 			}
@@ -135,25 +141,37 @@ export default {
 				return "bof"
 			}
 			return null
+		},
+		handleError(event, movie) {
+			const nextIndex = parseInt(event.target.dataset.nextIndex)
+			const nextImage = movie.images_list[nextIndex];
+			if (nextImage) {
+				event.target.src = nextImage;
+			} else {
+				event.target.src = this.fallbackUrl;
+			}
 		}
 
 	},
-	mounted() {
-		this.get_movie_details();
-		this.get_comments();
-		this.favs_and_co();
+	async mounted() {
+		await this.get_movie_details();
+		if (!this.movie_error) {
+			console.log("COUCOU")
+			this.get_comments();
+			this.favs_and_co();
+		}
 	},
 }
 </script>
 
 <template>
-	<div class="homemade-container">
+	<div class="homemade-container" v-if="!movie_error">
 		<div class="row justify-content-md-center">
 			<div v-if="movie.length == 0" class="col-md-auto">
 						<b-spinner label="Loading..." variant="success" class="mt-5"></b-spinner>
 				</div>
 			<div v-else class="col video_container">
-				<img class="movie_image" :src="movie.large_cover_image" alt="movie_image"  onerror="this.src='../src/assets/missing_cover.jpeg';"/>
+				<img class="movie_image" :src="movie.images_list[6]" alt="movie_image" :data-next-index="1" @error="handleError($event, movie)"/>
 			</div>
 		</div>
 		<button v-if="is_watched"
@@ -198,19 +216,20 @@ export default {
 		</div>
 		<div class="row cast_container">
 			<div class="col">
-				<span class="infos_title_horizontal">Director: </span>
-				<span class="names"></span>
+				<span class="infos_title_horizontal">{{text_content["director"][lang_nb]}}: </span>
+				<span class="names">{{ movie.director ? movie.director : text_content["not_specified"][lang_nb]}}</span>
 			</div>
 		</div>
 		<div class="row cast_container">
 			<div class="col">
-				<span class="infos_title_horizontal">Actors: </span>
-				<span class="names" v-for="actor in movie.cast" :key="actor">{{actor.name}}, </span>
+				<span class="infos_title_horizontal">{{text_content["actors"][lang_nb]}}: </span>
+				<span class="names">{{ movie.actors ? movie.actors : text_content["not_specified"][lang_nb]}}</span>
+				<!-- <span class="names" v-for="actor in movie.cast" :key="actor">{{actor.name}}, </span> -->
 			</div>
 		</div>
 		<hr class="solid">
 		<div class="row my_review">
-			<div class="infos_title">Add a review:</div>
+			<div class="infos_title">{{ text_content["add_review"][lang_nb] }}:</div>
 			<star-rating
 				v-model:rating="user_rating"
 				class="stars_container"
@@ -231,7 +250,7 @@ export default {
 				:disabled="!reviewComplete()"
 				class="submit_button"
 				type = "submit">
-				Send review
+				{{ text_content['send_review'][lang_nb] }}
 			</button>
 		</div>
 		<div v-for="comment in comments" :key="comment" class="row people_reviews">
@@ -247,6 +266,13 @@ export default {
 				<span>{{comment.date}}</span>
 			</div>
 			<div class="comment">'{{comment.content}}'</div>
+		</div>
+	</div>
+	<div class="homemade-container" v-else>
+		<div class="row movie_name_container">
+			<div class="col text-center">
+				<h1>No movie with this id</h1>
+			</div>
 		</div>
 	</div>
 </template>

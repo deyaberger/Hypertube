@@ -24,15 +24,12 @@ export const Parse_Comments = (data) => {
 export const Get_Comments_By_Movie_ID = async(movie_id, token) => {
 	console.lo
 	let request = {
-		url: `http://127.0.0.1:8071/api/comments/movie/:${movie_id}`,
+		url: `http://127.0.0.1:8071/api/comments/movie/${movie_id}`,
 		method: "get",
 		headers: {
 			'Access-Control-Allow-Origin': '*',
 			"Content-type"               : "application/json",
 			'Authorization'				 : `Bearer ${token}`
-		},
-		params : {
-			"movie_id" : movie_id
 		}
 	};
 	const response = await axios(request);

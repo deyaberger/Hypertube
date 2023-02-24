@@ -1,5 +1,5 @@
 <script>
-import { Get_All_Movies, Dump_Json_To_DB } from "../functions/populate_db.js"
+import { Get_All_Movies, Dump_Json_To_DB, Get_All_Movies_IMDB_Ids, Fetch_And_Add_TMDB } from "../functions/populate_db.js"
 
 export default {
 	data() {
@@ -17,6 +17,11 @@ export default {
 			db_error			  : false,
 			current_page		  : 1,
 			db_stop				  : false,
+			tmdb_on			      : false,
+			tmdb_done			  : false,
+			tmdb_currently_fetched : 0,
+			tmdb_movie_count      : 0,
+			tmdb_error			  : false,
 		}
 	},
 	methods: {
@@ -100,6 +105,47 @@ export default {
 			this.db_on = false;
 			this.db_done = true;
 
+		},
+
+		async get_all_movies_ids() {
+			try {
+				let res = await Get_All_Movies_IMDB_Ids();
+				if (res.status == 200) {
+					return (res.data)
+				}
+				return null
+			}
+			catch(e) {
+				console.log("ERROR in get all movies ids")
+				throw(e)
+			}
+		},
+
+		async pimp_db(source) {
+			this.tmdb_error = false
+			const start = Date.now();
+			this.tmdb_on = true
+			this.tmdb_done = false
+			this.stop = false
+			let imdb_ids = await this.get_all_movies_ids()
+			if (imdb_ids != null) {
+				this.tmdb_movie_count = imdb_ids.length
+				this.tmdb_currently_fetched = 0
+				console.log("WE got ids: ", imdb_ids)
+				for (let index = 0; index < imdb_ids.length; index++) {
+					const imdb_code = imdb_ids[index].imdb_code;
+					const id = imdb_ids[index].id;
+					if (this.stop == true) {
+						break;
+					}
+					let res = await Fetch_And_Add_TMDB(imdb_code, id);
+					console.log(res.data.msg)
+					this.tmdb_currently_fetched += 1
+					this.get_time_spent(start);
+				}
+				this.tmdb_done = true
+				this.tmdb_on = false
+			}
 		}
 
 	}
@@ -130,6 +176,19 @@ export default {
 			<span v-if="db_error"><b-icon-exclamation-circle-fill class="red" variant="danger"></b-icon-exclamation-circle-fill></span>
 		</p>
 		<p v-if="db_on || db_done || db_error">Time Spent:{{hours}}:{{minutes}}:{{seconds}}</p>
+      </div>
+	  <div class="col-md-12 text-center mt-4">
+        <button class="submit_button" @click="pimp_db('tmdb')" v-if="!tmdb_on">
+			Pimp DB with TMDB data
+		</button>
+		<button class="submit_button" @click="stop_process('tmdb')" v-else>
+			Stop
+		</button>
+		<p v-if="tmdb_on || tmdb_done" class="mt-4">Fetching data: {{tmdb_currently_fetched}} / {{tmdb_movie_count}}
+			<span v-if="tmdb_done"><b-icon-check class="h2 green" variant="success"/></span>
+			<span v-else><b-spinner variant="success"></b-spinner></span>
+		</p>
+		<p v-if="tmdb_on || tmdb_done">Time Spent:{{hours}}:{{minutes}}:{{seconds}}</p>
       </div>
   </div>
 </template>

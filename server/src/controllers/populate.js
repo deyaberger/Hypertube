@@ -1,4 +1,7 @@
-const axios = require('axios')
+const axios = require('axios');
+const { createCipheriv } = require('crypto');
+
+const API_KEY = 'f373f15887040d8b3b246f53d94d23f3'
 
 function create_request(url, params) {
 	let request = {
@@ -14,6 +17,33 @@ function create_request(url, params) {
 }
 
 const fs = require('fs/promises');
+
+
+function transform_cast_dict(cast, crew) {
+    let cast_output = cast.reduce((acc, { known_for_department, original_name, popularity}) => {
+        if (known_for_department === "Directing") {
+          acc.director.push({ original_name: original_name, popularity});
+        } else if (known_for_department === "Acting") {
+          acc.actors.push({ original_name: original_name, popularity});
+        }
+        return acc;
+      }, { director: [], actors: [] });
+      if (cast_output.director.length == 0 && crew != null && crew.length != 0) {
+        console.log("----------Adding director crew")
+        cast_output.director = crew.reduce((acc, { known_for_department, original_name, popularity}) => {
+            if (known_for_department === "Directing") {
+              acc.push({ original_name: original_name, popularity});}
+            return acc;
+          }, []);
+      }
+      const topActors = cast_output.actors.sort((a, b) => b.popularity - a.popularity).slice(0, 3);
+      const topActorNames = topActors.map(actor => actor.original_name);
+      const topDirectors = cast_output.director.sort((a, b) => b.popularity - a.popularity).slice(0, 1);
+      const topDirectorName = topDirectors.map(actor => actor.original_name);
+      cast_output.actors = topActorNames
+      cast_output.director = topDirectorName
+      return cast_output
+}
 
 async function read_json(file_path) {
   try {
@@ -257,6 +287,102 @@ module.exports = (db_pool) => {
                 }
             }
             return ({"msg" : "success", "id" : movie_res})
+        },
+
+        get_imdb_ids: async () => {
+            try {
+                let [ids, ] = await db_pool.query(`
+                SELECT id, imdb_code
+                FROM movies
+                WHERE tmdb_id IS NULL;
+                `)
+                return ids;
+            }
+            catch (e) {
+                throw (e)
+            }
+        },
+
+        fetch_tmdb_movie: async (imdb_code) => {
+            console.log("IMDB code: ", imdb_code)
+            let url = `https://api.themoviedb.org/3/find/${imdb_code}`
+            let params = {
+                "api_key" : API_KEY,
+                "external_source" : "imdb_id"
+            }
+            const request = create_request(url, params);
+            try {
+                let res = await axios(request);
+                if (res.status == 200 && res.data != null) {
+                    let movie_info = res.data;
+                    if (movie_info['movie_results'] != null && movie_info['movie_results'].length > 0) {
+                        let movie = movie_info['movie_results'][0]
+                        return movie
+                    }
+                }
+                return null
+
+            }
+            catch(e) {
+                throw(e)
+            }
+        },
+
+        get_tmdb_cast : async (tmdb_id) => {
+            let url = `https://api.themoviedb.org/3/movie/${tmdb_id}/credits`
+            let params = {
+                "api_key" : API_KEY,
+            }
+            const request = create_request(url, params);
+            try {
+                let res = await axios(request);
+                if (res.status == 200 && res.data != null) {
+                    let cast = res.data.cast
+                    let crew = res.data.crew
+                    if (cast != null && cast.length > 0) {
+                        cast = transform_cast_dict(cast, crew);
+                        return cast
+                    }
+                }
+                return null
+
+            }
+            catch(e) {
+                throw(e)
+            }
+        },
+
+        update_movie_infos : async (imdb_id, tmdb_id, actors, director) => {
+            try {
+                let [update_res, ] = await db_pool.query(`
+                UPDATE movies SET tmdb_id=?, actors=?, director=? WHERE imdb_code=?;`,
+                [tmdb_id, actors, director, imdb_id])
+                return update_res;
+            }
+            catch (e) {
+                throw (e)
+            }
+        },
+
+        add_tmdb_image : async (movie_id, url) => {
+            let size = 6
+            let kuerych = `
+            INSERT IGNORE INTO images (movie_id, size, url)
+            SELECT ${movie_id}, ${size}, '${url}'
+            FROM images
+            WHERE movie_id = ${movie_id} AND size = ${size}
+            HAVING COUNT(*) = 0;`
+            try {
+                let [add_res, ] = await db_pool.query(kuerych)
+                console.log("ADDING IMAGE RES: ", add_res.affectedRows)
+                if (add_res.affectedRows == 1) {
+                    return (1)
+                }
+                return null;
+            }
+            catch (e) {
+                throw (e)
+            }
         }
 
     }

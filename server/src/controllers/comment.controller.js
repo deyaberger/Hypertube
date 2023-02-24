@@ -34,7 +34,7 @@ module.exports = (db_pool) => {
 
         get_comments_from_movie : async (req, res) => {
             try {
-                let movie_id = Number(req.query.movie_id)
+                let movie_id = Number(req.params.movie_id)
 
                 let comments = await comment_functions.get_comment_by_movie_id(movie_id)
 

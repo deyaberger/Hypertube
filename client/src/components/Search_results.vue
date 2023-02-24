@@ -38,9 +38,15 @@ export default {
 			}
 			return true
 		},
-		handleError(event) {
-      		event.target.src = this.fallbackUrl;
-    	}
+		handleError(event, movie) {
+			const nextIndex = parseInt(event.target.dataset.nextIndex)
+			const nextImage = movie.images_list[nextIndex];
+			if (nextImage) {
+				event.target.src = nextImage;
+			} else {
+				event.target.src = this.fallbackUrl;
+			}
+		}
 	},
 	computed: mapState({
 		lang_nb    : state =>  state.lang_nb,
@@ -61,7 +67,8 @@ export default {
 			<div v-else :class="movie_list['profile'] ? 'col-md-4 movie-card profile' :'col-md-4 movie-card'" v-for="movie, index in movie_list['data']" style="text-decoration: none">
 				<router-link :to="'/movie/' + movie.id">
 				<div class="movie-header">
-						<img :class="is_watched_movie(movie.id) ? 'movie-image seen' : 'movie-image'" :src="movie.images_list[1]" alt="movie_image"  :onerror="handleError"/>
+					<img :class="is_watched_movie(movie.id) ? 'movie-image seen' : 'movie-image'" :src="movie.images_list[1]" alt="movie_image" :data-next-index="6" @error="handleError($event, movie)"/>
+						<!-- <img :class="is_watched_movie(movie.id) ? 'movie-image seen' : 'movie-image'" :src="movie.images_list[1]" alt="movie_image"  :onerror="handleError"/> -->
 						<b-icon-play-circle-fill v-if="is_watched_movie(movie.id)" class="h2 header-icon seen"></b-icon-play-circle-fill>
 						<b-icon-info-circle-fill v-else class="h2 header-icon"></b-icon-info-circle-fill>
 				</div>

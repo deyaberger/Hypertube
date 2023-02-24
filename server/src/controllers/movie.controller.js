@@ -5,7 +5,7 @@ module.exports = (db_pool) => {
         get_homepage : async (req, res) => {
             try {
                 let movies = await movie_functions.get_movies_homepage()
-                res.status(200).send(movies)
+                return res.status(200).send(movies)
             }
             catch (e) {
                 throw(e)
@@ -15,7 +15,10 @@ module.exports = (db_pool) => {
         get_movie_details: async (req, res) => {
             try {
                 let movie = await movie_functions.get_movie(Number(req.params.movie_id))
-                res.status(200).send(movie)
+                if (movie == null || movie.length == 0) {
+                    return res.status(201).send({msg: `Could not get movie data from DB with id: ${req.params.movie_id}`})
+                }
+                return res.status(200).send(movie)
             }
             catch (e) {
                 throw(e)
@@ -25,7 +28,6 @@ module.exports = (db_pool) => {
 
         search : async (req, res) => {
             try {
-                let searching_user_id = req.query.id
                 let query_term        = req.query.query_term
                 let minimum_rating    = req.query.minimum_rating
                 let genre             = req.query.genre
@@ -35,8 +37,8 @@ module.exports = (db_pool) => {
                 let language          = req.query.language
                 let asc_or_desc       = req.query.asc_or_desc
                 let sort_by          = req.query.sort_by
-                let movies = await movie_functions.search_movies(searching_user_id, query_term, minimum_rating, genre, quality, min_year, max_year, language, asc_or_desc, sort_by)
-                res.status(200).send(movies)
+                let movies = await movie_functions.search_movies(query_term, minimum_rating, genre, quality, min_year, max_year, language, asc_or_desc, sort_by)
+                return res.status(200).send(movies)
             }
             catch (e) {
                 throw(e)

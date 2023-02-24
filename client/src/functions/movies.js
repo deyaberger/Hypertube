@@ -35,13 +35,14 @@ export const Parse_Single_Movie = (data) => {
 	let parsed_data = {
 		"title"             : res.title,
 		"genres"            : res.genres_list,
-		"large_cover_image" : res.images_list[0],
+		"images_list"		: res.images_list,
 		"list_comments"     : [],
 		"year"              : res.year,
 		"runtime"           : res.length_minutes,
 		"rating"            : res.imdb_rating,
 		"summary"           : res.summary,
-		"cast"              : [],
+		"director"          : res.director,
+		"actors"	        : res.actors,
 	}
 	return parsed_data
 }

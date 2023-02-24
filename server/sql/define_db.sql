@@ -9,6 +9,8 @@ create table movies
     length_minutes int                                         null,
     language       varchar(20)                                 null,
     summary        varchar(4000)                               not null,
+    director       varchar(300)                                not null,
+    actors         varchar(1000)                               not null,
 
     constraint id        unique (id),
     constraint imdb_code unique (imdb_code),
