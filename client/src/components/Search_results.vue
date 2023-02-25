@@ -16,31 +16,38 @@ export default {
 		}
 	},
 	methods: {
-		is_fav_movie(id) {
-			return this.movie_list['favs'].includes(id)
-		},
-		is_watched_movie(id) {
-			return this.movie_list['watched'].includes(id)
-		},
 		async update_favorite(movie) {
 			let res = null
-			if (this.is_fav_movie(movie.id)) {
-				res = await Remove_From_Favorites(movie.id, this.user_token)
-				if (res.status == 200) {
+			try {
+				if (movie.is_fav) {
+					res = await Remove_From_Favorites(movie.id, this.user_token)
+				}
+				else {
+					res = await Add_To_Favorites(movie.id, this.user_token)
+				}
+				if (res.data.code == "SUCCESS") {
+					movie.is_fav = !movie.is_fav
 					this.$emit("updating", {"type" : "favorites", "id" : movie.id})
+					console.log("[search_results]: Successfully updated favorites for movie: ", movie.id)
+				}
+				else {
+					console.log("eERROR [search_results]: in update_favorite :", res)
 				}
 			}
-			else {
-				res = await Add_To_Favorites(movie.id, this.user_token)
-				if (res.status == 200) {
-					this.$emit("updating", {"type" : "favorites", "id" : movie.id})
-				}
+			catch(e) {
+				throw (e)
 			}
-			return true
+
 		},
-		handleError(event) {
-      		event.target.src = this.fallbackUrl;
-    	}
+		handleError(event, movie) {
+			const nextIndex = parseInt(event.target.dataset.nextIndex)
+			const nextImage = movie.images_list[nextIndex];
+			if (nextImage) {
+				event.target.src = nextImage;
+			} else {
+				event.target.src = this.fallbackUrl;
+			}
+		}
 	},
 	computed: mapState({
 		lang_nb    : state =>  state.lang_nb,
@@ -61,8 +68,9 @@ export default {
 			<div v-else :class="movie_list['profile'] ? 'col-md-4 movie-card profile' :'col-md-4 movie-card'" v-for="movie, index in movie_list['data']" style="text-decoration: none">
 				<router-link :to="'/movie/' + movie.id">
 				<div class="movie-header">
-						<img :class="is_watched_movie(movie.id) ? 'movie-image seen' : 'movie-image'" :src="movie.images_list[1]" alt="movie_image"  :onerror="handleError"/>
-						<b-icon-play-circle-fill v-if="is_watched_movie(movie.id)" class="h2 header-icon seen"></b-icon-play-circle-fill>
+					<img :class="movie.is_watched ? 'movie-image seen' : 'movie-image'" :src="movie.images_list[1]" alt="movie_image" :data-next-index="6" @error="handleError($event, movie)"/>
+						<!-- <img :class="movie.is_watched ? 'movie-image seen' : 'movie-image'" :src="movie.images_list[1]" alt="movie_image"  :onerror="handleError"/> -->
+						<b-icon-play-circle-fill v-if="movie.is_watched" class="h2 header-icon seen"></b-icon-play-circle-fill>
 						<b-icon-info-circle-fill v-else class="h2 header-icon"></b-icon-info-circle-fill>
 				</div>
 				</router-link>
@@ -74,7 +82,7 @@ export default {
 					<div class="movie-info">
 						<div class="info-section">
 							<label class="fav_label">Fav</label>
-							<div v-if="is_fav_movie(movie.id)" class="btn-group" role="group" aria-label="Basic example"  data-toggle="tooltip" data-placement="top" title="Remove from favorites">
+							<div v-if="movie.is_fav" class="btn-group" role="group" aria-label="Basic example"  data-toggle="tooltip" data-placement="top" title="Remove from favorites">
 								<b-icon-heart-fill class="h2 favorites" @click="update_favorite(movie)"></b-icon-heart-fill>
 							</div>
 							<div v-else class="btn-group" role="group" aria-label="Basic example"  data-toggle="tooltip" data-placement="top" title="Add to favorites">
