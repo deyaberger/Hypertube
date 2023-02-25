@@ -176,7 +176,7 @@ export default {
 		<div class="row general_infos-container align-items-center">
 			<div class="col infos">
 				<b-icon-camera-reels-fill class="icon genre"></b-icon-camera-reels-fill>
-				<span v-for="(genre, index) in movie.genres" class="infos_content">{{genre}}{{get_separator(index, movie.genres)}}</span>
+				<span v-for="(genre, index) in movie.genres" :key="index" class="infos_content">{{genre}}{{get_separator(index, movie.genres)}}</span>
 			</div>
 			<div class="col infos">
 				<b-icon-calendar2-minus-fill class="icon year"></b-icon-calendar2-minus-fill>

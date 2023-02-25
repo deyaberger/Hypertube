@@ -1,5 +1,9 @@
 module.exports = {
+  SUCCESS            : 'SUCCESS',
+
   MAIL_ALREADY_TAKEN : 'MAIL_ALREADY_TAKEN',
   USERNAME_TAKEN     : 'USERNAME_TAKEN',
   UNKNOWN_ERROR      : 'VOODOO_KAKEN',
+
+  MISSING_QUERY      : 'MISSING_QUERY',
 }

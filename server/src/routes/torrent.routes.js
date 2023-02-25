@@ -1,6 +1,7 @@
 
 module.exports = (db_pool) => {
     const torrent_controller = require("../controllers/torrent.controller")(db_pool)
+    const new_torrent_controller = require("../controllers/new_torrent.controller")(db_pool)
     const auth_controller  = require("../controllers/auth.controller" )(db_pool)
 
     var router = require("express").Router();
@@ -11,6 +12,8 @@ module.exports = (db_pool) => {
     router.get ("/streamlocal/:local_file_id" , torrent_controller.stream_local   )
     router.get ("/get_local/:imdb_id"         , torrent_controller.get_local_files)
     
+
+    router.get ("/get_list"                   , new_torrent_controller.get_torrents_from_movie_id)
     return router
 }
 
