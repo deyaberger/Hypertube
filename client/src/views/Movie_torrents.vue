@@ -120,11 +120,11 @@ export default {
 		
 		<h1>Contents</h1>
 		<h3 v-if="torrent_loading">Loading</h3>
-		<div v-for="file in torrent_files">
+		<div v-for="file in torrent_files" v-bind:key="file.name">
 			<span> {{ file }} </span>
 		</div>
 		<div v-if="movie_source" >
-			<video id="videoPlayer" width="1000" height="1000" controls muted="muted" autoplay>
+			<video id="videoPlayer" width="500" height="500" controls muted="muted" autoplay>
 				<source :src='movie_source' type="video/mp4" />
 			</video>
 		</div>
