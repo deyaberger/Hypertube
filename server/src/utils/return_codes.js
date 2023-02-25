@@ -6,4 +6,7 @@ module.exports = {
   UNKNOWN_ERROR      : 'VOODOO_KAKEN',
 
   MISSING_QUERY      : 'MISSING_QUERY',
+
+  TORRENT_NOT_READY  : 'TORRENT_NOT_READY',
+
 }

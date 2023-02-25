@@ -1,6 +1,7 @@
 <script>
 import { mapState } from 'vuex';
-import { Get_torrents_for_movie } from '../functions/streaming'
+import { Get_torrents_for_movie, Add_magnet } from '../functions/streaming'
+import { Get_Single_Movie_Details } from '../functions/movies'
 
 export default {
 	props: {
@@ -10,8 +11,11 @@ export default {
 
 	data() {
 		return {
-			torrents : [],
-			selected_torrent : null
+			torrents         : [],
+			selected_torrent : null,
+			movie_details    : null,
+			torrent_files    : [],
+			torrent_loading  : false
 		}
 	},
 
@@ -30,6 +34,47 @@ export default {
 		Choose_Torrent(arg) {
 			console.log("Chose torrent", arg)
 			this.selected_torrent = arg
+			this.torrent_files = []
+			this.torrent_loading = true
+			try {
+				this.get_torrent_content(arg.hash, this.movie_details.title)
+			}
+			catch (e) {
+				console.log("Error get torrent content", e)
+			}
+		},
+
+		async get_torrent_content(hash, title) {
+			let res = await Add_magnet(hash, title, this.user_token)
+			if (res.status == 200 && res.data.code == "SUCCESS") {
+				this.torrent_files = res.data.files
+				this.torrent_loading = false
+			}
+			else if (res.status == 200 && res.data.code == "TORRENT_NOT_READY") {
+				this.torrent_files = []
+				this.torrent_loading = true
+			}
+			else {
+				console.log("Non success in get torrent content", res)
+			}
+		},
+
+		async get_movie_details() {
+			console.log("gettings details")
+			try {
+				let res = await Get_Single_Movie_Details(this.movie_id, this.user_token)
+				// TODO: && res.code == "SUCCESS"
+				if (res.status == 200) {
+					this.movie_details = res.data[0]
+					console.log("deets", this.movie_details)
+				}
+				else {
+					console.log("non sucess movie deets: ", res)
+				}
+			}
+			catch (e) {
+				console.log("erro in movie details", e)
+			}
 		}
 	},
 
@@ -37,6 +82,7 @@ export default {
 	async mounted() {
 		console.log("mounted torrent page")
 		try {
+			await this.get_movie_details()
 			let response
 			console.log(this.movie_id, this.user_token)
 			response = await Get_torrents_for_movie(this.movie_id, this.user_token)
@@ -52,18 +98,28 @@ export default {
 		catch (e) {
 				console.log("error in mount get torrents", e)
 		}
-
-		
 	},
 }
 </script>
 
 <template>
 	<div class="homemade-container">
+		<h1>Torrents</h1>
 		<div class="card b-1 hover-shadow mb-20" v-for="(torrent, index) in torrents" :key="index">
 			  <div class="media card-body">
-				<span @click="Choose_Torrent(torrent)"> {{index}} url : {{torrent.url}} quality : {{torrent.quality}} size : {{torrent.size}} seeds : {{torrent.seeds}} peers : {{torrent.peers}} </span>
+				<span @click="Choose_Torrent(torrent)"> {{ torrent }}</span>
 			</div>
+		</div>
+		
+		<h1>Selected Torrent</h1>
+		<div v-if="selected_torrent">
+			{{selected_torrent}}
+		</div>
+		
+		<h1>Contents</h1>
+		<h3 v-if="torrent_loading">Loading</h3>
+		<div v-for="file in torrent_files">
+			<span> {{ file }} </span>
 		</div>
 	</div>
 </template>
