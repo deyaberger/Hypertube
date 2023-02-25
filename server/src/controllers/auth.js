@@ -17,9 +17,9 @@ module.exports = (db_pool) => {
             let pass_hash = hashPassword(pass)
             try {
                 let [insert_res, ] = await db_pool.query(
-                    "\
-                    INSERT INTO users (first_name, last_name, mail , pass      , language , picture, username)\
-                        VALUES        (?         , ?        , ?    , ?         , ?        , ?      , ?       );",
+                    `
+                    INSERT INTO users (first_name, last_name, mail , pass      , language , picture, username)
+                        VALUES        (?         , ?        , ?    , ?         , ?        , ?      , ?       );`,
                                       [f_name    , l_name   , mail , pass_hash , lang     , pic    , username]
                 )
                 console.log("Signup user: %s,\nResult: %o\n", username, insert_res)
@@ -33,8 +33,7 @@ module.exports = (db_pool) => {
 
         create_access_token : (userid) => {
             console.log("Creating token for user %d.", userid);
-
-            return jwt.sign({user_id: userid}, process.env.TOKEN_SECRET, {expiresIn: 86400 });
+            return jwt.sign({user_id: userid}, process.env.TOKEN_SECRET, { expiresIn: 86400 });
         },
 
 

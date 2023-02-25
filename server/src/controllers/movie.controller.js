@@ -14,6 +14,20 @@ module.exports = (db_pool) => {
             }
         },
 
+<<<<<<< HEAD
+=======
+        get_movie_details: async (req, res) => {
+            try {
+                let movie = await movie_functions.get_movie(Number(req.params.movie_id))
+                res.status(200).send(movie)
+            }
+            catch (e) {
+                throw(e)
+            }
+        },
+
+
+>>>>>>> main
         search : async (req, res) => {
             try {
                 let user_id           = req.user_id

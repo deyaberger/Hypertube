@@ -4,7 +4,13 @@ import SearchResults from '../components/Search_results.vue'
 import { mapState } from 'vuex';
 import textContent from "../assets/language_dict/language_dict.json"
 import { Get_Movies_Research,
+<<<<<<< HEAD
 	     Get_Recommendations} from "../functions/movies"
+=======
+	     Get_Recommendations,
+	     Get_Current_User_Fav_Movies_ID,
+	     Get_Current_User_Watched_Movies_ID} from "../functions/movies"
+>>>>>>> main
 
 export default {
 

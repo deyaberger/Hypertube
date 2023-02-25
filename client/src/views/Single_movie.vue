@@ -4,7 +4,12 @@ import vue3StarRatings from "vue3-star-ratings";
 import { Get_Single_Movie_Details,
 		 Parse_Single_Movie,
 		 Set_Watched,
+<<<<<<< HEAD
 		 Set_UnWatched} from "../functions/movies";
+=======
+		 Set_UnWatched,
+		 Is_Watched } from "../functions/movies";
+>>>>>>> main
 import { Get_Comments_By_Movie_ID, Parse_Comments, Post_Comment } from "../functions/comments";
 import { Get_Formatted_Time } from "../functions/utils.js";
 import StarRating from 'vue-star-rating';
@@ -197,7 +202,7 @@ export default {
 		<div class="row general_infos-container align-items-center">
 			<div class="col infos">
 				<b-icon-camera-reels-fill class="icon genre"></b-icon-camera-reels-fill>
-				<span v-for="(genre, index) in movie.genres" class="infos_content">{{genre}}{{get_separator(index, movie.genres)}}</span>
+				<span v-for="(genre, index) in movie.genres" :key="index" class="infos_content">{{genre}}{{get_separator(index, movie.genres)}}</span>
 			</div>
 			<div class="col infos">
 				<b-icon-calendar2-minus-fill class="icon year"></b-icon-calendar2-minus-fill>

@@ -3,9 +3,13 @@ const bodyParser = require('body-parser')
 const cors       = require("cors");
 const app        = express();
 
+<<<<<<< HEAD
 app.use(cors())
 app.use(bodyParser.json({limit: '50mb'}));
 app.use(bodyParser.urlencoded({ extended: true }));
+=======
+const jsonParser = bodyParser.json({ limit: '50mb' })
+>>>>>>> main
 
 // GET .env file contents
 require('dotenv').config()
@@ -49,7 +53,7 @@ app.use("/api/movie", movie_router)
 
 // TORRENT
 const torrent_router = require("./src/routes/torrent.routes")(connection_pool)
-app.use("/api/torrent", torrent_router)
+app.use("/api/torrents", torrent_router)
 
 
 // POPULATE
@@ -61,6 +65,8 @@ app.use("/api/populate", populate_router)
 const favorites_router = require("./src/routes/favorite.routes")(connection_pool)
 app.use("/api/favorites", favorites_router)
 
+const watched_router = require("./src/routes/watched.routes")(connection_pool)
+app.use("/api/watched", watched_router)
 
 // WATCHED
 const watched_router = require("./src/routes/watched.routes")(connection_pool)

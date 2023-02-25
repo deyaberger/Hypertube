@@ -4,7 +4,6 @@ module.exports = (db_pool) => {
     const auth_functions = require('./auth')(db_pool)
 
     return {
-
         signup : async (req, res) => {
             console.log("in signup: ", req.body)
             let username        = req.body.username;
@@ -40,8 +39,8 @@ module.exports = (db_pool) => {
             }
             try {
                 let result = await auth_functions.signup(username, firstName, lastName, mail, password, 'pic', 'en')
-                let id = result.insertId
-                let token = auth_functions.create_access_token(id)
+                let id     = result.insertId
+                let token  = auth_functions.create_access_token(id)
                 res.status(200).send({message: "Successfully created user.", token: token})
             }
             catch (e) {
@@ -107,7 +106,10 @@ module.exports = (db_pool) => {
                 // console.log(req.headers)
                 // console.log("authing:", authHeader)
                 const token = authHeader && authHeader.split(' ')[1]
+<<<<<<< HEAD
                 // console.log("token: ", token)
+=======
+>>>>>>> main
 
                 if (token == null) return res.sendStatus(401)
                 jwt.verify(token, process.env.TOKEN_SECRET, (err, decoded) => {
@@ -116,7 +118,6 @@ module.exports = (db_pool) => {
                     if (err) {
                         return res.sendStatus(403)
                     }
-                    // console.log(decoded)
                     req.user_id = decoded.user_id
                     // console.log("Authenthicated user %o.", decoded.user_id)
                     next()
