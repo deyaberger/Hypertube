@@ -126,37 +126,45 @@ module.exports = (db_pool) => {
                 return res.status(400).send("Requires Range header");
             }
 
-            const videoSize = fs.statSync(paf).size;
+            // const videoSize = fs.statSync(paf).size;
+            const videoSize = file.downloaded;
             console.log("VIDSIXZE: ", "videoSize:",Math.round(videoSize / 1000000), "file.downloaded:",Math.round(file.downloaded / 1000000), "file.length:",Math.round(file.length / 1000000))
 
             console.log("rang: ", range)
             const start = Number(range.replace(/\D/g, ""));
             const end = Math.min(start + CHUNK_SIZE, videoSize - 1);
             const contentLength = end - start + 1;
-                if (start < 300 * 1000001) {
-                    const headers = {
-                    "Content-Range" : `bytes ${start}-${end}/${videoSize}`,
-                    "Accept-Ranges" : "bytes",
-                    "Content-Length": contentLength,
-                    "Content-Type"  : "video/mp4",
-                };
 
-                console.log("start:", Math.round(start / 1000000), "end:", Math.round(end / 1000000), "file.down:", Math.round(file.downloaded / 1000000))
-                if (end > file.downloaded) {
-                    console.log("OUTTA HERE")
-                    res.writeHead(400);
-                    res.end();
-                    return
-                }
-                console.log(start)
-                console.log("Write head")
-                res.writeHead(206, headers);
-                
-                console.log("Make stream")
-                const videoStream = fs.createReadStream(paf, { start, end });
-                console.log("PIPE stream")
-                videoStream.pipe(res);
+            if (end > file.downloaded || start > file.downloaded || end < 0) {
+                // console.log("HSDFOISDFOLKhj")
+                // const headers = {
+                //     // "Content-Range" : `bytes ${start}-${start}/${file.length}`,
+                //     "Accept-Ranges" : "bytes",
+                //     // "Content-Length": 0,
+                //     "Content-Type"  : "video/mp4",
+                // };
+                // return res.writeHead(206, headers);
+                return res.sendStatus(206)
             }
+
+            const headers = {
+                "Content-Range" : `bytes ${start}-${end}/${videoSize}`,
+                "Accept-Ranges" : "bytes",
+                "Content-Length": contentLength,
+                "Content-Type"  : "video/mp4",
+            };
+
+            console.log("start:", Math.round(start / 1000000), "end:", Math.round(end / 1000000), "file.down:", Math.round(file.downloaded / 1000000))
+
+            console.log(start)
+            console.log("Write head")
+            res.writeHead(206, headers);
+            
+            console.log("Make stream")
+            const videoStream = fs.createReadStream(paf, { start, end });
+            console.log("PIPE stream")
+            videoStream.pipe(res);
+            
         }
     }
 }
