@@ -1,12 +1,11 @@
 <script>
 import { ref, computed } from 'vue'
-import { mapState, useStore } from 'vuex';
+import { mapState } from 'vuex';
 import textContent from "../assets/language_dict/language_dict.json"
 
 
 export default {
 	data() {
-		const store = useStore()
 		return {
 			visible        : false,
 			username       : '',
@@ -16,10 +15,11 @@ export default {
 	},
 	computed: mapState({
 		lang_nb: state => state.lang_nb,
-		mdp_error: state => state.mdp_error,
+		user_token : state =>  state.user_token,
+		mdp_error: state => state.mdp_error, // TO BE CHAAAAAAAAAAAANGED!!!
 	}),
 	methods: {
-		password_visibility() {
+		update_password_visibility() {
 			this.visible = !this.visible
 		},
 	},
@@ -43,7 +43,7 @@ export default {
 					:placeholder="text_content.pwd[lang_nb]"
 					>
 					<span class="input-group-btn">
-						<button class="btn" v-on:click="password_visibility" type="button">
+						<button class="btn" v-on:click="update_password_visibility" type="button">
 							<b-icon-eye-fill v-if="!visible"></b-icon-eye-fill>
 							<b-icon-eye-slash-fill v-else></b-icon-eye-slash-fill>
 						</button>
@@ -63,5 +63,5 @@ export default {
 	@import "../assets/shared_scss/login.scss";
 	@import "../assets/shared_scss/shared.scss";
 
-	
+
 </style>

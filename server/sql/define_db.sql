@@ -83,10 +83,13 @@ create table comments
     id       int auto_increment               primary key,
     content  varchar(400)                        not null,
     user_id  mediumint                           not null,
+    rating   float                               not null,
     movie_id mediumint                           not null,
     date     timestamp default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP,
 
     constraint comments_id_uindex unique (id),
+    constraint number_range_check
+        check(rating >= 0 and rating <= 10),
     constraint comments_movie_fk
         foreign key (movie_id) references movies (id)
             on update cascade on delete cascade,

@@ -10,6 +10,7 @@ export default {
 	computed : mapState({
       lang_nb         : state =>  state.lang_nb,
       language        : state =>  state.language,
+      user_token      : state =>  state.user_token,
     }),
 	methods: {
 		change_language(new_language) {

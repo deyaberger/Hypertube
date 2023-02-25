@@ -8,7 +8,7 @@ Maximum 20 favourites allowed per user.
 
 Get the logged in user's favourite movies (max 20)
 
-Method: `GET`  
+Method: `GET`
 Auth required: `True`
 
 **Response data**:
@@ -25,7 +25,7 @@ Auth required: `True`
 
 ## `/add/:movie_id`
 
-Method: `GET`  
+Method: `GET`
 Auth required: `True`
 
 **Response data**:
@@ -43,7 +43,7 @@ Auth required: `True`
 
 ## `/remove/:movie_id`
 
-Method: `GET`  
+Method: `GET`
 Auth required: `True`
 
 **Response data**:
@@ -58,3 +58,17 @@ Auth required: `True`
 **Status codes**:
 
 - 200 : OK
+
+
+
+## `/is_fav`
+
+Method: `GET`
+Auth required: `True`
+
+**Status codes**:
+
+- 200 : OK
+
+  code: 'ER_PARSE_ERROR',
+  errno: 1064,

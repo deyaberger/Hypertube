@@ -2,7 +2,7 @@ const express    = require('express')
 const bodyParser = require('body-parser')
 const cors       = require("cors");
 
-const jsonParser = bodyParser.json()
+const jsonParser = bodyParser.json({ limit: '50mb' })
 
 // GET .env file contents
 require('dotenv').config()
@@ -23,8 +23,11 @@ app.use("/api/auth", auth_router)
 
 // Create the user router, (injecting the connection pool) and add it to the server
 const user_router = require("./src/routes/user.routes")(connection_pool)
-app.use("/api/users", user_router)
+app.use("/api/user", user_router)
 
+// Create the following router, (injecting the connection pool) and add it to the server
+const follows_router = require("./src/routes/follows.routes")(connection_pool)
+app.use("/api/follows", follows_router)
 
 
 // Create the comment router, (injecting the connection pool) and add it to the server
@@ -41,12 +44,18 @@ app.use("/api/movies", movie_router)
 
 // Create the comment router, (injecting the connection pool) and add it to the server
 const torrent_router = require("./src/routes/torrent.routes")(connection_pool)
-app.use("/api/torrent", torrent_router)
+app.use("/api/torrents", torrent_router)
 
 
 const populate_router = require("./src/routes/populate.routes")(connection_pool)
 app.use("/api/populate", populate_router)
 
+
+const favorites_router = require("./src/routes/favorites.routes")(connection_pool)
+app.use("/api/favorites", favorites_router)
+
+const watched_router = require("./src/routes/watched.routes")(connection_pool)
+app.use("/api/watched", watched_router)
 
 
 // Start the server

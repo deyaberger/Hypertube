@@ -23,7 +23,7 @@ All action regarding movies, not streaming.
 }
 ```
 
-## `/home/:page`
+## `/home`
 
 Method: `GET`  
 Auth required: `True`
@@ -46,14 +46,15 @@ Auth required: `True`
 **Query keywords**
 
 ```js
-page
-limit
-minimum_rating
 query_term
+minimum_rating
 genre
-sort_by
 quality
+min_year
+max_year
+language
 order_by
+asc_or_desc
 ```
 
 **Response data**:

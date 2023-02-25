@@ -7,7 +7,8 @@ module.exports = (db_pool) => {
 
     router.get  ("/home"              , auth_controller.authenticateToken, movie_controller.get_homepage)
     router.get  ("/search"            , auth_controller.authenticateToken, movie_controller.search)
-    router.get  ("/details/:imdb_id"  , auth_controller.authenticateToken, movie_controller.get_movie_details)
+    router.get  ("/details/:movie_id"  , auth_controller.authenticateToken, movie_controller.get_movie_details)
+    router.post ("/set_watched/:movie_id"  , auth_controller.authenticateToken, movie_controller.set_movie_watched)
 
     return router
 }

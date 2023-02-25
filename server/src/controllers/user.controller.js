@@ -7,11 +7,13 @@ module.exports = (db_pool) => {
             try {
                 let userid = req.user_id
                 let user = await user_functions.get_user_by_id(userid)
-
                 if (user == null) {
                     return res.sendStatus(500)
                 }
-
+                else if ([...new Set(Object.values(user))][0] == null) {
+                    console.log("Nothing about this user")
+                    return res.status(201).send({message:  "Nothing in database about user: " + userid})
+                }
                 return res.status(200).send(user)
             }
             catch (e) {
@@ -20,16 +22,17 @@ module.exports = (db_pool) => {
         },
 
         get_other_user : async (req, res) => {
-            console.log("in get_my_user")
+            console.log("in get_other_my_user")
             try {
-                let user_id = req.params.user_id
-                let user = await user_functions.get_user_by_id(user_id)
-
+                let userid = req.params.user_id
+                let user = await user_functions.get_user_by_id(userid)
                 if (user == null) {
                     return res.sendStatus(500)
                 }
-                
-                delete user.mail
+                else if ([...new Set(Object.values(user))][0] == null) {
+                    console.log("Nothing about this user")
+                    return res.status(201).send({message:  "Nothing in database about user: " + userid})
+                }
                 return res.status(200).send(user)
             }
             catch (e) {
@@ -49,6 +52,104 @@ module.exports = (db_pool) => {
                 throw(e)
             }
         },
-
+        update_first_name : async(req, res) => {
+            try {
+                let user_id = req.user_id
+                let new_first_name  = req.query.firstname
+                let regex_whitespace = /^\S*$/;
+                if (new_first_name.match(regex_whitespace) == null) {
+                    return res.status(201).send({message: "Can't change firstname", details: "whitespaces"})
+                }
+                if (new_first_name.length == 0) {
+                    return res.status(201).send({message: "Can't change firstname", details: "empty"})
+                }
+                let update_res = await user_functions.update_firstname(user_id, new_first_name)
+                if (update_res.affectedRows == 1) {
+                    return res.status(200).send({message: "successfully changed user firstname"})
+                }
+                return update_res
+            }
+            catch (e) {
+                throw(e)
+            }
+        },
+        update_last_name : async(req, res) => {
+            try {
+                let user_id = req.user_id
+                let new_last_name  = req.query.lastname
+                let regex_whitespace = /^\S*$/;
+                if (new_last_name.match(regex_whitespace) == null) {
+                    return res.status(201).send({message: "Can't change lastname", details: "whitespaces"})
+                }
+                if (new_last_name.length == 0) {
+                    return res.status(201).send({message: "Can't change lastname", details: "empty"})
+                }
+                let update_res = await user_functions.update_lastname(user_id, new_last_name)
+                if (update_res.affectedRows == 1) {
+                    return res.status(200).send({message: "successfully changed user lastname"})
+                }
+                return update_res
+            }
+            catch (e) {
+                throw(e)
+            }
+        },
+        update_bio : async(req, res) => {
+            try {
+                let user_id = req.user_id
+                let new_bio  = req.query.bio
+                let update_res = await user_functions.update_user_bio(user_id, new_bio)
+                if (update_res.affectedRows == 1) {
+                    return res.status(200).send({message: "successfully changed user bio"})
+                }
+                return update_res
+            }
+            catch (e) {
+                throw(e)
+            }
+        },
+        update_email : async(req, res) => {
+            try {
+                let user_id = req.user_id
+                let new_email  = req.query.email
+                let regex_mail = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+                if (new_email.match(regex_mail) == null) {
+                    return res.status(201).send({message: "Can't change email", details: "regex"})
+                }
+                if (new_email.length == 0) {
+                    return res.status(201).send({message: "Can't change email", details: "empty"})
+                }
+                let update_res = await user_functions.update_user_email(user_id, new_email)
+                if (update_res.affectedRows == 1) {
+                    return res.status(200).send({message: "successfully changed user email"})
+                }
+                else if (update_res.erno == 'R_DATA_TOO_LONG') {
+                    return res.status(201).send({message: "Can't change email", details: "long"})
+                }
+                return update_res
+            }
+            catch (e) {
+                throw(e)
+            }
+        },
+        upload_image : async(req, res) => {
+            console.log("**** IN upload image")
+            try {
+                let user_id = req.user_id
+                console.log("rew: ", req.file)
+                // console.log("req: ", req.body.file)
+                // let url  = req.file.filename
+                let url  = ""
+                console.log("URL: ", url)
+                let upload_res = await user_functions.upload_profile_pic(user_id, url)
+                if (upload_res.affectedRows == 1) {
+                    return res.status(200).send({message: "successfully added profile pic"})
+                }
+                return upload_res
+            }
+            catch (e) {
+                throw(e)
+            }
+        },
     }
 }

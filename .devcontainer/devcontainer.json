@@ -13,10 +13,6 @@
 		"root",
 		"--network",
 		"host"
-		// "-p",
-		// "6666:3306"
-		// "-v",
-		// "hypertube-db:/etc/hypdb"
 	],
 	"mounts" : [
 		{ "source": "hyper-db", "target": "/var/lib/mysql", "type": "volume" }

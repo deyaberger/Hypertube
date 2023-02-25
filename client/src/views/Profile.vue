@@ -1,85 +1,227 @@
 <script>
 import { mapState } from 'vuex';
-import fakeData from "../assets/fake_library/fake_data_search_results.json";
 import textContent from "../assets/language_dict/language_dict.json";
-import SearchResults from '../components/Search_results.vue'
-
+import SearchResults from '../components/Search_results.vue';
+import { Get_User_Fav_Movies,
+	     Get_User_Watched_Movies,
+	     Get_Current_User_Fav_Movies_ID,
+	     Get_Current_User_Watched_Movies_ID } from '../functions/movies';
+import { Get_Other_User_Details,
+		 Get_User_Followers,
+		 Get_User_Followings,
+		 Is_Following,
+		 Follow,
+		 UnFollow } from "../functions/user"
 
 export default {
+	props: {
+		user_id: String,
+	},
 	components: {
 		SearchResults
 	},
 	data() {
 		return {
-			text_content : textContent.MOVIES,
-			movie_list   : fakeData.movie_list,
-			own_profile : true,
-			followed : false,
+			text_content		: textContent.PROFILE,
+			user                : null,
+
+			request_error		: false,
+			network_error		: false,
+			error_text			: '',
+
+			watched_movies      : null,
+			watched_movies_ids  : [],
+			fav_movies		    : null,
+			fav_movies_ids	    : [],
+
+			followed			: false,
+			followers			: 0,
+			followings			: 0,
 		}
 	},
 	computed: mapState({
       	lang_nb  : state =>  state.lang_nb,
+		user_token : state =>  state.user_token,
     }),
 	methods: {
-		Change_follow() {
+		set_movie_props(movies) {
+			return {
+				'data'    : movies,
+				'profile' : true,
+				'error'   : false,
+				'favs'    : this.fav_movies_ids,
+				'watched' : this.watched_movies_ids,
+			}
+		},
+		exists(movies) {
+			if (movies == null || (movies != null && movies.length == 0)) {
+				return false
+			}
+			return true
+		},
+		async get_follows() {
+			let res = await Get_User_Followings(this.user_token, this.user_id);
+			if (res.status == 200) {
+				this.followings = String(res.data.count);
+			}
+			res = await Get_User_Followers(this.user_token, this.user_id);
+			if (res.status == 200) {
+				this.followers = String(res.data.count);
+			}
+			res = await Is_Following(this.user_token, this.user_id);
+			if (res.status == 200) {
+				this.followed = res.data.message;
+			}
+		},
+		async get_user_fav_and_co() {
+			console.log("getting favvsss")
+			let res = await Get_Current_User_Fav_Movies_ID(this.user_token);
+			this.fav_movies_ids = res.data.map(item => item.movie_id);
+			res = await Get_Current_User_Watched_Movies_ID(this.user_token);
+			this.watched_movies_ids = res.data.map(item => item.movie_id);
+		},
+		async update_follow() {
+			let res = null
+			if (this.followed == true) {
+				console.log("UNFOLLOWWW")
+				res = await UnFollow(this.user_token, this.user_id);
+				this.get_follows();
+				console.log("follow: ", res)
+			}
+			else {
+				console.log("FOLLOW")
+				res = await Follow(this.user_token, this.user_id);
+				this.get_follows();
+				console.log("unfollow: ", res)
+			}
 			this.followed = !this.followed
-		}
+		},
+		async get_user_data() {
+			console.log("getting other user data:")
+			this.watched_movies = null
+			this.fav_movies = null
+			let res = await Get_Other_User_Details(this.user_token, this.user_id);
+			if (res.status == 200) {
+				this.user = res.data
+				console.log("USER: ", this.user)
+				res = await Get_User_Fav_Movies(this.user_token, this.user_id);
+				this.fav_movies = res.data
+				res = await Get_User_Watched_Movies(this.user_token, this.user_id);
+				this.watched_movies = res.data
+			}
+			else if (res.status == 404 || res.status == 201) {
+				this.request_error = true
+				this.error_text = res.status == 404 ?
+					this.text_content.request_error[this.lang_nb] : this.text_content.no_user_found[this.lang_nb]
+				console.log("Error: ", res.message)
+			}
+			else if (res.code == 'ERR_NETWORK') {
+				this.network_error = true
+				this.error_text = this.text_content.network_error[this.lang_nb]
+			}
+		},
+		async updating_movies(value) {
+			let update_info = JSON.parse(JSON.stringify(value));
+			let movie_type = update_info['type']
+			let id = update_info['id']
+			if (movie_type == "favorites") {
+				if (this.fav_movies_ids.includes(id)) {
+					delete this.fav_movies_ids[this.fav_movies_ids.indexOf(id)]
+				}
+				else {
+					this.fav_movies_ids.push(id)
+				}
+			}
+			if (movie_type == "watched") {
+				if (this.watched_movies_ids.includes(id)) {
+					delete this.watched_movies_ids[this.fav_movies_ids.indexOf(id)]
+				}
+				else {
+					this.watched_movies_ids.push(id)
+				}
+			}
+		},
+	},
+	mounted() {
+		this.get_user_data();
+		this.get_user_fav_and_co();
+		this.get_follows();
 	}
 }
 </script>
 
 <template>
-	<section class="h-100 gradient-custom-2">
+	<section v-if="network_error || request_error" class="gradient-custom-2">
 		<div class="container py-5 h-100">
-			<div class="row d-flex justify-content-center align-items-center h-100">
+			<div class="row d-flex justify-content-center align-items-start h-100">
+				<div class="col col-lg-9 col-xl-7">
+					<div class="card">
+						<div class="p-4 text-black" style="background-color: #f8f9fa;">
+							<div class="justify-content-center text-center py-1">
+								<p class="lead fw-normal mb-1">{{error_text}}</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<section v-if="user" class="gradient-custom-2">
+		<div class="container py-5 h-100">
+			<div class="row d-flex justify-content-center align-items-start h-100">
 			<div class="col col-lg-9 col-xl-7">
 				<div class="card">
-				<div class="rounded-top text-white d-flex flex-row" style="background-color: #000; height:200px;">
-					<div class="ms-4 mt-5 d-flex flex-column" style="width: 150px;">
-					<img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-profiles/avatar-1.webp"
-						alt="Generic placeholder image" class="img-fluid img-thumbnail mt-4 mb-2"
-						style="width: 150px; z-index: 1">
-					<button v-if="own_profile" type="button" class="btn btn-outline-dark" data-mdb-ripple-color="dark"
-						style="z-index: 1;">
-						<router-link to="/edit_profile" class="nav-link">Edit profile</router-link>
-					</button>
-					<button v-else type="button" class="btn btn-outline-dark" :class="{'btn-dark': followed}" @click="Change_follow" data-mdb-ripple-color="dark"
-						style="z-index: 1;">
-						<span v-if="!followed">Follow</span>
-						<span v-else>Unfollow</span>
-					</button>
+				<div class="rounded-top text-white d-flex flex-row" style="background-color: #000; height:250px;">
+					<div class="ms-4 mt-5 d-flex flex-column" style="width: 200px;">
+					<div class="profile_header mt-4" >
+						<img :src="user.picture" alt="profile pic" class="img-fluid img-thumbnail profile_pic" onerror="this.src='../src/assets/generic_profile_pic.jpg';">
 					</div>
-					<div class="ms-3 main_info" style="margin-top: 130px;">
-					<h5>Andy Horwitz</h5>
-					<p>New York</p>
+					</div>
+					<div class="ms-3 main_info" >
+						<div>
+							<span class ="h3 name">{{ user.first_name }} {{ user.last_name }}
+							</span>
+						</div>
+						<p class="username">@{{user.username}}</p>
 					</div>
 				</div>
+
 				<div class="p-4 text-black" style="background-color: #f8f9fa;">
-					<div class="d-flex justify-content-end text-center py-1">
-					<div class="px-3">
-						<p class="mb-1 h5">1026</p>
-						<p class="small text-muted mb-0">Followers</p>
-					</div>
+					<div class="justify-content-center text-center py-1">
 					<div>
-						<p class="mb-1 h5">478</p>
-						<p class="small text-muted mb-0">Following</p>
+						<div class="row">
+						<div class="col-9 button_container">
+							<button v-if="followed" class="btn check_button followed" @click="update_follow()" type="button" data-toggle="tooltip" data-placement="top" :title="text_content.unfollow[lang_nb]">{{text_content.followed[lang_nb]}}</button>
+							<button v-else class="btn check_button follow" type="button" @click="update_follow()">{{text_content.follow[lang_nb]}}</button>
+						</div>
+						<div class="col">
+							<p class="small text-muted mb-0">{{text_content.followers[lang_nb]}}</p>
+							<p class="mb-1 h5">{{followers}}</p>
+						</div>
+						<div class="col">
+							<p class="small text-muted mb-0">{{text_content.followings[lang_nb]}}</p>
+							<p class="mb-1 h5">{{followings}}</p>
+						</div>
+						</div>
 					</div>
 					</div>
 				</div>
 				<div class="card-body p-4 text-black">
 					<div>
-					<p class="lead fw-normal mb-1">About</p>
+					<p class="lead fw-normal mb-1">{{text_content.about[lang_nb]}}</p>
 					<div class="p-4" style="background-color: #f8f9fa;">
-						<p class="font-italic mb-1">Web Developer</p>
-						<p class="font-italic mb-1">Lives in New York</p>
-						<p class="font-italic mb-0">Photographer</p>
+						<p class="font-italic mb-1 about">{{ user.bio }}</p>
 					</div>
 					</div>
 				</div>
-				<div class="card-body p-4 text-black">
-					<p class="lead fw-normal mb-1">Favorite Movies</p>
-					<SearchResults :movie_list="movie_list"/>
-					</div>
+				<div class="card-body p-4 text-black movies" v-if="exists(fav_movies)">
+					<p class="lead fw-normal mb-4">{{text_content.favorites[lang_nb]}}:</p>
+					<SearchResults  :movie_list="set_movie_props(fav_movies)" @updating="updating_movies"/>
+				</div>
+				<div class="card-body p-4 text-black movies"  v-if="exists(watched_movies)">
+					<p class="lead fw-normal mb-4">{{text_content.watched[lang_nb]}}:</p>
+					<SearchResults :movie_list="set_movie_props(watched_movies)" @updating="updating_movies"/>
+				</div>
 				</div>
 			</div>
 		</div>
@@ -90,6 +232,69 @@ export default {
 
 <style lang="scss" scoped>
 @import "../assets/shared_scss/search_results.scss";
+@import "../assets/shared_scss/profile.scss";
+
+
+
+.profile_header, .profile_pic {
+	background-color: black;
+	cursor: unset;
+}
+
+.profile_header:hover, .profile_pic:hover {
+	transform: none;
+}
+
+.username {
+	margin-top: 10%;
+	color: rgb(212, 211, 211)
+}
+
+.check_button {
+	margin-left: 1%;
+	margin-top: 10px;
+	padding: 5px;
+	width: 200px;
+	color: rgb(48, 47, 47);
+	position: absolute;
+	left: 2%;
+}
+
+@media (max-width: 750px) {
+	.check_button {
+		left: 4%;
+	}
+	.button_container {
+		width: 50%;
+	}
+}
+
+@media (max-width: 470px) {
+	.check_button {
+		left: 6%;
+		width: 100px;
+	}
+	.button_container {
+		width: 40%;
+	}
+}
+
+
+
+.check_button.followed {
+	background :linear-gradient(to right, rgba(251, 194, 235, 1), rgba(166, 193, 238, 1));
+}
+
+.check_button.follow {
+	border: 1px solid rgb(102, 102, 102);
+	background : white;
+}
+
+
+.check_button.followed:hover {
+	transform: scale(0.9);
+	opacity: 0.9;
+}
 
 </style>
 
@@ -100,41 +305,4 @@ export default {
 	border-color: rgb(99, 97, 97);
 }
 
-</style>
-
-
-<style scoped>
-
-.col {
-	width: 80%;
-}
-
-.main_info > *
-{
-	color: white;
-}
-
-
-.movie-content, .movie-image {
-	box-shadow: 0.5px 0px 2px rgba(0, 0, 0, 0.813);
-}
-
-
-.btn-dark > *, .btn-outline-dark:hover > * {
-	color: white;
-}
-
-.btn-dark:hover {
-	background: rgba(0, 0, 0, 0.642);
-}
-
-
-.gradient-custom-2 {
-/* fallback for old browsers */
-background: #fbc2eb;
-
-background: -webkit-linear-gradient(to right, rgba(251, 194, 235, 1), rgba(166, 193, 238, 1));
-
-background: linear-gradient(to right, rgba(251, 194, 235, 1), rgba(166, 193, 238, 1));
-}
 </style>

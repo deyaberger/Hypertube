@@ -19,7 +19,7 @@ All calls that require auth can return error codes / messages present in `/auth/
 
 ## [`/movies`](./api/movies.md)
 
-- `/home/:page`
+- `/home`
 - `/search`
 - `/details/:movie_id`
 - `/torrents/:movie_id`
@@ -57,3 +57,10 @@ All calls that require auth can return error codes / messages present in `/auth/
 - `/is_started/:torrent_id`
 - `/is_ready/:torrent_id`
 - `/stream/:torrent_id`
+
+
+## [`/images`](./api/images.md)
+
+- `/get/:image_name`
+- `/upload`
+

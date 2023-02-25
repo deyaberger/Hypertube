@@ -2,13 +2,22 @@
 import { mapState } from 'vuex';
 import textContent from "../assets/language_dict/language_dict.json"
 import NetworkButtons from "../components/Networks_buttons.vue"
-import { signin }        from '../functions/auth'
+import { Sign_In }        from '../functions/auth'
 
 
 export default {
 	components: {
 		NetworkButtons
 	},
+
+
+  props: {
+		oauth_token: {
+      type: String,
+      default: null
+		},
+	},
+
 
 	data() {
 		return {
@@ -20,10 +29,13 @@ export default {
 		}
 	},
 
+
 	computed: mapState({
 		user_connected: state =>  state.user_connected,
-		lang_nb: state => state.lang_nb
+		lang_nb       : state => state.lang_nb,
+		user_token    : state =>  state.user_token,
 	}),
+
 
 	methods: {
 		password_visibility() {
@@ -37,11 +49,11 @@ export default {
 				"password" : this.password
 			}
 			try {
-				let sign_in_res = await signin(form)
+				let sign_in_res = await Sign_In(form)
 				console.log("Sign in res:", sign_in_res)
 				if (sign_in_res.status == 200) {
-					console.log("Adding token to cookies")
-					this.$cookies.set('token', sign_in_res.data.token)
+					console.log("Adding token to state")
+					this.$store.commit('SET_USER_TOKEN', sign_in_res.data.token)
 					this.$store.commit('SET_CONNECTION', true)
 					this.$router.push('/search')
 				}
@@ -55,8 +67,21 @@ export default {
 				console.log("error in signin: \n", e)
 			}
 		}
-
 	},
+
+  async mounted() {
+		if (this.oauth_token != null) {
+  		console.log("Oauth signin: ", this.oauth_token)
+			try {
+        this.$store.commit('SET_USER_TOKEN', this.oauth_token)
+        this.$store.commit('SET_CONNECTION', true)
+        this.$router.push('/search')
+			}
+			catch (e) {
+				console.log("Oauth signup issue")
+			}
+		}
+	}
 }
 </script>
 
@@ -103,11 +128,11 @@ export default {
         <button class="submit_button" type = "submit">{{text_content.sign_in[lang_nb]}}</button>
         <div class = "m-3">{{text_content.or[lang_nb]}}</div>
       </div>
-	  <NetworkButtons type="signin"></NetworkButtons>
-      <div class="change_page mt-3 text-center">
-        <router-link to="/sign_up">{{text_content.no_account[lang_nb]}}</router-link>
-      </div>
     </form>
+    <NetworkButtons type="signin"></NetworkButtons>
+    <div class="change_page mt-3 text-center">
+      <router-link to="/sign_up">{{text_content.no_account[lang_nb]}}</router-link>
+    </div>
   </div>
 
 </template>

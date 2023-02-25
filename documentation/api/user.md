@@ -6,7 +6,7 @@
 
 Gets the logged in user's own profile.
 
-Method: `GET`  
+Method: `GET`
 Auth required: `True`
 
 **Response data**:
@@ -35,7 +35,7 @@ Auth required: `True`
 
 Update the logged in user's profile
 
-Method: `GET`  
+Method: `GET`
 Auth required: `True`
 
 **Request Body**:
@@ -79,7 +79,7 @@ Updated profile information:
 
 ## `/profile/:user_id`
 
-Method: `GET`  
+Method: `GET`
 Auth required: `True`
 
 
@@ -109,7 +109,7 @@ Auth required: `True`
 
 Get the logged in user's watched_movies (max 20, if more oldest will be ommitted).
 
-Method: `GET`  
+Method: `GET`
 Auth required: `True`
 
 **Response data**:
@@ -121,3 +121,36 @@ Auth required: `True`
 **Status codes**:
 
 - 200 : OK
+
+## `/update_first_name`
+
+Update the logged in user's profile
+
+Method: `GET`
+Auth required: `True`
+
+**Request Body**:
+
+```js
+{
+    first_name (required),
+}
+```
+
+**Response data**:
+
+Updated profile information:
+
+```js
+{
+    id,
+    first_name,
+    last_name,
+    mail,
+    language,
+    picture,
+    username,
+    bio,
+    city
+}
+```
