@@ -15,7 +15,8 @@ export default {
 			selected_torrent : null,
 			movie_details    : null,
 			torrent_files    : [],
-			torrent_loading  : false
+			torrent_loading  : false,
+			movie_source     : null
 		}
 	},
 
@@ -49,6 +50,7 @@ export default {
 			if (res.status == 200 && res.data.code == "SUCCESS") {
 				this.torrent_files = res.data.files
 				this.torrent_loading = false
+				this.movie_source = `/api/torrent/stream_magnet/${encodeURIComponent(this.selected_torrent.hash)}/${encodeURIComponent(this.movie_details.title)}`
 			}
 			else if (res.status == 200 && res.data.code == "TORRENT_NOT_READY") {
 				this.torrent_files = []
@@ -121,6 +123,12 @@ export default {
 		<div v-for="file in torrent_files">
 			<span> {{ file }} </span>
 		</div>
+		<div v-if="movie_source" >
+			<video id="videoPlayer" width="50%" controls muted="muted" autoplay>
+				<source :src='movie_source' type="video/mp4" />
+			</video>
+		</div>
+		
 	</div>
 </template>
 

@@ -8,7 +8,7 @@ module.exports = (db_pool) => {
 
     router.get ("/home"                       , torrent_controller.get_page                      )
     router.post("/add_magnet"                 , torrent_controller.add_magnet                    )
-    router.get ("/stream_magnet/:magnet"      , torrent_controller.stream_magnet                 )
+    router.get ("/stream_magnet/:hash/:title" , torrent_controller.stream_magnet                 )
     router.get ("/streamlocal/:local_file_id" , torrent_controller.stream_local                  )
     router.get ("/get_local/:imdb_id"         , torrent_controller.get_local_files               )
     
