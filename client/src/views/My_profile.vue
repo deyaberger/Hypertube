@@ -3,9 +3,7 @@ import { mapState } from 'vuex';
 import textContent from "../assets/language_dict/language_dict.json";
 import SearchResults from '../components/Search_results.vue';
 import { Get_User_Fav_Movies,
-	     Get_User_Watched_Movies,
-	     Get_Current_User_Fav_Movies_ID,
-	     Get_Current_User_Watched_Movies_ID } from '../functions/movies';
+	     Get_User_Watched_Movies} from '../functions/movies';
 import { Get_User_Details,
 		 Update_First_Name,
 		 Update_Last_Name,
@@ -92,7 +90,7 @@ export default {
 
 		async get_user_followers() {
 			console.log("[my_profile]: getting get_user_followers...")
-			let res = Get_User_Followers(this.user_token)
+			let res = await Get_User_Followers(this.user_token)
 			if (res.data.code == "SUCCESS") {
 				this.followers = res.data.followers
 				console.log("[my_profile]: Successfully got user followers!", this.followers)
@@ -104,10 +102,10 @@ export default {
 
 		async get_user_followings() {
 			console.log("[my_profile]: getting get_user_followers...")
-			let res = Get_User_Followings(this.user_token)
+			let res = await Get_User_Followings(this.user_token)
 			if (res.data.code == "SUCCESS") {
-				this.following = res.data.following
-				console.log("[my_profile]: Successfully got user following!", this.following)
+				this.followings = res.data.followings
+				console.log("[my_profile]: Successfully got user following!", this.followings)
 			}
 			else {
 				console.log("ERROR [my_profile]: in get_user_following ", res)
@@ -269,6 +267,8 @@ export default {
 		await this.get_user_data();
 		await this.get_user_fav_movies();
 		await this.get_user_watched_movies();
+		this.get_user_followers();
+		this.get_user_followings();
 	},
 
 

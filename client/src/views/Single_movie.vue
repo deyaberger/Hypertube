@@ -4,12 +4,7 @@ import vue3StarRatings from "vue3-star-ratings";
 import { Get_Single_Movie_Details,
 		 Parse_Single_Movie,
 		 Set_Watched,
-<<<<<<< HEAD
 		 Set_UnWatched} from "../functions/movies";
-=======
-		 Set_UnWatched,
-		 Is_Watched } from "../functions/movies";
->>>>>>> main
 import { Get_Comments_By_Movie_ID, Parse_Comments, Post_Comment } from "../functions/comments";
 import { Get_Formatted_Time } from "../functions/utils.js";
 import StarRating from 'vue-star-rating';

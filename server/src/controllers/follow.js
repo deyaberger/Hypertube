@@ -1,6 +1,7 @@
 module.exports = (db_pool) => {
     return {
         get_user_followings: async (userid) => {
+            console.log("\n[follow]: get_user_followings ", userid)
             const request = `
             SELECT count(*) as following
             FROM follows
@@ -17,6 +18,7 @@ module.exports = (db_pool) => {
             }
         },
         get_user_followers: async (userid) => {
+            console.log("\n[follow]: get_user_followers ", userid)
             const request = `
             SELECT count(*) as followers
             FROM follows
@@ -33,6 +35,7 @@ module.exports = (db_pool) => {
             }
         },
         is_following_user: async (follower_id, followed_id) => {
+            console.log("\n[follow]: is_following_user ", {follower_id, followed_id})
             const request = `
             SELECT 1
             FROM follows
@@ -52,6 +55,7 @@ module.exports = (db_pool) => {
         },
 
         follow_user: async (follower_id, followed_id) => {
+            console.log("\n[follow]: follow_user ", {follower_id, followed_id})
             const request = `
             INSERT into follows (follower_id, followed_id)
             VALUES (${follower_id}, ${followed_id});`

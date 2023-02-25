@@ -3,13 +3,9 @@ const bodyParser = require('body-parser')
 const cors       = require("cors");
 const app        = express();
 
-<<<<<<< HEAD
 app.use(cors())
 app.use(bodyParser.json({limit: '50mb'}));
 app.use(bodyParser.urlencoded({ extended: true }));
-=======
-const jsonParser = bodyParser.json({ limit: '50mb' })
->>>>>>> main
 
 // GET .env file contents
 require('dotenv').config()
@@ -31,6 +27,7 @@ const connection_pool = require('./src/db/create_connection_pool')
 const auth_router = require("./src/routes/auth.routes")(connection_pool)
 app.use("/api/auth", auth_router)
 
+
 // USER
 const user_router = require("./src/routes/user.routes")(connection_pool)
 app.use("/api/user", user_router)
@@ -46,7 +43,7 @@ const comment_router = require("./src/routes/comment.routes")(connection_pool)
 app.use("/api/comment", comment_router)
 
 
-// // MOVIE
+// MOVIE
 const movie_router = require("./src/routes/movie.routes")(connection_pool)
 app.use("/api/movie", movie_router)
 
@@ -65,8 +62,6 @@ app.use("/api/populate", populate_router)
 const favorites_router = require("./src/routes/favorite.routes")(connection_pool)
 app.use("/api/favorites", favorites_router)
 
-const watched_router = require("./src/routes/watched.routes")(connection_pool)
-app.use("/api/watched", watched_router)
 
 // WATCHED
 const watched_router = require("./src/routes/watched.routes")(connection_pool)

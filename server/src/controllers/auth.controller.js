@@ -94,10 +94,10 @@ module.exports = (db_pool) => {
         },
 
 
-        // print_id: async (req, res) => {
-        //     console.log("ID identified: %d.", req.user_id)
-        //     res.status(200).send({userid: req.user_id})
-        // },
+        print_id: async (req, res) => {
+            console.log("ID identified: %d.", req.user_id)
+            res.status(200).send({userid: req.user_id})
+        },
 
 
         authenticateToken: (req, res, next) => {
@@ -106,11 +106,6 @@ module.exports = (db_pool) => {
                 // console.log(req.headers)
                 // console.log("authing:", authHeader)
                 const token = authHeader && authHeader.split(' ')[1]
-<<<<<<< HEAD
-                // console.log("token: ", token)
-=======
->>>>>>> main
-
                 if (token == null) return res.sendStatus(401)
                 jwt.verify(token, process.env.TOKEN_SECRET, (err, decoded) => {
                     if (err != null) console.log(err)

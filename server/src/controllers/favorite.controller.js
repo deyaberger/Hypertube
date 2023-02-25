@@ -13,37 +13,7 @@ module.exports = (db_pool) => {
                 throw (e)
             }
         },
-        // get_all_ids : async (req, res) => {
-        //     console.log("get fav movies")
-        //     try {
-        //         let userid = req.user_id
-        //         let favorites_ids = await favorites_functions.get_all_favorites_ids(userid)
 
-        //         if (favorites_ids == null) {
-        //             return res.sendStatus(500)
-        //         }
-
-        //         return res.status(200).send(favorites_ids)
-        //     }
-        //     catch (e) {
-        //         throw (e)
-        //     }
-        // },
-        // is_favourite : async(req, res) => {
-        //     console.log("checking if movie is fav")
-        //     try {
-        //         let userid = req.user_id
-        //         let movie_id = req.params.movie_id
-        //         let is_fav = await favorites_functions.is_favorite_movie(userid, movie_id)
-        //         if (is_fav == null) {
-        //             return res.sendStatus(500)
-        //         }
-        //         return res.status(200).send(is_fav)
-        //     }
-        //     catch (e) {
-        //         throw (e)
-        //     }
-        // },
         remove_from_favs : async(req, res) => {
             try {
                 let userid = req.user_id
@@ -58,6 +28,7 @@ module.exports = (db_pool) => {
                 throw (e)
             }
         },
+
         add_to_favs : async(req, res) => {
             try {
                 let userid = req.user_id
