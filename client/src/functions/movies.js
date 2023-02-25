@@ -1,5 +1,6 @@
 import axios from "axios"
 
+// ------------------------------------------ MOVIES --------------------------------------------------------------
 function _parse_form_for_back(form, lang_nb) {
 	const title       = form.title;
 	const min_rating  = form.min_rating;
@@ -81,9 +82,25 @@ export const Get_Movies_Research = async(form , lang_nb, token) => {
 
 
 
-export const Get_Single_Movie_Details = async(movie_id , token) => {
+export const Get_Single_Movie_Details = async(movie_id, token) => {
 	let request = {
-		url: `http://127.0.0.1:8071/api/movies/details/:${movie_id}`,
+		url: `http://127.0.0.1:8071/api/movies/details/${movie_id}`,
+		method: "get",
+		headers: {
+			'Access-Control-Allow-Origin': '*',
+			"Content-type"               : "application/json",
+			'Authorization'				 : `Bearer ${token}`
+		}
+	};
+	const response = await axios(request);
+	// console.log("response dans front: ", response)
+	return response;
+}
+
+// ------------------------------------------ FAVORITES --------------------------------------------------------------
+export const Get_User_Fav_Movies = async(token, user_id) => {
+	let request = {
+		url: `http://127.0.0.1:8071/api/favorites/all`,
 		method: "get",
 		headers: {
 			'Access-Control-Allow-Origin': '*',
@@ -91,10 +108,141 @@ export const Get_Single_Movie_Details = async(movie_id , token) => {
 			'Authorization'				 : `Bearer ${token}`
 		},
 		params : {
-			"movie_id" : movie_id
+			"user_id" : user_id
 		}
 	};
 	const response = await axios(request);
-	// console.log("response dans front: ", response)
 	return response;
 }
+
+export const Get_Current_User_Fav_Movies_ID = async(token) => {
+	let request = {
+		url: `http://127.0.0.1:8071/api/favorites/all_ids`,
+		method: "get",
+		headers: {
+			'Access-Control-Allow-Origin': '*',
+			"Content-type"               : "application/json",
+			'Authorization'				 : `Bearer ${token}`
+		}
+	};
+	const response = await axios(request);
+	return response;
+}
+
+export const Add_To_Favorites = async(movie_id, token) => {
+	let request = {
+		url: `http://127.0.0.1:8071/api/favorites/add/${movie_id}`,
+		method: "post",
+		headers: {
+			'Access-Control-Allow-Origin': '*',
+			"Content-type"               : "application/json",
+			'Authorization'				 : `Bearer ${token}`
+		}
+	};
+	const response = await axios(request);
+	return response;
+}
+
+export const Remove_From_Favorites = async(movie_id, token) => {
+	let request = {
+		url: `http://127.0.0.1:8071/api/favorites/remove/${movie_id}`,
+		method: "post",
+		headers: {
+			'Access-Control-Allow-Origin': '*',
+			"Content-type"               : "application/json",
+			'Authorization'				 : `Bearer ${token}`
+		}
+	};
+	const response = await axios(request);
+	return response;
+}
+
+export const Is_Fav_Movie = async(token, movie_id) => {
+	let request = {
+		url : `http://127.0.0.1:8071/api/favorites/is_fav/${movie_id}`,
+		method: "get",
+		headers: {
+			'Access-Control-Allow-Origin': '*',
+			"Content-type"               : "application/json",
+			'Authorization'				 : `Bearer ${token}`
+		}
+	}
+	const response = await axios(request);
+	return response;
+}
+
+
+// ------------------------------------------ WATCHED --------------------------------------------------------------
+export const Get_Current_User_Watched_Movies_ID = async(token) => {
+	let request = {
+		url: `http://127.0.0.1:8071/api/watched/watched_movies_id`,
+		method: "get",
+		headers: {
+			'Access-Control-Allow-Origin': '*',
+			"Content-type"               : "application/json",
+			'Authorization'				 : `Bearer ${token}`
+		}
+	};
+	const response = await axios(request);
+	return response;
+}
+
+export const Get_User_Watched_Movies = async(token, user_id) => {
+	let request = {
+		url: `http://127.0.0.1:8071/api/watched/watched_movies`,
+		method: "get",
+		headers: {
+			'Access-Control-Allow-Origin': '*',
+			"Content-type"               : "application/json",
+			'Authorization'				 : `Bearer ${token}`
+		},
+		params : {
+			"user_id" : user_id
+		}
+	};
+	const response = await axios(request);
+	return response;
+}
+
+export const Set_Watched = async(movie_id, token) => {
+	let request = {
+		url: `http://127.0.0.1:8071/api/watched/set_watched/${movie_id}`,
+		method: "post",
+		headers: {
+			'Access-Control-Allow-Origin': '*',
+			"Content-type"               : "application/json",
+			'Authorization'				 : `Bearer ${token}`
+		}
+	};
+	const response = await axios(request);
+	return response;
+}
+
+export const Set_UnWatched = async(movie_id, token) => {
+	let request = {
+		url: `http://127.0.0.1:8071/api/watched/set_unwatched/${movie_id}`,
+		method: "post",
+		headers: {
+			'Access-Control-Allow-Origin': '*',
+			"Content-type"               : "application/json",
+			'Authorization'				 : `Bearer ${token}`
+		}
+	};
+	const response = await axios(request);
+	return response;
+}
+
+export const Is_Watched = async(movie_id, token) => {
+	let request = {
+		url: `http://127.0.0.1:8071/api/watched/is_watched/${movie_id}`,
+		method: "get",
+		headers: {
+			'Access-Control-Allow-Origin': '*',
+			"Content-type"               : "application/json",
+			'Authorization'				 : `Bearer ${token}`
+		}
+	};
+	const response = await axios(request);
+	return response;
+}
+

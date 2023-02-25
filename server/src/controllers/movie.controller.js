@@ -14,7 +14,7 @@ module.exports = (db_pool) => {
 
         get_movie_details: async (req, res) => {
             try {
-                let movie = await movie_functions.get_movie(Number(req.query.movie_id))
+                let movie = await movie_functions.get_movie(Number(req.params.movie_id))
                 res.status(200).send(movie)
             }
             catch (e) {

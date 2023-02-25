@@ -1,13 +1,13 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Sign_in from "../views/Sign_in.vue";
-import Sign_up from "../views/Sign_up.vue";
-import Reset_pwd from "../views/Reset_password.vue";
-import New_pwd from "../views/New_password.vue";
-import Search from "../views/Search.vue";
-import Profile from "../views/Profile.vue";
+import Sign_in     from "../views/Sign_in.vue";
+import Sign_up     from "../views/Sign_up.vue";
+import Reset_pwd   from "../views/Reset_password.vue";
+import New_pwd     from "../views/New_password.vue";
+import Search      from "../views/Search.vue";
+import Profile     from "../views/Profile.vue";
 import SingleMovie from "../views/Single_movie.vue";
-import My_profile from "../views/My_profile.vue";
-import Populate from "../views/Populate.vue";
+import My_profile  from "../views/My_profile.vue";
+import Populate    from "../views/Populate.vue";
 
 
 
@@ -23,6 +23,7 @@ const router = createRouter({
       path: "/sign_in",
       name: "sign_in",
       component: Sign_in,
+			props: route => ({ oauth_token: route.query.oauth_token })
     },
     {
       path: "/sign_up",

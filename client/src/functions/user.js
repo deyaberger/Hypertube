@@ -1,5 +1,6 @@
 import axios from "axios"
 
+// ------------------------------------------ USER DETAILS -------------------------------------------------------------
 export const Get_User_Details = async(token) => {
 	let request = {
 		url: `http://127.0.0.1:8071/api/user/me`,
@@ -128,158 +129,7 @@ export const Update_Email = async(token, email) => {
 	}
 }
 
-
-export const Is_Fav_Movie = async(token, movie_id) => {
-	let request = {
-		url : `http://127.0.0.1:8071/api/favorites/is_fav`,
-		method: "get",
-		headers: {
-			'Access-Control-Allow-Origin': '*',
-			"Content-type"               : "application/json",
-			'Authorization'				 : `Bearer ${token}`
-		},
-		params : {
-			"movie_id" : movie_id
-		}
-	}
-	const response = await axios(request);
-	return response;
-}
-
-export const Get_User_Fav_Movies = async(token, user_id) => {
-	let request = {
-		url: `http://127.0.0.1:8071/api/favorites/all`,
-		method: "get",
-		headers: {
-			'Access-Control-Allow-Origin': '*',
-			"Content-type"               : "application/json",
-			'Authorization'				 : `Bearer ${token}`
-		},
-		params : {
-			"user_id" : user_id
-		}
-	};
-	const response = await axios(request);
-	return response;
-}
-
-export const Get_Current_User_Fav_Movies_ID = async(token) => {
-	let request = {
-		url: `http://127.0.0.1:8071/api/favorites/all_ids`,
-		method: "get",
-		headers: {
-			'Access-Control-Allow-Origin': '*',
-			"Content-type"               : "application/json",
-			'Authorization'				 : `Bearer ${token}`
-		}
-	};
-	const response = await axios(request);
-	return response;
-}
-
-export const Get_Current_User_Watched_Movies_ID = async(token) => {
-	let request = {
-		url: `http://127.0.0.1:8071/api/user/watched_movies_id`,
-		method: "get",
-		headers: {
-			'Access-Control-Allow-Origin': '*',
-			"Content-type"               : "application/json",
-			'Authorization'				 : `Bearer ${token}`
-		}
-	};
-	const response = await axios(request);
-	return response;
-}
-
-export const Get_User_Watched_Movies = async(token, user_id) => {
-	let request = {
-		url: `http://127.0.0.1:8071/api/user/watched_movies`,
-		method: "get",
-		headers: {
-			'Access-Control-Allow-Origin': '*',
-			"Content-type"               : "application/json",
-			'Authorization'				 : `Bearer ${token}`
-		},
-		params : {
-			"user_id" : user_id
-		}
-	};
-	const response = await axios(request);
-	return response;
-}
-
-export const Remove_From_Favorites = async(movie_id, token) => {
-	let request = {
-		url: `http://127.0.0.1:8071/api/favorites/remove/${movie_id}`,
-		method: "post",
-		headers: {
-			'Access-Control-Allow-Origin': '*',
-			"Content-type"               : "application/json",
-			'Authorization'				 : `Bearer ${token}`
-		}
-	};
-	const response = await axios(request);
-	return response;
-}
-
-
-export const Add_To_Favorites = async(movie_id, token) => {
-	let request = {
-		url: `http://127.0.0.1:8071/api/favorites/add/${movie_id}`,
-		method: "post",
-		headers: {
-			'Access-Control-Allow-Origin': '*',
-			"Content-type"               : "application/json",
-			'Authorization'				 : `Bearer ${token}`
-		}
-	};
-	const response = await axios(request);
-	return response;
-}
-
-export const Set_Watched = async(movie_id, token) => {
-	let request = {
-		url: `http://127.0.0.1:8071/api/user/set_watched/${movie_id}`,
-		method: "post",
-		headers: {
-			'Access-Control-Allow-Origin': '*',
-			"Content-type"               : "application/json",
-			'Authorization'				 : `Bearer ${token}`
-		}
-	};
-	const response = await axios(request);
-	return response;
-}
-
-export const Set_UnWatched = async(movie_id, token) => {
-	let request = {
-		url: `http://127.0.0.1:8071/api/user/set_unwatched/${movie_id}`,
-		method: "post",
-		headers: {
-			'Access-Control-Allow-Origin': '*',
-			"Content-type"               : "application/json",
-			'Authorization'				 : `Bearer ${token}`
-		}
-	};
-	const response = await axios(request);
-	return response;
-}
-
-export const Is_Watched = async(movie_id, token) => {
-	let request = {
-		url: `http://127.0.0.1:8071/api/user/is_watched/${movie_id}`,
-		method: "get",
-		headers: {
-			'Access-Control-Allow-Origin': '*',
-			"Content-type"               : "application/json",
-			'Authorization'				 : `Bearer ${token}`
-		}
-	};
-	const response = await axios(request);
-	return response;
-}
-
-
+// ------------------------------------------ FOLLOWS -------------------------------------------------------------
 export const Get_User_Followings = async(token, user_id) => {
 	let request = {
 		url: `http://127.0.0.1:8071/api/follows/who_do_you_follow`,
@@ -358,3 +208,20 @@ export const UnFollow = async(token, user_id) => {
 	return response;
 }
 
+export const Upload_Image = async(token, image_file) => {
+	const formData = new FormData()
+	formData.append('file', image_file)
+	console.log("formData: ", formData)
+	let request = {
+		url: `http://127.0.0.1:8071/api/user/upload_image`,
+		method: "post",
+		headers: {
+			'Access-Control-Allow-Origin': '*',
+			"Content-type"               : "application/json",
+			'Authorization'				 : `Bearer ${token}`
+		},
+		data : formData
+	};
+	const response = await axios(request);
+	return response;
+}
