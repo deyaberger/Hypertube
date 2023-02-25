@@ -68,10 +68,10 @@ module.exports = (db_pool) => {
 
 
         check_password : async (user, password) => {
-            console.log("checking password: ", user)
+            // console.log("checking password: ", user)
             if (user == undefined) {
                 return false
-                throw_err_with_code("user doesnt exist", "MISSING_USER")
+                // throw_err_with_code("user doesnt exist", "MISSING_USER")
             }
 
             if (bcrypt.compareSync(password, user.pass)) {

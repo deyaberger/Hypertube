@@ -208,16 +208,16 @@ export const UnFollow = async(token, user_id) => {
 	return response;
 }
 
+// ------------------------------------------ IMAGE -------------------------------------------------------------
 export const Upload_Image = async(token, image_file) => {
 	const formData = new FormData()
 	formData.append('file', image_file)
-	console.log("formData: ", formData)
 	let request = {
-		url: `http://127.0.0.1:8071/api/user/upload_image`,
+		url: `http://127.0.0.1:8071/api/image/upload`,
 		method: "post",
 		headers: {
 			'Access-Control-Allow-Origin': '*',
-			"Content-type"               : "application/json",
+			'Content-type'				 : 'multipart/form-data',
 			'Authorization'				 : `Bearer ${token}`
 		},
 		data : formData

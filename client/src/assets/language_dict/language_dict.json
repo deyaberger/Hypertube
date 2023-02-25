@@ -127,6 +127,7 @@
 		"no_user_found"    :["We don't have any data about this user", "Nous n'avons pas de données concernant cet utilisateur"],
 		"first_name_error" :["First name can't be empty or contain whitespaces", "Un prenom ne peut pas etre vide ou contenir des espaces"],
 		"last_name_error"  :["Last name can't be empty or contain whitespaces", "Un nom ne peut pas etre vide ou contenir des espaces"],
-		"email_error"      :["Please enter a valid email address", "Adresse invalide"]
+		"email_error"      :["Please enter a valid email address", "Adresse invalide"],
+		"image_type_error" :["Only .png, .jpg, .jpeg and .webp format allowed", "Seuls les formats .png, .jpg, .jpeg and .webp sont acceptés"]
 	}
 }
