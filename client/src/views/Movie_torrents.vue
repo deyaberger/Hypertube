@@ -10,7 +10,8 @@ export default {
 
 	data() {
 		return {
-			torrents : []
+			torrents : [],
+			selected_torrent : null
 		}
 	},
 
@@ -26,6 +27,10 @@ export default {
 
 
 	methods: {
+		Choose_Torrent(arg) {
+			console.log("Chose torrent", arg)
+			this.selected_torrent = arg
+		}
 	},
 
 
@@ -55,8 +60,10 @@ export default {
 
 <template>
 	<div class="homemade-container">
-		<div v-for="(torrent, index) in torrents" :key="index">
-			<span> {{index}}, {{torrent.url}} </span>
+		<div class="card b-1 hover-shadow mb-20" v-for="(torrent, index) in torrents" :key="index">
+			  <div class="media card-body">
+				<span @click="Choose_Torrent(torrent)"> {{index}} url : {{torrent.url}} quality : {{torrent.quality}} size : {{torrent.size}} seeds : {{torrent.seeds}} peers : {{torrent.peers}} </span>
+			</div>
 		</div>
 	</div>
 </template>
@@ -64,6 +71,23 @@ export default {
 
 
 <style lang="scss" scoped>
+
+.media {
+	display: -ms-flexbox;
+	display: flex;
+	-ms-flex-align: start;
+	align-items: flex-start;
+	padding: 16px 12px;
+	-webkit-transition: background-color .2s linear;
+	transition: background-color .2s linear;
+	background-color: black;
+}
+
+.card-body {
+	-ms-flex: 1 1 auto;
+	flex: 1 1 auto;
+	padding: 1.25rem;
+}
 
 .time {
 	text-align: end;
