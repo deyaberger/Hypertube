@@ -77,7 +77,7 @@ module.exports = (db_pool) => {
                     console.log("paf: ", torrent.files[i].path)
                 }
             }
-            return file.path
+            return file
         },
 
 

@@ -77,6 +77,15 @@ export default {
 			catch (e) {
 				console.log("erro in movie details", e)
 			}
+		},
+
+		supervise() {
+			console.log("bortsa")
+			console.log(this.$refs.movieplayer)
+			this.$refs.movieplayer.onseeking = (lol) => {
+				console.log("seekeing:", lol)
+			}
+			console.log(this.$refs.movieplayer.networkState)
 		}
 	},
 
@@ -124,7 +133,8 @@ export default {
 			<span> {{ file }} </span>
 		</div>
 		<div v-if="movie_source" >
-			<video id="videoPlayer" width="500" height="500" controls muted="muted" autoplay>
+			<button @click="supervise">Supervise</button>
+			<video ref="movieplayer" controls loop id="videoPlayer" width="500" height="500" muted="muted" autoplay>
 				<source :src='movie_source' type="video/mp4" />
 			</video>
 		</div>
