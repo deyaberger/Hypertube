@@ -81,7 +81,6 @@ export const Get_Movies_Research = async(form , lang_nb, token) => {
 }
 
 
-
 export const Get_Single_Movie_Details = async(movie_id, token) => {
 	let request = {
 		url: `http://127.0.0.1:8071/api/movies/details/${movie_id}`,
@@ -89,7 +88,7 @@ export const Get_Single_Movie_Details = async(movie_id, token) => {
 		headers: {
 			'Access-Control-Allow-Origin': '*',
 			"Content-type"               : "application/json",
-			'Authorization'				 : `Bearer ${token}`
+			'Authorization'				       : `Bearer ${token}`
 		}
 	};
 	const response = await axios(request);
