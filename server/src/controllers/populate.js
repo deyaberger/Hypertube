@@ -6,9 +6,8 @@ const bar1              = new cliProgress.SingleBar({}, cliProgress.Presets.shad
 
 const API_KEY = process.env.TMDB_API_KEY
 
-module.exports = (db_pool) => {
+const util_functions = (db_pool) => {
     return {
-
         create_request: (url, params) => {
             let request = {
                 url: url,
@@ -90,8 +89,7 @@ module.exports = (db_pool) => {
             })
         },
         
-        post_movie: async (db_pool, yts_id, imdb_code, title, imdb_rating, year, length_minutes, language, summary) => {
-        
+        post_movie: async (yts_id, imdb_code, title, imdb_rating, year, length_minutes, language, summary) => {
             try {
                 [movie, ] = await db_pool.query("\
                 INSERT INTO movies (yts_id,   imdb_code,   title,   imdb_rating,   year,   length_minutes,   language,   summary) \
@@ -115,53 +113,49 @@ module.exports = (db_pool) => {
         
         },
         
-        post_image: async (db_pool, movie_id, size, url) => {
-        
-            try {
-                [image, ] = await db_pool.query("\
-                INSERT INTO images (movie_id, size, url) \
-                VALUES             (?,        ?,    ?  );",
-                                   [movie_id, size,  url])
+        parse_and_post_images: async (movie, movie_id) => {
+            const post_image= async (movie_id, size, url) => {
+                try {
+                    [image, ] = await db_pool.query("\
+                    INSERT INTO images (movie_id, size, url) \
+                    VALUES             (?,        ?,    ?  );",
+                                       [movie_id, size,  url])
+                }
+                catch (e) {
+                    throw(e)
+                }
             }
-            catch (e) {
-                throw(e)
-            }
-        },
-        
-        parse_and_post_images: async (db_pool, movie, movie_id) => {
             let promises = []
             if (movie.hasOwnProperty('large_cover_image')) {
-                promises.push(post_image(db_pool, movie_id, 1, movie.large_cover_image))
+                promises.push(post_image(movie_id, 1, movie.large_cover_image))
             }
             if (movie.hasOwnProperty('medium_cover_image')) {
-                promises.push(post_image(db_pool, movie_id, 2, movie.medium_cover_image))
+                promises.push(post_image(movie_id, 2, movie.medium_cover_image))
             }
             if (movie.hasOwnProperty('small_cover_image')) {
-                promises.push(post_image(db_pool, movie_id, 3, movie.small_cover_image))
+                promises.push(post_image(movie_id, 3, movie.small_cover_image))
             }
             if (movie.hasOwnProperty('background_image_original')) {
-                promises.push(post_image(db_pool, movie_id, 4, movie.background_image_original))
+                promises.push(post_image(movie_id, 4, movie.background_image_original))
             }
             if (movie.hasOwnProperty('background_image')) {
-                promises.push(post_image(db_pool, movie_id, 5, movie.background_image))
+                promises.push(post_image(movie_id, 5, movie.background_image))
             }
             await Promise.all(promises)
         },
         
-        post_genre: async (db_pool, movie_id, name) => {
-        
-            try {
-                [genre, ] = await db_pool.query("\
-                INSERT INTO genres (movie_id, name) \
-                VALUES             (?,        ?);",
-                                   [movie_id, name])
+        parse_and_post_genres: async (movie, movie_id) => {
+            let post_genre = async (movie_id, name) => {
+                try {
+                    [genre, ] = await db_pool.query("\
+                    INSERT INTO genres (movie_id, name) \
+                    VALUES             (?,        ?);",
+                                       [movie_id, name])
+                }
+                catch (e) {
+                    throw(e)
+                }
             }
-            catch (e) {
-                throw(e)
-            }
-        },
-        
-        parse_and_post_genres: async (db_pool, movie, movie_id) => {
             if (!movie.hasOwnProperty('genres')) {
                 return ({"msg" : "missing_genres"});
             }
@@ -171,26 +165,25 @@ module.exports = (db_pool) => {
             }
             let promises = []
             for (let i in genres) {
-                promises.push(post_genre(db_pool, movie_id, genres[i]))
+                promises.push(post_genre(movie_id, genres[i]))
             }
             await Promise.all(promises)
             return ({"msg" : "genres_all_good"})
         },
         
-        post_torrent: async (db_pool, movie_id, url, hash, quality, seeds, peers, size, size_bytes) => {
-        
-            try {
-                [torrent, ] = await db_pool.query("\
-                INSERT INTO torrents (movie_id, url, hash, quality, seeds, peers, size, size_bytes) \
-                VALUES               (?,        ?,   ?,    ?,       ?,     ?,     ?,    ?         );",
-                                     [movie_id, url, hash, quality, seeds, peers, size, size_bytes])
+        parse_and_post_torrents: async (movie, movie_id) => {
+            let post_torrent = async (movie_id, url, hash, quality, seeds, peers, size, size_bytes) => {
+                try {
+                    [torrent, ] = await db_pool.query("\
+                    INSERT INTO torrents (movie_id, url, hash, quality, seeds, peers, size, size_bytes) \
+                    VALUES               (?,        ?,   ?,    ?,       ?,     ?,     ?,    ?         );",
+                                         [movie_id, url, hash, quality, seeds, peers, size, size_bytes])
+                }
+                catch (e) {
+                    throw(e)
+                }
             }
-            catch (e) {
-                throw(e)
-            }
-        },
-        
-        parse_and_post_torrents: async (db_pool, movie, movie_id) => {
+
             if (!movie.hasOwnProperty('torrents')) {
                 return ({"msg" : "missing_torrents"});
             }
@@ -208,7 +201,7 @@ module.exports = (db_pool) => {
                 let peers = torrent.hasOwnProperty('peers')           ? torrent.peers             : null;
                 let size = torrent.hasOwnProperty('size')             ? torrent.size              : null;
                 let size_bytes = torrent.hasOwnProperty('size_bytes') ? String(torrent.size_bytes): null;
-                torrents_promises.push(post_torrent(db_pool, movie_id, url, hash, quality, seeds, peers, size, size_bytes))
+                torrents_promises.push(post_torrent(movie_id, url, hash, quality, seeds, peers, size, size_bytes))
             }
             Promise.all(torrents_promises)
             return ({"msg" : "torrents_all_good"})
@@ -218,6 +211,7 @@ module.exports = (db_pool) => {
 
 
 module.exports = (db_pool) => {
+    utils = util_functions(db_pool)
     return {
 		search_all_movies : async (source, page_nb) => {
 			let url = null;
@@ -227,7 +221,7 @@ module.exports = (db_pool) => {
 				url = "https://yts.torrentbay.to/api/v2/list_movies.json"
             }
             var fs = require('fs');
-            let request = create_request(url, {"page" : page_nb});
+            let request = utils.create_request(url, {"page" : page_nb});
             try {
                 response = await axios(request);
                 response = response.data.data;
@@ -259,7 +253,7 @@ module.exports = (db_pool) => {
                 // console.log("Adding data to DB, page:", page_nb)
 				prefix = "./src/yts_response/yts_page"
                 file_path = prefix + page_nb + ".json";
-                data = await read_json(file_path);
+                data = await utils.read_json(file_path);
                 if (data == null) {
                     return ({"msg" : "missing_file"});
                 }
@@ -271,16 +265,16 @@ module.exports = (db_pool) => {
                 for (let i in page_result.movies) {
                     let movie_id = null;
                     let movie = page_result.movies[i];
-                    let m = parse_movie_data(movie);
-                    movie_res = await post_movie(db_pool, m.yts_id, m.imdb_code, m.title, m.imdb_rating, m.year, m.length_minutes, m.language, m.summary);
+                    let m = utils.parse_movie_data(movie);
+                    movie_res = await utils.post_movie(m.yts_id, m.imdb_code, m.title, m.imdb_rating, m.year, m.length_minutes, m.language, m.summary);
                     // WE should receive the movie's id, if otherwise: we have encountered an error or a duplicate
                     if (typeof movie_res != "number") {
                         return movie_res
                     }
                     movie_id = movie_res;
-                    await parse_and_post_images(db_pool,   movie, movie_id);
-                    await parse_and_post_genres(db_pool,   movie, movie_id);
-                    await parse_and_post_torrents(db_pool, movie, movie_id);
+                    await utils.parse_and_post_images(movie, movie_id);
+                    await utils.parse_and_post_genres(movie, movie_id);
+                    await utils.parse_and_post_torrents(movie, movie_id);
                 }
             }
             return ({"msg" : "success", "id" : movie_res})
@@ -307,7 +301,7 @@ module.exports = (db_pool) => {
                 "api_key" : API_KEY,
                 "external_source" : "imdb_id"
             }
-            const request = create_request(url, params);
+            const request = utils.create_request(url, params);
             try {
                 let res = await axios(request);
                 if (res.status == 200 && res.data != null) {
@@ -331,14 +325,14 @@ module.exports = (db_pool) => {
             let params = {
                 "api_key" : API_KEY,
             }
-            const request = create_request(url, params);
+            const request = utils.create_request(url, params);
             try {
                 let res = await axios(request);
                 if (res.status == 200 && res.data != null) {
                     let cast = res.data.cast
                     let crew = res.data.crew
                     if (cast != null && cast.length > 0) {
-                        cast = transform_cast_dict(cast, crew);
+                        cast = utils.transform_cast_dict(cast, crew);
                         return cast
                     }
                 }

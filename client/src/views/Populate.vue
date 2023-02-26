@@ -125,9 +125,40 @@ export default {
 			}
 		},
 
+		async fetch_tmdb_loop(i, total, imdb_ids) {
+			const start = Date.now();
+
+			for (let index = i; index < imdb_ids.length; index = index + total) {
+					const imdb_code = imdb_ids[index].imdb_code;
+					const id = imdb_ids[index].id;
+					if (this.stop == true) {
+						break;
+					}
+					
+					let res = await Fetch_And_Add_TMDB(imdb_code, id);
+					if (res != null && res.data.code == "SUCCESS") {
+						console.log("[populate]: Succesffully got info on movie: ", id)
+					}
+					else if (res != null && res.data.code == "SKIPPING") {
+						let msg = res.data.msg
+						console.log("[populate]: Skipping movie: ", {id, msg})
+					}
+					else if (res != null && res.data.code == "FAILURE") {
+						let msg = res.data.msg
+						console.log("ERROR [populate]: ", {id, msg})
+					}
+					else if (res == null || res.data.code !=  "SUCCESS") {
+						console.log("UNKOWN ERROR [populate]: optimize ", res)
+						this.stop = true
+						break
+					}
+					this.tmdb_currently_fetched += 1
+					this.get_time_spent(start);
+			}
+		},
+
 		async pimp_db(source) {
 			this.tmdb_error = false
-			const start = Date.now();
 			this.tmdb_on = true
 			this.tmdb_done = false
 			this.stop = false
@@ -138,32 +169,13 @@ export default {
 					this.tmdb_movie_count = imdb_ids.length
 					console.log("[populate]: Succesffully got all movies ids! ", this.tmdb_movie_count)
 					this.tmdb_currently_fetched = 0
-					for (let index = 0; index < imdb_ids.length; index++) {
-						const imdb_code = imdb_ids[index].imdb_code;
-						const id = imdb_ids[index].id;
-						if (this.stop == true) {
-							break;
-						}
-						let res = await Fetch_And_Add_TMDB(imdb_code, id);
-						if (res != null && res.data.code == "SUCCESS") {
-							console.log("[populate]: Succesffully got info on movie: ", id)
-						}
-						else if (res != null && res.data.code == "SKIPPING") {
-							let msg = res.data.msg
-							console.log("[populate]: Skipping movie: ", {id, msg})
-						}
-						else if (res != null && res.data.code == "FAILURE") {
-							let msg = res.data.msg
-							console.log("ERROR [populate]: ", {id, msg})
-						}
-						else if (res == null || res.data.code !=  "SUCCESS") {
-							console.log("UNKOWN ERROR [populate]: optimize ", res)
-							this.stop = true
-							break
-						}
-						this.tmdb_currently_fetched += 1
-						this.get_time_spent(start);
+
+					let promises = []
+					let n_parralel = 5
+					for (let i = 0; i < n_parralel; i++) {
+						promises.push(this.fetch_tmdb_loop(i, n_parralel, imdb_ids))
 					}
+					await Promise.all(promises)
 				}
 			}
 			catch(e) {
