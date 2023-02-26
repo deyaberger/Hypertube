@@ -75,7 +75,7 @@ module.exports = (db_pool) => {
         signin: async (req, res) => {
             try {
                 let user = await auth_functions.get_user_from_username(req.body.username)
-				console.log("user: ", user)
+				console.log("[auth.controller]: get_user_from_username ", {user})
 				if (user == null) {
 					return res.status(201).send("Signin failed")
 				}

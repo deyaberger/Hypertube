@@ -72,6 +72,7 @@
 		"rating"          : ["rating", "score"],
 		"time"            : ["time", "durée"],
 		"genre"           : ["genre", "genre"],
+		"seeds"		      : ["seeds", "seeds"],
 		"quality"		  : ["quality", "qualité"],
 		"title"           : ["Title", "Titre"],
 		"sort"            : ["Sort by", "Trier par"],
