@@ -173,7 +173,8 @@ export default {
 					let promises = []
 					let n_parralel = 5
 					for (let i = 0; i < n_parralel; i++) {
-						promises.push(this.fetch_tmdb_loop(i, n_parralel, imdb_ids))
+						let promise = this.fetch_tmdb_loop(i, n_parralel, imdb_ids)
+						promise.push(promise)
 					}
 					await Promise.all(promises)
 				}
