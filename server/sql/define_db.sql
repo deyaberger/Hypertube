@@ -12,7 +12,7 @@ create table movies
     director       varchar(300)                                null,
     actors         varchar(1000)                               null,
     tmdb_id        varchar(20)                                 null,
-    max_seeds      int default 0                               null
+    max_seeds      int default 0                               null,
 
     constraint id        unique (id),
     constraint imdb_code unique (imdb_code),
