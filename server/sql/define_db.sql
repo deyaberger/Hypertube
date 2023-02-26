@@ -9,8 +9,11 @@ create table movies
     length_minutes int                                         null,
     language       varchar(20)                                 null,
     summary        varchar(4000)                               not null,
-    director       varchar(300)                                not null,
-    actors         varchar(1000)                               not null,
+    director       varchar(300)           default null         null,
+    actors         varchar(1000)          default null         null,
+    tmdb_id        varchar(20)            default null         null,
+    length_minutes int                    default 0            not null,
+    
 
     constraint id        unique (id),
     constraint imdb_code unique (imdb_code),
@@ -158,3 +161,15 @@ create table watched_movies
         foreign key (user_id) references users (id)
             on update cascade on delete cascade
 );
+
+create table oauth
+(
+    `42_id` mediumint null,
+    user_id mediumint null,
+    constraint oauth_42_id_uindex
+        unique (`42_id`),
+    constraint oauth_to_user_id
+        foreign key (user_id) references users (id)
+            on delete cascade
+);
+

@@ -7,10 +7,9 @@ const app        = express();
 require('dotenv').config()
 
 
-pp.use(cors({
+app.use(cors({
   origin: "*"
 }))
-app.use(jsonParser)
 app.use(bodyParser.json({limit: '50mb'}));
 app.use(bodyParser.urlencoded({ extended: true }));
 
