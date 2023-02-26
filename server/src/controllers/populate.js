@@ -126,21 +126,23 @@ async function post_image(db_pool, movie_id, size, url) {
 }
 
 async function parse_and_post_images(db_pool, movie, movie_id) {
+    let promises = []
     if (movie.hasOwnProperty('large_cover_image')) {
-        await post_image(db_pool, movie_id, 1, movie.large_cover_image)
+        promises.push(post_image(db_pool, movie_id, 1, movie.large_cover_image))
     }
     if (movie.hasOwnProperty('medium_cover_image')) {
-        await post_image(db_pool, movie_id, 2, movie.medium_cover_image)
+        promises.push(post_image(db_pool, movie_id, 2, movie.medium_cover_image))
     }
     if (movie.hasOwnProperty('small_cover_image')) {
-        await post_image(db_pool, movie_id, 3, movie.small_cover_image)
+        promises.push(post_image(db_pool, movie_id, 3, movie.small_cover_image))
     }
     if (movie.hasOwnProperty('background_image_original')) {
-        await post_image(db_pool, movie_id, 4, movie.background_image_original)
+        promises.push(post_image(db_pool, movie_id, 4, movie.background_image_original))
     }
     if (movie.hasOwnProperty('background_image')) {
-        await post_image(db_pool, movie_id, 5, movie.background_image)
+        promises.push(post_image(db_pool, movie_id, 5, movie.background_image))
     }
+    await Promise.all(promises)
 }
 
 async function post_genre(db_pool, movie_id, name) {

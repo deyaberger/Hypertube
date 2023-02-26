@@ -84,23 +84,24 @@ export default {
 			// this.total_pages = 3;
 			this.total_pages = 2368;
 			const start = Date.now();
-			for (this.current_page; this.current_page < this.total_pages + 1; this.current_page++) {
+			for (let page_number = this.current_page; page_number < this.total_pages + 1; page_number++) {
 				console.log("SENDING SOMEHTING:")
-				let res = await Dump_Json_To_DB(source, this.current_page);
-				if (res == null || res.status != 200) {
+				Dump_Json_To_DB(source, page_number).then( (res) => {
+					console.log("finished", page_number)
+					this.current_page += 1
+					if (res == null || res.status != 200) {
 					this.db_error = true;
-					break;
-				}
-				if (this.stop == true) {
-					break;
-				}
-				if (res.data.msg == "duplicate") {
-					duplicates += 1;
-				}
-				else if (res.data.msg == "missing_file") {
-					missing_file += 1;
-				}
-				this.get_time_spent(start);
+					}
+					if (this.stop == true) {
+					}
+					if (res.data.msg == "duplicate") {
+						duplicates += 1;
+					}
+					else if (res.data.msg == "missing_file") {
+						missing_file += 1;
+					}
+					this.get_time_spent(start);
+				})
 			}
 			this.get_time_spent(start);
 			console.log("Duplicates: ", duplicates);
