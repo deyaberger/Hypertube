@@ -91,6 +91,17 @@ module.exports = (db_pool) => {
             }
         },
 
+        // set_subtitles_high_priority(torrent) {
+        //     console.log("Subs high prio")
+        //     for(const file of torrent.files)
+        //     {
+        //         if(file.path.endsWith(".srt"))
+        //         {
+        //             file.select(100)
+        //         }
+        //     }
+        // },
+
 
         are_subtitles_downloaded(torrent) {
             let subs = []
@@ -145,6 +156,6 @@ module.exports = (db_pool) => {
             }
             // console.log("Available subs:", subs.map(s => s.name))
             return subs
-        }
+        },
     }
 }

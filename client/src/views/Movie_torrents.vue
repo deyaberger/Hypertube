@@ -2,7 +2,7 @@
 import { mapState } from 'vuex';
 import { Get_torrents_for_movie, Add_magnet, get_ready_subs } from '../functions/streaming'
 import { Get_Single_Movie_Details } from '../functions/movies'
-
+import toWebVTT from "srt-webvtt";
 export default {
 	props: {
 		movie_id: String,
@@ -17,7 +17,8 @@ export default {
 			torrent_files    : [],
 			torrent_loading  : false,
 			movie_source     : null,
-			subs             : []
+			subs             : [],
+			converted_subs   : []
 		}
 	},
 
@@ -67,6 +68,11 @@ export default {
 			let res = await get_ready_subs(hash, title, this.user_token)
 			if (res.status == 200 && res.data.code == "SUCCESS") {
 				this.subs = res.data.subs
+				// for (const s of this.subs) {
+				// 	console.log("converting", s)
+				// 	let converted = await toWebVTT(`/api/torrents/subtitles/get/${encodeURIComponent(s.path)}`)
+				// 	console.log("converted", converted)
+				// }
 			}
 			else if (res.status == 200 && res.data.code == "TORRENT_NOT_READY") {
 				this.torrent_files = []
@@ -155,13 +161,18 @@ export default {
 			<div v-for="sub in subs" v-bind:key="sub.path">
 				<span> {{ sub }} </span>
 			</div>
-<!-- 
+
 			<div v-if="movie_source" >
 				<button @click="supervise">Supervise</button>
 				<video ref="movieplayer" controls loop id="videoPlayer" width="500" height="500" muted="muted" autoplay>
 					<source :src='movie_source' type="video/mp4" />
+						<track v-for="sub in subs" v-bind:key="sub.path"
+							:label="sub.name"
+							kind="subtitles"
+							:src="'/api/torrents/subtitles/get/' + encodeURIComponent(sub.path)"
+						/>
 				</video>
-			</div> -->
+			</div>
 		</div>
 
 		

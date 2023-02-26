@@ -10,7 +10,9 @@ require('dotenv').config()
 // Create express app object and add json parsing middleware
 const app = express();
 app.use(jsonParser)
-app.use(cors())
+app.use(cors({
+  origin: "*"
+}))
 
 // Create database connection pool, this will be injected into the controllers to avoid recreating new connections all the time
 const connection_pool = require('./src/db/create_connection_pool')

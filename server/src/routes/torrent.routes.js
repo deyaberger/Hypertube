@@ -1,9 +1,10 @@
 
 module.exports = (db_pool) => {
     const torrent_controller = require("../controllers/torrent.controller")(db_pool)
-    const auth_controller  = require("../controllers/auth.controller" )(db_pool)
-
-    var router = require("express").Router();
+    const auth_controller    = require("../controllers/auth.controller"   )(db_pool)
+    const srt_middle         = require("../middlewares/srt")
+    const express            = require("express");
+    var   router             = require("express").Router();
 
     router.get ("/home"                       , torrent_controller.get_page                      )
     router.post("/add_magnet"                 , torrent_controller.add_magnet                    )
@@ -15,7 +16,11 @@ module.exports = (db_pool) => {
     router.get ("/get_list"                   , torrent_controller.get_torrents_from_movie_id)
     router.get ("/subtitles/available"        , torrent_controller.get_available_subtitles   )
     router.get ("/subtitles/ready"            , torrent_controller.get_ready_subtitles   )
+
+
+    router.use("/subtitles/get", srt_middle.only_srt_or_vtt)
+          .use("/subtitles/get", srt_middle.convert_to_vtt)
+          .use("/subtitles/get", express.static("./torrents"))
+    // router.use ("/subtitles/get"              , express.static("./torrents"))
     return router
 }
-
-
