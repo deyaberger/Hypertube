@@ -33,13 +33,12 @@ module.exports = (db_pool) => {
 
 
         add_torrent(magnet, ready_callback) {
-            client.add(
-                torrentId = magnet,
-                {
-                    path      : "./torrents",                            
-                    strategy  : "sequential"
-                },
-                ready_callback);
+            return client.add(  torrentId = magnet,
+                                {
+                                    path      : "./torrents",                            
+                                    strategy  : "sequential"
+                                },
+                                ready_callback);
         },
 
 
@@ -82,16 +81,26 @@ module.exports = (db_pool) => {
 
 
         set_subtitles_high_priority(torrent) {
-            let file            
-            for(i = 0; i < torrent.files.length; i++)
+            console.log("Subs high prio")
+            for(const file of torrent.files)
             {
-                file = torrent.files[i]
                 if(file.path.endsWith(".srt"))
                 {
                     file.select(100)
                 }
             }
         },
+
+        // set_subtitles_high_priority(torrent) {
+        //     console.log("Subs high prio")
+        //     for(const file of torrent.files)
+        //     {
+        //         if(file.path.endsWith(".srt"))
+        //         {
+        //             file.select(100)
+        //         }
+        //     }
+        // },
 
 
         are_subtitles_downloaded(torrent) {
@@ -110,7 +119,7 @@ module.exports = (db_pool) => {
         },
 
 
-        get_subtitles(torrent) {
+        get_downloaded_subtitles(torrent) {
             let subs = []
             let file
             
@@ -120,12 +129,33 @@ module.exports = (db_pool) => {
                 if(file.path.endsWith(".srt") && file.done)
                 {
                     subs.push({
-                        name:file.name,
+                        name: file.name,
                         path: file.path
                     })
                 }
             }
+            // console.log("Ready subs:", subs.map(s => s.name))
             return subs
-        }
+        },
+
+
+        get_available_subtitles(torrent) {
+            let subs = []
+            let file
+            
+            for(i = 0; i < torrent.files.length; i++)
+            {
+                file = torrent.files[i]
+                if(file.path.endsWith(".srt"))
+                {
+                    subs.push({
+                        name: file.name,
+                        path: file.path
+                    })
+                }
+            }
+            // console.log("Available subs:", subs.map(s => s.name))
+            return subs
+        },
     }
 }

@@ -3,14 +3,16 @@ const bodyParser = require('body-parser')
 const cors       = require("cors");
 const app        = express();
 
-app.use(cors())
-app.use(bodyParser.json({limit: '50mb'}));
-app.use(bodyParser.urlencoded({ extended: true }));
-
 // GET .env file contents
 require('dotenv').config()
 
-// Create express app object and add json parsing middleware
+
+app.use(cors({
+  origin: "*"
+}))
+app.use(bodyParser.json({limit: '50mb'}));
+app.use(bodyParser.urlencoded({ extended: true }));
+
 
 const sanitizer = require("perfect-express-sanitizer");
 

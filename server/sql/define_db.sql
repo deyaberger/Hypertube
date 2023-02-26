@@ -160,3 +160,15 @@ create table watched_movies
         foreign key (user_id) references users (id)
             on update cascade on delete cascade
 );
+
+create table oauth
+(
+    `42_id` mediumint null,
+    user_id mediumint null,
+    constraint oauth_42_id_uindex
+        unique (`42_id`),
+    constraint oauth_to_user_id
+        foreign key (user_id) references users (id)
+            on delete cascade
+);
+
