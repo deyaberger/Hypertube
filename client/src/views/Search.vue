@@ -4,15 +4,17 @@ import SearchResults from '../components/Search_results.vue'
 import { mapState } from 'vuex';
 import textContent from "../assets/language_dict/language_dict.json"
 import { Get_Movies_Research,
-	     Get_Recommendations,
-	     Get_Current_User_Fav_Movies_ID,
-	     Get_Current_User_Watched_Movies_ID} from "../functions/movies"
+	     Get_Recommendations} from "../functions/movies"
 
 export default {
+
+
 	components: {
 		SearchBar,
 		SearchResults
 	},
+
+
 	data() {
 		return {
 			form              : '',
@@ -28,50 +30,44 @@ export default {
 			user_research     : 0,
 			only_show_fav	  : false,
 			error			  : false,
-			user_favs		  : null,
-			user_watched	  : null,
 			saved_movies	  : null,
 		}
 	},
+
+
 	methods: {
 		set_movie_props() {
 			return {
 				'data'    : this.movies_slice,
 				'profile' : false,
 				'error'   : this.error,
-				'favs'    : this.user_favs,
-				'watched' : this.user_watched,
 			}
 		},
-		async get_user_fav_and_co() {
-			console.log("getting favvsss")
-			let res = await Get_Current_User_Fav_Movies_ID(this.user_token);
-			this.user_favs = res.data.map(item => item.movie_id);
-			res = await Get_Current_User_Watched_Movies_ID(this.user_token);
-			this.user_watched = res.data.map(item => item.movie_id);
-		},
+
 		get_movies_page_slice() {
 			var start = (this.currentPage - 1) * this.perPage
 			var end = start + this.perPage
 			this.movies_slice = this.movies.slice(start, end)
 		},
+
 		async get_form_results() {
 			try {
 				this.movies = null
 				this.movies_slice = null
 				let res = null
 				if (this.user_research <= 1) {
-					console.log("getting homepage")
+					console.log("[search] : getting_reco...")
 					res = await Get_Recommendations(this.user_token);
 				}
 				else {
-					console.log("getting form results")
+					console.log("[search] : getting search ...")
 					res = await Get_Movies_Research(this.form, this.lang_nb, this.user_token);
 				}
-				if (res.status == 200) {
-					this.movies = res.data
+				if (res.data.code == "SUCCESS") {
+					this.movies = res.data.movies
 					this.number_of_results = this.movies.length;
 					this.get_movies_page_slice();
+					console.log("[search] : succesfully received movies!")
 				}
 				else {
 					throw("Unknow error code getting movies")
@@ -82,12 +78,13 @@ export default {
 				throw(e)
 			}
 		},
+
 		update_form(value) {
-			console.log("updating form")
 			let form = JSON.parse(JSON.stringify(value));
 			this.form = form;
 			this.user_research += 1
 		},
+
 		reset_form() {
 			this.form = {
 				title         : '',
@@ -99,19 +96,22 @@ export default {
 				asc_or_desc   : 'asc',
 			}
 		},
+
 		from_research_to_reco() {
 			this.user_research = 0,
-			this.reset_form()
+			console.log("[search] : reseting form") // CHECK THIS: NOT WORKING....
+			this.reset_form();
 		},
+
 		from_reco_to_research() {
 			this.user_research = 2,
 			this.reset_form()
 		},
+
 		show_favorites() {
 			if (this.only_show_fav == true) {
-				console.log("only show favs")
 				this.saved_movies  = this.movies
-				this.movies = this.movies.filter(item => this.user_favs.includes(item.id));
+				this.movies = this.movies.filter(item => item.is_fav == true);
 				this.number_of_results = this.movies.length;
 				this.currentPage = 1
 				this.get_movies_page_slice();
@@ -120,40 +120,19 @@ export default {
 				this.movies = this.saved_movies;
 				this.number_of_results = this.movies.length;
 				this.get_movies_page_slice();
-				console.log("show all")
 			}
-		},
-		async updating_movies(value) {
-			let update_info = JSON.parse(JSON.stringify(value));
-			let movie_type = update_info['type']
-			let id = update_info['id']
-			if (movie_type == "favorites") {
-				if (this.user_favs.includes(id)) {
-					delete this.user_favs[this.user_favs.indexOf(id)]
-				}
-				else {
-					this.user_favs.push(id)
-				}
-			}
-			if (movie_type == "watched") {
-				if (this.user_watched.includes(id)) {
-					delete this.user_watched[this.user_favs.indexOf(id)]
-				}
-				else {
-					this.user_watched.push(id)
-				}
-			}
-		},
+		}
 	},
+
+
 	computed: {
 	...mapState({
       	lang_nb    : state =>  state.lang_nb,
       	user_token : state =>  state.user_token,
     })
 	},
-	created() {
-		this.get_user_fav_and_co();
-	},
+
+
 	watch: {
 		currentPage: {
 			handler:function() {
@@ -200,7 +179,7 @@ export default {
 					<div class="show_favorites col"><b-form-checkbox v-model="only_show_fav" switch data-toggle="tooltip" data-placement="top" :title="only_show_fav ? 'show all movies' : 'only show favorites'"></b-form-checkbox></div>
 				</div>
 			</div>
-			<SearchResults :movie_list="set_movie_props()" class="search_res" @updating="updating_movies"/>
+			<SearchResults :movie_list="set_movie_props()" class="search_res"/>
 			<div class="pagination overflow-auto">
 			<div v-if="number_of_results > 0">
 				<b-pagination

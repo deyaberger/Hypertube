@@ -1,4 +1,6 @@
-const axios = require('axios')
+const axios = require('axios');
+
+const API_KEY = 'f373f15887040d8b3b246f53d94d23f3'
 
 function create_request(url, params) {
 	let request = {
@@ -14,6 +16,32 @@ function create_request(url, params) {
 }
 
 const fs = require('fs/promises');
+
+
+function transform_cast_dict(cast, crew) {
+    let cast_output = cast.reduce((acc, { known_for_department, original_name, popularity}) => {
+        if (known_for_department === "Directing") {
+          acc.director.push({ original_name: original_name, popularity});
+        } else if (known_for_department === "Acting") {
+          acc.actors.push({ original_name: original_name, popularity});
+        }
+        return acc;
+      }, { director: [], actors: [] });
+      if (cast_output.director.length == 0 && crew != null && crew.length != 0) {
+        cast_output.director = crew.reduce((acc, { known_for_department, original_name, popularity}) => {
+            if (known_for_department === "Directing") {
+              acc.push({ original_name: original_name, popularity});}
+            return acc;
+          }, []);
+      }
+      const topActors = cast_output.actors.sort((a, b) => b.popularity - a.popularity).slice(0, 3);
+      const topActorNames = topActors.map(actor => actor.original_name);
+      const topDirectors = cast_output.director.sort((a, b) => b.popularity - a.popularity).slice(0, 1);
+      const topDirectorName = topDirectors.map(actor => actor.original_name);
+      cast_output.actors = topActorNames
+      cast_output.director = topDirectorName
+      return cast_output
+}
 
 async function read_json(file_path) {
   try {
@@ -163,8 +191,6 @@ async function post_torrent(db_pool, movie_id, url, hash, quality, seeds, peers,
 }
 
 
-
-
 async function parse_and_post_torrents(db_pool, movie, movie_id) {
     if (!movie.hasOwnProperty('torrents')) {
         return ({"msg" : "missing_torrents"});
@@ -257,6 +283,140 @@ module.exports = (db_pool) => {
                 }
             }
             return ({"msg" : "success", "id" : movie_res})
+        },
+
+        get_imdb_ids: async () => {
+            try {
+                let [ids, ] = await db_pool.query(`
+                SELECT id, imdb_code
+                FROM movies
+                WHERE tmdb_id IS NULL;
+                `)
+                return ids;
+            }
+            catch (e) {
+                throw (e)
+            }
+        },
+
+        fetch_tmdb_movie: async (imdb_code) => {
+            console.log("\n[populate]: fetch_tmdb_movie ", {imdb_code})
+            let url = `https://api.themoviedb.org/3/find/${imdb_code}`
+            let params = {
+                "api_key" : API_KEY,
+                "external_source" : "imdb_id"
+            }
+            const request = create_request(url, params);
+            try {
+                let res = await axios(request);
+                if (res.status == 200 && res.data != null) {
+                    let movie_info = res.data;
+                    if (movie_info['movie_results'] != null && movie_info['movie_results'].length > 0) {
+                        let movie = movie_info['movie_results'][0]
+                        return movie
+                    }
+                }
+                return null
+
+            }
+            catch(e) {
+                throw(e)
+            }
+        },
+
+        get_tmdb_cast : async (tmdb_id) => {
+            console.log("[populate]: get_tmdb_cast ", {tmdb_id})
+            let url = `https://api.themoviedb.org/3/movie/${tmdb_id}/credits`
+            let params = {
+                "api_key" : API_KEY,
+            }
+            const request = create_request(url, params);
+            try {
+                let res = await axios(request);
+                if (res.status == 200 && res.data != null) {
+                    let cast = res.data.cast
+                    let crew = res.data.crew
+                    if (cast != null && cast.length > 0) {
+                        cast = transform_cast_dict(cast, crew);
+                        return cast
+                    }
+                }
+                return null
+
+            }
+            catch(e) {
+                return (e)
+            }
+        },
+
+        update_movie_infos : async (imdb_id, tmdb_id, actors, director) => {
+            console.log("[populate]: update_movie_infos ", {imdb_id, tmdb_id, actors, director})
+            try {
+                let [update_res, ] = await db_pool.query(`
+                UPDATE movies SET tmdb_id=?, actors=?, director=? WHERE imdb_code=?;`,
+                [tmdb_id, actors, director, imdb_id])
+                return update_res;
+            }
+            catch (e) {
+                throw (e)
+            }
+        },
+
+        add_tmdb_image : async (movie_id, url) => {
+            let size = 6
+            let kuerych = `
+            INSERT IGNORE INTO images (movie_id, size, url)
+            SELECT ${movie_id}, ${size}, '${url}'
+            FROM images
+            WHERE movie_id = ${movie_id} AND size = ${size}
+            HAVING COUNT(*) = 0;`
+            try {
+                let [add_res, ] = await db_pool.query(kuerych)
+                if (add_res.affectedRows == 1) {
+                    return (1)
+                }
+                return null;
+            }
+            catch (e) {
+                throw (e)
+            }
+        },
+
+        max_seeds: async() => {
+            console.log("\n[populate]: filling up max_seeds column")
+            const query = `
+            WITH maxou as (SELECT
+                    MAX(seeds) as maximum,
+                    movie_id
+                FROM torrents
+                GROUP BY movie_id)
+            UPDATE movies
+            LEFT JOIN maxou
+                ON movies.id = maxou.movie_id
+            SET movies.max_seeds = maxou.maximum`
+            try {
+                let [update_res, ] = await db_pool.query(query)
+                return update_res;
+            }
+            catch (e) {
+                throw (e)
+            }
+        },
+
+        prune_db : async() => {
+            console.log("\n[populate]: pruning useless movies")
+            const query = `
+            DELETE
+            FROM movies
+            WHERE movies.max_seeds < 10 OR length_minutes = 0;`
+            try {
+                let [delete_res, ] = await db_pool.query(query)
+                return delete_res;
+            }
+            catch (e) {
+                throw (e)
+            }
+
         }
 
     }

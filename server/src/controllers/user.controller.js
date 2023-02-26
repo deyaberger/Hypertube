@@ -3,18 +3,17 @@ module.exports = (db_pool) => {
 
     return {
         get_my_user : async (req, res) => {
-            console.log("in get_my_user")
             try {
                 let userid = req.user_id
-                let user = await user_functions.get_user_by_id(userid)
-                if (user == null) {
-                    return res.sendStatus(500)
+                let user = await user_functions.get_my_user(userid)
+                if (user != null && user.length == 1) {
+                    console.log("[user.controller]: get_my_user SUCCESS")
+                    return res.status(200).send({user : user[0], code : "SUCCESS"})
                 }
-                else if ([...new Set(Object.values(user))][0] == null) {
-                    console.log("Nothing about this user")
-                    return res.status(201).send({message:  "Nothing in database about user: " + userid})
+                else if (user.length == 0) {
+                    console.log("[user.controller]: get_my_user NO_USER_WITH_THIS_ID")
+                    return res.status(201).send({user : null, code : "NO_USER_WITH_THIS_ID"})
                 }
-                return res.status(200).send(user)
             }
             catch (e) {
                 throw (e)
@@ -131,25 +130,6 @@ module.exports = (db_pool) => {
             catch (e) {
                 throw(e)
             }
-        },
-        upload_image : async(req, res) => {
-            console.log("**** IN upload image")
-            try {
-                let user_id = req.user_id
-                console.log("rew: ", req.file)
-                // console.log("req: ", req.body.file)
-                // let url  = req.file.filename
-                let url  = ""
-                console.log("URL: ", url)
-                let upload_res = await user_functions.upload_profile_pic(user_id, url)
-                if (upload_res.affectedRows == 1) {
-                    return res.status(200).send({message: "successfully added profile pic"})
-                }
-                return upload_res
-            }
-            catch (e) {
-                throw(e)
-            }
-        },
+        }
     }
 }

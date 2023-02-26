@@ -6,7 +6,7 @@ node_modules
 **/.env
 **/.envrc
 **/torrents/
-
+**/uploads/**
 **/yts_response/*
 
 server/scraper/data

@@ -1,17 +1,36 @@
 const { buildPatchQuery, buildPatchArgs } = require('../utils/update_args')
-const transform_csv_lists_to_arrays       = require("../utils/group_concat_formatter")
 
 module.exports = (db_pool) => {
     return {
+        get_my_user: async (userid) => {
+            console.log("\n[user]: get_my_user ", userid)
+            try {
+                [users, ] = await db_pool.query(`
+                SELECT
+                    users.id,
+                    first_name,
+                    last_name,
+                    mail,
+                    language,
+                    picture,
+                    username,
+                    bio
+
+                FROM users
+                WHERE users.id=?;`,
+                userid)
+                return users
+            }
+            catch(e) {
+                throw(e)
+            }
+        },
         get_user_by_id: async (userid) => {
             try {
                 [users, ] = await db_pool.query(`
-                WITH aggregate_genres as (SELECT user_id, JSON_ARRAYAGG(movie_id) as watched_movies
-                    from watched_movies
-                    group by user_id)
-                SELECT users.id, first_name, last_name, mail, language, picture, username, bio, JSON_ARRAYAGG(fm.movie_id) as favorite_movies, watched_movies, 361 as followers, 420 as followed
+                SELECT users.id, first_name, last_name, language, picture, username, bio, JSON_ARRAYAGG(fm.movie_id) as favorite_movies_ids, JSON_ARRAYAGG(wm.movie_id) as watched_movies_ids
                 FROM users
-                LEFT JOIN aggregate_genres wm
+                LEFT JOIN watched_movies wm
                     on users.id = wm.user_id
                 LEFT JOIN favorite_movies fm
                     on users.id = fm.user_id
@@ -93,20 +112,6 @@ module.exports = (db_pool) => {
             catch(e) {
                 throw (e)
             }
-        },
-        upload_profile_pic: async(user_id, url) => {
-            console.log("in update profile pic");
-            try {
-                let [update_result, ] = await db_pool.query(`
-                INSERT into users (id, picture)
-                values (?, ?)`,
-                [user_id, url])
-                console.log("update_result", update_result)
-                return update_result
-            }
-            catch(e) {
-                throw (e)
-            }
-        },
+        }
     }
 }

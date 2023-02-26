@@ -32,13 +32,13 @@ module.exports = (db_pool) => {
 
 
         create_access_token : (userid) => {
-            console.log("Creating token for user %d.", userid);
+            console.log("\n[auth]: Creating token for ", {userid});
             return jwt.sign({user_id: userid}, process.env.TOKEN_SECRET, { expiresIn: 86400 });
         },
 
 
         get_user_from_username: async (username) => {
-            console.log("getting user from name: %s.", username)
+            console.log("\n[auth]: getting user from ", {username})
             let [user_res, ] = await db_pool.query("\
                 SELECT * FROM users \
                 WHERE username=?;",
@@ -67,10 +67,10 @@ module.exports = (db_pool) => {
 
 
         check_password : async (user, password) => {
-            console.log("checking password: ", user)
+            // console.log("checking password: ", user)
             if (user == undefined) {
                 return false
-                throw_err_with_code("user doesnt exist", "MISSING_USER")
+                // throw_err_with_code("user doesnt exist", "MISSING_USER")
             }
 
             if (bcrypt.compareSync(password, user.pass)) {

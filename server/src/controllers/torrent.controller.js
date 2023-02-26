@@ -57,7 +57,6 @@ module.exports = (db_pool) => {
             videoStream.pipe(res);
         },
 
-
         add_magnet(req, res) {
             console.log("Get magnet content", req.body)
 
@@ -104,7 +103,6 @@ module.exports = (db_pool) => {
                 torrent_functions.set_subtitles_high_priority(torrent)
             });
         },
-
 
         stream_magnet: async (req, res) => {
             console.log("Magnet stream")
@@ -172,6 +170,95 @@ module.exports = (db_pool) => {
             console.log("PIPE stream")
             videoStream.pipe(res);
             
-        }
+        },
+
+        get_torrents_from_movie_id : async (req, res) => {
+            console.log("get torrents for movie", req.query.movie_id)
+            try {
+                let movie_id=req.query.movie_id
+                if (movie_id == null) {
+                    res.status(200).send({code: return_codes.MISSING_QUERY})
+                }
+                let [torrents, ] = await db_pool.query(
+                    `
+                    SELECT
+                        id,
+                        movie_id,
+                        url,
+                        hash,
+                        quality,
+                        seeds,
+                        peers,
+                        size,
+                        size_bytes
+                    FROM
+                        torrents
+                    WHERE
+                        movie_id=?;
+                    `,
+                    movie_id
+                )
+                console.log("Got:", torrents)
+                res.status(200).send({code: return_codes.SUCCESS, torrents: torrents})
+            }
+            catch (e) {
+                console.log("Error in get torrents:", e)
+                throw(e)
+                res.status(400).send(e)
+            }
+        },
+
+        async get_ready_subtitles(req, res) {
+            try {
+                console.log("Getting ready subs", req.query )
+                if (req.query == null || req.query.hash == null || req.query.title == null) {
+                    return res.status(400).send({code: return_codes.MISSING_QUERY})
+                }
+
+                let magnet = hash_title_to_magnet_link(req.query.hash, req.query.title);
+                let tor    = torrent_functions.get_torrent(magnet);
+                
+                if (tor == null) {
+                    return res.status(204).send({code: return_codes.TORRENT_NOT_EXIST})
+                }
+                else if (tor.ready == false) {
+                    return res.status(204).send({code: return_codes.TORRENT_NOT_READY})
+                }
+
+                let subs   = torrent_functions.get_downloaded_subtitles(tor)
+
+                return res.status(200).send({subs: subs, code: return_codes.SUCCESS})
+            }
+            catch (e) {
+                throw(e)
+                return res.status(400).send({code: return_codes.UNKNOWN_ERROR, subs: []})
+            }
+        },
+
+        async get_available_subtitles(req, res) {
+            try {
+                if (req.query == null || req.query.hash == null || req.query.title == null) {
+                    return res.status(400).send({code: return_codes.MISSING_QUERY})
+                }
+
+                let magnet = hash_title_to_magnet_link(req.query.hash, req.query.title);
+                let tor    = torrent_functions.get_torrent(magnet);
+                
+                if (tor == null) {
+                    return res.status(204).send({code: return_codes.TORRENT_NOT_EXIST})
+                }
+                else if (tor.ready == false) {
+                    return res.status(204).send({code: return_codes.TORRENT_NOT_READY})
+                }
+
+                let subs   = torrent_functions.get_available_subtitles(tor)
+
+                return res.status(200).send({subs: subs, code: return_codes.SUCCESS})
+            }
+            catch (e) {
+                throw(e)
+                return res.status(400).send({code: return_codes.UNKNOWN_ERROR, subs: []})
+            }
+        },
     }
 }

@@ -74,8 +74,8 @@ const router = createRouter({
 			component: Populate,
 		},
 		{
-			path: "/movie_torrents/:movie_id",
-			name: "movie_torrents",
+			path: "/movie_torrent/:movie_id",
+			name: "movie_torrent",
 			props: true,
 			component: MovieTorrents,
 		},

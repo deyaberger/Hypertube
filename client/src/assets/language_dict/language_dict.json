@@ -72,6 +72,7 @@
 		"rating"          : ["rating", "score"],
 		"time"            : ["time", "durée"],
 		"genre"           : ["genre", "genre"],
+		"seeds"		      : ["seeds", "seeds"],
 		"quality"		  : ["quality", "qualité"],
 		"title"           : ["Title", "Titre"],
 		"sort"            : ["Sort by", "Trier par"],
@@ -90,13 +91,18 @@
 			"Sci-Fi"       : ["Sci-Fi"     , "Science Fiction"],
 			"Thriller"    : ["Thriller"   , "Thriller"],
 			"Western"     : ["Western"    , "Western"]
-	},
+		},
 		"sorting_list"    : {
 			"imdb_rating" : ["rating", "note"],
 			"year"        : ["year", "année"],
 			"title"       : ["title", "titre"],
 			"seeds"       : ["seeds", "seeds"]
-		}
+		},
+		"add_review"	  : ["Add a review", "Ajouter un avis"],
+		"send_review"	  : ["Send review", "Envoyer"],
+		"not_specified"   : ["Not specified", "Pas d'information à ce sujet"],
+		"director"		  : ["Director", "Réalisateur"],
+		"actors"		  : ["Actors", "Acteurs"]
 
 	},
 	"PROFILE" : {
@@ -122,6 +128,7 @@
 		"no_user_found"    :["We don't have any data about this user", "Nous n'avons pas de données concernant cet utilisateur"],
 		"first_name_error" :["First name can't be empty or contain whitespaces", "Un prenom ne peut pas etre vide ou contenir des espaces"],
 		"last_name_error"  :["Last name can't be empty or contain whitespaces", "Un nom ne peut pas etre vide ou contenir des espaces"],
-		"email_error"      :["Please enter a valid email address", "Adresse invalide"]
+		"email_error"      :["Please enter a valid email address", "Adresse invalide"],
+		"image_type_error" :["Only .png, .jpg, .jpeg and .webp format allowed", "Seuls les formats .png, .jpg, .jpeg and .webp sont acceptés"]
 	}
 }
