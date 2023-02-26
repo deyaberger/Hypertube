@@ -8,7 +8,7 @@ const connection_pool = mysql.createPool({
     password          : process.env.HYPERDB_PASS,
     database          : 'hyperdb',
     waitForConnections: true,
-    connectionLimit   : 10,
+    connectionLimit   : 20,
     queueLimit        : 0
   });
 
