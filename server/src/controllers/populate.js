@@ -1,6 +1,10 @@
 const axios = require('axios');
+const fs = require('fs/promises');
+const cliProgress       = require('cli-progress');
 
-const API_KEY = 'f373f15887040d8b3b246f53d94d23f3'
+const bar1              = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
+
+const API_KEY = process.env.TMDB_API_KEY
 
 function create_request(url, params) {
 	let request = {
@@ -14,9 +18,6 @@ function create_request(url, params) {
 	}
 	return request;
 }
-
-const fs = require('fs/promises');
-
 
 function transform_cast_dict(cast, crew) {
     let cast_output = cast.reduce((acc, { known_for_department, original_name, popularity}) => {
@@ -54,7 +55,6 @@ async function read_json(file_path) {
   }
 }
 
-
 function parse_movie_data(movie) {
     let yts_id         = movie.hasOwnProperty('id')        ? movie.id        : null;
     let imdb_code      = movie.hasOwnProperty('imdb_code') ? movie.imdb_code : null;
@@ -86,7 +86,6 @@ function parse_movie_data(movie) {
         "summary"        : summary
     })
 }
-
 
 async function post_movie(db_pool, yts_id, imdb_code, title, imdb_rating, year, length_minutes, language, summary) {
 
@@ -126,7 +125,6 @@ async function post_image(db_pool, movie_id, size, url) {
     }
 }
 
-
 async function parse_and_post_images(db_pool, movie, movie_id) {
     if (movie.hasOwnProperty('large_cover_image')) {
         await post_image(db_pool, movie_id, 1, movie.large_cover_image)
@@ -145,8 +143,6 @@ async function parse_and_post_images(db_pool, movie, movie_id) {
     }
 }
 
-
-
 async function post_genre(db_pool, movie_id, name) {
 
     try {
@@ -160,8 +156,6 @@ async function post_genre(db_pool, movie_id, name) {
     }
 }
 
-
-
 async function parse_and_post_genres(db_pool, movie, movie_id) {
     if (!movie.hasOwnProperty('genres')) {
         return ({"msg" : "missing_genres"});
@@ -170,12 +164,13 @@ async function parse_and_post_genres(db_pool, movie, movie_id) {
     if (typeof(genres) != "object" || genres.length == 0) {
         return ({"msg" : "missing_genres"});
     }
+    let promises = []
     for (let i in genres) {
-        await post_genre(db_pool, movie_id, genres[i])
+        promises.push(post_genre(db_pool, movie_id, genres[i]))
     }
+    await Promise.all(promises)
     return ({"msg" : "genres_all_good"})
 }
-
 
 async function post_torrent(db_pool, movie_id, url, hash, quality, seeds, peers, size, size_bytes) {
 
@@ -190,7 +185,6 @@ async function post_torrent(db_pool, movie_id, url, hash, quality, seeds, peers,
     }
 }
 
-
 async function parse_and_post_torrents(db_pool, movie, movie_id) {
     if (!movie.hasOwnProperty('torrents')) {
         return ({"msg" : "missing_torrents"});
@@ -199,7 +193,7 @@ async function parse_and_post_torrents(db_pool, movie, movie_id) {
     if (typeof(torrents) != "object" || torrents.length == 0) {
         return ({"msg" : "missing_torrents"});
     }
-    let torrents_res = []
+    let torrents_promises = []
     for (let i in torrents) {
         let torrent = torrents[i];
         let url = torrent.hasOwnProperty('url')               ? torrent.url               : null;
@@ -209,11 +203,11 @@ async function parse_and_post_torrents(db_pool, movie, movie_id) {
         let peers = torrent.hasOwnProperty('peers')           ? torrent.peers             : null;
         let size = torrent.hasOwnProperty('size')             ? torrent.size              : null;
         let size_bytes = torrent.hasOwnProperty('size_bytes') ? String(torrent.size_bytes): null;
-        torrents_res.push(await post_torrent(db_pool, movie_id, url, hash, quality, seeds, peers, size, size_bytes))
+        torrents_promises.push(post_torrent(db_pool, movie_id, url, hash, quality, seeds, peers, size, size_bytes))
     }
+    Promise.all(torrents_promises)
     return ({"msg" : "torrents_all_good"})
 }
-
 
 module.exports = (db_pool) => {
     return {
