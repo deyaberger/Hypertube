@@ -31,24 +31,26 @@ function _parse_form_for_back(form, lang_nb) {
 }
 
 export const Parse_Single_Movie = (data) => {
-	const res = data[0]
 	let parsed_data = {
-		"title"             : res.title,
-		"genres"            : res.genres_list,
-		"large_cover_image" : res.images_list[0],
+		"title"             : data[0].title,
+		"genres"            : data[0].genres_list,
+		"images_list"		: data[0].images_list,
 		"list_comments"     : [],
-		"year"              : res.year,
-		"runtime"           : res.length_minutes,
-		"rating"            : res.imdb_rating,
-		"summary"           : res.summary,
-		"cast"              : [],
+		"year"              : data[0].year,
+		"runtime"           : data[0].length_minutes,
+		"rating"            : data[0].imdb_rating,
+		"summary"           : data[0].summary,
+		"director"          : data[0].director,
+		"actors"	        : data[0].actors,
+		"is_watched"        : data[0].is_watched,
+		"is_fav"	        : data[0].is_fav,
 	}
 	return parsed_data
 }
 
 export const Get_Recommendations = async(token) => {
 	let request = {
-		url: `http://127.0.0.1:8071/api/movies/home`,
+		url: `http://127.0.0.1:8071/api/movie/reco`,
 		method: "get",
 		headers: {
 			'Access-Control-Allow-Origin': '*',
@@ -57,16 +59,15 @@ export const Get_Recommendations = async(token) => {
 		}
 	};
 	const response = await axios(request);
-	// console.log("response dans front: ", response)
 	return response;
 }
 
 
-export const Get_Movies_Research = async(form , lang_nb, token) => {
+export const Get_Movies_Research = async(form, lang_nb, token) => {
 	const params = _parse_form_for_back(form, lang_nb)
-	console.log("params: ", params)
+	console.log("<movies> : params ", params)
 	let request = {
-		url: `http://127.0.0.1:8071/api/movies/search`,
+		url: `http://127.0.0.1:8071/api/movie/search`,
 		method: "get",
 		headers: {
 			'Access-Control-Allow-Origin': '*',
@@ -76,38 +77,34 @@ export const Get_Movies_Research = async(form , lang_nb, token) => {
 		params : params
 	};
 	const response = await axios(request);
-	// console.log("response dans front: ", response)
 	return response;
 }
 
 
+
 export const Get_Single_Movie_Details = async(movie_id, token) => {
 	let request = {
-		url: `http://127.0.0.1:8071/api/movies/details/${movie_id}`,
+		url: `http://127.0.0.1:8071/api/movie/get_details/${movie_id}`,
 		method: "get",
 		headers: {
 			'Access-Control-Allow-Origin': '*',
 			"Content-type"               : "application/json",
-			'Authorization'				       : `Bearer ${token}`
+			'Authorization'				 : `Bearer ${token}`
 		}
 	};
 	const response = await axios(request);
-	// console.log("response dans front: ", response)
 	return response;
 }
 
 // ------------------------------------------ FAVORITES --------------------------------------------------------------
 export const Get_User_Fav_Movies = async(token, user_id) => {
 	let request = {
-		url: `http://127.0.0.1:8071/api/favorites/all`,
+		url: `http://127.0.0.1:8071/api/favorites/${user_id}`,
 		method: "get",
 		headers: {
 			'Access-Control-Allow-Origin': '*',
 			"Content-type"               : "application/json",
 			'Authorization'				 : `Bearer ${token}`
-		},
-		params : {
-			"user_id" : user_id
 		}
 	};
 	const response = await axios(request);

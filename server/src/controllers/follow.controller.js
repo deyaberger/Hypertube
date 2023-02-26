@@ -1,30 +1,32 @@
 module.exports = (db_pool) => {
-    const follows_functions = require('./follows')(db_pool)
+    const follows_functions = require('./follow')(db_pool)
 
     return {
         get_followings : async (req, res) => {
-            console.log("************in get following")
             try {
                 let userid = req.query.user_id == undefined ? req.user_id  : Number(req.query.user_id)
                 let followings_res = await follows_functions.get_user_followings(userid)
                 if (followings_res != null && followings_res.following) {
-                    return res.status(200).send({count: followings_res.following})
+                    console.log("[follows.controller]: get_followings SUCCESS")
+                    return res.status(200).send({followings: followings_res.following, code: "SUCCESS"})
                 }
-                return res.status(400).send({message: followings_res})
+                console.log("[follows.controller]: get_followings FAILURE")
+                return res.status(400).send({msg: followings_res, code: "FAILURE"})
             }
             catch (e) {
                 throw (e)
             }
         },
         get_followers : async (req, res) => {
-            console.log("************in get followers")
             try {
                 let userid = req.query.user_id == undefined ? req.user_id  : Number(req.query.user_id)
                 let followers_res = await follows_functions.get_user_followers(userid)
                 if (followers_res != null && followers_res.followers) {
-                    return res.status(200).send({count: followers_res.followers})
+                    console.log("[follows.controller]: get_followers SUCCESS")
+                    return res.status(200).send({followers: followers_res.followers, code: "SUCCESS"})
                 }
-                return res.status(400).send({message: followers_res})
+                console.log("[follows.controller]: get_followers FAILURE")
+                return res.status(400).send({msg: followers_res, code: "FAILURE"})
             }
             catch (e) {
                 throw (e)

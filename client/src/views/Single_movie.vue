@@ -4,110 +4,119 @@ import vue3StarRatings from "vue3-star-ratings";
 import { Get_Single_Movie_Details,
 		 Parse_Single_Movie,
 		 Set_Watched,
-		 Set_UnWatched,
-		 Is_Watched } from "../functions/movies";
+		 Set_UnWatched} from "../functions/movies";
 import { Get_Comments_By_Movie_ID, Parse_Comments, Post_Comment } from "../functions/comments";
 import { Get_Formatted_Time } from "../functions/utils.js";
 import StarRating from 'vue-star-rating';
+import textContent from "../assets/language_dict/language_dict.json"
 
 
 export default {
 	props: {
 		movie_id: String,
 	},
+
+
 	data() {
 		return {
-			movie : [],
-			comments : [],
-			user_comment: "",
-			user_rating : 0,
-			Get_Formatted_Time  : Get_Formatted_Time,
-			is_watched : false,
-	}
+			text_content       : textContent.MOVIES,
+			movie              : [],
+			comments           : [],
+			user_comment       : "",
+			user_rating        : 0,
+			Get_Formatted_Time : Get_Formatted_Time,
+			fallbackUrl        : '../src/assets/missing_cover.jpeg',
+			movie_error        : false
+		}
 	},
+
+
 	components: {
 		vue3StarRatings,
 		StarRating
 	},
+
+
 	computed: mapState({
 		lang_nb    : state => state.lang_nb,
 		user_token : state =>  state.user_token,
 	}),
+
+
 	methods: {
-		async set_watched() {
+		async update_watched(movie) {
 			let res = null
-			if (this.is_watched == false) {
-				res = await Set_Watched(this.movie_id, this.user_token)
-			}
-			else {
-				res = await Set_UnWatched(this.movie_id, this.user_token)
-			}
-			if (res.status == 200) {
-				this.is_watched = !this.is_watched
-			}
-		},
-		async favs_and_co() {
 			try {
-				let res = await Is_Watched(this.movie_id, this.user_token);
-				if (res.status == 200) {
-					this.is_watched = res.data['message']
+				if (movie.is_watched == false) {
+					res = await Set_Watched(this.movie_id, this.user_token)
+				}
+				else {
+					res = await Set_UnWatched(this.movie_id, this.user_token)
+				}
+				if (res.data.code == "SUCCESS") {
+					console.log("[single_movie]: Successfully updated watched!")
+					movie.is_watched = !movie.is_watched
+				}
+				else {
+					console.log("ERROR: [single_movie] in update_watched: ", res)
 				}
 			}
 			catch(e) {
+				console.log("UNKNOWN ERROR [single_movie]: in update_watched")
 				throw(e)
 			}
-
 		},
+
 		async get_comments() {
 			try {
+				console.log("[single_movie]: getting movie comments...")
 				let res = await Get_Comments_By_Movie_ID(this.movie_id, this.user_token);
-				console.log("MOVIE COMMENTS = ", res)
-				if (res.status == 200) {
-					this.comments = Parse_Comments(res.data);
+				if (res.data.code == "SUCCESS") {
+					this.comments = Parse_Comments(res.data.comments);
+					console.log("[single_movie]: Successfully got movie comments! ", this.comments)
 				}
 				else {
-					console.log(res.code, res.data)
-					throw("Unknow error code getting movies")
+					console.log("ERROR [single_movie]: in get comments: ", res)
 				}
 			}
 			catch (e) {
-				console.log("Error in get_comments")
+				console.log("UNKNOWN ERROR [single_movie]: in get_comments")
 				throw(e)
 			}
 		},
+
 		async get_movie_details() {
 			try {
+				console.log("[single_movie]: getting movie details...")
 				let res = await Get_Single_Movie_Details(this.movie_id, this.user_token);
-				console.log("MOVIE RES = ", res)
-				if (res.status == 200) {
-					this.movie = Parse_Single_Movie(res.data);
+				if (res.data.code == "SUCCESS") {
+					this.movie = Parse_Single_Movie(res.data.movie);
+					console.log("[single_movie]: Successfully got movie details! ", this.movie)
 				}
-				else {
-					console.log(res.code, res.data)
-					throw("Unknow error code getting movies")
+				else if (res.data.code == "MISSING_MOVIE") {
+					this.movie_error = true
+					console.log("ERROR [single_movie]: No Movie found with id: ", this.movie_id)
 				}
 			}
 			catch (e) {
-				console.log("Error in get_movie_details")
+				this.movie_error = true
+				console.log("UNKNOWN ERROR [single_movie]: in get_movie_details")
 				throw(e)
 			}
 		},
+
 		reset_comment_input() {
 			this.user_comment = ''
 			this.user_rating = 0
-
 		},
+
 		async post_comment(content, rating) {
 			try {
 				let res = await Post_Comment(this.movie_id, content, rating, this.user_token)
-				console.log("Comment post RES = ", res)
-				if (res.status == 200) {
+				if (res.data.code == "SUCCESS") {
 					this.get_comments();
 					this.reset_comment_input();
-				}
-				else {
-					console.log(res.code, res.data)
-					throw("Unknow error code getting movies")
+					console.log("[single_movie]: Succesfully added comment to db!")
 				}
 			}
 			catch (e) {
@@ -117,16 +126,17 @@ export default {
 
 		reviewComplete() {
 			if (this.user_rating != 0 && this.user_comment.length > 0) {
-				console.log("review complete")
+				console.log("[single_movie]: review complete!")
 				return true
 			}
-			console.log("review incomplete")
+			// console.log("[single_movie]: incomplete review")
 			return false
 		},
 
 		get_separator(index, text_list) {
 			return (index < text_list.length - 1 ? ", " : "")
 		},
+
 		get_rating_level(rating) {
 			if (rating <= 3.5) {
 				return "bad"
@@ -135,35 +145,46 @@ export default {
 				return "bof"
 			}
 			return null
+		},
+
+		handle_image_error(event, movie) {
+			const nextIndex = parseInt(event.target.dataset.nextIndex)
+			const nextImage = movie.images_list[nextIndex];
+			if (nextImage) {
+				event.target.src = nextImage;
+			} else {
+				event.target.src = this.fallbackUrl;
+			}
 		}
 
 	},
-	mounted() {
-		this.get_movie_details();
-		this.get_comments();
-		this.favs_and_co();
+	async mounted() {
+		await this.get_movie_details();
+		if (!this.movie_error) {
+			this.get_comments();
+		}
 	},
 }
 </script>
 
 <template>
-	<div class="homemade-container">
+	<div class="homemade-container" v-if="!movie_error">
 		<div class="row justify-content-md-center">
 			<div v-if="movie.length == 0" class="col-md-auto">
 						<b-spinner label="Loading..." variant="success" class="mt-5"></b-spinner>
 				</div>
 			<div v-else class="col video_container">
-				<img class="movie_image" :src="movie.large_cover_image" alt="movie_image"  onerror="this.src='../src/assets/missing_cover.jpeg';"/>
+				<img class="movie_image" :src="movie.images_list[6]" alt="movie_image" :data-next-index="1" @error="handle_image_error($event, movie)"/>
 			</div>
 		</div>
-		<button v-if="is_watched"
-			@click="set_watched()"
+		<button v-if="movie.is_watched"
+			@click="update_watched(movie)"
 			class="submit_button"
 			type = "submit">
 			Fake tmp Unwatch button
 		</button>
 		<button v-else
-			@click="set_watched()"
+			@click="update_watched(movie)"
 			class="submit_button"
 			type = "submit">
 			Fake temporary watched button
@@ -198,19 +219,20 @@ export default {
 		</div>
 		<div class="row cast_container">
 			<div class="col">
-				<span class="infos_title_horizontal">Director: </span>
-				<span class="names"></span>
+				<span class="infos_title_horizontal">{{text_content["director"][lang_nb]}}: </span>
+				<span class="names">{{ movie.director ? movie.director : text_content["not_specified"][lang_nb]}}</span>
 			</div>
 		</div>
 		<div class="row cast_container">
 			<div class="col">
-				<span class="infos_title_horizontal">Actors: </span>
-				<span class="names" v-for="actor in movie.cast" :key="actor">{{actor.name}}, </span>
+				<span class="infos_title_horizontal">{{text_content["actors"][lang_nb]}}: </span>
+				<span class="names">{{ movie.actors ? movie.actors : text_content["not_specified"][lang_nb]}}</span>
+				<!-- <span class="names" v-for="actor in movie.cast" :key="actor">{{actor.name}}, </span> -->
 			</div>
 		</div>
 		<hr class="solid">
 		<div class="row my_review">
-			<div class="infos_title">Add a review:</div>
+			<div class="infos_title">{{ text_content["add_review"][lang_nb] }}:</div>
 			<star-rating
 				v-model:rating="user_rating"
 				class="stars_container"
@@ -231,7 +253,7 @@ export default {
 				:disabled="!reviewComplete()"
 				class="submit_button"
 				type = "submit">
-				Send review
+				{{ text_content['send_review'][lang_nb] }}
 			</button>
 		</div>
 		<div v-for="comment in comments" :key="comment" class="row people_reviews">
@@ -247,6 +269,13 @@ export default {
 				<span>{{comment.date}}</span>
 			</div>
 			<div class="comment">'{{comment.content}}'</div>
+		</div>
+	</div>
+	<div class="homemade-container" v-else>
+		<div class="row movie_name_container">
+			<div class="col text-center">
+				<h1>No movie with this id</h1>
+			</div>
 		</div>
 	</div>
 </template>

@@ -1,28 +1,4 @@
-const bcrypt = require('bcrypt')
-const crypto = require('crypto')
 const jwt    = require('jsonwebtoken')
-
-
-const buildPatchQuery = (table, data) => {
-    if (Object.keys(data).length === 0) return null; // Or return what you want
-    let query = `UPDATE ${table} SET `;
-    query += Object.keys(data).map((key) => {
-        const valueToSet = typeof data[key] === 'string' ? `'${data[key]}'` : data[key];
-        return `${key}=?`;
-    }).join(', ');
-    return query + ` WHERE id=?;`;
-}
-
-const buildPatchArgs = (id, data) => {
-    if (Object.keys(data).length === 0) return null; // Or return what you want
-    let args = []
-    Object.keys(data).map((key) => {
-        args.push(data[key])
-    }).join(', ');
-    args.push(id)
-    return args
-}
-
 
 module.exports = (db_pool) => {
     const auth_functions = require('./auth')(db_pool)
@@ -130,7 +106,6 @@ module.exports = (db_pool) => {
                 // console.log(req.headers)
                 // console.log("authing:", authHeader)
                 const token = authHeader && authHeader.split(' ')[1]
-
                 if (token == null) return res.sendStatus(401)
                 jwt.verify(token, process.env.TOKEN_SECRET, (err, decoded) => {
                     if (err != null) console.log(err)
@@ -139,7 +114,7 @@ module.exports = (db_pool) => {
                         return res.sendStatus(403)
                     }
                     req.user_id = decoded.user_id
-                    console.log("Authenthicated user %o.", decoded.user_id)
+                    // console.log("Authenthicated user %o.", decoded.user_id)
                     next()
                 })
             }

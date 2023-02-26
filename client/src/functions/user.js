@@ -132,7 +132,7 @@ export const Update_Email = async(token, email) => {
 // ------------------------------------------ FOLLOWS -------------------------------------------------------------
 export const Get_User_Followings = async(token, user_id) => {
 	let request = {
-		url: `http://127.0.0.1:8071/api/follows/who_do_you_follow`,
+		url: `http://127.0.0.1:8071/api/follow/who_do_you_follow`,
 		method: "get",
 		headers: {
 			'Access-Control-Allow-Origin': '*',
@@ -149,7 +149,7 @@ export const Get_User_Followings = async(token, user_id) => {
 
 export const Get_User_Followers = async(token, user_id) => {
 	let request = {
-		url: `http://127.0.0.1:8071/api/follows/who_follows_you`,
+		url: `http://127.0.0.1:8071/api/follow/who_follows_you`,
 		method: "get",
 		headers: {
 			'Access-Control-Allow-Origin': '*',
@@ -167,7 +167,7 @@ export const Get_User_Followers = async(token, user_id) => {
 
 export const Is_Following = async(token, user_id) => {
 	let request = {
-		url: `http://127.0.0.1:8071/api/follows/is_following/${user_id}`,
+		url: `http://127.0.0.1:8071/api/follow/is_following/${user_id}`,
 		method: "get",
 		headers: {
 			'Access-Control-Allow-Origin': '*',
@@ -182,7 +182,7 @@ export const Is_Following = async(token, user_id) => {
 
 export const Follow = async(token, user_id) => {
 	let request = {
-		url: `http://127.0.0.1:8071/api/follows/follow/${user_id}`,
+		url: `http://127.0.0.1:8071/api/follow/follow/${user_id}`,
 		method: "post",
 		headers: {
 			'Access-Control-Allow-Origin': '*',
@@ -196,7 +196,7 @@ export const Follow = async(token, user_id) => {
 
 export const UnFollow = async(token, user_id) => {
 	let request = {
-		url: `http://127.0.0.1:8071/api/follows/unfollow/${user_id}`,
+		url: `http://127.0.0.1:8071/api/follow/unfollow/${user_id}`,
 		method: "post",
 		headers: {
 			'Access-Control-Allow-Origin': '*',
@@ -208,16 +208,16 @@ export const UnFollow = async(token, user_id) => {
 	return response;
 }
 
+// ------------------------------------------ IMAGE -------------------------------------------------------------
 export const Upload_Image = async(token, image_file) => {
 	const formData = new FormData()
 	formData.append('file', image_file)
-	console.log("formData: ", formData)
 	let request = {
-		url: `http://127.0.0.1:8071/api/user/upload_image`,
+		url: `http://127.0.0.1:8071/api/image/upload`,
 		method: "post",
 		headers: {
 			'Access-Control-Allow-Origin': '*',
-			"Content-type"               : "application/json",
+			'Content-type'				 : 'multipart/form-data',
 			'Authorization'				 : `Bearer ${token}`
 		},
 		data : formData

@@ -1,38 +1,30 @@
 import axios from "axios"
 
-export const Parse_Comments = (data) => {
-	data = data.comments
-	if (data.length == 0) {
-		return data
+export const Parse_Comments = (comments) => {
+	if (comments.length == 0) {
+		return comments
 	}
-	console.log("DATTTe: ", data[0].date, typeof(data[0].date))
-	let comments = []
-	for (let i = 0; i < data.length; i++) {
-		comments.push( {
-			"content" : data[i].content,
-			"date" : data[i].date,
-			"username" : data[i].username,
-			"rating" : data[i].rating
+	let parsed_comments = []
+	for (let i = 0; i < comments.length; i++) {
+		parsed_comments.push( {
+			"content" : comments[i].content,
+			"date" : comments[i].date,
+			"username" : comments[i].username,
+			"rating" : comments[i].rating
 		});
 	  }
-	console.log("COMMMMMENNNTS: ", comments)
-
-	return comments
+	return parsed_comments
 }
 
 
 export const Get_Comments_By_Movie_ID = async(movie_id, token) => {
-	console.lo
 	let request = {
-		url: `http://127.0.0.1:8071/api/comments/movie/:${movie_id}`,
+		url: `http://127.0.0.1:8071/api/comment/movie/${movie_id}`,
 		method: "get",
 		headers: {
 			'Access-Control-Allow-Origin': '*',
 			"Content-type"               : "application/json",
 			'Authorization'				 : `Bearer ${token}`
-		},
-		params : {
-			"movie_id" : movie_id
 		}
 	};
 	const response = await axios(request);
@@ -41,9 +33,9 @@ export const Get_Comments_By_Movie_ID = async(movie_id, token) => {
 
 
 export const Post_Comment = async(movie_id, content, rating, token) => {
-	console.log("Posting comment: ", movie_id, content, rating, token)
+	console.log("<comments> : posting ", {movie_id, content, rating, token})
 	let request = {
-		url: `http://127.0.0.1:8071/api/comments/post/:${movie_id}`,
+		url: `http://127.0.0.1:8071/api/comment/post/:${movie_id}`,
 		method: "post",
 		headers: {
 			'Access-Control-Allow-Origin': '*',
@@ -57,6 +49,5 @@ export const Post_Comment = async(movie_id, content, rating, token) => {
 		}
 	};
 	const response = await axios(request);
-	console.log("RESPONSE: ", response)
 	return response;
 }

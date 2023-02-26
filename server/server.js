@@ -1,63 +1,79 @@
 const express    = require('express')
 const bodyParser = require('body-parser')
 const cors       = require("cors");
-
-const jsonParser = bodyParser.json({ limit: '50mb' })
+const app        = express();
 
 // GET .env file contents
 require('dotenv').config()
 
-// Create express app object and add json parsing middleware
-const app = express();
-app.use(jsonParser)
-app.use(cors({
+
+pp.use(cors({
   origin: "*"
 }))
+app.use(jsonParser)
+app.use(bodyParser.json({limit: '50mb'}));
+app.use(bodyParser.urlencoded({ extended: true }));
 
-// Create database connection pool, this will be injected into the controllers to avoid recreating new connections all the time
+
+const sanitizer = require("perfect-express-sanitizer");
+
+app.use(sanitizer.clean({
+    xss: false,
+    noSql: false,
+    sql: true,
+    sqlLevel: 4,
+}, whitelist = ["/api/image/upload"]));
+
 const connection_pool = require('./src/db/create_connection_pool')
 
-
-// Create the AUTH router, (injecting the connection pool) and add it to the server
+// AUTH
 const auth_router = require("./src/routes/auth.routes")(connection_pool)
 app.use("/api/auth", auth_router)
 
 
-// Create the user router, (injecting the connection pool) and add it to the server
+// USER
 const user_router = require("./src/routes/user.routes")(connection_pool)
 app.use("/api/user", user_router)
 
-// Create the following router, (injecting the connection pool) and add it to the server
-const follows_router = require("./src/routes/follows.routes")(connection_pool)
-app.use("/api/follows", follows_router)
+
+// FOLLOW
+const follow_router = require("./src/routes/follow.routes")(connection_pool)
+app.use("/api/follow", follow_router)
 
 
-// Create the comment router, (injecting the connection pool) and add it to the server
+// COMMENT
 const comment_router = require("./src/routes/comment.routes")(connection_pool)
-app.use("/api/comments", comment_router)
+app.use("/api/comment", comment_router)
 
 
-
-// Create the comment router, (injecting the connection pool) and add it to the server
+// MOVIE
 const movie_router = require("./src/routes/movie.routes")(connection_pool)
-app.use("/api/movies", movie_router)
+app.use("/api/movie", movie_router)
 
 
-
-// Create the comment router, (injecting the connection pool) and add it to the server
+// TORRENT
 const torrent_router = require("./src/routes/torrent.routes")(connection_pool)
 app.use("/api/torrents", torrent_router)
 
 
+// POPULATE
 const populate_router = require("./src/routes/populate.routes")(connection_pool)
 app.use("/api/populate", populate_router)
 
 
-const favorites_router = require("./src/routes/favorites.routes")(connection_pool)
+// FAVORITE
+const favorites_router = require("./src/routes/favorite.routes")(connection_pool)
 app.use("/api/favorites", favorites_router)
 
+
+// WATCHED
 const watched_router = require("./src/routes/watched.routes")(connection_pool)
 app.use("/api/watched", watched_router)
+
+
+// IMAGE
+const image_router = require("./src/routes/image.routes")(connection_pool)
+app.use("/api/image", image_router)
 
 
 // Start the server
