@@ -1,6 +1,6 @@
 <script>
 import { mapState } from 'vuex';
-import { Get_torrents_for_movie, Add_magnet } from '../functions/streaming'
+import { Get_torrents_for_movie, Add_magnet, get_ready_subs } from '../functions/streaming'
 import { Get_Single_Movie_Details } from '../functions/movies'
 
 export default {
@@ -16,7 +16,8 @@ export default {
 			movie_details    : null,
 			torrent_files    : [],
 			torrent_loading  : false,
-			movie_source     : null
+			movie_source     : null,
+			subs             : []
 		}
 	},
 
@@ -32,13 +33,14 @@ export default {
 
 
 	methods: {
-		Choose_Torrent(arg) {
+		async Choose_Torrent(arg) {
 			console.log("Chose torrent", arg)
 			this.selected_torrent = arg
 			this.torrent_files = []
 			this.torrent_loading = true
 			try {
-				this.get_torrent_content(arg.hash, this.movie_details.title)
+				await this.get_torrent_content(arg.hash, this.movie_details.title)
+				await this.get_subs(arg.hash, this.movie_details.title)
 			}
 			catch (e) {
 				console.log("Error get torrent content", e)
@@ -58,6 +60,20 @@ export default {
 			}
 			else {
 				console.log("Non success in get torrent content", res)
+			}
+		},
+
+		async get_subs(hash, title) {
+			let res = await get_ready_subs(hash, title, this.user_token)
+			if (res.status == 200 && res.data.code == "SUCCESS") {
+				this.subs = res.data.subs
+			}
+			else if (res.status == 200 && res.data.code == "TORRENT_NOT_READY") {
+				this.torrent_files = []
+				this.torrent_loading = true
+			}
+			else {
+				console.log("Non success in get torrent subs", res)
 			}
 		},
 
@@ -129,15 +145,25 @@ export default {
 		
 		<h1>Contents</h1>
 		<h3 v-if="torrent_loading">Loading</h3>
-		<div v-for="file in torrent_files" v-bind:key="file.name">
-			<span> {{ file }} </span>
+		<div v-else>
+			<h2>Files</h2>
+			<div v-for="file in torrent_files" v-bind:key="file.name">
+				<span> {{ file }} </span>
+			</div>
+
+			<h2>Subs</h2>
+			<div v-for="sub in subs" v-bind:key="sub.path">
+				<span> {{ sub }} </span>
+			</div>
+<!-- 
+			<div v-if="movie_source" >
+				<button @click="supervise">Supervise</button>
+				<video ref="movieplayer" controls loop id="videoPlayer" width="500" height="500" muted="muted" autoplay>
+					<source :src='movie_source' type="video/mp4" />
+				</video>
+			</div> -->
 		</div>
-		<div v-if="movie_source" >
-			<!-- <button @click="supervise">Supervise</button>
-			<video ref="movieplayer" controls loop id="videoPlayer" width="500" height="500" muted="muted" autoplay>
-				<source :src='movie_source' type="video/mp4" />
-			</video> -->
-		</div>
+
 		
 	</div>
 </template>

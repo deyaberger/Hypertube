@@ -86,7 +86,6 @@ module.exports = (db_pool) => {
             {
                 if(file.path.endsWith(".srt"))
                 {
-                    console.log(file.name)
                     file.select(100)
                 }
             }
@@ -124,7 +123,7 @@ module.exports = (db_pool) => {
                     })
                 }
             }
-            console.log("Ready subs:", subs.map(s => s.name))
+            // console.log("Ready subs:", subs.map(s => s.name))
             return subs
         },
 
@@ -144,7 +143,7 @@ module.exports = (db_pool) => {
                     })
                 }
             }
-            console.log("Available subs:", subs.map(s => s.name))
+            // console.log("Available subs:", subs.map(s => s.name))
             return subs
         }
     }

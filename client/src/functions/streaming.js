@@ -39,3 +39,45 @@ export const Add_magnet = async(hash, title, token) => {
 	console.log("magnet file content: ", response.data)
 	return response;
 }
+
+
+export const get_ready_subs = async(hash, title, token) => {
+	console.log("getting ready subs magnet: ", hash, title)
+  let request = {
+		url: `http://127.0.0.1:8071/api/torrents/subtitles/ready`,
+		method: "get",
+		headers: {
+			'Access-Control-Allow-Origin': '*',
+			"Content-type"               : "application/json",
+			'Authorization'				       : `Bearer ${token}`
+		},
+    params: {
+      hash : hash,
+			title: title
+    }
+	};
+	const response = await axios(request);
+	console.log("got subs: ", response.data.subs)
+	return response;
+}
+
+
+export const get_available_subs = async(hash, title, token) => {
+	console.log("getting available subs magnet: ", hash, title)
+  let request = {
+		url: `http://127.0.0.1:8071/api/torrents/subtitles/available`,
+		method: "get",
+		headers: {
+			'Access-Control-Allow-Origin': '*',
+			"Content-type"               : "application/json",
+			'Authorization'				       : `Bearer ${token}`
+		},
+    params: {
+      hash : hash,
+			title: title
+    }
+	};
+	const response = await axios(request);
+	console.log("got subs: ", response.data.subs)
+	return response;
+}
