@@ -64,7 +64,6 @@ export const Get_All_Movies_IMDB_Ids = async () => {
 }
 
 export const Fetch_And_Add_TMDB = async (imdb_code, id) => {
-	console.log("IN FETCH AND ADD: ***********")
 	let request = {
 		url: `http://127.0.0.1:8071/api/populate/fetch_tmdb/${imdb_code}`,
 		method: "get",
@@ -74,6 +73,20 @@ export const Fetch_And_Add_TMDB = async (imdb_code, id) => {
 		},
 		params : {
 			'id' : id
+		}
+	};
+	const response = await axios(request);
+	return response
+}
+
+
+export const Opti_DB = async () => {
+	let request = {
+		url: `http://127.0.0.1:8071/api/populate/opti`,
+		method: "get",
+		headers: {
+			'Access-Control-Allow-Origin': '*',
+			"Content-type"               : "application/json"
 		}
 	};
 	const response = await axios(request);

@@ -1,5 +1,4 @@
 const axios = require('axios');
-const { createCipheriv } = require('crypto');
 
 const API_KEY = 'f373f15887040d8b3b246f53d94d23f3'
 
@@ -29,7 +28,6 @@ function transform_cast_dict(cast, crew) {
         return acc;
       }, { director: [], actors: [] });
       if (cast_output.director.length == 0 && crew != null && crew.length != 0) {
-        console.log("----------Adding director crew")
         cast_output.director = crew.reduce((acc, { known_for_department, original_name, popularity}) => {
             if (known_for_department === "Directing") {
               acc.push({ original_name: original_name, popularity});}
@@ -193,8 +191,6 @@ async function post_torrent(db_pool, movie_id, url, hash, quality, seeds, peers,
 }
 
 
-
-
 async function parse_and_post_torrents(db_pool, movie, movie_id) {
     if (!movie.hasOwnProperty('torrents')) {
         return ({"msg" : "missing_torrents"});
@@ -304,7 +300,7 @@ module.exports = (db_pool) => {
         },
 
         fetch_tmdb_movie: async (imdb_code) => {
-            console.log("IMDB code: ", imdb_code)
+            console.log("\n[populate]: fetch_tmdb_movie ", {imdb_code})
             let url = `https://api.themoviedb.org/3/find/${imdb_code}`
             let params = {
                 "api_key" : API_KEY,
@@ -329,6 +325,7 @@ module.exports = (db_pool) => {
         },
 
         get_tmdb_cast : async (tmdb_id) => {
+            console.log("[populate]: get_tmdb_cast ", {tmdb_id})
             let url = `https://api.themoviedb.org/3/movie/${tmdb_id}/credits`
             let params = {
                 "api_key" : API_KEY,
@@ -348,11 +345,12 @@ module.exports = (db_pool) => {
 
             }
             catch(e) {
-                throw(e)
+                return (e)
             }
         },
 
         update_movie_infos : async (imdb_id, tmdb_id, actors, director) => {
+            console.log("[populate]: update_movie_infos ", {imdb_id, tmdb_id, actors, director})
             try {
                 let [update_res, ] = await db_pool.query(`
                 UPDATE movies SET tmdb_id=?, actors=?, director=? WHERE imdb_code=?;`,
@@ -374,7 +372,6 @@ module.exports = (db_pool) => {
             HAVING COUNT(*) = 0;`
             try {
                 let [add_res, ] = await db_pool.query(kuerych)
-                console.log("ADDING IMAGE RES: ", add_res.affectedRows)
                 if (add_res.affectedRows == 1) {
                     return (1)
                 }
@@ -383,6 +380,43 @@ module.exports = (db_pool) => {
             catch (e) {
                 throw (e)
             }
+        },
+
+        max_seeds: async() => {
+            console.log("\n[populate]: filling up max_seeds column")
+            const query = `
+            WITH maxou as (SELECT
+                    MAX(seeds) as maximum,
+                    movie_id
+                FROM torrents
+                GROUP BY movie_id)
+            UPDATE movies
+            LEFT JOIN maxou
+                ON movies.id = maxou.movie_id
+            SET movies.max_seeds = maxou.maximum`
+            try {
+                let [update_res, ] = await db_pool.query(query)
+                return update_res;
+            }
+            catch (e) {
+                throw (e)
+            }
+        },
+
+        prune_db : async() => {
+            console.log("\n[populate]: pruning useless movies")
+            const query = `
+            DELETE
+            FROM movies
+            WHERE movies.max_seeds < 10 OR length_minutes = 0;`
+            try {
+                let [delete_res, ] = await db_pool.query(query)
+                return delete_res;
+            }
+            catch (e) {
+                throw (e)
+            }
+
         }
 
     }

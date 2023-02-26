@@ -65,11 +65,10 @@ export default {
 			<p class="error text-center">Server not responding...</p>
 			<img src="https://media.giphy.com/media/W0c3xcZ3F1d0EYYb0f/giphy.gif">
 		</div>
-			<div v-else :class="movie_list['profile'] ? 'col-md-4 movie-card profile' :'col-md-4 movie-card'" v-for="movie, index in movie_list['data']" style="text-decoration: none">
+			<div v-else :class="movie_list['profile'] ? 'col-md-4 movie-card profile' :'col-md-4 movie-card'" v-for="movie, index in movie_list['data']" :key="movie.id" style="text-decoration: none">
 				<router-link :to="'/movie/' + movie.id">
 				<div class="movie-header">
 					<img :class="movie.is_watched ? 'movie-image seen' : 'movie-image'" :src="movie.images_list[1]" alt="movie_image" :data-next-index="6" @error="handleError($event, movie)"/>
-						<!-- <img :class="movie.is_watched ? 'movie-image seen' : 'movie-image'" :src="movie.images_list[1]" alt="movie_image"  :onerror="handleError"/> -->
 						<b-icon-play-circle-fill v-if="movie.is_watched" class="h2 header-icon seen"></b-icon-play-circle-fill>
 						<b-icon-info-circle-fill v-else class="h2 header-icon"></b-icon-info-circle-fill>
 				</div>
@@ -90,10 +89,6 @@ export default {
 							</div>
 						</div>
 						<div class="info-section">
-							<label>{{text_content.genre[lang_nb]}}</label>
-							<span>{{movie.genres_list[0]}}</span>
-						</div>
-						<div class="info-section">
 							<label>{{text_content.year[lang_nb]}}</label>
 							<span>{{movie.year}}</span>
 						</div>
@@ -104,6 +99,10 @@ export default {
 						<div class="info-section">
 							<label>{{text_content.rating[lang_nb]}}</label>
 							<span>{{movie.imdb_rating}}/10</span>
+						</div>
+						<div class="info-section">
+							<label>{{text_content.seeds[lang_nb]}}</label>
+							<span>{{movie.max_seeds}}</span>
 						</div>
 					</div>
 				</div>
