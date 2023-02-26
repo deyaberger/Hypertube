@@ -6,15 +6,9 @@ const front_hostname = require('../utils/hostname.js').front_hostname
 const back_hostname  = require('../utils/hostname.js').back_hostname
 const return_codes   = require('../utils/return_codes.js')
 
-
-
-
-
-
-
 const helper_functions = (db_pool) => {
     const auth_functions = require('./auth')(db_pool)
-    
+
     return {
         create_user: async (user_info) => {
             let mail       = user_info.mail
@@ -46,7 +40,7 @@ const helper_functions = (db_pool) => {
                         console.log(return_codes.MAIL_ALREADY_TAKEN)
                         throw(new Error(return_codes.MAIL_ALREADY_TAKEN))
                     }
-        
+
                     else if (e.sqlMessage.includes('users.users_name_uindex')) {
                         console.log(return_codes.USERNAME_TAKEN)
                         throw(new Error(return_codes.USERNAME_TAKEN))
@@ -54,7 +48,7 @@ const helper_functions = (db_pool) => {
                 }
                 console.log("error create user for oauth", e)
                 throw(new Error(return_codes.UNKNOWN_ERROR))
-            }	
+            }
         },
 
         get_42_user_local_id: async (user_id_42) => {

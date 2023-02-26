@@ -1,4 +1,5 @@
 # Logs
+.envrc
 logs
 *.log
 npm-debug.log*
