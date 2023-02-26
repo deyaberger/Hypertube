@@ -1,6 +1,8 @@
 var srt2vtt = require('srt-to-vtt')
 var fs      = require('fs')
-var srtValidator = require('srt-validator')
+const { readFile } = require('fs/promises')
+
+var srtValidator = require('srt-validator').validator
 
 const return_codes = require("../utils/return_codes");
 
@@ -20,13 +22,16 @@ module.exports.only_srt_or_vtt = (req, res, next) => {
   }
 }
 
+async function content(path) {  
+  return await readFile(path, 'utf8')
+}
+
 module.exports.convert_to_vtt = async (req, res, next) => {
   try {
     let paf = decodeURIComponent(req.url.replace(/^\/+/, ''));
     let converted_paf
     let url_rewrite = req.url
     paf = `./torrents/${paf}`
-    console.log("converting", paf)
 
     if (!fs.existsSync(paf)) {
       return res.sendStatus(404)
@@ -49,7 +54,16 @@ module.exports.convert_to_vtt = async (req, res, next) => {
       return next()
     }
 
+    console.log("validating file")
+    let errors = srtValidator(await content(paf))
+    if (errors.length > 0) {
+      console.log("errors", errors)
+      return res.status(204).send({code: return_codes.CORRUPTED_SRT_FILE})
+    }
+    console.log("valid")
+
     console.log("converting")
+
     let stream = fs.createReadStream(paf)
     .pipe(srt2vtt())
     .pipe(fs.createWriteStream(converted_paf))
@@ -63,6 +77,9 @@ module.exports.convert_to_vtt = async (req, res, next) => {
     })
   }
   catch (e) {
+    if (e.code == 'ERR_STRING_TOO_LONG') {
+      return res.status(204).send({code: return_codes.FILE_TOO_LARGE})
+    }
     throw(e)
     res.status(400).send({code: return_codes.UNKNOWN_ERROR})
   }
