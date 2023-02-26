@@ -1,6 +1,6 @@
 const axios = require('axios');
 
-const API_KEY = 'f373f15887040d8b3b246f53d94d23f3'
+const API_KEY = process.env.TMDB_API_KEY
 
 function create_request(url, params) {
 	let request = {

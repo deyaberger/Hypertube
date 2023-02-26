@@ -74,7 +74,7 @@ export default {
 	watch: {
 		form: {
 			handler:function() {
-				this.emit_form()
+				this.emit_form();
 			},
 			deep:true
 		},

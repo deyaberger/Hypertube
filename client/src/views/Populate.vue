@@ -235,7 +235,7 @@ export default {
 		<p v-if="tmdb_on || tmdb_done">Time Spent:{{hours}}:{{minutes}}:{{seconds}}</p>
 		</div>
 		<div class="col-md-12 text-center mt-4">
-        <button class="submit_button" @click="opti_db()" v-if="!tmdb_on">
+        <button class="submit_button" @click="opti_db()" v-if="!opti_on">
 			Optimize DB
 		</button>
 		<p>

@@ -105,7 +105,7 @@ export default {
 
 		from_reco_to_research() {
 			this.user_research = 2,
-			this.reset_form()
+			this.reset_form();
 		},
 
 		show_favorites() {
