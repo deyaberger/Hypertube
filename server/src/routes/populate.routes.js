@@ -7,6 +7,7 @@ module.exports = (db_pool) => {
     router.get ("/get_all_imdb_ids"    , populate_controller.get_all_imdb_ids);
     router.get ("/add_to_db"           , populate_controller.from_json_to_db );
     router.get ("/fetch_tmdb/:imdb_id" , populate_controller.fetch_tmdb      );
+    router.get ("/opti"                , populate_controller.optimize        );
 
     return router
 }

@@ -6,26 +6,19 @@ module.exports = (db_pool) => {
         get_movies_recommendations: async (user_id) => {
             console.log("\n[movie]: getting reco")
             const request = `
-            WITH aggregate_genres as (SELECT movie_id, JSON_ARRAYAGG(name) as genres_list
-                FROM genres
-                GROUP BY movie_id)
             SELECT
                 movies.id,
-                yts_id,
-                imdb_code,
                 title,
                 imdb_rating,
                 year,
                 length_minutes,
                 language,
                 summary,
-                genres_list,
+                max_seeds,
                 json_objectagg(IFNULL(images.size, ''), images.url) as images_list,
                 NOT ISNULL(fm.movie_id) as is_fav,
                 NOT ISNULL(wm.movie_id) as is_watched
             FROM movies
-            LEFT JOIN aggregate_genres
-                ON movies.id = aggregate_genres.movie_id
             LEFT JOIN images
                 ON movies.id = images.movie_id
             LEFT JOIN favorite_movies fm
@@ -34,7 +27,7 @@ module.exports = (db_pool) => {
             LEFT JOIN watched_movies wm
                 ON movies.id = wm.movie_id
                 AND wm.user_id = ${user_id}
-            GROUP BY movies.id, yts_id, imdb_code, title, imdb_rating, year, length_minutes, language, summary, genres_list
+            GROUP BY movies.id, title, imdb_rating, year, length_minutes, language, summary, max_seeds
             ORDER BY movies.imdb_rating DESC
             LIMIT 24 OFFSET 0
             `
@@ -50,7 +43,7 @@ module.exports = (db_pool) => {
         search_movies : async (user_id, query_term, minimum_rating, genre, quality, min_year, max_year, language, asc_or_desc, sort_by) => {
             // DONT FORGET TO REMOVE THE OFFSET !!!
             user_id        = user_id
-            sort_by        = sort_by        ? sort_by        : 'max_seeds'
+            sort_by        = sort_by        ? sort_by        : 'title'
             asc_or_desc    = asc_or_desc    ? asc_or_desc    : 'ASC'
             genre          = genre          ? genre          : '%',
             quality        = quality        ? quality        : '%',
@@ -62,24 +55,18 @@ module.exports = (db_pool) => {
 
             console.log("\n[movie]: getting search results: ", {user_id, query_term, minimum_rating, genre, min_year, max_year, quality, sort_by, asc_or_desc})
             const request = `
-            WITH aggregate_genres as (SELECT movie_id, JSON_ARRAYAGG(name) as genres_list from genres group by movie_id),
-                aggregate_quality as (SELECT movie_id, JSON_ARRAYAGG(quality) as quality_list from torrents group by movie_id)
             SELECT
                 movies.id,
-                yts_id,
-                imdb_code,
                 title,
                 imdb_rating,
                 year,
                 length_minutes,
                 language,
                 summary,
-                genres_list,
-                quality_list,
+                max_seeds,
                 json_objectagg(IFNULL(images.size, ''), images.url) as images_list,
                 NOT ISNULL(fm.movie_id) as is_fav,
-                NOT ISNULL(wm.movie_id) as is_watched,
-                MAX(t.seeds) as max_seeds
+                NOT ISNULL(wm.movie_id) as is_watched
             FROM movies
             INNER JOIN genres
                 ON movies.id = genres.movie_id
@@ -87,12 +74,6 @@ module.exports = (db_pool) => {
             INNER JOIN torrents
                 ON movies.id = torrents.movie_id
                 AND torrents.quality >= ${quality}
-            LEFT JOIN torrents t
-                ON movies.id = t.movie_id
-            LEFT JOIN aggregate_genres
-                ON movies.id = aggregate_genres.movie_id
-            LEFT JOIN aggregate_quality
-                ON movies.id = aggregate_quality.movie_id
             LEFT JOIN favorite_movies fm
                 ON movies.id = fm.movie_id
                 AND fm.user_id = ${user_id}
@@ -104,8 +85,7 @@ module.exports = (db_pool) => {
                 AND year >= ${min_year}
                 AND LOWER(title) LIKE LOWER('%${query_term}%')
             GROUP BY movies.id
-            ORDER BY ${sort_by} ${asc_or_desc}
-            LIMIT 26 OFFSET 0`
+            ORDER BY ${sort_by} ${asc_or_desc}`
             try {
                 let [movies, ] = await db_pool.query(request)
                 return movies;

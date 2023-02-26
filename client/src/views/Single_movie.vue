@@ -92,10 +92,17 @@ export default {
 				if (res.data.code == "SUCCESS") {
 					this.movie = Parse_Single_Movie(res.data.movie);
 					console.log("[single_movie]: Successfully got movie details! ", this.movie)
+					return true
 				}
 				else if (res.data.code == "MISSING_MOVIE") {
 					this.movie_error = true
 					console.log("ERROR [single_movie]: No Movie found with id: ", this.movie_id)
+					return false
+				}
+				else if (res.data.code == "FAILURE") {
+					this.movie_error = true
+					console.log("ERROR [single_movie]: ", res.data.msg)
+					return false
 				}
 			}
 			catch (e) {
@@ -129,7 +136,6 @@ export default {
 				console.log("[single_movie]: review complete!")
 				return true
 			}
-			// console.log("[single_movie]: incomplete review")
 			return false
 		},
 

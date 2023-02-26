@@ -48,6 +48,10 @@ module.exports = (db_pool) => {
                 return res.status(200).send({movie: movie_res, code: "SUCCESS"})
             }
             catch (e) {
+                if (e.code == "ER_BAD_FIELD_ERROR") {
+                    console.log("ERROR [movie.controller]: ER_BAD_FIELD_ERROR")
+                    return res.status(201).send({msg: "the path /movie/:movie_id should contain a number as movie id", code: "FAILURE"})
+                }
                 throw(e)
             }
         },

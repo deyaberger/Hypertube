@@ -5,7 +5,7 @@ const fs = require('fs')
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
-  
+
 function to_skip(movies_titles, movie_ids, i) {
     if (movies_titles[i] == undefined || fs.existsSync(`./data/success/${movie_ids[i]}_${movies_titles[i]}.json`) || fs.existsSync(`./data/no_result/${movie_ids[i]}_${movies_titles[i]}.json`)) {
         if (fs.existsSync(`./data/no_result/${movie_ids[i]}_${movies_titles[i]}.json`)) {
@@ -32,7 +32,7 @@ function write_response_to_file(response, movies_titles, movie_ids, i) {
         fs.writeFileSync(`./data/fail/${movie_ids[i]}_${movies_titles[i]}.json`, JSON.stringify({"failed":'failed'}) , 'utf-8');
         fs.writeFileSync(`./data/fail/${movie_ids[i]}_${movies_titles[i]}_data.json`, JSON.stringify(response.data.data, null, 2) , 'utf-8');
         console.log("fuck")
-    } 
+    }
 }
 
 
@@ -130,12 +130,5 @@ async function read_files_and_get_movies(movies_titles, movie_years) {
     }
 
 }
-
-// ##########################
-
-// Tu peux tester ds postman on ds ton browser avec
-// http://localhost:8080/api/v1/search?site=kickass&query=Avengers
-
-// ##########################
 
 read_files_and_get_movies()
