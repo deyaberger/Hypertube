@@ -13,3 +13,4 @@ RUN source /root/.bashrc && nvm install 16.13.2
 SHELL ["/bin/bash", "-c"]
 EXPOSE 8071 3306 5173
 RUN usermod -d /var/lib/mysql/ mysql
+RUN systemctl enable mysql

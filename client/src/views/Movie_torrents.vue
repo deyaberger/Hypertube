@@ -133,10 +133,10 @@ export default {
 			<span> {{ file }} </span>
 		</div>
 		<div v-if="movie_source" >
-			<button @click="supervise">Supervise</button>
+			<!-- <button @click="supervise">Supervise</button>
 			<video ref="movieplayer" controls loop id="videoPlayer" width="500" height="500" muted="muted" autoplay>
 				<source :src='movie_source' type="video/mp4" />
-			</video>
+			</video> -->
 		</div>
 		
 	</div>

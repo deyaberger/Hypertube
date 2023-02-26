@@ -63,7 +63,7 @@ module.exports = (db_pool) => {
 
             let on_ready_answer = (torrent) => {
                 let files = [];
-                console.log("torrent ready", Object.keys(torrent))
+                // console.log("torrent ready", Object.keys(torrent))
                 torrent.files.forEach(function(data) {
                     files.push({
                         name: data.path.slice('torrents/'.length),
@@ -71,6 +71,7 @@ module.exports = (db_pool) => {
                     });
         
                 });
+                console.log("sending torrent contents")
                 return res.status(200).send({files: files, code:return_codes.SUCCESS})
             }
 
@@ -78,7 +79,7 @@ module.exports = (db_pool) => {
             
             let tor = torrent_functions.get_torrent(magnet);
             if (tor != undefined && tor != null && tor.ready == false) {
-                tor.on('ready', () => on_ready_answer(torrent_functions.get_torrent(magnet)))
+                tor.on('ready', () => on_ready_answer(tor))
                 return console.log("Tor present but not ready")
                 // return res.status(400).send({code: return_codes.TORRENT_NOT_READY})
             }
@@ -93,10 +94,15 @@ module.exports = (db_pool) => {
                     });
         
                 });
+                console.log("sending torrent contents")
                 return res.status(200).send({files: files, code:return_codes.SUCCESS})
             }
 
-            torrent_functions.add_torrent(magnet, on_ready_answer);
+            console.log("Adding torrent first time")
+            tor = torrent_functions.add_torrent(magnet, (torrent) => {
+                on_ready_answer(torrent)
+                torrent_functions.set_subtitles_high_priority(torrent)
+            });
         },
 
 
@@ -114,7 +120,8 @@ module.exports = (db_pool) => {
                 return res.sendStatus(200)
             }
 
-            console.log(torrent_functions.get_subtitles(tor))
+            torrent_functions.get_downloaded_subtitles(tor)
+            torrent_functions.get_available_subtitles(tor)
             
             let file = torrent_functions.get_largest_file(tor);
             let paf = file.path
