@@ -35,9 +35,11 @@ export default {
 				{{get_button_content()}}42
 			</button>
 		</a>
-		<button class="mt-3 loginBtn loginBtn--twitter">
-			{{get_button_content()}}twitter
-		</button>
+		<a href="https://github.com/login/oauth/authorize?client_id=1e15ab7141b3c31a3fee&redirect_uri=http%3A%2F%2Flocalhost%3A8071%2Fapi%2Fauth%2Foauth%2Fgithub">
+			<button class="mt-3 loginBtn loginBtn--github">
+				{{get_button_content()}}github
+			</button>
+		</a>
 	</div>
 </template>
 

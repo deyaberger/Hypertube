@@ -163,10 +163,13 @@ create table watched_movies
 
 create table oauth
 (
-    `42_id` mediumint null,
-    user_id mediumint null,
+    `42_id`     mediumint null,
+    `github_id` mediumint null,
+    user_id     mediumint null,
     constraint oauth_42_id_uindex
         unique (`42_id`),
+    constraint oauth_github_id_uindex
+        unique (`github_id`),
     constraint oauth_to_user_id
         foreign key (user_id) references users (id)
             on delete cascade

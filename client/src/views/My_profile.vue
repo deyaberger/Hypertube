@@ -36,6 +36,7 @@ export default {
 			bio					: null,
 			profile_pic			: null,
 			pic_prefix			: "http://127.0.0.1:8071/api/image/get/",
+			fallbackUrl			: '../src/assets/generic_profile_pic.jpg',
 
 
 			first_name_is_saved : true,
@@ -101,7 +102,7 @@ export default {
 		},
 
 		async get_user_followings() {
-			console.log("[my_profile]: getting get_user_followers...")
+			console.log("[my_profile]: getting get_user_followings...")
 			let res = await Get_User_Followings(this.user_token)
 			if (res.data.code == "SUCCESS") {
 				this.followings = res.data.followings
@@ -251,6 +252,9 @@ export default {
 
 		get_user_profile_pic() {
 			if (this.user.picture != null) {
+				if (this.user.picture.includes("cdn.intra.42") || this.user.picture.includes("github")) {
+					return (this.user.picture)
+				}
 				return `${this.pic_prefix}${this.user.picture}`
 			}
 			return null
@@ -260,6 +264,11 @@ export default {
 			this.get_user_fav_movies();
 			this.get_user_watched_movies();
 		},
+
+		handle_image_error(event) {
+			event.target.src = this.fallbackUrl;
+		}
+
 	},
 
 
@@ -267,8 +276,8 @@ export default {
 		await this.get_user_data();
 		await this.get_user_fav_movies();
 		await this.get_user_watched_movies();
-		this.get_user_followers();
-		this.get_user_followings();
+		// this.get_user_followers();
+		// this.get_user_followings();
 	},
 
 
@@ -303,7 +312,7 @@ export default {
 				<div class="rounded-top text-white d-flex flex-row" style="background-color: #000; height:250px;">
 					<div class="ms-4 mt-5 d-flex flex-column" style="width: 200px;">
 					<div class="profile_header mt-4" >
-						<img :src="get_user_profile_pic()" alt="profile pic" class="profile_pic" onerror="this.src='../src/assets/generic_profile_pic.jpg';">
+						<img :src="get_user_profile_pic()" alt="profile pic" class="profile_pic" @error="handle_image_error"/>
 						<input type="file" ref="fileInput" @change="upload_image"/>
 						<b-icon-arrow-repeat  class="h2 change_icon" @click="mimic_click"></b-icon-arrow-repeat>
 						<p class="error_msg" v-if="image_error">{{image_error_text}}</p>

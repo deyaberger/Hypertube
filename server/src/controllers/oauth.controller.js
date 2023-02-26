@@ -76,8 +76,8 @@ const helper_functions = (db_pool) => {
                 },
                 params : {
                     grant_type   : 'authorization_code',
-                    client_id    : process.env.OAUTH_ID,
-                    client_secret: process.env.OAUTH_SECRET,
+                    client_id    : process.env.OAUTH_42_ID,
+                    client_secret: process.env.OAUTH_42_SECRET,
                     redirect_uri : `${back_hostname}/api/auth/oauth`,
                     code         : code
                 }
@@ -100,6 +100,58 @@ const helper_functions = (db_pool) => {
             const response = await axios(request);
             return response;
         },
+
+        get_github_user_token: async (code) => {
+            let request = {
+                url: `https://github.com/login/oauth/access_token`,
+                method: "post",
+                headers: {
+                    "Content-type": "application/json",
+                    'Accept': 'application/json'
+                },
+                params : {
+                    client_id    : process.env.OAUTH_GITHUB_ID,
+                    client_secret: process.env.OAUTH_GITHUB_SECRET,
+                    redirect_uri : `${back_hostname}/api/auth/oauth/github`,
+                    scope        : 'user',
+                    code         : code
+                }
+            };
+            const response = await axios(request);
+            return response;
+        },
+
+
+        get_github_user_details: async (bearer_token) => {
+            console.log("TOKEEEEN: ", bearer_token)
+            let request = {
+                url: `https://api.github.com/user`,
+                method: "get",
+                headers: {
+                    "Content-type": "application/json",
+                    Authorization : `Bearer ${bearer_token}`
+                }
+            };
+            const response = await axios(request);
+            return response;
+        },
+
+        get_github_user_local_id: async (user_id_github) => {
+            let [oauth_query, ] = await db_pool.query(
+                `SELECT
+                    user_id
+                FROM oauth
+                WHERE
+                    github_id=?`,
+                [user_id_github,]
+            )
+            if (oauth_query.length == 1) {
+                return oauth_query[0].user_id
+            }
+            return null
+        },
+
+
 
         create_access_token: auth_functions.create_access_token
     }
@@ -143,10 +195,10 @@ module.exports = (db_pool) => {
                                 }
                                 if (e.message == return_codes.USERNAME_TAKEN) {
                                     console.log("Redirecting user to signup.")
-                                    return res.redirect(`${front_hostname}/signup`)
+                                    return res.redirect(`${front_hostname}/sign_up`)
                                 }
                                 console.log("Unknown error in oauth", e)
-                                return res.redirect(`${front_hostname}/signup`)
+                                return res.redirect(`${front_hostname}/sign_up`)
                             }
                         }
                         console.log("Creating access token for user:", local_user_id)
@@ -159,7 +211,60 @@ module.exports = (db_pool) => {
             }
             catch (e) {
                 console.log("Unknown ERR in oauth", e)
-                return res.redirect(`${front_hostname}/signup`)
+                return res.redirect(`${front_hostname}/sign_up`)
+            }
+        },
+
+        oauth_github_InUp: async (req, res) => {
+            console.log("Starting oauth process")
+            try {
+                console.log('Recieved code: ', req.query.code)
+                console.log('Trading code for github token with github API')
+                let token_github = await utils.get_github_user_token(req.query.code)
+                if (token_github.status == 200) {
+                    console.log('Got github token, using it to get user info from github API: ', token_github.data)
+                    let user_details = await utils.get_github_user_details(token_github.data.access_token)
+                    if (user_details.status == 200) {
+                        user_info = {
+                            mail      : user_details.data.email ? user_details.data.email : 'prout',
+                            id_github : user_details.data.id,
+                            login     : user_details.data.login,
+                            first_name: user_details.data.first_name ? user_details.data.first_name : 'prout',
+                            last_name : user_details.data.last_name ? user_details.data.last_name : 'prout',
+                            picture   : user_details.data.avatar_url
+                        }
+                        console.log("Got user info from github:", user_info)
+                        console.log("Checking if this oauth is to create user or login.")
+                        let local_user_id = await utils.get_github_user_local_id(user_info.id_github)
+                        let user_exists   = (local_user_id != null)
+                        if (!user_exists) {
+                            try {
+                                local_user_id = await utils.create_user(user_info)
+                            }
+                            catch (e) {
+                                if (e.message == return_codes.MAIL_ALREADY_TAKEN) {
+                                    console.log("Redirecting user to password reset.")
+                                    return res.redirect(`${front_hostname}/forgotpassword/taken`)
+                                }
+                                if (e.message == return_codes.USERNAME_TAKEN) {
+                                    console.log("Redirecting user to signup.")
+                                    return res.redirect(`${front_hostname}/sign_up`)
+                                }
+                                console.log("Unknown error in oauth", e)
+                                return res.redirect(`${front_hostname}/sign_up`)
+                            }
+                        }
+                        console.log("Creating access token for user:", local_user_id)
+                        let access_token = utils.create_access_token(local_user_id)
+
+                        console.log("Redirecting user to signin page and passing token in URL.")
+                        return res.redirect(`${front_hostname}/sign_in?oauth_token=${encodeURIComponent(access_token)}`)
+                    }
+                }
+            }
+            catch (e) {
+                console.log("Unknown ERR in oauth github", e)
+                return res.redirect(`${front_hostname}/sign_up`)
             }
         }
     }
