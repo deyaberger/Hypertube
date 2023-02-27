@@ -111,20 +111,6 @@ export const Get_User_Fav_Movies = async(token, user_id) => {
 	return response;
 }
 
-export const Get_Current_User_Fav_Movies_ID = async(token) => {
-	let request = {
-		url: `http://127.0.0.1:8071/api/favorites/all_ids`,
-		method: "get",
-		headers: {
-			'Access-Control-Allow-Origin': '*',
-			"Content-type"               : "application/json",
-			'Authorization'				 : `Bearer ${token}`
-		}
-	};
-	const response = await axios(request);
-	return response;
-}
-
 export const Add_To_Favorites = async(movie_id, token) => {
 	let request = {
 		url: `http://127.0.0.1:8071/api/favorites/add/${movie_id}`,
@@ -169,31 +155,14 @@ export const Is_Fav_Movie = async(token, movie_id) => {
 
 
 // ------------------------------------------ WATCHED --------------------------------------------------------------
-export const Get_Current_User_Watched_Movies_ID = async(token) => {
-	let request = {
-		url: `http://127.0.0.1:8071/api/watched/watched_movies_id`,
-		method: "get",
-		headers: {
-			'Access-Control-Allow-Origin': '*',
-			"Content-type"               : "application/json",
-			'Authorization'				 : `Bearer ${token}`
-		}
-	};
-	const response = await axios(request);
-	return response;
-}
-
 export const Get_User_Watched_Movies = async(token, user_id) => {
 	let request = {
-		url: `http://127.0.0.1:8071/api/watched/watched_movies`,
+		url: `http://127.0.0.1:8071/api/watched/${user_id}`,
 		method: "get",
 		headers: {
 			'Access-Control-Allow-Origin': '*',
 			"Content-type"               : "application/json",
 			'Authorization'				 : `Bearer ${token}`
-		},
-		params : {
-			"user_id" : user_id
 		}
 	};
 	const response = await axios(request);

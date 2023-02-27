@@ -4,10 +4,11 @@ module.exports = (db_pool) => {
     return {
         get_user_watched_movies : async (req, res) => {
             try {
-                let userid = req.query.user_id == undefined ? req.user_id  : Number(req.query.user_id)
-                let watched_movies = await watched_functions.get_watched_by_user_id(userid)
-                console.log("[watched.controller]: get_user_watched_movies SUCCESS")
-                return res.status(200).send({watched : watched_movies, code: "SUCCESS"})
+                let my_user_id = req.user_id
+                let other_user_id = req.params.user_id == 'undefined' ? null : Number(req.params.user_id)
+                let watched = await watched_functions.get_watched_by_user_id(my_user_id, other_user_id)
+                console.log("[favorite.controller]: get_user_watched SUCCESS", {count: watched.length})
+                return res.status(200).send({watched: watched, code: "SUCCESS"})
             }
             catch (e) {
                 throw (e)

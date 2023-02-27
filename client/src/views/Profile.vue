@@ -3,12 +3,8 @@ import { mapState } from 'vuex';
 import textContent from "../assets/language_dict/language_dict.json";
 import SearchResults from '../components/Search_results.vue';
 import { Get_User_Fav_Movies,
-	     Get_User_Watched_Movies,
-	     Get_Current_User_Fav_Movies_ID,
-	     Get_Current_User_Watched_Movies_ID } from '../functions/movies';
+	     Get_User_Watched_Movies} from '../functions/movies';
 import { Get_Other_User_Details,
-		 Get_User_Followers,
-		 Get_User_Followings,
 		 Is_Following,
 		 Follow,
 		 UnFollow } from "../functions/user"
@@ -17,69 +13,119 @@ export default {
 	props: {
 		user_id: String,
 	},
+
+
 	components: {
 		SearchResults
 	},
+
+
 	data() {
 		return {
-			text_content		: textContent.PROFILE,
-			user                : null,
+			text_content		: textContent.PROFILE, // SAME
+			user                : null, // SAME
 
-			request_error		: false,
-			network_error		: false,
-			error_text			: '',
+			request_error		: false, // SAME
+			network_error		: false, // SAME
+			error_text			: '', // SAME
 
-			watched_movies      : null,
-			watched_movies_ids  : [],
-			fav_movies		    : null,
-			fav_movies_ids	    : [],
+			watched_movies      : null, // SAME
+			fav_movies		    : null, // SAME
+
+			pic_prefix			: "http://127.0.0.1:8071/api/image/get/", // SAME
+			fallbackUrl			: '../src/assets/generic_profile_pic.jpg', // SAME
 
 			followed			: false,
-			followers			: 0,
-			followings			: 0,
 		}
 	},
-	computed: mapState({
-      	lang_nb  : state =>  state.lang_nb,
-		user_token : state =>  state.user_token,
-    }),
+
 	methods: {
 		set_movie_props(movies) {
-			return {
+			return { // SAME
 				'data'    : movies,
 				'profile' : true,
-				'error'   : false,
-				'favs'    : this.fav_movies_ids,
-				'watched' : this.watched_movies_ids,
+				'error'   : false
 			}
 		},
-		exists(movies) {
+		exists(movies) { // SAME
 			if (movies == null || (movies != null && movies.length == 0)) {
 				return false
 			}
 			return true
 		},
-		async get_follows() {
-			let res = await Get_User_Followings(this.user_token, this.user_id);
-			if (res.status == 200) {
-				this.followings = String(res.data.count);
+
+		async get_user_fav_movies() { // ALMOST SAME
+			console.log("[my_profile]: getting user fav movies...")
+			let res = await Get_User_Fav_Movies(this.user_token, this.user_id);
+			if (res.data.code == "SUCCESS") {
+				this.fav_movies = res.data.favorites
+				console.log("[my_profile]: Successfully got user fav movies!", this.fav_movies)
 			}
-			res = await Get_User_Followers(this.user_token, this.user_id);
-			if (res.status == 200) {
-				this.followers = String(res.data.count);
-			}
-			res = await Is_Following(this.user_token, this.user_id);
-			if (res.status == 200) {
-				this.followed = res.data.message;
+			else {
+				console.log("ERROR [my_profile]: in get_user_fav_movies ", res)
 			}
 		},
-		async get_user_fav_and_co() {
-			console.log("getting favvsss")
-			let res = await Get_Current_User_Fav_Movies_ID(this.user_token);
-			this.fav_movies_ids = res.data.map(item => item.movie_id);
-			res = await Get_Current_User_Watched_Movies_ID(this.user_token);
-			this.watched_movies_ids = res.data.map(item => item.movie_id);
+
+		async get_user_watched_movies() { // SAME
+			console.log("[my_profile]: getting user watched movies...")
+			let res = await Get_User_Watched_Movies(this.user_token, this.user_id);
+			if (res.data.code == "SUCCESS") {
+				this.watched_movies = res.data.watched;
+				console.log("[my_profile]: Successfully got user watched movies!", this.watched_movies)
+			}
+			else {
+				console.log("ERROR [my_profile]: in get_user_watched_movies ", res)
+			}
 		},
+
+		async get_user_data() { // SAME IN BOTH
+			try {
+				console.log("[my_profile]: getting user data...")
+				let res = await Get_Other_User_Details(this.user_token, this.user_id);
+				if (res.code == 'ERR_NETWORK') {
+					this.network_error = true
+					this.error_text = this.text_content.network_error[this.lang_nb]
+					console.log("ERROR [my_profile]: server down")
+				}
+				else if (res.data != null && res.data.code == "SUCCESS") {
+					this.user = res.data.user
+					this.user.bio = this.user.bio ? this.user.bio : ''
+					console.log("[my_profile]: Successfully got user data! ", this.user)
+				}
+				else if (res.data != null && (res.data.code == "NO_USER_WITH_THIS_ID" || res.data.code == "FAILURE")) {
+					this.request_error = true
+					this.error_text = this.text_content.no_user_found[this.lang_nb]
+					console.log("ERROR [my_profile]: get_user_data", {msg: res.data.msg})
+				}
+				else {
+					console.log("UNKOWN ERROR [my_profile]: ", res)
+				}
+			}
+			catch(e) {
+				throw(e)
+			}
+		},
+
+		get_user_profile_pic() { // SAME
+			if (this.user.picture != null) {
+				if (this.user.picture.includes("cdn.intra.42") || this.user.picture.includes("github")) {
+					return (this.user.picture)
+				}
+				return `${this.pic_prefix}${this.user.picture}`
+			}
+			return null
+		},
+
+		async updating_movies(value) { // SAME
+			this.get_user_fav_movies();
+			this.get_user_watched_movies();
+		},
+
+
+		handle_image_error(event) {  // SAME
+			event.target.src = this.fallbackUrl;
+		},
+
 		async update_follow() {
 			let res = null
 			if (this.followed == true) {
@@ -96,56 +142,19 @@ export default {
 			}
 			this.followed = !this.followed
 		},
-		async get_user_data() {
-			console.log("getting other user data:")
-			this.watched_movies = null
-			this.fav_movies = null
-			let res = await Get_Other_User_Details(this.user_token, this.user_id);
-			if (res.status == 200) {
-				this.user = res.data
-				console.log("USER: ", this.user)
-				res = await Get_User_Fav_Movies(this.user_token, this.user_id);
-				this.fav_movies = res.data
-				res = await Get_User_Watched_Movies(this.user_token, this.user_id);
-				this.watched_movies = res.data
-			}
-			else if (res.status == 404 || res.status == 201) {
-				this.request_error = true
-				this.error_text = res.status == 404 ?
-					this.text_content.request_error[this.lang_nb] : this.text_content.no_user_found[this.lang_nb]
-				console.log("Error: ", res.message)
-			}
-			else if (res.code == 'ERR_NETWORK') {
-				this.network_error = true
-				this.error_text = this.text_content.network_error[this.lang_nb]
-			}
-		},
-		async updating_movies(value) {
-			let update_info = JSON.parse(JSON.stringify(value));
-			let movie_type = update_info['type']
-			let id = update_info['id']
-			if (movie_type == "favorites") {
-				if (this.fav_movies_ids.includes(id)) {
-					delete this.fav_movies_ids[this.fav_movies_ids.indexOf(id)]
-				}
-				else {
-					this.fav_movies_ids.push(id)
-				}
-			}
-			if (movie_type == "watched") {
-				if (this.watched_movies_ids.includes(id)) {
-					delete this.watched_movies_ids[this.fav_movies_ids.indexOf(id)]
-				}
-				else {
-					this.watched_movies_ids.push(id)
-				}
-			}
-		},
 	},
-	mounted() {
-		this.get_user_data();
-		this.get_user_fav_and_co();
-		this.get_follows();
+
+
+	computed: mapState({  // SAME
+      	lang_nb  : state =>  state.lang_nb,
+		user_token : state =>  state.user_token,
+    }),
+
+
+	async mounted() {  // SAME
+		await this.get_user_data();
+		await this.get_user_fav_movies();
+		await this.get_user_watched_movies();
 	}
 }
 </script>
@@ -174,7 +183,7 @@ export default {
 				<div class="rounded-top text-white d-flex flex-row" style="background-color: #000; height:250px;">
 					<div class="ms-4 mt-5 d-flex flex-column" style="width: 200px;">
 					<div class="profile_header mt-4" >
-						<img :src="user.picture" alt="profile pic" class="img-fluid img-thumbnail profile_pic" onerror="this.src='../src/assets/generic_profile_pic.jpg';">
+						<img :src="get_user_profile_pic()" alt="profile pic" class="profile_pic" @error="handle_image_error"/>
 					</div>
 					</div>
 					<div class="ms-3 main_info" >
@@ -196,11 +205,11 @@ export default {
 						</div>
 						<div class="col">
 							<p class="small text-muted mb-0">{{text_content.followers[lang_nb]}}</p>
-							<p class="mb-1 h5">{{followers}}</p>
+							<p class="mb-1 h5">{{user.followers}}</p>
 						</div>
 						<div class="col">
 							<p class="small text-muted mb-0">{{text_content.followings[lang_nb]}}</p>
-							<p class="mb-1 h5">{{followings}}</p>
+							<p class="mb-1 h5">{{user.followings}}</p>
 						</div>
 						</div>
 					</div>
@@ -237,7 +246,6 @@ export default {
 
 
 .profile_header, .profile_pic {
-	background-color: black;
 	cursor: unset;
 }
 

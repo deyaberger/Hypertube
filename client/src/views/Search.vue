@@ -50,32 +50,52 @@ export default {
 			this.movies_slice = this.movies.slice(start, end)
 		},
 
-		async get_form_results() {
+		async get_reco() {
+			console.log("[search] : getting_reco...")
 			try {
-				this.movies = null
-				this.movies_slice = null
-				let res = null
-				if (this.user_research <= 1) {
-					console.log("[search] : getting_reco...")
-					res = await Get_Recommendations(this.user_token);
-				}
-				else {
-					console.log("[search] : getting search ...")
-					res = await Get_Movies_Research(this.form, this.lang_nb, this.user_token);
-				}
-				if (res.data.code == "SUCCESS") {
-					this.movies = res.data.movies
-					this.number_of_results = this.movies.length;
-					this.get_movies_page_slice();
-					console.log("[search] : succesfully received movies!")
-				}
-				else {
-					throw("Unknow error code getting movies")
-				}
+				return await Get_Recommendations(this.user_token);
 			}
-			catch (e) {
+			catch(e) {
 				this.error = true
+				console.log("UNKOWN ERROR [search]: ")
 				throw(e)
+			}
+		},
+
+		async get_search() {
+			console.log("[search] : getting search ...")
+			try {
+				return await Get_Movies_Research(this.form, this.lang_nb, this.user_token);
+			}
+			catch(e) {
+				this.error = true
+				console.log("UNKOWN ERROR [search]: ", e)
+				throw(e)
+			}
+		},
+
+		async get_form_results() {
+			let res = null
+			this.movies = null
+			this.movies_slice = null
+			if (this.user_research <= 1) {
+				res = await this.get_reco()
+			}
+			else {
+				res = await this.get_search()
+			}
+			if (res != null && res.data.code == "SUCCESS") {
+				this.movies = res.data.movies
+				this.number_of_results = this.movies.length;
+				this.get_movies_page_slice();
+				console.log("[search] : succesfully received movies!")
+			}
+			else if (res != null && res.data.code == "FAILURE") {
+				this.error = true
+				console.log({'msg' : res.data.msg})
+			}
+			else {
+				throw("Unknow error code getting movies")
 			}
 		},
 
