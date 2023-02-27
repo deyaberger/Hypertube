@@ -31,7 +31,7 @@ export default {
 					console.log("[search_results]: Successfully updated favorites for movie: ", movie.id)
 				}
 				else {
-					console.log("eERROR [search_results]: in update_favorite :", res)
+					console.log("ERROR [search_results]: in update_favorite :", res)
 				}
 			}
 			catch(e) {

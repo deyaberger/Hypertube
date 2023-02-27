@@ -10,37 +10,52 @@ const helper_functions = (db_pool) => {
     const auth_functions = require('./auth')(db_pool)
 
     return {
-        create_user: async (user_info) => {
+        get_42_user_local_id: async (user_id_42) => {
+            let [oauth_query, ] = await db_pool.query(
+                `SELECT
+                    user_id
+                FROM oauth
+                WHERE
+                    42_id=?`,
+                [user_id_42,]
+            )
+            if (oauth_query.length == 1) {
+                return oauth_query[0].user_id
+            }
+            return null
+        },
+
+        create_user: async (user_info, type) => {
             let mail       = user_info.mail
-            let id_42      = user_info.id_42
+            let ext_id     = user_info.ext_id
             let login      = user_info.login
             let first_name = user_info.first_name
             let last_name  = user_info.last_name
             let picture    = user_info.picture
 
-            console.log("Creating account for:" , login)
+            console.log("[oauth.controller]: Creating account for:" , login)
 
             try {
                 let randomstr      = nanoid(48)
                 let signup_result  = await auth_functions.signup(login, first_name, last_name, mail, randomstr, picture, 'en')
-                console.log("Adding user and 42_user_id to oauth table (for future reference)")
-                let [oauth_insert_res, ] = await db_pool.query(
-                    `
-                    INSERT INTO oauth (42_id, user_id)
-                        VALUES        (?    , ?      )
-                    `,
-                    [id_42, signup_result.insertId]
-                )
-                console.log("Oauth table insert result:", oauth_insert_res)
-                return signup_result.insertId
+                if (signup_result != null && signup_result != undefined && signup_result.affectedRows == 1) {
+                    if (type == "42") {
+                        console.log("[oauth.controller]: Signup Successful, now inserting user into oauth table...")
+                        let insert_oauth = await auth_functions.insert_42_user(ext_id, signup_result.insertId)
+                    }
+                    else if (type == "git") {
+                        console.log("[oauth.controller]: Signup Successful, now inserting user into oauth table...")
+                        let insert_oauth = await auth_functions.insert_github_user(ext_id, signup_result.insertId)
+                    }
+                    return signup_result.insertId
+                }
             }
-            catch (e) {
+            catch(e) {
                 if (e.code == 'ER_DUP_ENTRY') {
                     if (e.sqlMessage.includes('users.users_mail_uindex')) {
                         console.log(return_codes.MAIL_ALREADY_TAKEN)
                         throw(new Error(return_codes.MAIL_ALREADY_TAKEN))
                     }
-
                     else if (e.sqlMessage.includes('users.users_name_uindex')) {
                         console.log(return_codes.USERNAME_TAKEN)
                         throw(new Error(return_codes.USERNAME_TAKEN))
@@ -49,7 +64,9 @@ const helper_functions = (db_pool) => {
                 console.log("error create user for oauth", e)
                 throw(new Error(return_codes.UNKNOWN_ERROR))
             }
+
         },
+
 
         get_42_user_local_id: async (user_id_42) => {
             let [oauth_query, ] = await db_pool.query(
@@ -173,7 +190,7 @@ module.exports = (db_pool) => {
                     if (user_details.status == 200) {
                         user_info = {
                             mail      : user_details.data.email,
-                            id_42     : user_details.data.id,
+                            ext_id     : user_details.data.id,
                             login     : user_details.data.login,
                             first_name: user_details.data.first_name,
                             last_name : user_details.data.last_name,
@@ -181,12 +198,12 @@ module.exports = (db_pool) => {
                         }
                         console.log("Got user info from 42:", user_info)
                         console.log("Checking if this oauth is to create user or login.")
-                        let local_user_id = await utils.get_42_user_local_id(user_info.id_42)
+                        let local_user_id = await utils.get_42_user_local_id(user_info.ext_id)
                         let user_exists   = (local_user_id != null)
                         console.log("User already exists:", user_exists)
                         if (!user_exists) {
                             try {
-                                local_user_id = await utils.create_user(user_info)
+                                local_user_id = await utils.create_user(user_info, type=42)
                             }
                             catch (e) {
                                 if (e.message == return_codes.MAIL_ALREADY_TAKEN) {
@@ -227,7 +244,7 @@ module.exports = (db_pool) => {
                     if (user_details.status == 200) {
                         user_info = {
                             mail      : user_details.data.email ? user_details.data.email : 'prout',
-                            id_github : user_details.data.id,
+                            ext_id : user_details.data.id,
                             login     : user_details.data.login,
                             first_name: user_details.data.first_name ? user_details.data.first_name : 'prout',
                             last_name : user_details.data.last_name ? user_details.data.last_name : 'prout',
@@ -235,11 +252,11 @@ module.exports = (db_pool) => {
                         }
                         console.log("Got user info from github:", user_info)
                         console.log("Checking if this oauth is to create user or login.")
-                        let local_user_id = await utils.get_github_user_local_id(user_info.id_github)
+                        let local_user_id = await utils.get_github_user_local_id(user_info.ext_id)
                         let user_exists   = (local_user_id != null)
                         if (!user_exists) {
                             try {
-                                local_user_id = await utils.create_user(user_info)
+                                local_user_id = await utils.create_user(user_info, "git")
                             }
                             catch (e) {
                                 if (e.message == return_codes.MAIL_ALREADY_TAKEN) {

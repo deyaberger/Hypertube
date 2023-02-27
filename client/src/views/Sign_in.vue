@@ -12,10 +12,8 @@ export default {
 
 
   props: {
-		oauth_token: {
-      type: String,
-      default: null
-		},
+		oauth_token: {type: String,
+						default: null},
 	},
 
 
@@ -71,11 +69,11 @@ export default {
 
   async mounted() {
 		if (this.oauth_token != null) {
-  		console.log("Oauth signin: ", this.oauth_token)
+  			console.log("Oauth signin: ", this.oauth_token)
 			try {
-        this.$store.commit('SET_USER_TOKEN', this.oauth_token)
-        this.$store.commit('SET_CONNECTION', true)
-        this.$router.push('/search')
+				this.$store.commit('SET_USER_TOKEN', this.oauth_token)
+				this.$store.commit('SET_CONNECTION', true)
+				this.$router.push('/search')
 			}
 			catch (e) {
 				console.log("Oauth signup issue")

@@ -37,7 +37,6 @@ module.exports = (db_pool) => {
                 ON movies.id = images.movie_id
             WHERE NOT ISNULL(fm1.user_id)
             GROUP BY movies.id, title, imdb_rating, year, length_minutes, language, summary, max_seeds;`
-            console.log(request)
             try {
                 [favorites, ] = await db_pool.query(request)
                 return favorites

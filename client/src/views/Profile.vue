@@ -24,6 +24,7 @@ export default {
 		return {
 			text_content		: textContent.PROFILE, // SAME
 			user                : null, // SAME
+			my_id				: null,
 
 			request_error		: false, // SAME
 			network_error		: false, // SAME
@@ -89,8 +90,9 @@ export default {
 				}
 				else if (res.data != null && res.data.code == "SUCCESS") {
 					this.user = res.data.user
+					this.my_id = res.data.connected_user_id
 					this.user.bio = this.user.bio ? this.user.bio : ''
-					console.log("[my_profile]: Successfully got user data! ", this.user)
+					console.log("[my_profile]: Successfully got user data! ", {user: this.user, my_id: this.my_id})
 				}
 				else if (res.data != null && (res.data.code == "NO_USER_WITH_THIS_ID" || res.data.code == "FAILURE")) {
 					this.request_error = true
@@ -126,21 +128,42 @@ export default {
 			event.target.src = this.fallbackUrl;
 		},
 
+		async is_following() {
+			try {
+				let res = await Is_Following(this.user_token, this.user_id);
+				if (res != null && res.data.code == "SUCCESS") {
+					this.followed = res.data.message;
+				}
+			}
+			catch(e) {
+				throw(e)
+			}
+
+		},
+
 		async update_follow() {
 			let res = null
-			if (this.followed == true) {
-				console.log("UNFOLLOWWW")
-				res = await UnFollow(this.user_token, this.user_id);
-				this.get_follows();
-				console.log("follow: ", res)
+			try {
+				if (this.followed == true) {
+					res = await UnFollow(this.user_token, this.user_id);
+				}
+				else {
+					res = await Follow(this.user_token, this.user_id);
+				}
+				if (res != null && res.data.code == "SUCCESS") {
+					this.get_user_data();
+					this.followed = !this.followed
+					console.log("[profile] Succesfully updated follow: ", {followed: this.followed})
+				}
+				else {
+					console.log("UNKNOWN ERROR [update_follow]: ", res)
+				}
 			}
-			else {
-				console.log("FOLLOW")
-				res = await Follow(this.user_token, this.user_id);
-				this.get_follows();
-				console.log("unfollow: ", res)
+			catch(e) {
+				console.log("UNKNOWN ERROR [update_follow]: ")
+				throw(e)
 			}
-			this.followed = !this.followed
+
 		},
 	},
 
@@ -155,6 +178,7 @@ export default {
 		await this.get_user_data();
 		await this.get_user_fav_movies();
 		await this.get_user_watched_movies();
+		await this.is_following();
 	}
 }
 </script>
@@ -199,9 +223,11 @@ export default {
 					<div class="justify-content-center text-center py-1">
 					<div>
 						<div class="row">
-						<div class="col-9 button_container">
+						<div class="col-9 button_container" v-if="user.id != my_id">
 							<button v-if="followed" class="btn check_button followed" @click="update_follow()" type="button" data-toggle="tooltip" data-placement="top" :title="text_content.unfollow[lang_nb]">{{text_content.followed[lang_nb]}}</button>
 							<button v-else class="btn check_button follow" type="button" @click="update_follow()">{{text_content.follow[lang_nb]}}</button>
+						</div>
+						<div class="col-9 button_container" v-else>
 						</div>
 						<div class="col">
 							<p class="small text-muted mb-0">{{text_content.followers[lang_nb]}}</p>
@@ -259,7 +285,6 @@ export default {
 }
 
 .check_button {
-	margin-left: 1%;
 	margin-top: 10px;
 	padding: 5px;
 	width: 200px;

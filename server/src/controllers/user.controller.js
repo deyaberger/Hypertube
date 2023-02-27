@@ -37,7 +37,7 @@ module.exports = (db_pool) => {
                 }
                 if (user != null && user.length == 1) {
                     console.log("[user.controller]: get_other_user SUCCESS ", {user: user[0]})
-                    return res.status(200).send({user : user[0], code : "SUCCESS"})
+                    return res.status(200).send({user : user[0], connected_user_id: my_user, code : "SUCCESS"})
                 }
                 if ([...new Set(Object.values(user))][0] == null) {
                     console.log("[user.controller]: Nothing about this user. FAILURE")
