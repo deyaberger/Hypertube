@@ -22,7 +22,6 @@ module.exports = (db_pool) => {
                         VALUES        (?         , ?        , ?    , ?         , ?        , ?      , ?       );`,
                                       [f_name    , l_name   , mail , pass_hash , lang     , pic    , username]
                 )
-                console.log("Signup user: %s,\nResult: %o\n", username, insert_res)
                 return insert_res
             }
             catch(e) {
@@ -77,6 +76,40 @@ module.exports = (db_pool) => {
                 return true
             }
             return false
+        },
+
+
+        insert_42_user: async (id_42, user_id) => {
+            console.log("\n[auth]: insert_42_user ", {id_42, user_id})
+            const request = `
+            INSERT INTO oauth (42_id, user_id)
+                VALUES        (${id_42}, ${user_id})
+            `
+            try {
+                let [oauth_insert_res, ] = await db_pool.query(request)
+                return oauth_insert_res
+            }
+            catch(e) {
+                throw(e)
+            }
+
+        },
+
+        insert_github_user: async (id_git, user_id) => {
+            id_git = String(id_git)
+            console.log("\n[auth]: insert_github_user ", {id_git, user_id})
+            const request = `
+            INSERT INTO oauth (github_id, user_id)
+                VALUES        (${id_git},${user_id})
+            `
+            try {
+                let [oauth_insert_res, ] = await db_pool.query(request)
+                return oauth_insert_res
+            }
+            catch(e) {
+                throw(e)
+            }
+
         },
 
 

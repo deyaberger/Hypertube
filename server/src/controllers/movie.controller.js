@@ -5,12 +5,18 @@ module.exports = (db_pool) => {
             try {
                 let user_id = req.user_id
                 let movies_res = await movie_functions.get_movies_recommendations(user_id)
+                if (movies_res != null && movies_res.code == "ECONNREFUSED") {
+
+                }
                 console.log("[movie.controller]: get_recommendations SUCCESS")
                 return res.status(200).send({movies: movies_res, code: "SUCCESS"})
             }
             catch (e) {
+                if (e.code == "ECONNREFUSED") {
+                    console.log("[movie.controller]: get_recommendations ECONNREFUSED")
+                    return res.status(400).send({msg: "Connection to DB refused, make sure you have started mysql service", code: "FAILURE"})
+                }
                 throw(e)
-                // return res.status(400).send({movies: [], code: "FAILURE"})
             }
         },
 

@@ -2,37 +2,41 @@ const axios = require('axios')
 
 module.exports = (db_pool) => {
     return {
-        get_favorites_by_user_id: async (userid) => {
-            console.log("\n[favorite]: get_favorites_by_user_id ", userid)
+        get_favorites_by_user_id: async (my_user_id, other_user_id) => {
+            if (other_user_id == null) {
+                other_user_id = my_user_id
+            }
+            console.log("\n[favorite]: get_favorites_by_user_id ", {my_user_id, other_user_id})
             const request = `
-            WITH aggregate_genres as (SELECT movie_id, JSON_ARRAYAGG(name) as genres_list from genres group by movie_id)
             SELECT
                 movies.id,
-                yts_id,
-                imdb_code,
                 title,
                 imdb_rating,
                 year,
                 length_minutes,
                 language,
                 summary,
-                genres_list,
+                max_seeds,
                 json_objectagg(IFNULL(images.size, ''), images.url) as images_list,
-                NOT ISNULL(fm.movie_id) as is_fav,
-                NOT ISNULL(wm.movie_id) as is_watched
+                NOT ISNULL(fm2.movie_id) as is_fav,
+                NOT ISNULL(wm2.movie_id) as is_watched
             FROM movies
-                LEFT JOIN aggregate_genres
-                    ON movies.id = aggregate_genres.movie_id
-                LEFT JOIN favorite_movies fm
-                    ON movies.id = fm.movie_id
-                    AND fm.user_id = ${userid}
-                LEFT JOIN watched_movies wm
-                    ON movies.id = wm.movie_id
-                    AND wm.user_id = ${userid}
-                LEFT JOIN images
-                    ON movies.id = images.movie_id
-            WHERE fm.user_id = ${userid}
-            GROUP BY movies.id`
+            LEFT JOIN favorite_movies fm1
+                ON movies.id = fm1.movie_id
+                AND fm1.user_id = ${other_user_id}
+            LEFT JOIN watched_movies wm1
+                ON movies.id = wm1.movie_id
+                AND wm1.user_id = ${other_user_id}
+            LEFT JOIN favorite_movies fm2
+                ON movies.id = fm2.movie_id
+                AND fm2.user_id = ${my_user_id}
+            LEFT JOIN watched_movies wm2
+                ON movies.id = wm2.movie_id
+                AND wm2.user_id = ${my_user_id}
+            LEFT JOIN images
+                ON movies.id = images.movie_id
+            WHERE NOT ISNULL(fm1.user_id)
+            GROUP BY movies.id, title, imdb_rating, year, length_minutes, language, summary, max_seeds;`
             try {
                 [favorites, ] = await db_pool.query(request)
                 return favorites

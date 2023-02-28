@@ -31,6 +31,7 @@ export default {
 			only_show_fav	  : false,
 			error			  : false,
 			saved_movies	  : null,
+			reset			  : false
 		}
 	},
 
@@ -50,62 +51,71 @@ export default {
 			this.movies_slice = this.movies.slice(start, end)
 		},
 
-		async get_form_results() {
+		async get_reco() {
+			console.log("[search] : getting_reco...")
 			try {
-				this.movies = null
-				this.movies_slice = null
-				let res = null
-				if (this.user_research <= 1) {
-					console.log("[search] : getting_reco...")
-					res = await Get_Recommendations(this.user_token);
-				}
-				else {
-					console.log("[search] : getting search ...")
-					res = await Get_Movies_Research(this.form, this.lang_nb, this.user_token);
-				}
-				if (res.data.code == "SUCCESS") {
-					this.movies = res.data.movies
-					this.number_of_results = this.movies.length;
-					this.get_movies_page_slice();
-					console.log("[search] : succesfully received movies!")
-				}
-				else {
-					throw("Unknow error code getting movies")
-				}
+				return await Get_Recommendations(this.user_token);
 			}
-			catch (e) {
+			catch(e) {
 				this.error = true
+				console.log("UNKOWN ERROR [search]: ")
 				throw(e)
 			}
 		},
 
+		async get_search() {
+			console.log("[search] : getting search ...")
+			try {
+				return await Get_Movies_Research(this.form, this.lang_nb, this.user_token);
+			}
+			catch(e) {
+				this.error = true
+				console.log("UNKOWN ERROR [search]: ", e)
+				throw(e)
+			}
+		},
+
+		async get_form_results() {
+			let res = null
+			this.movies = null
+			this.movies_slice = null
+			if (this.user_research <= 1) {
+				res = await this.get_reco()
+			}
+			else {
+				res = await this.get_search()
+			}
+			if (res != null && res.data.code == "SUCCESS") {
+				this.movies = res.data.movies
+				this.number_of_results = this.movies.length;
+				this.get_movies_page_slice();
+				console.log("[search] : succesfully received movies!")
+			}
+			else if (res != null && res.data.code == "FAILURE") {
+				this.error = true
+				console.log({'msg' : res.data.msg})
+			}
+			else {
+				throw("Unknow error code getting movies")
+			}
+		},
+
 		update_form(value) {
+			this.reset = false;
 			let form = JSON.parse(JSON.stringify(value));
 			this.form = form;
 			this.user_research += 1
 		},
 
-		reset_form() {
-			this.form = {
-				title         : '',
-				min_rating    : 0,
-				genre         : '',
-				quality       : '',
-				min_year      : 1900,
-				sort_by       : 'title',
-				asc_or_desc   : 'asc',
-			}
-		},
-
 		from_research_to_reco() {
 			this.user_research = 0,
 			console.log("[search] : reseting form") // CHECK THIS: NOT WORKING....
-			this.reset_form();
+			this.reset= true;
 		},
 
 		from_reco_to_research() {
 			this.user_research = 2,
-			this.reset_form();
+			this.reset= true;
 		},
 
 		show_favorites() {
@@ -160,7 +170,7 @@ export default {
 
 <template>
 	<div>
-		<SearchBar ref="search_bar" @search_form="update_form"/>
+		<SearchBar ref="search_bar" @search_form="update_form" :reset="reset"/>
 		<div ref="results_container" class="results_container">
 			<div class="search_header">
 				<div v-if="user_research > 1" class="title">

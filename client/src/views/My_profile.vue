@@ -9,34 +9,31 @@ import { Get_User_Details,
 		 Update_Last_Name,
 		 Update_Bio,
 		 Update_Email,
-		 Upload_Image,
-		 Get_User_Followers,
-		 Get_User_Followings } from "../functions/user"
+		 Upload_Image} from "../functions/user"
 
 export default {
 	components: {
 		SearchResults
 	},
+
+
 	data() {
 		return {
 			text_content		: textContent.PROFILE,
 			own_profile         : true,
-
 			user                : null,
+
 			request_error		: false,
 			network_error		: false,
 			error_text			: '',
+			image_error_text	: '',
 
 			watched_movies      : null,
 			fav_movies		    : null,
 
-			first_name			: null,
-			last_name			: null,
-			email				: null,
-			bio					: null,
 			profile_pic			: null,
 			pic_prefix			: "http://127.0.0.1:8071/api/image/get/",
-
+			fallbackUrl			: '../src/assets/generic_profile_pic.jpg',
 
 			first_name_is_saved : true,
 			last_name_is_saved  : true,
@@ -47,36 +44,28 @@ export default {
 			last_name_error     : false,
 			email_error		    : false,
 			image_error			: false,
-			image_error_text	: '',
-
-			followers			: 0,
-			followings			: 0,
 		}
 	},
+
+
 	methods: {
 		set_movie_props(movies) {
-			return {
+			return { // SAME
 				'data'    : movies,
 				'profile' : true,
 				'error'   : false
 			}
 		},
 
-		exists(movies) {
+		exists(movies) { // SAME
 			if (movies == null || (movies != null && movies.length == 0)) {
 				return false
 			}
 			return true
 		},
 
-		parse_modifiable_data(user) {
-			this.first_name	= user.first_name;
-			this.last_name	= user.last_name;
-			this.email		= user.mail;
-			this.bio		= user.bio ? user.bio : '';
-		},
 
-		async get_user_fav_movies() {
+		async get_user_fav_movies() { // SAME
 			console.log("[my_profile]: getting user fav movies...")
 			let res = await Get_User_Fav_Movies(this.user_token);
 			if (res.data.code == "SUCCESS") {
@@ -88,31 +77,7 @@ export default {
 			}
 		},
 
-		async get_user_followers() {
-			console.log("[my_profile]: getting get_user_followers...")
-			let res = await Get_User_Followers(this.user_token)
-			if (res.data.code == "SUCCESS") {
-				this.followers = res.data.followers
-				console.log("[my_profile]: Successfully got user followers!", this.followers)
-			}
-			else {
-				console.log("ERROR [my_profile]: in get_user_followers ", res)
-			}
-		},
-
-		async get_user_followings() {
-			console.log("[my_profile]: getting get_user_followers...")
-			let res = await Get_User_Followings(this.user_token)
-			if (res.data.code == "SUCCESS") {
-				this.followings = res.data.followings
-				console.log("[my_profile]: Successfully got user following!", this.followings)
-			}
-			else {
-				console.log("ERROR [my_profile]: in get_user_following ", res)
-			}
-		},
-
-		async get_user_watched_movies() {
+		async get_user_watched_movies() { // SAME
 			console.log("[my_profile]: getting user watched movies...")
 			let res = await Get_User_Watched_Movies(this.user_token);
 			if (res.data.code == "SUCCESS") {
@@ -124,7 +89,7 @@ export default {
 			}
 		},
 
-		async get_user_data() {
+		async get_user_data() { // ALMOST SAME
 			try {
 				console.log("[my_profile]: getting user data...")
 				let res = await Get_User_Details(this.user_token);
@@ -135,13 +100,13 @@ export default {
 				}
 				else if (res.data != null && res.data.code == "SUCCESS") {
 					this.user = res.data.user
-					this.parse_modifiable_data(this.user); // NO NEED FOR THAT
+					this.user.bio = this.user.bio ? this.user.bio : ''
 					console.log("[my_profile]: Successfully got user data! ", this.user)
 				}
-				else if (res.data != null &&  res.data.code == "NO_USER_WITH_THIS_ID") {
+				else if (res.data != null && (res.data.code == "NO_USER_WITH_THIS_ID" || res.data.code == "FAILURE")) {
 					this.request_error = true
 					this.error_text = this.text_content.no_user_found[this.lang_nb]
-					console.log("ERROR [my_profile]: no user with this token: ", this.user_token)
+					console.log("ERROR [my_profile]: get_user_data", {msg: res.data.msg})
 				}
 				else {
 					console.log("UNKOWN ERROR [my_profile]: ", res)
@@ -152,23 +117,48 @@ export default {
 			}
 		},
 
+		get_user_profile_pic() { // SAME
+			if (this.user.picture != null) {
+				if (this.user.picture.includes("cdn.intra.42") || this.user.picture.includes("github")) {
+					return (this.user.picture)
+				}
+				return `${this.pic_prefix}${this.user.picture}`
+			}
+			return null
+		},
+
+		async updating_movies(value) {  // SAME
+			this.get_user_fav_movies();
+			this.get_user_watched_movies();
+		},
+
+		handle_image_error(event) {  // SAME
+			event.target.src = this.fallbackUrl;
+		},
+
 		modify_first_name() {
 			this.first_name_is_saved = !this.first_name_is_saved
 		},
 
 		async save_first_name() {
-			let res = await Update_First_Name(this.user_token, this.first_name)
-			if (res.status == 200) {
-				this.first_name_is_saved = !this.first_name_is_saved
-				this.first_name_error = false
+			try {
+				let res = await Update_First_Name(this.user_token, this.user.first_name)
+				if (res && res.data.code == "SUCCESS") {
+					this.first_name_is_saved = !this.first_name_is_saved
+					this.first_name_error = false
+					console.log("[my_profile] Succesfully updated firstname to", {first_name : this.user.first_name})
+
+				}
+				else if (res && res.data.code == "FAILURE") {
+					this.first_name_error = true;
+					console.log("ERROR [my_profile] in save_first_name : ", res.data.msg)
+				}
 			}
-			else if (res.status == 404){
-				console.log("Error: ", res.message)
+			catch(e) {
+				console.log("UNKOWN ERROR [my_profile] in save_first_name ")
+				throw(e)
 			}
-			else if (res.status == 201) {
-				this.first_name_error = true;
-				console.log("Error: ", res.data.message, res.data.details)
-			}
+
 		},
 
 		modify_last_name() {
@@ -176,18 +166,24 @@ export default {
 		},
 
 		async save_last_name() {
-			let res = await Update_Last_Name(this.user_token, this.last_name)
-			if (res.status == 200) {
-				this.last_name_is_saved = !this.last_name_is_saved
-				this.last_name_error = false
+			try {
+				let res = await Update_Last_Name(this.user_token, this.user.last_name)
+				if (res && res.data.code == "SUCCESS") {
+					this.last_name_is_saved = !this.last_name_is_saved
+					this.last_name_error = false
+					console.log("[my_profile] Succesfully updated lastname to", {last_name : this.user.last_name})
+
+				}
+				else if (res && res.data.code == "FAILURE") {
+					this.last_name_error = true;
+					console.log("ERROR [my_profile] in save_last_name : ", res.data.msg)
+				}
 			}
-			else if (res.status == 404){
-				console.log("Error: ", res.message)
+			catch(e) {
+				console.log("UNKOWN ERROR [my_profile] in save_last_name ")
+				throw(e)
 			}
-			else if (res.status == 201) {
-				this.last_name_error = true;
-				console.log("Error: ", res.data.message, res.data.details)
-			}
+
 		},
 
 		modify_bio() {
@@ -195,14 +191,19 @@ export default {
 		},
 
 		async save_bio() {
-			let res = await Update_Bio(this.user_token, this.bio)
-			if (res.status == 200) {
-				this.bio_is_saved = !this.bio_is_saved
-				this.bio_error = false
+			try {
+				let res = await Update_Bio(this.user_token, this.user.bio)
+				if (res.status == 200) {
+					this.bio_is_saved = !this.bio_is_saved
+					this.bio_error = false
+					console.log("[my_profile] Succesfully updated bio to", {bio : this.user.bio})
+				}
 			}
-			else if (res.status == 404){
-				console.log("Error: ", res.message)
+			catch(e) {
+				console.log("UNKOWN ERROR [my_profile] in save_bio ")
+				throw(e)
 			}
+
 		},
 
 		modify_mail() {
@@ -210,17 +211,22 @@ export default {
 		},
 
 		async save_mail() {
-			let res = await Update_Email(this.user_token, this.email)
-			if (res.status == 200) {
-				this.email_is_saved = !this.email_is_saved
-				this.email_error = false
+			try {
+				let res = await Update_Email(this.user_token, this.user.mail)
+				if (res && res.data.code == "SUCCESS") {
+					this.email_is_saved = !this.email_is_saved
+					this.email_error = false
+					console.log("[my_profile] Succesfully updated mail to", {mail : this.user.mail})
+
+				}
+				else if (res && res.data.code == "FAILURE") {
+					this.email_error = true;
+					console.log("ERROR [my_profile] in save_mail : ", res.data.msg)
+				}
 			}
-			else if (res.status == 404){
-				console.log("Error: ", res.message)
-			}
-			else if (res.status == 201) {
-				this.email_error = true;
-				console.log("Error: ", res.data.message, res.data.details)
+			catch(e) {
+				console.log("UNKOWN ERROR [my_profile] in save_mail ")
+				throw(e)
 			}
 		},
 
@@ -247,35 +253,21 @@ export default {
 
 		mimic_click() {
 			this.$refs.fileInput.click();
-		},
-
-		get_user_profile_pic() {
-			if (this.user.picture != null) {
-				return `${this.pic_prefix}${this.user.picture}`
-			}
-			return null
-		},
-
-		async updating_movies(value) {
-			this.get_user_fav_movies();
-			this.get_user_watched_movies();
-		},
+		}
 	},
 
 
-	async mounted() {
-		await this.get_user_data();
-		await this.get_user_fav_movies();
-		await this.get_user_watched_movies();
-		this.get_user_followers();
-		this.get_user_followings();
-	},
-
-
-	computed: mapState({
+	computed: mapState({  // SAME
       	lang_nb  : state =>  state.lang_nb,
 		user_token : state =>  state.user_token,
     }),
+
+
+	async mounted() {  // SAME
+		await this.get_user_data();
+		await this.get_user_fav_movies();
+		await this.get_user_watched_movies();
+	},
 }
 </script>
 
@@ -303,7 +295,7 @@ export default {
 				<div class="rounded-top text-white d-flex flex-row" style="background-color: #000; height:250px;">
 					<div class="ms-4 mt-5 d-flex flex-column" style="width: 200px;">
 					<div class="profile_header mt-4" >
-						<img :src="get_user_profile_pic()" alt="profile pic" class="profile_pic" onerror="this.src='../src/assets/generic_profile_pic.jpg';">
+						<img :src="get_user_profile_pic()" alt="profile pic" class="profile_pic" @error="handle_image_error"/>
 						<input type="file" ref="fileInput" @change="upload_image"/>
 						<b-icon-arrow-repeat  class="h2 change_icon" @click="mimic_click"></b-icon-arrow-repeat>
 						<p class="error_msg" v-if="image_error">{{image_error_text}}</p>
@@ -311,17 +303,17 @@ export default {
 					</div>
 					<div class="ms-3 main_info" >
 						<div v-if="first_name_is_saved">
-							<span class ="h3 name">{{ first_name }}
+							<span class ="h3 name">{{ user.first_name }}
 							<b-icon-pen class="modify h5" @click="modify_first_name()"></b-icon-pen>
 							</span>
 						</div>
 						<div  v-else class="input-group">
 							<input
-								v-model = "first_name"
+								v-model = "user.first_name"
 								class="form-control"
 								:class="{ error_input : first_name_error}"
 								name="password"
-								:placeholder="first_name"
+								:placeholder="user.first_name"
 							>
 							<span class="input-group-btn align-items-center">
 								<button class="btn check_button" type="button">
@@ -332,17 +324,17 @@ export default {
 						<p class="error_msg" v-show="first_name_error">{{text_content.first_name_error[lang_nb]}}</p>
 						<div class="mt-3">
 						<div v-if="last_name_is_saved">
-							<span class ="h3 name">{{ last_name }}
+							<span class ="h3 name">{{ user.last_name }}
 								<b-icon-pen class="modify h5" @click="modify_last_name()"></b-icon-pen>
 							</span>
 						</div>
 						<div  v-else class="input-group">
 							<input
-								v-model = "last_name"
+								v-model = "user.last_name"
 								class="form-control"
 								:class="{ error_input : last_name_error}"
 								name="password"
-								:placeholder="last_name"
+								:placeholder="user.last_name"
 							>
 							<span class="input-group-btn align-items-center">
 								<button class="btn check_button" type="button">
@@ -366,14 +358,14 @@ export default {
 						<div class="col-7">
 							<div>
 								<p class="small text-muted mb-0">email</p>
-								<p v-if="email_is_saved" class="mb-1 h5  email">{{email}}<b-icon-pen class="modify h5 mail" @click="modify_mail()"></b-icon-pen></p>
+								<p v-if="email_is_saved" class="mb-1 h5  email">{{user.mail}}<b-icon-pen class="modify h5 mail" @click="modify_mail()"></b-icon-pen></p>
 								<div  v-else class="input-group email">
 								<input
-									v-model = "email"
+									v-model = "user.mail"
 									class="form-control"
 									:class="{ error_input : email_error}"
 									name="password"
-									:placeholder="email"
+									:placeholder="user.mail"
 								>
 								<span class="input-group-btn align-items-center">
 									<button class="btn check_button  email" type="button">
@@ -387,11 +379,11 @@ export default {
 						</div>
 						<div class="col">
 							<p class="small text-muted mb-0">{{text_content.followers[lang_nb]}}</p>
-							<p class="mb-1 h5">{{followers}}</p>
+							<p class="mb-1 h5">{{user.followers}}</p>
 						</div>
 						<div class="col">
 							<p class="small text-muted mb-0">{{text_content.followings[lang_nb]}}</p>
-							<p class="mb-1 h5">{{followings}}</p>
+							<p class="mb-1 h5">{{user.followings}}</p>
 						</div>
 						</div>
 					</div>
@@ -402,14 +394,14 @@ export default {
 					<p class="lead fw-normal mb-1">{{text_content.about[lang_nb]}}</p>
 					<div class="p-4" style="background-color: #f8f9fa;">
 						<div v-if="bio_is_saved">
-						<p class="font-italic mb-1 about">{{ bio }}<b-icon-pen class="modify h5 bio" :class="bio.length == 0 ? 'empty' : ''" @click="modify_bio()"></b-icon-pen></p>
+						<p class="font-italic mb-1 about">{{ user.bio }}<b-icon-pen class="modify h5 bio" :class="user.bio.length == 0 ? 'empty' : ''" @click="modify_bio()"></b-icon-pen></p>
 						</div>
 						<div v-else>
 							<b-form-textarea
 								id="textarea"
-								v-model = "bio"
+								v-model = "user.bio"
 								name="password"
-								:placeholder="bio"
+								:placeholder="user.bio"
 								:maxlength=499
 							></b-form-textarea>
 							<p class="max_length">{{text_content.bio_max_length[lang_nb]}}: 500</p>

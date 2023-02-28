@@ -72,6 +72,7 @@ module.exports = (db_pool) => {
         },
 
         unfollow_user: async (follower_id, followed_id) => {
+            console.log("\n[follow]: unfollow_user ", {follower_id, followed_id})
             const request = `
             DELETE
             FROM follows

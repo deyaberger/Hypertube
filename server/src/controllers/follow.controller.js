@@ -37,7 +37,8 @@ module.exports = (db_pool) => {
                 let follower_id = req.user_id
                 let followed_id = Number(req.params.user_id)
                 let following_res  = await follows_functions.is_following_user(follower_id, followed_id)
-                return res.status(200).send({message: following_res})
+                console.log("[follows.controller]: is_following SUCCESS")
+                return res.status(200).send({message: following_res, code: "SUCCESS"})
             }
             catch(e) {
                 throw (e)
@@ -48,7 +49,8 @@ module.exports = (db_pool) => {
                 let follower_id = req.user_id
                 let followed_id = Number(req.params.user_id)
                 let following_res  = await follows_functions.follow_user(follower_id, followed_id)
-                return res.status(200).send({message: following_res})
+                console.log("[follows.controller]: follow SUCCESS")
+                return res.status(200).send({message: following_res, code: "SUCCESS"})
             }
             catch(e) {
                 throw (e)
@@ -59,7 +61,8 @@ module.exports = (db_pool) => {
                 let follower_id = req.user_id
                 let followed_id = Number(req.params.user_id)
                 let following_res  = await follows_functions.unfollow_user(follower_id, followed_id)
-                return res.status(200).send({message: following_res})
+                console.log("[follows.controller]: unfollow SUCCESS")
+                return res.status(200).send({message: following_res, code: "SUCCESS"})
             }
             catch(e) {
                 throw (e)

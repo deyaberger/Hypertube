@@ -9,6 +9,8 @@ module.exports = (db_pool) => {
 
     router.get ("/getid"           , auth_controller.authenticateToken  , auth_controller.print_id)
     router.get ("/oauth"           , oauth_controller.oauthInUp);
+    router.get ("/oauth/42"           , oauth_controller.oauthInUp);
+    router.get ("/oauth/github"           , oauth_controller.oauth_github_InUp);
 
     return router
 }

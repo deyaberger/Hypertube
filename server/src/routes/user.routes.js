@@ -5,8 +5,8 @@ module.exports = (db_pool) => {
 
     var router = require("express").Router();
 
-    router.get  ("/me"               , auth_controller.authenticateToken, user_controller.get_my_user      );
-    router.get  ("/profile/:user_id" , auth_controller.authenticateToken, user_controller.get_other_user   );
+    router.get  ("/me"               , auth_controller.authenticateToken, user_controller.get_user   );
+    router.get  ("/profile/:user_id" , auth_controller.authenticateToken, user_controller.get_user   );
 
     router.post ("/update_first_name", auth_controller.authenticateToken, user_controller.update_first_name);
     router.post ("/update_last_name" , auth_controller.authenticateToken, user_controller.update_last_name );

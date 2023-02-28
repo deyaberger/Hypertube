@@ -2,8 +2,8 @@ Kill HOST MYSQL
 
 # Start API
 
-using this [TORRENT_API](https://github.com/Ryuk-me/Torrent-Api-py).  
-with this `.env` in the source of that repo:  
+using this [TORRENT_API](https://github.com/Ryuk-me/Torrent-Api-py).
+with this `.env` in the source of that repo:
 
 ```bash
 REDIS_URI=CHECK_ENCRYPTED_ENV
@@ -28,8 +28,8 @@ cd /etc/mysql/mysql.conf.d
 
 vim mysql.cnf
 # Set this
-# [mysql]
-# port=6606
+[mysql]
+port=6606
 
 vim mysqld.cnf
 # change the port value as shown here
