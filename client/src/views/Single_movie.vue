@@ -4,7 +4,8 @@ import vue3StarRatings from "vue3-star-ratings";
 import { Get_Single_Movie_Details,
 		 Parse_Single_Movie,
 		 Set_Watched,
-		 Set_UnWatched} from "../functions/movies";
+		 Set_UnWatched,
+		 Remove_From_Favorites, Add_To_Favorites } from "../functions/movies";
 import { Get_Comments_By_Movie_ID, Parse_Comments, Post_Comment } from "../functions/comments";
 import { Get_Formatted_Time } from "../functions/utils.js";
 import StarRating from 'vue-star-rating';
@@ -44,18 +45,18 @@ export default {
 
 
 	methods: {
-		async update_watched(movie) {
+		async update_watched() {
 			let res = null
 			try {
-				if (movie.is_watched == false) {
-					res = await Set_Watched(this.movie_id, this.user_token)
+				if (this.movie.is_watched == false) {
+					res = await Set_Watched(this.this._id, this.user_token)
 				}
 				else {
 					res = await Set_UnWatched(this.movie_id, this.user_token)
 				}
 				if (res.data.code == "SUCCESS") {
 					console.log("[single_movie]: Successfully updated watched!")
-					movie.is_watched = !movie.is_watched
+					this.movie.is_watched = !this.movie.is_watched
 				}
 				else {
 					console.log("ERROR: [single_movie] in update_watched: ", res)
@@ -63,6 +64,29 @@ export default {
 			}
 			catch(e) {
 				console.log("UNKNOWN ERROR [single_movie]: in update_watched")
+				throw(e)
+			}
+		},
+
+		async update_fav() {
+			let res = null
+			try {
+				if (this.movie.is_fav) {
+					res = await Remove_From_Favorites(this.movie_id, this.user_token)
+				}
+				else {
+					res = await Add_To_Favorites(this.movie_id, this.user_token)
+				}
+				if (res.data.code == "SUCCESS") {
+					console.log("[single_movie]: Successfully updated fav!")
+					this.movie.is_fav = !this.movie.is_fav
+				}
+				else {
+					console.log("ERROR: [single_movie] in update_fav: ", res)
+				}
+			}
+			catch(e) {
+				console.log("UNKNOWN ERROR [single_movie]: in update_fav")
 				throw(e)
 			}
 		},
@@ -184,13 +208,13 @@ export default {
 			</div>
 		</div>
 		<button v-if="movie.is_watched"
-			@click="update_watched(movie)"
+			@click="update_watched()"
 			class="submit_button"
 			type = "submit">
 			Fake tmp Unwatch button
 		</button>
 		<button v-else
-			@click="update_watched(movie)"
+			@click="update_watched()"
 			class="submit_button"
 			type = "submit">
 			Fake temporary watched button
@@ -216,6 +240,14 @@ export default {
 			<div class="col infos">
 				<span class="infos_content"><b-icon-star-fill class="icon score" :class="get_rating_level(movie.rating)"></b-icon-star-fill></span>
 				<span class="infos_content"><span class="big">{{movie.rating}}</span>/10</span>
+			</div>
+			<div class="col-1 infos">
+				<span v-if="movie.is_fav" class="btn-group" role="group" aria-label="Basic example"  data-toggle="tooltip" data-placement="top" title="Remove from favorites">
+					<b-icon-heart-fill class="h2 favorites" @click="update_fav()"></b-icon-heart-fill>
+				</span>
+				<span v-else class="btn-group" role="group" aria-label="Basic example"  data-toggle="tooltip" data-placement="top" title="Add to favorites">
+					<b-icon-heart class="h2 favorites" @click="update_fav()"></b-icon-heart>
+				</span>
 			</div>
 		</div>
 		<div class="row summary_container">
@@ -301,6 +333,10 @@ export default {
 
 .icon.score.bad {
 	color: rgba(255, 0, 0, 0.671)
+}
+
+.favorites {
+	cursor: pointer;
 }
 
 </style>

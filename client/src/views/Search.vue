@@ -31,6 +31,7 @@ export default {
 			only_show_fav	  : false,
 			error			  : false,
 			saved_movies	  : null,
+			reset			  : false
 		}
 	},
 
@@ -100,32 +101,21 @@ export default {
 		},
 
 		update_form(value) {
+			this.reset = false;
 			let form = JSON.parse(JSON.stringify(value));
 			this.form = form;
 			this.user_research += 1
 		},
 
-		reset_form() {
-			this.form = {
-				title         : '',
-				min_rating    : 0,
-				genre         : '',
-				quality       : '',
-				min_year      : 1900,
-				sort_by       : 'title',
-				asc_or_desc   : 'asc',
-			}
-		},
-
 		from_research_to_reco() {
 			this.user_research = 0,
 			console.log("[search] : reseting form") // CHECK THIS: NOT WORKING....
-			this.reset_form();
+			this.reset= true;
 		},
 
 		from_reco_to_research() {
 			this.user_research = 2,
-			this.reset_form();
+			this.reset= true;
 		},
 
 		show_favorites() {
@@ -180,7 +170,7 @@ export default {
 
 <template>
 	<div>
-		<SearchBar ref="search_bar" @search_form="update_form"/>
+		<SearchBar ref="search_bar" @search_form="update_form" :reset="reset"/>
 		<div ref="results_container" class="results_container">
 			<div class="search_header">
 				<div v-if="user_research > 1" class="title">

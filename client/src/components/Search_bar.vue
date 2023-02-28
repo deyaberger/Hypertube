@@ -6,10 +6,17 @@ import StarRating from 'vue-star-rating';
 
 
 export default {
+	props: {
+		reset : Boolean
+	},
+
+
 	components: {
 		Slider,
 		StarRating
 	},
+
+
 	data() {
 		return {
 			show               : true,
@@ -29,14 +36,19 @@ export default {
 								}
 		}
 	},
+
+
 	computed: mapState({
 		lang_nb: state => state.lang_nb,
 		user_token : state =>  state.user_token,
 	}),
+
+
 	methods: {
 		emit_form() {
 			this.$emit('search_form', this.form);
 		},
+
 		order() {
 			if (this.form.asc_or_desc == 'desc') {
 				this.form.asc_or_desc = 'asc'
@@ -45,32 +57,56 @@ export default {
 				this.form.asc_or_desc = 'desc'
 			}
 		},
+
 		is_current_sort_category(category) {
 			if (category == this.form.sort_by)
 				return true
 			return false
 		},
+
 		is_current_genre(genre) {
 			if (genre == this.form.genre)
 				return true
 			return false
 		},
+
 		update_genre(genre) {
 			this.form.genre = genre
 		},
+
 		update_quality(quality) {
 			this.form.quality = quality
 		},
+
 		update_sort_cat(category) {
 			this.form.sort_by = category
 		},
+
+		reset_form() {
+			if (this.reset == true) {
+				this.form = {
+				title         : '',
+				min_rating    : 0,
+				genre         : '',
+				quality       : '',
+				min_year      : 1900,
+				sort_by       : 'title',
+				asc_or_desc   : 'asc',
+				}
+			}
+		},
+
 		submit(e) {
 			e.preventDefault()
 		},
 	},
+
+
 	mounted() {
 		this.emit_form()
 	},
+
+
 	watch: {
 		form: {
 			handler:function() {
@@ -78,6 +114,13 @@ export default {
 			},
 			deep:true
 		},
+
+		reset: {
+			handler:function() {
+				this.reset_form();
+			},
+			deep:true
+		}
 	}
 }
 </script>
