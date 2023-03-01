@@ -52,8 +52,9 @@ export default {
 				"connect_with_twitter" : false,
 			}
 			try {
+				console.log("[Sign_up]: on_submit, ", {form})
 				let sign_up_res = await Sign_Up(form)
-				console.log("sign_up res: ", sign_up_res)
+				console.log("[Sign_up]: sign up res ", {data : sign_up_res.data, code : sign_up_res.code})
 				if (sign_up_res.status == 200) {
 					console.log("Adding token to state")
 					this.$store.commit('SET_USER_TOKEN', sign_up_res.data.token)
@@ -66,14 +67,14 @@ export default {
 					this.firstname_error = sign_up_res.data.firstName_error
 					this.lastname_error = sign_up_res.data.lastName_error
 					this.email_error = sign_up_res.data.mail_error
-					this.email_error_text = this.text_content.error_email_dup
+					this.email_error_text = this.text_content.error_email
 					this.mdp_error = sign_up_res.data.password_error
-					console.log("error in signuiiip")
+					console.log("[Sign Up] : ERROR")
 				}
 			}
 			catch (e) {
+				console.log("[Sign Up] : UNKOWN ERROR ", e)
 				this.connection_error = true
-				console.log("error in signup: \n", e)
 			}
 		},
 	},

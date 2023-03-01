@@ -5,7 +5,6 @@ module.exports = (db_pool) => {
 
     return {
         signup : async (req, res) => {
-            console.log("in signup: ", req.body)
             let username        = req.body.username;
             let firstName       = req.body.firstName;
             let lastName        = req.body.lastName;
@@ -16,17 +15,16 @@ module.exports = (db_pool) => {
             let lastName_error  = false;
             let mail_error      = false;
             let password_error  = false;
+
+            let regex_whitespace = /^\S*$/;
+            if (firstName.match(regex_whitespace) == null) {
+                firstName_error = true;
+            }
             if (username.length == 0) {
                 username_error = true
             }
-            if (firstName.length == 0) {
-                firstName_error = true
-            }
-            if (lastName.length == 0) {
-                lastName_error = true
-            }
             let regex_mail = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
-            if (mail.match(regex_mail) == null) {
+            if (mail.match(regex_mail) == null && mail.length > 0) {
                 mail_error = true
             }
             let regex_pwd = /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{6,}$/;
@@ -34,14 +32,16 @@ module.exports = (db_pool) => {
                 password_error = true
             }
             if (username_error || firstName_error || lastName_error || mail_error || password_error) {
+                console.log("[auth.controller]: signup FAILURE", {username_error, firstName_error, lastName_error, mail_error, password_error})
                 return res.status(201).send({message: "Cant create user", "username_error" : username_error,
-                        "firstName_error" : firstName_error, "lastName_error" : lastName_error, "mail_error" : mail_error, "password_error" : password_error})
+                        "firstName_error" : firstName_error, "lastName_error" : lastName_error, "mail_error" : mail_error, "password_error" : password_error, code: "FAILURE"})
             }
             try {
-                let result = await auth_functions.signup(username, firstName, lastName, mail, password, 'pic', 'en')
+                let result = await auth_functions.signup(username, firstName, lastName, mail, password, '', 'en')
                 let id     = result.insertId
                 let token  = auth_functions.create_access_token(id)
-                res.status(200).send({message: "Successfully created user.", token: token})
+                console.log("[auth.controller]: Succesfully created user with id: ", {id : id})
+                return res.status(200).send({message: "Successfully created user.", token: token})
             }
             catch (e) {
                 if (e.code == 'ER_DUP_ENTRY') {
@@ -49,24 +49,27 @@ module.exports = (db_pool) => {
                         username_error = true
                     }
                     if (e.sqlMessage.includes(mail)) {
+                        console.log(e.sqlMessage)
                         mail_error = true
                     }
-                    res.status(201).send({message: e.sqlMessage, code: e.code, "username_error" : username_error,
+                    return res.status(201).send({message: e.sqlMessage, code: e.code, "username_error" : username_error,
                     "firstName_error" : firstName_error, "lastName_error" : lastName_error, "mail_error" : mail_error, "password_error" : password_error})
                 }
                 else if (e.code == 'ER_PARSE_ERROR') {
-                    res.status(400).send({message: 'There was an error parsing your request', code: e.code, sqlMessage: e.sqlMessage})
+                    console.log("[auth.controller]: signup ER_PARSE_ERROR", e.sqlMessage)
+                    return res.status(400).send({message: 'There was an error parsing your request', code: e.code, sqlMessage: e.sqlMessage})
                 }
                 else if (e.code == 'ER_DATA_TOO_LONG') {
-                    res.status(201).send({message: "Data too long", code: e.code, sqlMessage: e.sqlMessage})
+                    console.log("[auth.controller]: signup ER_DATA_TOO_LONG", e.sqlMessage)
+                    return res.status(201).send({message: "Data too long", code: e.code, sqlMessage: e.sqlMessage})
                 }
                 else if (e.code == 'ER_BAD_NULL_ERROR') {
-                    res.status(201).send({message: "data columns cant be null", code: e.code, sqlMessage: e.sqlMessage})
+                    console.log("[auth.controller]: signup ER_BAD_NULL_ERROR", e.sqlMessage)
+                    return res.status(201).send({message: "data columns cant be null", code: e.code, sqlMessage: e.sqlMessage})
                 }
                 else {
-                    console.log("signup error:\n", e, "\nend signup error")
-                    res.status(500).send({message: 'error in create test user', error: e, code: 'FAILURE'})
-                    throw(e)
+                    console.log("[auth.controller]: signup ER_BAD_NULL_ERROR", e.sqlMessage)
+                    return res.status(500).send({message: 'error in create test user', error: e, code: 'FAILURE'})
                 }
             }
         },

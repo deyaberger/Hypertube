@@ -24,12 +24,16 @@ export default {
 
 <template>
 	<div>
-		<button class="mt-3 loginBtn loginBtn--facebook">
-			{{get_button_content()}}Facebook
-		</button>
+		<a href="https://gitlab.com/oauth/authorize?client_id=7e963f1d3f439befc5db0b044bb52e51512694e03db68e43ce9956070e9bbdf8&redirect_uri=http%3A%2F%2Flocalhost%3A8071%2Fapi%2Fauth%2Foauth%2Fgitlab&response_type=code&scope=read_user+email">
+			<button class="mt-3 loginBtn loginBtn--facebook">
+				{{get_button_content()}}gitlab
+			</button>
+		</a>
+		<a href="https://accounts.google.com/o/oauth2/v2/auth?client_id=300857859557-a6c3bqfbif2nasir07jjuqequcpqbm0p.apps.googleusercontent.com&redirect_uri=http%3A%2F%2Flocalhost%3A8071%2Fapi%2Fauth%2Foauth%2Fgoogle&scope=openid profile email&response_type=code&access_type=offline&prompt=consent">
 		<button class="loginBtn loginBtn--google">
 			{{get_button_content()}}Google
 		</button>
+		</a>
 		<a href="https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-d9dacf000ec83ce78969bfcecc2f140477302481ff4eb6f746eea81b16b00e75&redirect_uri=http%3A%2F%2Flocalhost%3A8071%2Fapi%2Fauth%2Foauth&response_type=code">
 			<button class="mt-3 loginBtn loginBtn--42" >
 				{{get_button_content()}}42
