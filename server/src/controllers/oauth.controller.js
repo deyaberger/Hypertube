@@ -200,14 +200,17 @@ const helper_functions = (db_pool) => {
                 url: `https://gitlab.com/oauth/token`,
                 method: "post",
                 headers: {
-                    "Content-type": "application/json",
-                    'Accept': 'application/json'
+                    "Content-type": "application/x-www-form-urlencoded",
+                    'Accept': 'application/json',
+                    'cache-control': 'no-cache',
                 },
                 params : {
+                    code,
                     client_id    : process.env.OAUTH_GITLAB_ID,
                     client_secret: process.env.OAUTH_GITLAB_SECRET,
                     redirect_uri : `${back_hostname}/api/auth/oauth/gitlab`,
-                    code         : code
+                    grant_type: 'authorization_code',
+                    state: 'test'
                 }
             };
             const response = await axios(request);
@@ -433,9 +436,9 @@ module.exports = (db_pool) => {
                         user_info = {
                             mail      : user_details.data.email ? user_details.data.email : '',
                             ext_id    : user_details.data.id,
-                            login     : user_details.data.login,
-                            first_name: user_details.data.first_name ? user_details.data.first_name : '',
-                            last_name : user_details.data.last_name ? user_details.data.last_name : '',
+                            login     : user_details.data.username,
+                            first_name: user_details.data.name ? user_details.data.name.split(" ")[0] : '',
+                            last_name : user_details.data.name && user_details.data.name.split(' ').length == 2 ? user_details.data.name.split(" ")[1] : '',
                             picture   : user_details.data.avatar_url
                         }
                         console.log("5. [oauth.controller] Got user info from gitlab:", user_info)

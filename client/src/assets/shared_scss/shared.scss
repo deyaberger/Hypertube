@@ -25,7 +25,7 @@
 	cursor: pointer;
 	outline: none;
 	}
-  
+
 .submit_button:hover {
 background-color: #d8fff0;
 box-shadow: 0px 10px 10px rgba(46, 229, 157, 0.4);
@@ -42,4 +42,9 @@ transform: translateY(-3px);
 	cursor: unset;
 	box-shadow: unset;
 	transform: unset;
+}
+@media (max-width: 300px) {
+	.submit_button {
+		width: 100px;
+	}
 }
