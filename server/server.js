@@ -5,6 +5,10 @@ const app        = express();
 // GET .env file contents
 require('dotenv').config()
 
+// GLOBAL CLIENT
+const tor_client = require('torrent-client')
+client = new tor_client()
+
 
 const http  = require('http').Server(app);
 const {Server}    = require('socket.io');

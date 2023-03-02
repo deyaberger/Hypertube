@@ -1,6 +1,6 @@
 <script>
 import Nav from './components/Nav.vue'
-import SocketioService from './functions/socket.service.js';
+// import SocketioService from './functions/socket.service.js';
 
 export default {
 	components: {
@@ -10,12 +10,19 @@ export default {
 	
 	data() {
 		return {
-			test : false
+			test : false,
+		}
+	},
+
+	computed: {
+		store() {
+			return this.$store.state
 		}
 	},
 
 	created() {
-		SocketioService.setupSocketConnection();
+		console.log("created app")
+		// SocketioService.setupSocketConnection();
 	}
 }
 </script>

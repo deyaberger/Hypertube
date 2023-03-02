@@ -6,15 +6,19 @@ class SocketioService {
 
     }
   
-    setupSocketConnection() {
-      console.log("socket connect")
+    setupSocketConnection(token) {
+      console.log("socket connect", token)
       this.socket = io("http://localhost:5173", {
         path: "/socketo/",
         auth: {
-            token: "abc"
+            token: token
           }
       });
       console.log("SUUUCCEEEE", this.socket)
+    }
+
+    bindSocketToStore(store) {
+      console.log("binding", socket)
     }
   }
   

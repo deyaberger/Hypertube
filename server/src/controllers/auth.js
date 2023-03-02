@@ -29,12 +29,10 @@ module.exports = (db_pool) => {
             }
         },
 
-
         create_access_token : (userid) => {
             console.log("\n[auth]: Creating token for ", {userid});
             return jwt.sign({user_id: userid}, process.env.TOKEN_SECRET, { expiresIn: 86400 });
         },
-
 
         get_user_from_username: async (username) => {
             console.log("\n[auth]: getting user from ", {username})
@@ -48,7 +46,6 @@ module.exports = (db_pool) => {
             }
             return user_res[0]
         },
-
 
         get_user_from_mail: async (mail) => {
             console.log("getting user from mail: %s.", mail)
@@ -64,7 +61,6 @@ module.exports = (db_pool) => {
             return user_res[0]
         },
 
-
         check_password : async (user, password) => {
             // console.log("checking password: ", user)
             if (user == undefined) {
@@ -77,7 +73,6 @@ module.exports = (db_pool) => {
             }
             return false
         },
-
 
         insert_42_user: async (id_42, user_id) => {
             console.log("\n[auth]: insert_42_user ", {id_42, user_id})
@@ -112,7 +107,6 @@ module.exports = (db_pool) => {
 
         },
 
-
         request_new_pass : async (mail) => {
             console.log("Reset pass: ", mail)
             let [user_res, ] = await db_pool.query("\
@@ -145,7 +139,6 @@ module.exports = (db_pool) => {
 
             return true
         },
-
 
         reset_pass : async(hash, new_pass) => {
             console.log("resetting password")

@@ -1,6 +1,5 @@
 const axios = require('axios')
-const tor_client = require('torrent-client')
-const client = new tor_client()
+
 
 module.exports = (db_pool) => {
     
