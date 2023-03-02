@@ -12,6 +12,7 @@
     "nanoid": "^3.3.4",
     "nodemon": "^2.0.20",
     "perfect-express-sanitizer": "^1.0.10",
+    "socket.io": "^4.6.1",
     "srt-to-vtt": "^1.1.3",
     "srt-validator": "^6.0.4",
     "torrent-client": "github:JBarmentlo/torrent-client"

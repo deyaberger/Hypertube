@@ -8,7 +8,7 @@ class SocketioService {
   
     setupSocketConnection() {
       this.socket = io("http://localhost:5173", {
-        path: "/my-custom-path/"
+        path: "/socketo/"
       });
       console.log("SUUUCCEEEE", this.socket)
     }
