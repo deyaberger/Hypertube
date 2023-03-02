@@ -159,11 +159,11 @@ export default {
 				<button class="submit_button" type="submit">{{text_content.sign_up[lang_nb]}}</button>
 				<div class = "m-3">{{text_content.or[lang_nb]}}</div>
 			</div>
-			<NetworkButtons type="signup"></NetworkButtons>
+		</form>
+		<NetworkButtons type="signup"></NetworkButtons>
 			<div class="change_page mt-4 text-center">
 				<router-link to="/sign_in">{{text_content.already_account[lang_nb]}}</router-link>
 			</div>
-		</form>
 	</div>
 </template>
 

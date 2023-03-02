@@ -89,7 +89,7 @@ export default {
 				// TODO: && res.code == "SUCCESS"
 				if (res.status == 200) {
 					console.log(res.data.movie)
-					this.movie_details = res.data[0]
+					this.movie_details = res.data.movie
 					console.log("deets", this.movie_details)
 				}
 				else {

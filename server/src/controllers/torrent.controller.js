@@ -58,11 +58,11 @@ module.exports = (db_pool) => {
         },
 
         add_magnet(req, res) {
-            console.log("Get magnet content", req.body)
+            console.log("Get magnet content", req.body.title)
 
             let on_ready_answer = (torrent) => {
                 let files = [];
-                // console.log("torrent ready", Object.keys(torrent))
+                console.log("torrent ready", Object.keys(torrent))
                 torrent.files.forEach(function(data) {
                     files.push({
                         name: data.path.slice('torrents/'.length),
