@@ -31,7 +31,7 @@ module.exports = (db_pool) => {
                 let max_year          = req.query.max_year
                 let language          = req.query.language
                 let asc_or_desc       = req.query.asc_or_desc
-                let sort_by          = req.query.sort_by
+                let sort_by           = req.query.sort_by
                 let movies_res = await movie_functions.search_movies(user_id, query_term, minimum_rating, genre, quality, min_year, max_year, language, asc_or_desc, sort_by)
                 console.log("[movie.controller]: search SUCCESS")
                 return res.status(200).send({movies: movies_res, code: "SUCCESS"})

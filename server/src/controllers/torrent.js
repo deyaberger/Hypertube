@@ -73,7 +73,6 @@ module.exports = (db_pool) => {
                 {
                     largest = torrent.files[i].length
                     file = torrent.files[i];
-                    console.log("paf: ", torrent.files[i].path)
                 }
             }
             return file

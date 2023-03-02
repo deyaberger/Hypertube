@@ -62,7 +62,7 @@ module.exports = (db_pool) => {
 
             let on_ready_answer = (torrent) => {
                 let files = [];
-                console.log("torrent ready", Object.keys(torrent))
+                console.log("torrent ready", torrent.name)
                 torrent.files.forEach(function(data) {
                     files.push({
                         name: data.path.slice('torrents/'.length),
@@ -70,6 +70,10 @@ module.exports = (db_pool) => {
                     });
         
                 });
+                torrent_functions.set_subtitles_high_priority(torrent)
+                // torrent.on('download', (dl) => {
+                //     console.log("dowsnl", torrent.progress)
+                // })
                 console.log("sending torrent contents")
                 return res.status(200).send({files: files, code:return_codes.SUCCESS})
             }
@@ -93,6 +97,7 @@ module.exports = (db_pool) => {
                     });
         
                 });
+                torrent_functions.set_subtitles_high_priority(tor)
                 console.log("sending torrent contents")
                 return res.status(200).send({files: files, code:return_codes.SUCCESS})
             }
@@ -100,18 +105,18 @@ module.exports = (db_pool) => {
             console.log("Adding torrent first time")
             tor = torrent_functions.add_torrent(magnet, (torrent) => {
                 on_ready_answer(torrent)
-                torrent_functions.set_subtitles_high_priority(torrent)
+                // torrent_functions.set_subtitles_high_priority(torrent)
             });
         },
 
         stream_magnet: async (req, res) => {
-            console.log("Magnet stream")
+            // console.log("Magnet stream")
 
             // if ()
             let magnet = hash_title_to_magnet_link(req.params.hash, req.params.title);
             // magnet =  "magnet:?xt=urn:btih:EA17E6BE92962A403AC1C638D2537DCF1E564D26&dn=Avengers%3A%20Infinity%20War&tr=udp://open.demonii.com:1337/announce&tr=udp://tracker.openbittorrent.com:80&tr=udp://tracker.coppersurfer.tk:6969&tr=udp://glotorrents.pw:6969/announce&tr=udp://tracker.opentrackr.org:1337/announce&tr=udp://torrent.gresille.org:80/announce&tr=udp://p4p.arenabg.com:1337&tr=udp://tracker.leechers-paradise.org:6969"
             // magnet = "magnet:?xt=urn:btih:39EADCF205DE494B341250D8E0ABC525F58C6151&dn=test&tr=udp://open.demonii.com:1337/announce&tr=udp://tracker.openbittorrent.com:80&tr=udp://tracker.coppersurfer.tk:6969&tr=udp://glotorrents.pw:6969/announce&tr=udp://tracker.opentrackr.org:1337/announce&tr=udp://torrent.gresille.org:80/announce&tr=udp://p4p.arenabg.com:1337&tr=udp://tracker.leechers-paradise.org:6969"
-            console.log(req.params.hash, req.params.title);
+            // console.log(req.params.hash, req.params.title);
             let tor = torrent_functions.get_torrent(magnet);
             if (tor == undefined || tor == null || tor.ready == false) {
                 console.log("Tor not ready")
@@ -133,9 +138,9 @@ module.exports = (db_pool) => {
 
             // const videoSize = fs.statSync(paf).size;
             const videoSize = file.downloaded;
-            console.log("VIDSIXZE: ", "videoSize:",Math.round(videoSize / 1000000), "file.downloaded:",Math.round(file.downloaded / 1000000), "file.length:",Math.round(file.length / 1000000))
+            // console.log("VIDSIXZE: ", "videoSize:",Math.round(videoSize / 1000000), "file.downloaded:",Math.round(file.downloaded / 1000000), "file.length:",Math.round(file.length / 1000000))
 
-            console.log("rang: ", range)
+            // console.log("rang: ", range)
             const start = Number(range.replace(/\D/g, ""));
             const end = Math.min(start + CHUNK_SIZE, videoSize - 1);
             const contentLength = end - start + 1;
@@ -161,13 +166,13 @@ module.exports = (db_pool) => {
 
             console.log("start:", Math.round(start / 1000000), "end:", Math.round(end / 1000000), "file.down:", Math.round(file.downloaded / 1000000))
 
-            console.log(start)
-            console.log("Write head")
+            // console.log(start)
+            // console.log("Write head")
             res.writeHead(206, headers);
             
-            console.log("Make stream")
+            // console.log("Make stream")
             const videoStream = fs.createReadStream(paf, { start, end });
-            console.log("PIPE stream")
+            // console.log("PIPE stream")
             videoStream.pipe(res);
             
         },
@@ -210,7 +215,7 @@ module.exports = (db_pool) => {
 
         async get_ready_subtitles(req, res) {
             try {
-                console.log("Getting ready subs", req.query )
+                console.log("Getting ready subs", req.query.title)
                 if (req.query == null || req.query.hash == null || req.query.title == null) {
                     return res.status(400).send({code: return_codes.MISSING_QUERY})
                 }

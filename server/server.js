@@ -2,7 +2,6 @@ const express    = require('express')
 const bodyParser = require('body-parser')
 const cors       = require("cors");
 const app        = express();
-
 // GET .env file contents
 require('dotenv').config()
 
@@ -76,7 +75,9 @@ app.use("/api/image", image_router)
 
 
 // Start the server
+const http       = require('http').Server(app);
+
 const PORT = process.env.PORT || 8071;
-app.listen(PORT, () => {
+http.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
 });
