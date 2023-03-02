@@ -86,6 +86,9 @@ module.exports = (db_pool) => {
             {
                 if(file.path.endsWith(".srt"))
                 {
+                    file.on('done', () => {
+                        console.log(`${file.name} is done`)
+                    })
                     console.log(file.name)
                     file.select(100)
                 }

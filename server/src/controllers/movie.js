@@ -131,7 +131,13 @@ module.exports = (db_pool) => {
             GROUP BY movies.id`
             try {
                 let [insert_res, ] = await db_pool.query(request)
-                return insert_res;
+                if (insert_res && insert_res.length == 1) {
+                    return insert_res[0]
+                }
+                else {
+                    console.log("No movie found", movie_id, insert_res)
+                    return null
+                }
             }
             catch (e) {
                 throw (e)

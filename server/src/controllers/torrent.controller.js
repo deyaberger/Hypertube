@@ -198,7 +198,7 @@ module.exports = (db_pool) => {
                     `,
                     movie_id
                 )
-                console.log("Got:", torrents)
+                console.log("Got:", torrents.length)
                 res.status(200).send({code: return_codes.SUCCESS, torrents: torrents})
             }
             catch (e) {

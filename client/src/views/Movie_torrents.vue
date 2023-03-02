@@ -2,7 +2,6 @@
 import { mapState } from 'vuex';
 import { Get_torrents_for_movie, Add_magnet, get_ready_subs } from '../functions/streaming'
 import { Get_Single_Movie_Details } from '../functions/movies'
-import toWebVTT from "srt-webvtt";
 export default {
 	props: {
 		movie_id: String,
@@ -89,6 +88,7 @@ export default {
 				let res = await Get_Single_Movie_Details(this.movie_id, this.user_token)
 				// TODO: && res.code == "SUCCESS"
 				if (res.status == 200) {
+					console.log(res.data.movie)
 					this.movie_details = res.data[0]
 					console.log("deets", this.movie_details)
 				}
