@@ -7,8 +7,12 @@ class SocketioService {
     }
   
     setupSocketConnection() {
+      console.log("socket connect")
       this.socket = io("http://localhost:5173", {
-        path: "/socketo/"
+        path: "/socketo/",
+        auth: {
+            token: "abc"
+          }
       });
       console.log("SUUUCCEEEE", this.socket)
     }
