@@ -6,19 +6,8 @@ const torrentGod = require('./src/sock/torrent.god')
 // GET .env file contents
 require('dotenv').config()
 
-// GLOBAL CLIENT
-const tor_client = require('torrent-client')
-client = new tor_client()
-wsClientList = {}
 
-const http  = require('http').Server(app);
-const {Server}    = require('socket.io');
-const io = new Server(http, {
-  path: "/socketo/"
-});
-TorGod = new torrentGod(io)
-
-require('./src/sock/socket.server')(io)
+// ##### MIDDLEWARES #######
 
 app.use(cors({
   origin: "*"
@@ -36,7 +25,33 @@ app.use(sanitizer.clean({
     sqlLevel: 4,
 }, whitelist = ["/api/image/upload"]));
 
+
+// ##### GLOBAL CLIENT #######
+
+const tor_client = require('torrent-client')
+client = new tor_client()
+wsClientList = {}
+
+// ##### DB POOL #######
+
+
 const connection_pool = require('./src/db/create_connection_pool')
+
+
+// ##### SOCKETO #######
+
+const http  = require('http').Server(app);
+const {Server}    = require('socket.io');
+io = new Server(http, {
+  path: "/socketo/"
+});
+TorGod = new torrentGod(io, connection_pool, client)
+
+require('./src/sock/socket.server')(io, TorGod)
+
+
+
+
 
 // AUTH
 const auth_router = require("./src/routes/auth.routes")(connection_pool)

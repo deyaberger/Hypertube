@@ -61,7 +61,7 @@ module.exports = (db_pool) => {
             console.log("Get magnet content", req.body.title)
             
             let on_ready_answer = (torrent) => {
-                TorGod.addTorrent(torrent, 1)
+                // TorGod.addTorrent(torrent, 1)
                 let files = [];
                 console.log("torrent ready", torrent.name)
                 torrent.files.forEach(function(data) {

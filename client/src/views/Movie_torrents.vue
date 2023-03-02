@@ -38,17 +38,21 @@ export default {
 
 	methods: {
 		async Choose_Torrent(arg) {
-			console.log("Chose torrent", arg)
-			this.selected_torrent = arg
-			this.torrent_files = []
-			this.torrent_loading = true
-			try {
-				await this.get_torrent_content(arg.hash, this.movie_details.title)
-				await this.get_subs(arg.hash, this.movie_details.title)
-			}
-			catch (e) {
-				console.log("Error get torrent content", e)
-			}
+			// console.log("Chose torrent", arg)
+			// this.selected_torrent = arg
+			// this.torrent_files = []
+			// this.torrent_loading = true
+			// try {
+			// 	await this.get_torrent_content(arg.hash, this.movie_details.title)
+			// 	await this.get_subs(arg.hash, this.movie_details.title)
+			// }
+			// catch (e) {
+			// 	console.log("Error get torrent content", e)
+			// }
+			this.socket.on('torrent_ready', (files) => {
+				console.log("\n\n\nRECIEEEEVED SOKE: ", files)
+			})
+			this.socket.emit('add_torrent', arg.id)
 		},
 
 		async get_torrent_content(hash, title) {
@@ -137,7 +141,7 @@ export default {
 		}
 	},
 
-	mounted() {
+	created() {
 		// TODO: Move this to central place somewhere
 		console.log("socket connect", this.user_token)
 		this.socket = io("http://localhost:5173", {
