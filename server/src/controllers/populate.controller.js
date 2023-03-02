@@ -61,10 +61,10 @@ module.exports = (db_pool) => {
                 }
                 let actors = ''
                 let director = ''
-                if (cast.actors.length != 0) {
+                if (cast.actors && cast.actors.length != 0) {
                     actors = cast.actors.join(', ')
                 }
-                if (cast.director.length != 0) {
+                if (cast.director && cast.director.length != 0) {
                     director = cast.director[0]
                 }
                 let update_res = await populate_functions.update_movie_infos(imdb_id, tmdb_id, actors, director)
