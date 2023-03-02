@@ -24,7 +24,7 @@ class TorrentWatcher extends EventEmitter {
     })
     this.torrent.on('download', (dl) => {
       console.log("down", this.torrent.progress)
-      this.emit('download', (this.torrent._downloadSpeed, this.torrent.downloaded))
+      this.emit('download', this.torrent._downloadSpeed(), this.torrent.downloaded)
     })
 
   }
