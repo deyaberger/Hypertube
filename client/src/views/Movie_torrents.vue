@@ -2,7 +2,8 @@
 import { mapState } from 'vuex';
 import { Get_torrents_for_movie, Add_magnet, get_ready_subs } from '../functions/streaming'
 import { Get_Single_Movie_Details } from '../functions/movies'
-import SocketioService from '../functions/socket.service.js';
+import { io } from 'socket.io-client';
+// import SocketioService from '../functions/socket.service.js';
 
 export default {
 	props: {
@@ -19,7 +20,8 @@ export default {
 			torrent_loading  : false,
 			movie_source     : null,
 			subs             : [],
-			converted_subs   : []
+			converted_subs   : [],
+			socket:null,
 		}
 	},
 
@@ -135,9 +137,18 @@ export default {
 		}
 	},
 
-	created() {
+	mounted() {
 		// TODO: Move this to central place somewhere
-		SocketioService.setupSocketConnection()
+		console.log("socket connect", this.user_token)
+		this.socket = io("http://localhost:5173", {
+			path: "/socketo/",
+			auth: {
+					token: this.user_token
+				}
+		});
+		this.socket.on('download', args => {
+			console.log('dl',args)
+		})
 	}
 }
 </script>

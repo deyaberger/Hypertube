@@ -10,5 +10,9 @@ module.exports = (io) => {
     socket.on('disconnect', function () {
        console.log('A user disconnected');
     });
+
+    socket.on('listen_torrent', (torrent_id) => {
+      socket.join(torrent_id)
+    })
   });
 }

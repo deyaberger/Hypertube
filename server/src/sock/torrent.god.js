@@ -1,4 +1,5 @@
 const EventEmitter = require('events')
+const { Server } = require('http')
 
 
 class TorrentWatcher extends EventEmitter {
@@ -46,15 +47,13 @@ class GodEventHandler {
       console.log("Emit ready to room", torrent_id, files)
     }),
 
-    this.torrentWatchers[torrent_id].on('dowloaded', (bytes) => {
-      console.log("Emit downloaded",bytes, "to room", torrent_id)
-    })
-
     this.torrentWatchers[torrent_id].on('file_done', (filename) => {
       console.log(`Emit done ${filename} to room, ${torrent_id}`)
     })
 
     this.torrentWatchers[torrent_id].on('download', (dlSpeed, dlTotal) => {
+      this.io.to(torrent_id).emit('dowload', dlSpeed, dlTotal)
+
       console.log(`Download, ${torrent_id} ${dlSpeed} ${dlTotal}`)
     })
   }
