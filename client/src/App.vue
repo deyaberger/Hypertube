@@ -1,15 +1,21 @@
 <script>
-import { RouterLink, RouterView } from 'vue-router'
 import Nav from './components/Nav.vue'
+import SocketioService from './functions/socket.service.js';
 
 export default {
 	components: {
 		Nav
 	},
+	
+	
 	data() {
 		return {
 			test : false
 		}
+	},
+
+	created() {
+		SocketioService.setupSocketConnection();
 	}
 }
 </script>

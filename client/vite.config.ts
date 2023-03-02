@@ -15,6 +15,8 @@ export default defineConfig({
     proxy: {
       // string shorthand: http://localhost:5173/foo -> http://localhost:4567/foo
       '/api': 'http://localhost:8071',
+      '/my-custom-path': 'http://localhost:8071',
+      // '/socket.io' : 'http://localhost:8071/socket.io'
       // with options: http://localhost:5173/api/bar-> http://jsonplaceholder.typicode.com/bar
       // '/api': {
       //   target: 'http://jsonplaceholder.typicode.com',
@@ -37,7 +39,7 @@ export default defineConfig({
       // },
       // // Proxying websockets or socket.io: ws://localhost:5173/socket.io -> ws://localhost:5174/socket.io
       // '/socket.io': {
-      //   target: 'ws://localhost:5174',
+      //   target: 'ws://localhost:8071',
       //   ws: true,
       // },
     },
