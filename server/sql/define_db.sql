@@ -67,7 +67,7 @@ create table torrents
 create table users
 (
     id         mediumint auto_increment                 primary key,
-    username   varchar(100)                                null,
+    username   varchar(100)                                not null,
     mail       varchar(100)                                null,
     first_name varchar(100)                                null,
     last_name  varchar(100)                                null,
@@ -77,7 +77,8 @@ create table users
     bio        varchar(500)                                null,
 
     constraint users_id_uindex   unique (id),
-    constraint users_name_uindex unique (username)
+    constraint users_name_uindex unique (username),
+    constraint mail_uindex       unique (mail)
 );
 
 create table comments

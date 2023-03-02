@@ -22,21 +22,6 @@ const helper_functions = (db_pool) => {
     const auth_functions = require('./auth')(db_pool)
 
     return {
-        get_42_user_local_id: async (user_id_42) => {
-            let [oauth_query, ] = await db_pool.query(
-                `SELECT
-                    user_id
-                FROM oauth
-                WHERE
-                    42_id=?`,
-                [user_id_42,]
-            )
-            if (oauth_query.length == 1) {
-                return oauth_query[0].user_id
-            }
-            return null
-        },
-
         create_user: async (user_info, type) => {
             let mail       = user_info.mail
             let ext_id     = user_info.ext_id
