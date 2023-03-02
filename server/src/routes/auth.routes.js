@@ -11,7 +11,11 @@ module.exports = (db_pool) => {
     router.get ("/getid"           , auth_controller.authenticateToken  , auth_controller.print_id)
     router.get ("/oauth"           , oauth_controller.oauthInUp);
     router.get ("/oauth/42"        , oauth_controller.oauthInUp);
-    router.get ("/oauth/github"    , oauth_controller_bis.get_github_token, oauth_controller_bis.get_github_details);
+    router.get ("/oauth/github"    , oauth_controller_bis.get_github_token,
+                                     oauth_controller_bis.get_github_details,
+                                     oauth_controller_bis.check_if_github_user_exists,
+                                     oauth_controller_bis.create_ext_user,
+                                     oauth_controller_bis.insert_github_user);
     router.get ("/oauth/google"     , oauth_controller.oauth_google_InUp);
     router.get ("/oauth/gitlab"     , oauth_controller.oauth_gitlab_InUp);
 

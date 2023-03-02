@@ -1,6 +1,23 @@
 module.exports = (db_pool) => {
     return {
 
+        count_users: async () => {
+            let [count_users, ] = await db_pool.query(
+                `SELECT count(*) as nb FROM users`
+            )
+            if (count_users.length > 0){
+                return count_users[0]
+            }
+            return null
+        },
+
+        check_if_username_exists: async (username) => {
+            let [check_username, ] = await db_pool.query(
+                `SELECT * FROM users WHERE username = ?`, [username]
+            )
+            return check_username
+        },
+
         get_42_user_local_id: async (user_id_42) => {
             let [oauth_query, ] = await db_pool.query(
                 `SELECT
