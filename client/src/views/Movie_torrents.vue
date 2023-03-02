@@ -2,6 +2,8 @@
 import { mapState } from 'vuex';
 import { Get_torrents_for_movie, Add_magnet, get_ready_subs } from '../functions/streaming'
 import { Get_Single_Movie_Details } from '../functions/movies'
+import SocketioService from '../functions/socket.service.js';
+
 export default {
 	props: {
 		movie_id: String,
@@ -132,6 +134,11 @@ export default {
 				console.log("error in mount get torrents", e)
 		}
 	},
+
+	created() {
+		// TODO: Move this to central place somewhere
+		SocketioService.setupSocketConnection()
+	}
 }
 </script>
 

@@ -2,19 +2,21 @@ const express    = require('express')
 const bodyParser = require('body-parser')
 const cors       = require("cors");
 const app        = express();
+const torrentGod = require('./src/sock/torrent.god')
 // GET .env file contents
 require('dotenv').config()
 
 // GLOBAL CLIENT
 const tor_client = require('torrent-client')
 client = new tor_client()
-
+wsClientList = {}
 
 const http  = require('http').Server(app);
 const {Server}    = require('socket.io');
 const io = new Server(http, {
   path: "/socketo/"
 });
+TorGod = new torrentGod(io)
 
 require('./src/sock/socket.server')(io)
 
