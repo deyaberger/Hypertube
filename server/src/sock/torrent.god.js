@@ -48,16 +48,12 @@ class TorrentWatcher extends EventEmitter {
     })
   }
 
-  isMovieReadyHandler() {
-
-  }
-
   setOnDownloadCheckETA() {
     let handler = () => {
       let ETA_minutes    = this.torrent.timeRemaining / 1000 / 60
-      console.log( this.torrent.progress, this.movie_length_minutes)
+      // console.log( this.torrent.progress, this.movie_length_minutes)
       let loaded_minutes = this.torrent.progress * this.movie_length_minutes
-      console.log(`ETA_minutes ${Math.round(ETA_minutes)} loaded_minutes ${Math.round(loaded_minutes)}`)
+      // console.log(`ETA_minutes ${Math.round(ETA_minutes)} loaded_minutes ${Math.round(loaded_minutes)}`)
       if (ETA_minutes * 3 < loaded_minutes) {
         console.log("ITS READYYYY BABY")
         this.ready_to_watch = true
@@ -74,17 +70,15 @@ class TorrentWatcher extends EventEmitter {
       downloaded    : this.torrent.downloaded,
       downloadSpeed : this.torrent.downloadSpeed,
       metadata_ready: this.torrent.ready,
-      size          : this.torrent.size,
+      size          : this.torrent.length,
       ready_to_watch: this.ready_to_watch,
       files         : {},
     }
 
-    if (status.ready) {
-      for(const file of this.torrent.files) {
-        status.files[file.name] = this.getFileStatus(file)
-      }
+    for(const file of this.torrent.files) {
+      status.files[file.name] = this.getFileStatus(file)
     }
-
+    console.log(status)
     return status
   }
 
@@ -93,7 +87,9 @@ class TorrentWatcher extends EventEmitter {
       done      : file.done,
       name      : file.name,
       path      : file.path,
+      // TODO: fix negative downloaded values ?
       downloaded: file.downloaded,
+      size      : file.length,
       type      : this.getFileType(file)
     }
   }
@@ -144,6 +140,8 @@ class GodEventHandler {
             strategy  : "sequential"
         }
       )
+      console.log("Subs set high prio")
+      this.torrent_functions.set_subtitles_high_priority(torrent)
       console.log("adding tor watcher")
       this.addTorrentWatcher(torrent, torrent_db_data)
     }
