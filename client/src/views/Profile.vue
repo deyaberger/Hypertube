@@ -241,7 +241,7 @@ export default {
 					</div>
 					</div>
 				</div>
-				<div class="card-body p-4 text-black">
+				<div class="card-body p-4 text-black" v-if="user.bio && user.bio.length > 0">
 					<div>
 					<p class="lead fw-normal mb-1">{{text_content.about[lang_nb]}}</p>
 					<div class="p-4" style="background-color: #f8f9fa;">
