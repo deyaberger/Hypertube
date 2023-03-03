@@ -108,7 +108,7 @@
 	},
 	"PROFILE" : {
 		"username"         :["username", "pseudo"],
-		"first_name"       :["firstname", "prénom"],
+		"first_name"       :["first name", "prénom"],
 		"last_name"        :["last name", "nom de famille"],
 		"missing_email"    :["missing email", "Pas d'email renseigné"],
 		"error_first_name" :["Please enter a first name", "Merci d'indiquer votre prénom"],
@@ -133,6 +133,8 @@
 		"first_name_error" :["First name can't contain whitespaces", "Un prenom ne peut pas contenir des espaces"],
 		"last_name_error"  :["Last name can't contain whitespaces", "Un nom ne peut pas contenir des espaces"],
 		"email_error"      :["Please enter a valid email address", "Adresse invalide"],
+		"email_error_dup"  :["Email already taken", "Email déjà pris"],
+		"email_error_long" :["Email too long", "Email trop long"],
 		"image_type_error" :["Only .png, .jpg, .jpeg and .webp format allowed", "Seuls les formats .png, .jpg, .jpeg and .webp sont acceptés"]
 	}
 }

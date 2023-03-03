@@ -116,7 +116,7 @@ module.exports = (db_pool) => {
                 let user_id = req.user_id
                 let new_email  = req.query.email
                 let regex_mail = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
-                if (new_email.match(regex_mail) == null && new_email.length > 0) {
+                if (new_email != null && new_email != undefined && new_email.match(regex_mail) == null && new_email.length > 0) {
                     console.log("\n[user.controller]: update_email FAILURE (regex)")
                     return res.status(201).send({msg: "Can't change email (regex)", code : "FAILURE"})
                 }
@@ -127,9 +127,13 @@ module.exports = (db_pool) => {
                 }
             }
             catch (e) {
+                if (e.code == 'ER_DUP_ENTRY') {
+                    console.log("[user.controller]: update_email ER_DUP_ENTRY")
+                    return res.status(201).send({msg: "Can't change email (already taken)", code : "EMAIL_TAKEN"})
+                }
                 if (e.code == 'ER_DATA_TOO_LONG') {
                     console.log("[user.controller]: update_email FAILURE : long")
-                    return res.status(201).send({msg: "Can't change email (too long)", code : "FAILURE"})
+                    return res.status(201).send({msg: "Can't change email (too long)", code : "TOO_LONG"})
                 }
                 throw(e)
             }
