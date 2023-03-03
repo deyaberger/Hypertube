@@ -103,7 +103,8 @@
 		"send_review"	  : ["Send review", "Envoyer"],
 		"not_specified"   : ["Not specified", "Pas d'information à ce sujet"],
 		"director"		  : ["Director", "Réalisateur"],
-		"actors"		  : ["Actors", "Acteurs"]
+		"actors"		  : ["Actors", "Acteurs"],
+		"see_torrents"	  : ["See the torrent list", "Regarder la liste de torrents"]
 
 	},
 	"PROFILE" : {
