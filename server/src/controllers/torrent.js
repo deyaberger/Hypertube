@@ -155,8 +155,10 @@ module.exports = (db_pool) => {
               let [torrent_res, ] = await db_pool.query(
                 `
                 SELECT
+                  torrents.id,
                   title,
-                  hash
+                  hash,
+                  length_minutes
                 FROM
                   torrents
                 LEFT JOIN

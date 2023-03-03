@@ -49,21 +49,23 @@ export default {
 			// catch (e) {
 			// 	console.log("Error get torrent content", e)
 			// }
-			this.socket.once('torrent_added', (torrent_status) => {
-				console.log("torrent_added: ", torrent_status)
-			})
+
 
 			this.socket.once('torrent_ready', (torrent_status) => {
 				console.log("torrent_ready: ", torrent_status)
 			})
 
-			this.socket.on('dowload', (torrent_status) => {
-				console.log("dowload: ", torrent_status)
+			this.socket.on('download', (torrent_status) => {
+				console.log("download: ", torrent_status)
 			})
 
 			this.socket.on('file_done', (file_status) => {
 				console.log("file_done: ", file_status)
 			})
+
+			this.socket.once('ready_to_watch'), () => {
+				console.log("\n\nready_to_watch\n\n")
+			}
 
 			this.socket.emit('add_torrent', arg.id)
 		},
@@ -163,9 +165,6 @@ export default {
 					token: this.user_token
 				}
 		});
-		this.socket.on('download', args => {
-			console.log('dl',args)
-		})
 	}
 }
 </script>
