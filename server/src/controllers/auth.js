@@ -14,6 +14,7 @@ const hashPassword = (password) => {
 module.exports = (db_pool) => {
     return {
         signup: async (username, f_name, l_name, mail, pass, pic, lang) => {
+            console.log("\n[auth]: in signup ", {username, f_name, l_name, mail, pass, pic, lang})
             let pass_hash = hashPassword(pass)
             try {
                 let [insert_res, ] = await db_pool.query(
@@ -76,40 +77,6 @@ module.exports = (db_pool) => {
                 return true
             }
             return false
-        },
-
-
-        insert_42_user: async (id_42, user_id) => {
-            console.log("\n[auth]: insert_42_user ", {id_42, user_id})
-            const request = `
-            INSERT INTO oauth (42_id, user_id)
-                VALUES        (${id_42}, ${user_id})
-            `
-            try {
-                let [oauth_insert_res, ] = await db_pool.query(request)
-                return oauth_insert_res
-            }
-            catch(e) {
-                throw(e)
-            }
-
-        },
-
-        insert_github_user: async (id_git, user_id) => {
-            id_git = String(id_git)
-            console.log("\n[auth]: insert_github_user ", {id_git, user_id})
-            const request = `
-            INSERT INTO oauth (github_id, user_id)
-                VALUES        (${id_git},${user_id})
-            `
-            try {
-                let [oauth_insert_res, ] = await db_pool.query(request)
-                return oauth_insert_res
-            }
-            catch(e) {
-                throw(e)
-            }
-
         },
 
 
@@ -177,6 +144,22 @@ module.exports = (db_pool) => {
             )
             console.log(upda)
             return true
+        },
+
+
+        delete_user: async (id) => {
+            const request = `
+            DELETE
+            FROM users
+            WHERE id = ${id};`
+            try {
+                let [del_res, ] = await db_pool.query(request)
+                return del_res
+            }
+            catch(e) {
+                throw e
+            }
+
         }
     }
 }

@@ -11,20 +11,25 @@ export default {
 
 	data() {
 		return {
-			visible          : false,
-			text_content     : textContent.SIGNUP,
-			username         : '',
-			firstname        : '',
-			lastname         : '',
-			email            : '',
-			password         : '',
-			username_error   : false,
-			firstname_error  : false,
-			lastname_error   : false,
-			email_error      : false,
-			email_error_text : textContent.SIGNUP.error_email,
-			mdp_error        : false,
-			connection_error : false
+			visible             : false,
+			text_content        : textContent.SIGNUP,
+			username            : '',
+			firstname           : '',
+			lastname            : '',
+			email               : '',
+			password            : '',
+			username_error      : false,
+			firstname_error     : false,
+			lastname_error      : false,
+			email_error         : false,
+			email_error_text    : textContent.SIGNUP.error_email,
+			username_error_text : textContent.SIGNUP.error_username,
+			mdp_error           : false,
+			connection_error    : false,
+			regex_whitespace 	: /^\S*$/,
+			regex_mail 			: /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i,
+			regex_pwd 			: /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{6,}$/,
+			deactivate_button	: false
 		}
 	},
 
@@ -52,31 +57,130 @@ export default {
 				"connect_with_twitter" : false,
 			}
 			try {
+				console.log("[Sign_up]: on_submit, ", {form})
 				let sign_up_res = await Sign_Up(form)
-				console.log("sign_up res: ", sign_up_res)
+				console.log("[Sign_up]: sign up res ", {data : sign_up_res.data, code : sign_up_res.code})
 				if (sign_up_res.status == 200) {
-					console.log("Adding token to state")
+					console.log("[Sign_up]: Succesfully signed up and adding token to state...")
 					this.$store.commit('SET_USER_TOKEN', sign_up_res.data.token)
 					this.$store.commit('SET_CONNECTION', true)
 					this.$router.push('/search')
 				}
-				else {
+				else if (sign_up_res != null && sign_up_res.data) {
+					this.deactivate_button = true
+					let errors = sign_up_res.data.specific_errors
 					this.connection_error = true
-					this.username_error = sign_up_res.data.username_error
-					this.firstname_error = sign_up_res.data.firstName_error
-					this.lastname_error = sign_up_res.data.lastName_error
-					this.email_error = sign_up_res.data.mail_error
-					this.email_error_text = this.text_content.error_email_dup
-					this.mdp_error = sign_up_res.data.password_error
-					console.log("error in signuiiip")
+					this.username_error = errors.username_error
+					if (this.username_error == true && sign_up_res.data.code == "ER_DUP_ENTRY") {
+						this.username_error_text = this.text_content.error_username_dup
+					}
+					else {
+						this.username_error_text = this.text_content.error_username
+					}
+					this.firstname_error = errors.firstName_error
+					this.lastname_error = errors.lastName_error
+					this.email_error = errors.mail_error
+					this.email_error_text = this.text_content.error_email
+					this.mdp_error = errors.password_error
+					console.log("ERROR [sign up]: ", sign_up_res.data)
 				}
 			}
 			catch (e) {
+				console.log("[Sign Up] : UNKOWN ERROR ", e)
 				this.connection_error = true
-				console.log("error in signup: \n", e)
 			}
-		},
+		}
 	},
+
+	watch: {
+		username: {
+			handler:function() {
+				if (this.username.length == 0 || this.username.match(this.regex_whitespace) == null){
+					this.deactivate_button = true
+					this.username_error = true
+				}
+				else {
+					this.username_error = false
+					if (!this.username_error && !this.firstname_error && !this.lastname_error && !this.email_error && !this.mdp_error) {
+						this.deactivate_button = false
+					}
+				}
+			},
+			deep:true
+		},
+		firstname: {
+			handler:function() {
+				if (this.firstname.match(this.regex_whitespace) == null){
+					this.deactivate_button = true
+					this.firstname_error = true
+				}
+				else {
+					this.firstname_error = false
+					if (!this.username_error && !this.firstname_error && !this.lastname_error && !this.email_error && !this.mdp_error) {
+						this.deactivate_button = false
+					}
+				}
+			},
+			deep:true
+		},
+		lastname: {
+			handler:function() {
+				if (this.lastname.match(this.regex_whitespace) == null){
+					this.deactivate_button = true
+					this.lastname_error = true
+				}
+				else {
+					this.lastname_error = false
+					if (!this.username_error && !this.firstname_error && !this.lastname_error && !this.email_error && !this.mdp_error) {
+						this.deactivate_button = false
+					}
+				}
+			},
+			deep:true
+		},
+		email: {
+			handler:function() {
+				if (this.email.length == 0 || this.email.match(this.regex_mail) == null){
+					this.deactivate_button = true
+					this.email_error = true
+				}
+				else {
+					this.email_error = false
+					if (!this.username_error && !this.firstname_error && !this.lastname_error && !this.email_error && !this.mdp_error) {
+						this.deactivate_button = false
+					}
+				}
+			},
+			deep:true
+		},
+		password: {
+			handler:function() {
+				if (this.password.length == 0 || this.password.match(this.regex_pwd) == null){
+					this.deactivate_button = true
+					this.mdp_error = true
+				}
+				else {
+					this.mdp_error = false
+					if (!this.username_error && !this.firstname_error && !this.lastname_error && !this.email_error && !this.mdp_error) {
+						this.deactivate_button = false
+					}
+				}
+			},
+			deep:true
+		},
+
+		deactivate_button: {
+			handler: function() {
+				if (this.deactivate_button == false) {
+					this.connection_error = false
+				}
+				else {
+					this.connection_error = true
+				}
+			}
+		}
+
+	}
 }
 </script>
 
@@ -86,7 +190,7 @@ export default {
 		<form @submit="on_submit">
 			<h2 class="mb-4 text-center">{{text_content.sign_up[lang_nb]}}:</h2>
 			<div class="input mb-2">
-				<label class = "mb-2" for="username">{{text_content.create_user[lang_nb]}}</label>
+				<label class = "mb-2" for="username">{{text_content.create_user[lang_nb]}} *</label>
 				<input
 				v-model="username"
 				class="form-control"
@@ -95,7 +199,7 @@ export default {
 				name="username"
 				:placeholder="text_content.username[lang_nb]"
 				/>
-				<p class="error_msg" v-show="username_error">{{text_content.error_username[lang_nb]}}</p>
+				<p class="error_msg" v-show="username_error">{{username_error_text[lang_nb]}}</p>
 			</div>
 			<div class="input mb-2">
 				<label class = "mb-2" for="firstname">{{text_content.create_first_name[lang_nb]}}</label>
@@ -122,7 +226,7 @@ export default {
 				<p class="error_msg" v-show="lastname_error">{{text_content.error_last_name[lang_nb]}}</p>
 			</div>
 			<div class="input mt-5">
-				<label class = "mb-2" for="email">{{text_content.create_email[lang_nb]}}</label>
+				<label class = "mb-2" for="email">{{text_content.create_email[lang_nb]}} *</label>
 				<input
 				v-model = "email"
 				class="form-control"
@@ -134,7 +238,7 @@ export default {
 				<p class="error_msg" v-show="email_error">{{email_error_text[lang_nb]}}</p>
 			</div>
 			<div class="input mt-2">
-				<label class = "mb-2" for="password">{{text_content.create_pwd[lang_nb]}}</label>
+				<label class = "mb-2" for="password">{{text_content.create_pwd[lang_nb]}} *</label>
 				<div class="input-group">
 					<input
 					v-model = "password"
@@ -156,14 +260,15 @@ export default {
 			</div>
 			<div class="col-md-12 text-center mt-5">
 				<p class="error_msg" v-show="connection_error">{{text_content.error_co[lang_nb]}}</p>
-				<button class="submit_button" type="submit">{{text_content.sign_up[lang_nb]}}</button>
+				<button v-if="deactivate_button" class="submit_button" type="submit" disabled>{{text_content.sign_up[lang_nb]}} </button>
+				<button v-else class="submit_button" type="submit">{{text_content.sign_up[lang_nb]}}</button>
 				<div class = "m-3">{{text_content.or[lang_nb]}}</div>
 			</div>
-			<NetworkButtons type="signup"></NetworkButtons>
-			<div class="change_page mt-4 text-center">
-				<router-link to="/sign_in">{{text_content.already_account[lang_nb]}}</router-link>
-			</div>
 		</form>
+	<NetworkButtons type="signup"></NetworkButtons>
+	<div class="change_page mt-4 text-center">
+		<router-link to="/sign_in">{{text_content.already_account[lang_nb]}}</router-link>
+	</div>
 	</div>
 </template>
 

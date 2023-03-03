@@ -45,7 +45,6 @@
     text-align: left;
     line-height: 34px;
     font-size: 13px;
-    color: #FFF;
   }
 
   .loginBtn:before {
@@ -66,7 +65,7 @@
   }
 
 
-  /* Facebook */
+  /* Facebook
   .loginBtn--facebook {
     background-color: #4C69BA;
     background-image: linear-gradient(#4C69BA, #3B55A0);
@@ -84,6 +83,7 @@
     background-color: #5B7BD5;
     background-image: linear-gradient(#5B7BD5, #4864B1);
   }
+  */
 
   /* Google */
   .loginBtn--google {
@@ -91,41 +91,56 @@
     color: black;
     width: 45%;
     margin-left: 5%;
-
   }
+
   .loginBtn--google:before {
     border-right: #c0bcbc 1px solid;
     background: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTgiIGhlaWdodD0iMTgiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGcgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIj48cGF0aCBkPSJNMTcuNiA5LjJsLS4xLTEuOEg5djMuNGg0LjhDMTMuNiAxMiAxMyAxMyAxMiAxMy42djIuMmgzYTguOCA4LjggMCAwIDAgMi42LTYuNnoiIGZpbGw9IiM0Mjg1RjQiIGZpbGwtcnVsZT0ibm9uemVybyIvPjxwYXRoIGQ9Ik05IDE4YzIuNCAwIDQuNS0uOCA2LTIuMmwtMy0yLjJhNS40IDUuNCAwIDAgMS04LTIuOUgxVjEzYTkgOSAwIDAgMCA4IDV6IiBmaWxsPSIjMzRBODUzIiBmaWxsLXJ1bGU9Im5vbnplcm8iLz48cGF0aCBkPSJNNCAxMC43YTUuNCA1LjQgMCAwIDEgMC0zLjRWNUgxYTkgOSAwIDAgMCAwIDhsMy0yLjN6IiBmaWxsPSIjRkJCQzA1IiBmaWxsLXJ1bGU9Im5vbnplcm8iLz48cGF0aCBkPSJNOSAzLjZjMS4zIDAgMi41LjQgMy40IDEuM0wxNSAyLjNBOSA5IDAgMCAwIDEgNWwzIDIuNGE1LjQgNS40IDAgMCAxIDUtMy43eiIgZmlsbD0iI0VBNDMzNSIgZmlsbC1ydWxlPSJub256ZXJvIi8+PHBhdGggZD0iTTAgMGgxOHYxOEgweiIvPjwvZz48L3N2Zz4=') 6px 6px no-repeat;
   }
   .loginBtn--google:hover,
   .loginBtn--42:hover,
+  .loginBtn--github:hover,
+  .loginBtn--gitlab:hover,
   .loginBtn--google:focus,
-  .loginBtn--42:focus {
+  .loginBtn--42:focus,
+  .loginBtn--github:focus,
+  .loginBtn--gitlab:hover {
     background-color: #f3eceb;
     background-image: linear-gradient(#e3e5e5, #c7c7c7e4);
   }
 
-  /* github */
-  .loginBtn--github {
+    /* github */
+    .loginBtn--github {
+      background: #fef8f7;
+      color: black;
+      width: 45%;
+      margin-left: 5%;
+    }
+
+    .loginBtn--github:before {
+      border-right: #c0bcbc 1px solid;
+      background: url('https://upload.wikimedia.org/wikipedia/commons/9/91/Octicons-mark-github.svg');
+      background-size: 70%;
+      background-repeat: no-repeat;
+      background-position: 50%;
+    }
+
+  /* gitlab */
+  .loginBtn--gitlab {
+    /*font-family: "Roboto", Roboto, arial, sans-serif;*/
     background: #fef8f7;
     color: black;
-    width: 45%;
-    margin-left: 5%;
-
+    width: 49%;
   }
-  .loginBtn--github:before {
+  .loginBtn--gitlab:before {
     border-right: #c0bcbc 1px solid;
-    background: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTgiIGhlaWdodD0iMTgiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGcgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIj48cGF0aCBkPSJNMTcuNiA5LjJsLS4xLTEuOEg5djMuNGg0LjhDMTMuNiAxMiAxMyAxMyAxMiAxMy42djIuMmgzYTguOCA4LjggMCAwIDAgMi42LTYuNnoiIGZpbGw9IiM0Mjg1RjQiIGZpbGwtcnVsZT0ibm9uemVybyIvPjxwYXRoIGQ9Ik05IDE4');
+    background : url('https://upload.wikimedia.org/wikipedia/commons/3/35/GitLab_icon.svg');
+    background-size: 70%;
+    background-repeat: no-repeat;
+    background-position: 50%;
   }
-  .loginBtn--github:hover,
-  .loginBtn--github:focus {
-    background-color: #f3eceb;
-    background-image: linear-gradient(#e3e5e5, #c7c7c7e4);
-  }
-
 
   /* 42 */
-
   .loginBtn--42 {
     /*font-family: "Roboto", Roboto, arial, sans-serif;*/
     background: #fef8f7;
@@ -140,10 +155,8 @@
     background-position: 50%;
   }
 
-  /* Twitter */
-
+  /* Twitter
   .loginBtn--twitter {
-    /*font-family: "Roboto", Roboto, arial, sans-serif;*/
     color: white;
     background-image: linear-gradient(#008ec6ab, #007cadf2);
     width: 45%;
@@ -163,6 +176,7 @@
   .loginBtn--twitter:focus {
     background-image: linear-gradient(#46bcebf4, #41a4cc);
   }
+  */
 
 @media (max-width: 590px) {
 	.homemade-container  {
@@ -181,14 +195,15 @@
 		margin: 0px;
 		padding: 0px 0px 0px 0px;
 		border-radius: 5px;
-		width: 10%;
-		padding-right: 30px;
+		width: 18%;
+		padding: 0px;
 		background-size: contain, center;
 		background-position: center, center;
 		background-repeat: no-repeat, repeat;
 
 	}
 
+  /*
 	.loginBtn--facebook{
 		margin-left: 10%;
 		margin-right: 10%;
@@ -196,18 +211,23 @@
 	}
 	.loginBtn--facebook:hover, .loginBtn--facebook:focus{
 		background-image: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/14082/icon_facebook.png'), linear-gradient(#5B7BD5, #4864B1);
+	}*/
+
+
+  .loginBtn--gitlab{
+		margin-right: 9%;
+		background-image: url('https://upload.wikimedia.org/wikipedia/commons/3/35/GitLab_icon.svg'), linear-gradient(to right, white, white);
+    background-size: 70%;
 	}
 
-	.loginBtn--42{
-		margin-right: 10%;
-		background-image: url('https://upload.wikimedia.org/wikipedia/commons/8/8d/42_Logo.svg?uselang=fr'), linear-gradient(to right, white, white);
-	}
-	.loginBtn--42:hover, .loginBtn--42:focus{
-		background-image: url('https://upload.wikimedia.org/wikipedia/commons/8/8d/42_Logo.svg?uselang=fr'), linear-gradient(#e3e5e5, #c7c7c7e4);
+	.loginBtn--gitlab:hover, .loginBtn--gitlab:focus{
+		background-image: url('https://upload.wikimedia.org/wikipedia/commons/3/35/GitLab_icon.svg'), linear-gradient(#e3e5e5, #c7c7c7e4);
+    background-size: 70%;
 	}
 
-	.loginBtn--google{
-		margin-right: 10%;
+
+  .loginBtn--google{
+		margin-right: 9%;
 		background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTgiIGhlaWdodD0iMTgiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGcgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIj48cGF0aCBkPSJNMTcuNiA5LjJsLS4xLTEuOEg5djMuNGg0LjhDMTMuNiAxMiAxMyAxMyAxMiAxMy42djIuMmgzYTguOCA4LjggMCAwIDAgMi42LTYuNnoiIGZpbGw9IiM0Mjg1RjQiIGZpbGwtcnVsZT0ibm9uemVybyIvPjxwYXRoIGQ9Ik05IDE4YzIuNCAwIDQuNS0uOCA2LTIuMmwtMy0yLjJhNS40IDUuNCAwIDAgMS04LTIuOUgxVjEzYTkgOSAwIDAgMCA4IDV6IiBmaWxsPSIjMzRBODUzIiBmaWxsLXJ1bGU9Im5vbnplcm8iLz48cGF0aCBkPSJNNCAxMC43YTUuNCA1LjQgMCAwIDEgMC0zLjRWNUgxYTkgOSAwIDAgMCAwIDhsMy0yLjN6IiBmaWxsPSIjRkJCQzA1IiBmaWxsLXJ1bGU9Im5vbnplcm8iLz48cGF0aCBkPSJNOSAzLjZjMS4zIDAgMi41LjQgMy40IDEuM0wxNSAyLjNBOSA5IDAgMCAwIDEgNWwzIDIuNGE1LjQgNS40IDAgMCAxIDUtMy43eiIgZmlsbD0iI0VBNDMzNSIgZmlsbC1ydWxlPSJub256ZXJvIi8+PHBhdGggZD0iTTAgMGgxOHYxOEgweiIvPjwvZz48L3N2Zz4='), linear-gradient(to right, white, white);
 	}
 
@@ -215,20 +235,32 @@
 		background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTgiIGhlaWdodD0iMTgiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGcgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIj48cGF0aCBkPSJNMTcuNiA5LjJsLS4xLTEuOEg5djMuNGg0LjhDMTMuNiAxMiAxMyAxMyAxMiAxMy42djIuMmgzYTguOCA4LjggMCAwIDAgMi42LTYuNnoiIGZpbGw9IiM0Mjg1RjQiIGZpbGwtcnVsZT0ibm9uemVybyIvPjxwYXRoIGQ9Ik05IDE4YzIuNCAwIDQuNS0uOCA2LTIuMmwtMy0yLjJhNS40IDUuNCAwIDAgMS04LTIuOUgxVjEzYTkgOSAwIDAgMCA4IDV6IiBmaWxsPSIjMzRBODUzIiBmaWxsLXJ1bGU9Im5vbnplcm8iLz48cGF0aCBkPSJNNCAxMC43YTUuNCA1LjQgMCAwIDEgMC0zLjRWNUgxYTkgOSAwIDAgMCAwIDhsMy0yLjN6IiBmaWxsPSIjRkJCQzA1IiBmaWxsLXJ1bGU9Im5vbnplcm8iLz48cGF0aCBkPSJNOSAzLjZjMS4zIDAgMi41LjQgMy40IDEuM0wxNSAyLjNBOSA5IDAgMCAwIDEgNWwzIDIuNGE1LjQgNS40IDAgMCAxIDUtMy43eiIgZmlsbD0iI0VBNDMzNSIgZmlsbC1ydWxlPSJub256ZXJvIi8+PHBhdGggZD0iTTAgMGgxOHYxOEgweiIvPjwvZz48L3N2Zz4='), linear-gradient(#e3e5e5, #c7c7c7e4);
 	}
 
+	.loginBtn--42{
+		margin-right: 9%;
+		background-image: url('https://upload.wikimedia.org/wikipedia/commons/8/8d/42_Logo.svg?uselang=fr'), linear-gradient(to right, white, white);
+	}
+	.loginBtn--42:hover, .loginBtn--42:focus{
+		background-image: url('https://upload.wikimedia.org/wikipedia/commons/8/8d/42_Logo.svg?uselang=fr'), linear-gradient(#e3e5e5, #c7c7c7e4);
+	}
+
+
+  .loginBtn--github{
+		background-image: url('https://upload.wikimedia.org/wikipedia/commons/9/91/Octicons-mark-github.svg'), linear-gradient(to right, white, white);
+    background-size: 70%;
+	}
+
+	.loginBtn--github:hover, .loginBtn--github:focus{
+		background-image: url('https://upload.wikimedia.org/wikipedia/commons/9/91/Octicons-mark-github.svg'), linear-gradient(#e3e5e5, #c7c7c7e4);
+    background-size: 70%;
+	}
+
+  /*
 	.loginBtn--twitter, .loginBtn--twitter:hover, .loginBtn--twitter:focus  {
 		background-image: url('../twitter.svg'), linear-gradient(#008ec6ab, #007cadf2);
 	}
 
 	.loginBtn--twitter:hover, .loginBtn--twitter:focus  {
 		background-image: url('../twitter.svg'), linear-gradient(#46bcebf4, #41a4cc);
-	}
-
-  .loginBtn--github, .loginBtn--github:hover, .loginBtn--github:focus  {
-		background-image: url('../github.svg'), linear-gradient(#008ec6ab, #007cadf2);
-	}
-
-	.loginBtn--github:hover, .loginBtn--github:focus  {
-		background-image: url('../twitter.svg'), linear-gradient(#46bcebf4, #41a4cc);
-	}
+	}*/
 
 }
