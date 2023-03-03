@@ -5,6 +5,8 @@ const torrent_functions_factory     = require('../controllers/torrent')
 const return_codes = require('../utils/return_codes')
 
 
+DOWLOAD_SPAM_LIMIT_MS = 1000
+
 class TorrentWatcher extends EventEmitter {
   constructor(torrent) {
     super()
@@ -32,9 +34,13 @@ class TorrentWatcher extends EventEmitter {
   }
 
   setOnDownload() {
+    let last_emit = new Date()
     this.torrent.on('download', (dl) => {
-      // console.log("down", this.torrent.progress)
-      this.emit('download', this.torrent._downloadSpeed(), this.torrent.downloaded)
+      if (new Date() - last_emit > DOWLOAD_SPAM_LIMIT_MS) {
+        last_emit = new Date()
+        console.log("down", this.torrent.progress, dl)
+        this.emit('download', this.getStatus())
+      }
     })
   }
 
@@ -43,7 +49,8 @@ class TorrentWatcher extends EventEmitter {
       name          : this.torrent.name,
       downloaded    : this.torrent.downloaded,
       downloadSpeed : this.torrent.downloadSpeed,
-      ready         : this.torrent.ready,
+      metadata_ready: this.torrent.ready,
+      size          : this.torrent.size,
       files         : {},
     }
 
@@ -88,38 +95,6 @@ class GodEventHandler {
     this.torrent_functions = torrent_functions_factory(db_pool)
   }
 
-  addTorrenLOL(torrent, torrent_id) {
-    console.log("add torrent to god", torrent.name, torrent_id)
-    this.torrentWatchers[torrent_id] = new TorrentWatcher(torrent)
-
-    this.torrentWatchers[torrent_id].once('torrent_ready', (files) => {
-      console.log("Emit ready to room", torrent_id, files)
-    }),
-
-    this.torrentWatchers[torrent_id].on('file_done', (filename) => {
-      console.log(`Emit done ${filename} to room, ${torrent_id}`)
-    })
-
-    this.torrentWatchers[torrent_id].on('download', (dlSpeed, dlTotal) => {
-      this.io.to(torrent_id).emit('dowload', dlSpeed, dlTotal)
-
-      console.log(`Download, ${torrent_id} ${dlSpeed} ${dlTotal}`)
-    })
-  }
-
-  torrent_ready_callback(torrent, torrent_id) {
-    let files = [];
-    console.log("torrent ready", torrent.name)
-    torrent.files.forEach(function(data) {
-        files.push({
-            name  : data.name,
-            length: data.length
-        });
-    });
-    console.log("sending torrent contents", files.length, torrent_id)
-    // io.emit('torrent_ready', files)
-    io.to(torrent_id).emit('torrent_ready', files)
-  }
 
   async add_torrent(torrent_id) {
     try {
@@ -129,6 +104,7 @@ class GodEventHandler {
       let magnet_uri = hash_title_to_magnet_link(torrent_db_data.hash, torrent_db_data.title)
       if (this.torrentWatchers[torrent_id] != undefined) {
         // TODO send this guy something !
+        this.io.to(torrent_id).emit('torrent_added', this.torrentWatchers[torrent_id].getStatus())
         return console.log("torrent watcher already exists", torrent_id)
       }
       if (this.torrent_client.get(magnet_uri)) {
@@ -162,12 +138,19 @@ class GodEventHandler {
       console.log("emit tor ready", torrent_status)
       this.io.to(torrent_id).emit('torrent_ready', torrent_status)
     })
+    
 
-    this.torrentWatchers[torrent_id].once('file_done', (file_status) => {
+    this.torrentWatchers[torrent_id].on('download', (torrent_status) => {
+      console.log("emit dl")
+      this.io.to(torrent_id).emit('download', torrent_status)
+    })
+
+    this.torrentWatchers[torrent_id].on('file_done', (file_status) => {
       console.log("emit file done", file_status)
       this.io.to(torrent_id).emit('file_done', file_status)
     })
 
+    this.io.to(torrent_id).emit('torrent_added', this.torrentWatchers[torrent_id].getStatus())
   }
 }
 

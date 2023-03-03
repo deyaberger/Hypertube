@@ -49,8 +49,16 @@ export default {
 			// catch (e) {
 			// 	console.log("Error get torrent content", e)
 			// }
-			this.socket.on('torrent_ready', (torrent_statue) => {
-				console.log("torrent_ready: ", torrent_statue)
+			this.socket.once('torrent_added', (torrent_status) => {
+				console.log("torrent_added: ", torrent_status)
+			})
+
+			this.socket.once('torrent_ready', (torrent_status) => {
+				console.log("torrent_ready: ", torrent_status)
+			})
+
+			this.socket.on('dowload', (torrent_status) => {
+				console.log("dowload: ", torrent_status)
 			})
 
 			this.socket.on('file_done', (file_status) => {
