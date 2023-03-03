@@ -8,11 +8,6 @@ module.exports = (db_pool) => {
     const torrent_functions = require('./torrent')(db_pool)
 
     return {
-        get_page : async (req, res) => {
-            console.log("get page")
-            res.sendFile(__dirname + "/video.html");
-        },
-
         async get_local_files(req, res) {
             try {
                 let local_files = await torrent_functions.get_local_files(req.params.imdb_id)

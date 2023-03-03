@@ -1,4 +1,5 @@
 const axios = require('axios')
+const return_codes = require('../utils/return_codes')
 
 
 module.exports = (db_pool) => {
@@ -93,17 +94,6 @@ module.exports = (db_pool) => {
             }
         },
 
-        // set_subtitles_high_priority(torrent) {
-        //     console.log("Subs high prio")
-        //     for(const file of torrent.files)
-        //     {
-        //         if(file.path.endsWith(".srt"))
-        //         {
-        //             file.select(100)
-        //         }
-        //     }
-        // },
-
 
         are_subtitles_downloaded(torrent) {
             let subs = []
@@ -159,5 +149,39 @@ module.exports = (db_pool) => {
             // console.log("Available subs:", subs.map(s => s.name))
             return subs
         },
+
+        async get_torrent_from_id(torrent_id) {
+            try {
+              let [torrent_res, ] = await this.db_pool.query(
+                `
+                SELECT
+                  title,
+                  hash
+                FROM
+                  torrents
+                LEFT JOIN
+                  movies
+                ON
+                  movies.id = torrents.movie_id
+                WHERE
+                torrents.id=?
+                `,
+                torrent_id
+              )
+              
+              if (torrent_res.length == 0) {
+                let err = new Error('You searched for a torrent that doesnt exist')
+                err.code = return_codes.TORRENT_NOT_EXIST
+                throw(err)
+              }
+              
+              return torrent_res[0]
+            }
+            catch (e) {
+              console.log("get torrent deets")
+              throw(e)
+            }
+          }
+        
     }
 }

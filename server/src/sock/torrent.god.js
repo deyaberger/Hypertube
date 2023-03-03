@@ -8,27 +8,70 @@ class TorrentWatcher extends EventEmitter {
     super()
 
     this.torrent = torrent
-    this.files = {}
-    this.torrent.once('ready', () => {
-      for(file of this.torrent.files) {
-        this.files[file.name] = {
-          status    : 'STARTED',
-          fileObject: file,
-        }
+    this.setOnTorrentReady()
+  }
 
-        file.once('done', () => {
-          console.log(`${file.name} is done`)
-          this.files[file.name].status = "DOWNLOADED"
-          this.emit('file_done', (file.name))
-        })
-      }
+  setOnTorrentReady() {
+    this.torrent.once('ready', () => {
+      this.setOnFileDone()
+      this.setOnDownload() 
       this.emit('torrent_ready', (this.files))
     })
+  }
+
+  setOnFileDone() {
+    for(file of this.torrent.files) {
+      file.once('done', () => {
+        console.log(`${file.name} is done`)
+        this.files[file.name].status = "DOWNLOADED"
+        this.emit('file_done', (file.name))
+      })
+    }
+  }
+
+  setOnDownload() {
     this.torrent.on('download', (dl) => {
       console.log("down", this.torrent.progress)
       this.emit('download', this.torrent._downloadSpeed(), this.torrent.downloaded)
     })
+  }
 
+  getStatus() {
+    let status = {
+      name          : this.torrent.name,
+      downloaded    : this.torrent.downloaded,
+      downloadSpeed : this.torrent.downloadSpeed,
+      ready         : this.torrent.ready,
+      files         : {},
+    }
+
+    if (status.ready) {
+      for(file of this.torrent.files) {
+        status.files[file.name] = this.getFileStatus(file)
+      }
+    }
+
+    return status
+  }
+
+  getFileStatus(file) {
+    return {
+      done      : file.done,
+      name      : file.name,
+      path      : file.path,
+      downloaded: file.downloaded,
+      type      : this.getFileType(file)
+    }
+  }
+
+  getFileType(file) {
+    if (file.name.endWith('.srt')) {
+      return 'SUBTITLE_FILE'
+    }
+    
+    if (file.name.endWith('.avi') || file.name.endWith('.mp4')) {
+      return 'MOVIE_FILE'
+    }
   }
 }
 
