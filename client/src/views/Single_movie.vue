@@ -303,27 +303,27 @@ export default {
 		</div>
 		<hr class="solid">
 		<div>
-			<b-button v-b-toggle="'collapse-2'" class="m-1">{{text_content['see_torrents'][lang_nb]}}</b-button>
-			<b-collapse id="collapse-2">
+			<b-button v-b-toggle="'collapse'" class="collapse-torrents">{{text_content['see_torrents'][lang_nb]}}</b-button>
+			<b-collapse id="collapse">
 				<div class="row torrent_container" v-if="torrents != null" v-for="torrent in torrents" :key="torrent">
-					<button class="bn30 row align-content-center justify-content-center">
-						<div class="col-7">
-							<span class="infos_title_horizontal"><b-icon-play-circle-fill class="h3 play_button"/></span>
+					<button class="bn30 row align-items-center justify-content-center">
+						<div class="col col-5">
+							<span class="torrent_infos"><b-icon-play-circle-fill class="h3 play_button"/></span>
 						</div>
 						<div class="col">
-							<span class="infos_title_horizontal"><b-icon-trophy-fill class="torrent_icon"/></span>
+							<span class="torrent_infos"><b-icon-trophy-fill class="torrent_icon"/></span>
 							<span class="names">{{get_torrent_quality(torrent)}}</span>
 						</div>
 						<div class="col">
-							<span class="infos_title_horizontal">seeds: </span>
+							<span class="torrent_infos">seeds: </span>
 							<span class="names">{{ torrent["seeds"] }}</span>
 						</div>
 						<div class="col">
-							<span class="infos_title_horizontal">peers: </span>
+							<span class="torrent_infos">peers: </span>
 							<span class="names">{{ torrent["peers"] }}</span>
 						</div>
 						<div class="col">
-							<span class="infos_title_horizontal"><b-icon-cloud-upload-fill class="torrent_icon"/></span>
+							<span class="torrent_infos"><b-icon-cloud-upload-fill class="torrent_icon"/></span>
 							<span class="names">{{ torrent["size"] }}</span>
 						</div>
 					</button>
@@ -382,6 +382,8 @@ export default {
 
 <style lang="css">
 .bn30 {
+	margin-left: 0.5%;
+	width: 99%;
 	min-height: 50px;
   border: 5em;
   cursor: pointer;
@@ -389,10 +391,11 @@ export default {
   font-size: 16px;
   -webkit-transform: translate(0);
   transform: translate(0);
-  background-image: linear-gradient(45deg, #4568dc, #b06ab3);
+  background-image: linear-gradient(45deg, #152e80ce, #59005cc0);
   padding: 0.7em 2em;
   border-radius: 5px;
-  box-shadow: 1px 1px 10px rgba(255, 255, 255, 0.438);
+  /* box-shadow: 1px 1px 10px rgba(255, 255, 255, 0.438); */
+  box-shadow: 0 12px 24px rgba(128, 128, 128, 0.1);
   -webkit-transition: box-shadow 0.25s;
   transition: box-shadow 0.25s;
   color: white;
@@ -402,7 +405,7 @@ export default {
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  background-image: linear-gradient(45deg, #4568dc, #b06ab3);
+  background-image: linear-gradient(45deg, #152e80ce, #59005cc0);
 }
 
 .bn30:after {
@@ -419,8 +422,8 @@ export default {
 }
 
 .bn30:hover {
-  background-image: linear-gradient(-45deg, #4568dc, #b06ab3);
-  box-shadow: 0 12px 24px rgba(128, 128, 128, 0.1);
+  background-image: linear-gradient(45deg, #4568dc, #b06ab3);
+  box-shadow: 1px 1px 10px rgba(255, 255, 255, 0.438);
 }
 
 .bn30:hover .text {
@@ -431,6 +434,20 @@ export default {
 
 <style lang="scss" scoped>
 @import "../assets/shared_scss/single_movie.scss";
+
+.collapse-torrents {
+	margin: 0px;
+	height: 50px;
+	border: black;
+	background-image: linear-gradient(-45deg, #4568dc, #b753bb);
+}
+
+.collapse-torrents:hover {
+	margin: 0px;
+	transform: scale(1.1);
+	transition: 0.8s;
+	background-image: linear-gradient(-45deg, #587bee, #e370e7);
+}
 
 .time {
 	text-align: end;
@@ -449,7 +466,16 @@ export default {
 }
 
 .torrent_container {
-	margin-top: 1%;
+	height: 80px;
+	margin-top: 0.5%;
+}
+
+.torrent_container > * {
+	font-size: 18px;
+}
+
+.torrent_infos {
+	font-weight: bold;
 }
 
 .torrent_icon {
@@ -461,5 +487,14 @@ export default {
 	border-right: 1px;
 	border-color: white;
 }
+
+.bn30 > .col:first-of-type {
+	text-align:left;
+}
+
+.bn30 > .col {
+	text-align:right;
+}
+
 
 </style>
