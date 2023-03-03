@@ -9,9 +9,11 @@ module.exports = {
             if (token == null) return res.status(401).send({code: return_codes.MISSING_TOKEN})
             jwt.verify(token, process.env.TOKEN_SECRET, (err, decoded) => {
                 if (err != null) console.log(err)
-
+                if (err && err instanceof jwt.TokenExpiredError){
+                    return res.status(403).send({code: return_codes.EXPIRED_TOKEN})
+                }
                 if (err) {
-                    return res.statue(403).send({code: return_codes.CORRUPTED_TOKEN})
+                    return res.status(403).send({code: return_codes.CORRUPTED_TOKEN})
                 }
                 req.user_id = decoded.user_id
                 next()

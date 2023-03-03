@@ -16,6 +16,7 @@ module.exports = {
 
   MISSING_TOKEN      : 'MISSING_TOKEN',
   CORRUPTED_TOKEN    : 'CORRUPTED_TOKEN',
+  EXPIRED_TOKEN      : 'EXPIRED_TOKEN',
 
 
 }
