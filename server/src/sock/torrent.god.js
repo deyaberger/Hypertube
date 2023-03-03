@@ -1,6 +1,8 @@
 const EventEmitter = require('events')
 const { Server } = require('http')
 const { hash_title_to_magnet_link } = require('../utils/hash_title_to_magnet')
+const torrent_functions_factory     = require('../controllers/torrent')
+const return_codes = require('../utils/return_codes')
 
 
 class TorrentWatcher extends EventEmitter {
@@ -13,25 +15,25 @@ class TorrentWatcher extends EventEmitter {
 
   setOnTorrentReady() {
     this.torrent.once('ready', () => {
+      console.log("TORRENT REDY", this.torrent.name)
       this.setOnFileDone()
-      this.setOnDownload() 
-      this.emit('torrent_ready', (this.files))
+      this.setOnDownload()
+      this.emit('torrent_ready', this.getStatus())
     })
   }
 
   setOnFileDone() {
-    for(file of this.torrent.files) {
+    for(const file of this.torrent.files) {
       file.once('done', () => {
         console.log(`${file.name} is done`)
-        this.files[file.name].status = "DOWNLOADED"
-        this.emit('file_done', (file.name))
+        this.emit('file_done', this.getFileStatus(file))
       })
     }
   }
 
   setOnDownload() {
     this.torrent.on('download', (dl) => {
-      console.log("down", this.torrent.progress)
+      // console.log("down", this.torrent.progress)
       this.emit('download', this.torrent._downloadSpeed(), this.torrent.downloaded)
     })
   }
@@ -46,7 +48,7 @@ class TorrentWatcher extends EventEmitter {
     }
 
     if (status.ready) {
-      for(file of this.torrent.files) {
+      for(const file of this.torrent.files) {
         status.files[file.name] = this.getFileStatus(file)
       }
     }
@@ -65,11 +67,11 @@ class TorrentWatcher extends EventEmitter {
   }
 
   getFileType(file) {
-    if (file.name.endWith('.srt')) {
+    if (file.name.endsWith('.srt')) {
       return 'SUBTITLE_FILE'
     }
     
-    if (file.name.endWith('.avi') || file.name.endWith('.mp4')) {
+    if (file.name.endsWith('.avi') || file.name.endsWith('.mp4')) {
       return 'MOVIE_FILE'
     }
   }
@@ -78,11 +80,12 @@ class TorrentWatcher extends EventEmitter {
 
 class GodEventHandler {
   constructor(io, db_pool, torrent_client) {
-    this.torrentWatchers = {}
-    this.rooms = {}
-    this.io = io
-    this.db_pool = db_pool
-    this.torrent_client = torrent_client
+    this.io                = io
+    this.rooms             = {}
+    this.db_pool           = db_pool
+    this.torrent_client    = torrent_client
+    this.torrentWatchers   = {}
+    this.torrent_functions = torrent_functions_factory(db_pool)
   }
 
   addTorrenLOL(torrent, torrent_id) {
@@ -120,49 +123,51 @@ class GodEventHandler {
 
   async add_torrent(torrent_id) {
     try {
-      let [torrent_res, ] = await this.db_pool.query(
-        `
-        SELECT
-          title,
-          hash
-        FROM
-          torrents
-        LEFT JOIN
-          movies
-        ON
-          movies.id = torrents.movie_id
-        WHERE
-        torrents.id=?
-        `,
-        torrent_id
-      )
-      console.log("tores", torrent_res)
-      if (torrent_res.length == 0) {
-        return this.io.to(torrent_id).emit('wrong_torrent_id')
+      let torrent_db_data = await this.torrent_functions.get_torrent_from_id(torrent_id)
+
+
+      let magnet_uri = hash_title_to_magnet_link(torrent_db_data.hash, torrent_db_data.title)
+      if (this.torrentWatchers[torrent_id] != undefined) {
+        // TODO send this guy something !
+        return console.log("torrent watcher already exists", torrent_id)
+      }
+      if (this.torrent_client.get(magnet_uri)) {
+        console.log("\n\n\nWTF DOUBLE TROUBLE THIS SHOULD NEVER PRINT\n\n\n", torrent_id, this.torrentWatchers)
       }
 
-      let magnet_uri = hash_title_to_magnet_link(torrent_res[0].hash, torrent_res[0].title)
-      let torrent = this.torrent_client.get(magnet_uri)
-      if (torrent != null && torrent.ready) {
-        console.log("already tor")
-        return torrent_ready_callback(torrent, torrent_id)
-      }
       console.log("adding magnete")
-      torrent = this.torrent_client.add(magnet_uri,
+      let torrent = this.torrent_client.add(
+        magnet_uri,
         {
             path      : "./torrents",                            
             strategy  : "sequential"
-        },
-        (tor) => this.torrent_ready_callback(tor, torrent_id))
+        }
+      )
+      console.log("adding tor watcher")
+      this.addTorrentWatcher(torrent, torrent_id)
     }
     catch (e) {
+      if (e.code == return_codes.TORRENT_NOT_EXIST) {
+        console.log("Torrent not exists", id)
+        return this.io.to(torrent_id).emit(return_codes.TORRENT_NOT_EXIST)
+      }
       console.log("error in add torrent socket")
       throw(e)
     }
   }
 
-  addTorrentListener(user_id, torrent_id) {
-    console.log("Add user_id to torrent_id room")
+  addTorrentWatcher(torrent, torrent_id) {
+    this.torrentWatchers[torrent_id] = new TorrentWatcher(torrent)
+    this.torrentWatchers[torrent_id].once('torrent_ready', (torrent_status) => {
+      console.log("emit tor ready", torrent_status)
+      this.io.to(torrent_id).emit('torrent_ready', torrent_status)
+    })
+
+    this.torrentWatchers[torrent_id].once('file_done', (file_status) => {
+      console.log("emit file done", file_status)
+      this.io.to(torrent_id).emit('file_done', file_status)
+    })
+
   }
 }
 

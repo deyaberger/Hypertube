@@ -152,7 +152,7 @@ module.exports = (db_pool) => {
 
         async get_torrent_from_id(torrent_id) {
             try {
-              let [torrent_res, ] = await this.db_pool.query(
+              let [torrent_res, ] = await db_pool.query(
                 `
                 SELECT
                   title,

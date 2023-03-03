@@ -49,9 +49,14 @@ export default {
 			// catch (e) {
 			// 	console.log("Error get torrent content", e)
 			// }
-			this.socket.on('torrent_ready', (files) => {
-				console.log("\n\n\nRECIEEEEVED SOKE: ", files)
+			this.socket.on('torrent_ready', (torrent_statue) => {
+				console.log("torrent_ready: ", torrent_statue)
 			})
+
+			this.socket.on('file_done', (file_status) => {
+				console.log("file_done: ", file_status)
+			})
+
 			this.socket.emit('add_torrent', arg.id)
 		},
 
