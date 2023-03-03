@@ -60,8 +60,7 @@ const helper_functions = (db_pool) => {
                 params : {
                     client_id    : process.env.OAUTH_GITHUB_ID,
                     client_secret: process.env.OAUTH_GITHUB_SECRET,
-                    redirect_uri : `${back_hostname}/api/auth/oauth/github`,
-                    scope        : 'user user:email',
+                    redirect_uri : `${back_hostname}/api/oauth/github`,
                     code         : code
                 }
             };
@@ -82,6 +81,42 @@ const helper_functions = (db_pool) => {
             return response;
         },
 
+
+        get_42_user_token: async (code) => {
+            let request = {
+                url: `https://api.intra.42.fr/oauth/token`,
+                method: "post",
+                headers: {
+                    "Content-type": "application/json",
+                    'Accept'      : 'application/json'
+                },
+                params : {
+                    grant_type   : 'authorization_code',
+                    client_id    : process.env.OAUTH_42_ID,
+                    client_secret: process.env.OAUTH_42_SECRET,
+                    redirect_uri : `${back_hostname}/api/oauth/42`,
+                    code         : code
+                }
+            };
+            const response = await axios(request);
+            return response;
+        },
+
+        get_42_user_details: async (bearer_token) => {
+            let request = {
+                url: `https://api.intra.42.fr/v2/me`,
+                method: "get",
+                headers: {
+                    "Content-type"   : "application/json",
+                    'Accept-Encoding': 'identity',
+                    Authorization    : `Bearer ${bearer_token}`
+                }
+            };
+            const response = await axios(request);
+            return response;
+        },
+
+
         create_access_token: auth_functions.create_access_token
     }
 }
@@ -90,8 +125,54 @@ module.exports = (db_pool) => {
     const auth_functions = require('./auth')(db_pool)
     const oauth_functions = require('./oauth')(db_pool)
     const utils = helper_functions(db_pool)
+    const querystring = require('querystring');
 
     return {
+
+        get_urls: async (req, res) => {
+            // GITHUB
+            const params_github = {
+				client_id    : process.env.OAUTH_GITHUB_ID,
+				redirect_uri : 'http://localhost:8071/api/oauth/github'
+			};
+			const query_github = querystring.stringify(params_github);
+			const url_github = `https://github.com/login/oauth/authorize?${query_github}`
+
+            // GITLAB
+            const params_gitlab = {
+				client_id     : process.env.OAUTH_GITLAB_ID,
+				redirect_uri  : 'http://localhost:8071/api/oauth/gitlab',
+                response_type : 'code',
+                scope: 'read_user+mail'
+			};
+			const query_gitlab = querystring.stringify(params_gitlab);
+			const url_gitlab = `https://gitlab.com/oauth/authorize?${query_gitlab}`
+
+            // 42
+            const params_42 = {
+				client_id     : process.env.OAUTH_42_ID,
+				redirect_uri  : 'http://localhost:8071/api/oauth/42',
+                response_type : 'code'
+			};
+			const query_42 = querystring.stringify(params_42);
+			const url_42 = `https://api.intra.42.fr/oauth/authorize?${query_42}`
+
+            // GOOGLE
+            const params_google = {
+				client_id     : process.env.OAUTH_GOOGLE_ID,
+				redirect_uri  : 'http://localhost:8071/api/oauth/google',
+                scope         : 'openid profile email',
+                response_type : 'code',
+                access_type   : 'offline',
+                prompt        : 'consent'
+			};
+			const query_google = querystring.stringify(params_google);
+			const url_google = `https://accounts.google.com/o/oauth2/v2/auth?${query_google}`
+
+            return res.status(200).send({urls : {url_github, url_gitlab, url_42, url_google}})
+
+        },
+
         insert_github_user: async (req, res) => {
             console.log("\n10. [oauth.controller] FINAL STEP, inserting github user")
             let hypertube_id = req.user_id
@@ -113,7 +194,29 @@ module.exports = (db_pool) => {
                 console.log("[oauth.controller], ERROR: deleted user, now redirecting to sign up")
                 return res.redirect(`${front_hostname}/sign_up`)
             }
+        },
 
+        insert_42_user: async (req, res) => {
+            console.log("\n10. [oauth.controller] FINAL STEP, inserting 42 user")
+            let id_hypertube = req.user_id
+            let id_42 = req.user_details.ext_id
+            try {
+                let insert_oauth = await oauth_functions.insert_42_user(id_42, id_hypertube)
+                if (insert_oauth != null  && insert_oauth.affectedRows == 1) {
+                    console.log("11. [oauth.controller] Successfully inserted user into oauth table")
+                    let access_token = utils.create_access_token(id_hypertube)
+                    console.log("12. [oauth.controller] Got token, redirecting to user account ;) ")
+                    return res.redirect(`${front_hostname}/sign_in?oauth_token=${encodeURIComponent(access_token)}`)
+                }
+                console.log("[oauth.controller]: ERROR when inserting 42 user in oauth table: ")
+                return res.redirect(`${front_hostname}/sign_up`)
+            }
+            catch (e) {
+                console.log("[oauth.controller]: ERROR when inserting 42 user in oauth table: ", e)
+                let del = await auth_functions.delete_user(id_hypertube)
+                console.log("[oauth.controller], ERROR: deleted user, now redirecting to sign up")
+                return res.redirect(`${front_hostname}/sign_up`)
+            }
         },
 
         create_ext_user: async (req, res, next) => {
@@ -259,6 +362,89 @@ module.exports = (db_pool) => {
                 console.log("UNKOWN ERROR GITHUB [oauth.controller]: could not get oauth token, ", {code : e.code, msg: e.response})
                 return res.redirect(`${front_hostname}/sign_up`)
             }
-        }
+        },
+
+
+        get_42_token: async (req, res, next) => {
+            console.log("1. 42 [oauth.controller]: Starting oauth process...")
+            try {
+                let code = req.query.code
+                console.log('2. 42 [oauth.controller] Recieved code: ', code)
+                let token_42 = await utils.get_42_user_token(code)
+                if (token_42 != null && token_42.status == 200 && token_42.data) {
+                    if (token_42.data.access_token != null && token_42.data.access_token != undefined) {
+                        req.oauth_token = token_42.data.access_token
+                        console.log("3. 42 [oauth.controller]: Successfully received oauth token: ", req.oauth_token)
+                        next()
+                    }
+                }
+                else {
+                    console.log("UNKOWN ERROR 42 [oauth.controller]: could not get oauth token, ", {token_42: token_42, code : e.code, msg: e.response})
+                    return res.redirect(`${front_hostname}/sign_up`)
+                }
+            }
+            catch(e) {
+                console.log("UNKOWN ERROR 42 [oauth.controller]: could not get oauth token, ", {code : e.code, msg: e.response})
+                return res.redirect(`${front_hostname}/sign_up`)
+            }
+        },
+
+
+        get_42_details: async (req, res, next) => {
+            try {
+                let token_42 = req.oauth_token
+                console.log("\n4. 42 [oauth.controller]: get_42_details...")
+                let user_details = await utils.get_42_user_details(token_42)
+                if (user_details && user_details.status == 200 && user_details.data) {
+                    req.user_details = {
+                        mail       : user_details.data.email,
+                        ext_id     : user_details.data.id,
+                        username   : user_details.data.login,
+                        first_name : user_details.data.first_name,
+                        last_name  : user_details.data.last_name,
+                        picture    : user_details.data.image.link
+                    }
+                    console.log("5. 42 [oauth.controller] Got user info from 42:", req.user_details)
+                    next()
+                }
+                else {
+                    console.log("UNKOWN ERROR 42 [oauth.controller]: could not get 42 user details", {user_details})
+                    return res.redirect(`${front_hostname}/sign_up`)
+                }
+            }
+            catch(e) {
+                if (e.code == "ERR_BAD_REQUEST") {
+                    console.log("ERR_BAD_REQUEST 42 [oauth.controller]: could not get 42 user details")
+                    return res.redirect(`${front_hostname}/sign_up`)
+                }
+                console.log("UNKOWN ERROR 42 [oauth.controller]: could not get 42 user details", e)
+                return res.redirect(`${front_hostname}/sign_up`)
+            }
+        },
+
+        check_if_42_user_exists: async (req, res, next) => {
+            try {
+                let user_details = req.user_details
+                let id = user_details.ext_id
+                console.log("\n6. 42 [oauth.controller]: check_if_42_user_exists... ", id)
+                let local_user_id = await oauth_functions.get_42_user_local_id(id)
+                let user_exists  = (local_user_id != null)
+                if (!user_exists) {
+                    req.type = "42"
+                    console.log("7. 42 [oauth.controller]: User does not exists, we must create it")
+                    next()
+                }
+                else {
+                    console.log("7. 42 [oauth.controller]: User does exists, creating a hypertube token..")
+                    let access_token = utils.create_access_token(local_user_id)
+                    console.log("8. 42 [oauth.controller]: Got token, redirecting to existing account..", {access_token})
+                    return res.redirect(`${front_hostname}/sign_in?oauth_token=${encodeURIComponent(access_token)}`)
+                }
+            }
+            catch(e) {
+                console.log("UNKOWN ERROR 42 [oauth.controller]: could not check_if_42_user_exists", e)
+                return res.redirect(`${front_hostname}/sign_up`)
+            }
+        },
     }
 }

@@ -23,8 +23,8 @@ export default {
 			own_profile         : true,
 			user                : null,
 
-			first_name			: '',
-			last_name			: '',
+			first_name			: null,
+			last_name			: null,
 			email				: '',
 			bio					: '',
 
@@ -341,7 +341,7 @@ export default {
 					</div>
 					<div class="ms-3 main_info" >
 						<div v-if="first_name_is_saved">
-							<span v-if="first_name.length > 0" class ="h3 name">{{ first_name }}
+							<span v-if="first_name != null" class ="h3 name">{{ first_name }}
 								<b-icon-pen class="modify h5" @click="modify_first_name()"></b-icon-pen>
 							</span>
 							<span v-else class ="h3 name tmp">first name
@@ -370,7 +370,7 @@ export default {
 						<p class="error_msg" v-show="first_name_error">{{text_content.first_name_error[lang_nb]}}</p>
 						<div class="mt-3">
 						<div v-if="last_name_is_saved">
-							<span v-if="last_name.length > 0" class ="h3 name">{{ last_name }}
+							<span v-if="last_name != null" class ="h3 name">{{ last_name }}
 								<b-icon-pen class="modify h5" @click="modify_last_name()"></b-icon-pen>
 							</span>
 							<span v-else class ="h3 name tmp">{{ text_content.last_name[lang_nb] }}
@@ -412,8 +412,8 @@ export default {
 						<div class="col-7">
 							<div>
 								<p class="small text-muted mb-0">email</p>
-									<p v-if="email_is_saved && user.mail.length > 0" class="mb-1 h5 email tmp">{{user.mail}}<b-icon-pen class="modify h5 mail" @click="modify_mail()"></b-icon-pen></p>
-									<p v-if="email_is_saved && user.mail.length == 0" class="mb-1 h5 email tmp">{{text_content.missing_email[lang_nb]}}<b-icon-pen class="modify h5 mail" @click="modify_mail()"></b-icon-pen></p>
+									<p v-if="email_is_saved && user.mail != null" class="mb-1 h5 email tmp">{{user.mail}}<b-icon-pen class="modify h5 mail" @click="modify_mail()"></b-icon-pen></p>
+									<p v-if="email_is_saved && user.mail == null" class="mb-1 h5 email tmp">{{text_content.missing_email[lang_nb]}}<b-icon-pen class="modify h5 mail" @click="modify_mail()"></b-icon-pen></p>
 									<div  v-if="!email_is_saved" class="input-group email">
 								<input
 									v-model = "user.mail"

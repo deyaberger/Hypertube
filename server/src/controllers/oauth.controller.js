@@ -141,7 +141,7 @@ const helper_functions = (db_pool) => {
                 params : {
                     client_id    : process.env.OAUTH_GITHUB_ID,
                     client_secret: process.env.OAUTH_GITHUB_SECRET,
-                    redirect_uri : `${back_hostname}/api/auth/oauth/github`,
+                    redirect_uri : `${back_hostname}/api/oauth/github`,
                     scope        : 'user user:email',
                     code         : code
                 }
