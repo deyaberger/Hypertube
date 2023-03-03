@@ -13,6 +13,7 @@ class TorrentWatcher extends EventEmitter {
 
     this.torrent              = torrent
     this.movie_length_minutes = torrent_db_data.length_minutes
+    this.ready_to_watch       = false
 
     this.setOnTorrentReady()
   }
@@ -54,10 +55,12 @@ class TorrentWatcher extends EventEmitter {
   setOnDownloadCheckETA() {
     let handler = () => {
       let ETA_minutes    = this.torrent.timeRemaining / 1000 / 60
+      console.log( this.torrent.progress, this.movie_length_minutes)
       let loaded_minutes = this.torrent.progress * this.movie_length_minutes
       console.log(`ETA_minutes ${Math.round(ETA_minutes)} loaded_minutes ${Math.round(loaded_minutes)}`)
       if (ETA_minutes * 3 < loaded_minutes) {
         console.log("ITS READYYYY BABY")
+        this.ready_to_watch = true
         this.emit('ready_to_watch')
         this.torrent.removeListener('download', handler);
       }
@@ -72,6 +75,7 @@ class TorrentWatcher extends EventEmitter {
       downloadSpeed : this.torrent.downloadSpeed,
       metadata_ready: this.torrent.ready,
       size          : this.torrent.size,
+      ready_to_watch: this.ready_to_watch,
       files         : {},
     }
 
