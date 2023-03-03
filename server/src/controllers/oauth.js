@@ -18,6 +18,7 @@ module.exports = (db_pool) => {
             return check_username
         },
 
+        // -------------------------------------- 42 --------------------------------------------------
         get_42_user_local_id: async (user_id_42) => {
             let [oauth_query, ] = await db_pool.query(
                 `SELECT
@@ -49,7 +50,7 @@ module.exports = (db_pool) => {
 
         },
 
-
+        // -------------------------------------- GITHUB --------------------------------------------------
         get_github_user_local_id: async (user_id_github) => {
             let [oauth_query, ] = await db_pool.query(
                 `SELECT
@@ -65,12 +66,12 @@ module.exports = (db_pool) => {
             return null
         },
 
-        insert_github_user: async (id_git, user_id) => {
-            id_git = String(id_git)
-            console.log("\n[auth]: insert_github_user ", {id_git, user_id})
+        insert_github_user: async (github_id, user_id) => {
+            github_id = String(github_id)
+            console.log("\n[auth]: insert_github_user ", {github_id, user_id})
             const request = `
             INSERT INTO oauth (github_id, user_id)
-                VALUES        (${id_git},${user_id})
+                VALUES        (${github_id},${user_id})
             `
             try {
                 let [oauth_insert_res, ] = await db_pool.query(request)
@@ -82,6 +83,8 @@ module.exports = (db_pool) => {
 
         },
 
+
+        // -------------------------------------- GOOGLE --------------------------------------------------
         get_google_user_local_id: async (user_id_google) => {
             let [oauth_query, ] = await db_pool.query(
                 `SELECT
@@ -97,12 +100,12 @@ module.exports = (db_pool) => {
             return null
         },
 
-        insert_google_user: async (id_git, user_id) => {
-            id_git = String(id_git)
-            console.log("\n[auth]: insert_google_user ", {id_git, user_id})
+        insert_google_user: async (google_id, user_id) => {
+            google_id = String(google_id)
+            console.log("\n[auth]: insert_google_user ", {google_id, user_id})
             const request = `
             INSERT INTO oauth (google_id, user_id)
-                VALUES        (${id_git},${user_id})
+                VALUES        (${google_id},${user_id})
             `
             try {
                 let [oauth_insert_res, ] = await db_pool.query(request)
@@ -114,7 +117,7 @@ module.exports = (db_pool) => {
 
         },
 
-
+        // -------------------------------------- GITLAB --------------------------------------------------
         get_gitlab_user_local_id: async (user_id_gitlab) => {
             let [oauth_query, ] = await db_pool.query(
                 `SELECT
@@ -128,6 +131,22 @@ module.exports = (db_pool) => {
                 return oauth_query[0].user_id
             }
             return null
+        },
+
+        insert_gitlab_user: async (gitlab_id, user_id) => {
+            gitlab_id = String(gitlab_id)
+            console.log("\n[auth]: insert_gitlab_user ", {gitlab_id, user_id})
+            const request = `
+            INSERT INTO oauth (gitlab_id, user_id)
+                VALUES        (${gitlab_id},${user_id})`
+            try {
+                let [oauth_insert_res, ] = await db_pool.query(request)
+                return oauth_insert_res
+            }
+            catch(e) {
+                throw(e)
+            }
+
         },
     }
 }

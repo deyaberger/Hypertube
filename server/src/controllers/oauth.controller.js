@@ -209,7 +209,7 @@ const helper_functions = (db_pool) => {
                 method: "get",
                 headers: {
                     "Content-type": "application/json",
-                    Authorization : `Bearer ${bearer_token}`
+                    Authorization : `Bearer ${bearer_token}`,
                 }
             };
             const response = await axios(request);

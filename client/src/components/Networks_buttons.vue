@@ -41,10 +41,6 @@ export default {
 			this.url_42 	= res.data.urls.url_42,
 			this.url_google = res.data.urls.url_google
 		}
-		console.log({github: this.url_github,
-		gitlab: this.url_gitlab,
-		forty: this.url_42,
-	gougle: this.url_google})
 	}
 }
 </script>
