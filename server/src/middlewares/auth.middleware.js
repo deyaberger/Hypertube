@@ -27,17 +27,15 @@ module.exports = {
 
     authenticateTokenSocket: (socket, next) => {
         try {
-            socket.user_id = 1
-            return next()
-
             const token = socket.handshake.auth.token
             if (token == null) {
+                console.log("authenticateTokenSocket", return_codes.MISSING_TOKEN)
                 const err = new Error(return_codes.MISSING_TOKEN)
                 err.data  = return_codes.MISSING_TOKEN
                 return next(err)
             }
             jwt.verify(token, process.env.TOKEN_SECRET, (err, decoded) => {
-                if (err != null) console.log("tok sok", err)
+                if (err != null) console.log("authenticateTokenSocket err:\n", err, "\nhandled")
 
                 if (err) {
                     const err = new Error(return_codes.CORRUPTED_TOKEN)
@@ -50,7 +48,10 @@ module.exports = {
         }
         catch (e) {
             console.log("ERROR in auth token: ", e)
+            const err = new Error(return_codes.UNKNOWN_ERROR)
+            err.data  = return_codes.UNKNOWN_ERROR
             throw(e)
+            return next(err)
         }
     },
 }
