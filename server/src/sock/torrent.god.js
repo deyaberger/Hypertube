@@ -5,7 +5,7 @@ const torrent_functions_factory     = require('../controllers/torrent')
 const return_codes = require('../utils/return_codes')
 
 
-DOWLOAD_SPAM_LIMIT_MS = 1000
+DOWLOAD_SPAM_LIMIT_MS = 10000
 
 class TorrentWatcher extends EventEmitter {
   constructor(torrent, torrent_db_data) {
@@ -72,6 +72,7 @@ class TorrentWatcher extends EventEmitter {
       metadata_ready: this.torrent.ready,
       size          : this.torrent.length,
       ready_to_watch: this.ready_to_watch,
+      uploadSpeed   : this.torrent.uploadSpeed,
       files         : {},
     }
 
@@ -116,7 +117,6 @@ class GodEventHandler {
     this.torrent_functions = torrent_functions_factory(db_pool)
   }
 
-
   async add_torrent(torrent_id) {
     try {
       let torrent_db_data = await this.torrent_functions.get_torrent_from_id(torrent_id)
@@ -140,8 +140,7 @@ class GodEventHandler {
             strategy  : "sequential"
         }
       )
-      console.log("Subs set high prio")
-      this.torrent_functions.set_subtitles_high_priority(torrent)
+
       console.log("adding tor watcher")
       this.addTorrentWatcher(torrent, torrent_db_data)
     }
@@ -160,6 +159,8 @@ class GodEventHandler {
     this.torrentWatchers[torrent_id] = new TorrentWatcher(torrent, torrent_db_data)
     this.torrentWatchers[torrent_id].once('torrent_ready', (torrent_status) => {
       console.log("emit tor ready", torrent_status)
+      console.log("Subs set high prio")
+      this.torrent_functions.set_subtitles_high_priority(torrent)
       this.io.to(torrent_id).emit('torrent_ready', torrent_status)
     })
     

@@ -6,10 +6,6 @@ module.exports = (io, TorGod) => {
     console.log('A user connected', socket.user_id);
     wsClientList[socket.user_id] = socket
     
-    //Whenever someone disconnects this piece of code executed
-    // socket.join('testroom')
-    // console.log(io.sockets.adapter.sids.get(socket.id))
-
     socket.on('disconnect', function () {
        console.log('A user disconnected');
     });
@@ -18,9 +14,9 @@ module.exports = (io, TorGod) => {
       // TorGod.add_socket_to_torrent_room(socket, torrent_id)
       console.log("adding socket to room")
       socket.join(torrent_id)
-      console.log("soket rooms",io.sockets.adapter.sids.get(socket.id))
-      console.log("all rooms",io.sockets.adapter.rooms)
       TorGod.add_torrent(torrent_id)
+      // console.log("soket rooms",io.sockets.adapter.sids.get(socket.id))
+      // console.log("all rooms",io.sockets.adapter.rooms)
     })
 
     socket.on('listen_torrent', (torrent_id) => {

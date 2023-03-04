@@ -15,7 +15,7 @@ export default defineConfig({
     proxy: {
       // string shorthand: http://localhost:5173/foo -> http://localhost:4567/foo
       '/api': 'http://localhost:8071',
-      '/socketo/': 'http://localhost:8071',
+      '/socketo/': 'ws://localhost:8071',
       // '/socket.io' : 'http://localhost:8071/socket.io'
       // with options: http://localhost:5173/api/bar-> http://jsonplaceholder.typicode.com/bar
       // '/api': {

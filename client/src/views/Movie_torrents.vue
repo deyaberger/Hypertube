@@ -1,6 +1,6 @@
 <script>
 import { mapState } from 'vuex';
-import { Get_torrents_for_movie, Add_magnet, get_ready_subs } from '../functions/streaming'
+import { Get_torrents_for_movie } from '../functions/streaming'
 import { Get_Single_Movie_Details } from '../functions/movies'
 import { io } from 'socket.io-client';
 // import SocketioService from '../functions/socket.service.js';
@@ -16,12 +16,10 @@ export default {
 			torrents         : [],
 			selected_torrent : null,
 			movie_details    : null,
-			torrent_files    : [],
-			torrent_loading  : false,
-			movie_source     : null,
+			torrent_status   : null,
+			movie_ready      : false,
 			subs             : [],
-			converted_subs   : [],
-			socket:null,
+			socket           :null,
 		}
 	},
 
@@ -30,37 +28,44 @@ export default {
 	},
 
 
-	computed: mapState({
-		lang_nb    : state => state.lang_nb,
-		user_token : state =>  state.user_token,
-	}),
+	computed: {
+		movie_source() {
+			return 'http://localhost:8071/api/torrents/stream_magnet/${encodeURIComponent(this.selected_torrent.hash)}/${encodeURIComponent(this.movie_details.title)}`'
+		},
+
+		...mapState({
+			lang_nb    : state => state.lang_nb,
+			user_token : state =>  state.user_token,
+		})
+	},
 
 
 	methods: {
 		async Choose_Torrent(arg) {
-			// console.log("Chose torrent", arg)
-			// this.selected_torrent = arg
-			// this.torrent_files = []
-			// this.torrent_loading = true
-			// try {
-			// 	await this.get_torrent_content(arg.hash, this.movie_details.title)
-			// 	await this.get_subs(arg.hash, this.movie_details.title)
-			// }
-			// catch (e) {
-			// 	console.log("Error get torrent content", e)
-			// }
+			this.movie_ready    = false
+			this.torrent_status = null
 
+			if (this.socket) {
+				this.socket.disconnect()
+			}
+			this.create_socket()
 
 			this.socket.once('torrent_ready', (torrent_status) => {
 				console.log("torrent_ready: ", torrent_status)
+				this.torrent_status = torrent_status
 			})
 
 			this.socket.on('download', (torrent_status) => {
 				console.log("download: ", torrent_status)
+				this.torrent_status = torrent_status
 			})
 
 			this.socket.on('file_done', (file_status) => {
 				console.log("file_done: ", file_status)
+				if (file_status.type == 'SUBTITLE_FILE') {
+					this.subs.push(file_status)
+					this.subs = [...this.subs]
+				}
 			})
 
 			this.socket.once('ready_to_watch'), () => {
@@ -70,40 +75,6 @@ export default {
 			this.socket.emit('add_torrent', arg.id)
 		},
 
-		async get_torrent_content(hash, title) {
-			let res = await Add_magnet(hash, title, this.user_token)
-			if (res.status == 200 && res.data.code == "SUCCESS") {
-				this.torrent_files = res.data.files
-				this.torrent_loading = false
-				this.movie_source = `http://localhost:8071/api/torrents/stream_magnet/${encodeURIComponent(this.selected_torrent.hash)}/${encodeURIComponent(this.movie_details.title)}`
-			}
-			else if (res.status == 200 && res.data.code == "TORRENT_NOT_READY") {
-				this.torrent_files = []
-				this.torrent_loading = true
-			}
-			else {
-				console.log("Non success in get torrent content", res)
-			}
-		},
-
-		async get_subs(hash, title) {
-			let res = await get_ready_subs(hash, title, this.user_token)
-			if (res.status == 200 && res.data.code == "SUCCESS") {
-				this.subs = res.data.subs
-				// for (const s of this.subs) {
-				// 	console.log("converting", s)
-				// 	let converted = await toWebVTT(`/api/torrents/subtitles/get/${encodeURIComponent(s.path)}`)
-				// 	console.log("converted", converted)
-				// }
-			}
-			else if (res.status == 200 && res.data.code == "TORRENT_NOT_READY") {
-				this.torrent_files = []
-				this.torrent_loading = true
-			}
-			else {
-				console.log("Non success in get torrent subs", res)
-			}
-		},
 
 		async get_movie_details() {
 			console.log("gettings details")
@@ -131,6 +102,16 @@ export default {
 				console.log("seekeing:", lol)
 			}
 			console.log(this.$refs.movieplayer.networkState)
+		},
+
+		create_socket() {
+			console.log("socket connect", this.user_token)
+			this.socket = io("http://localhost:5173", {
+				path: "/socketo/",
+				auth: {
+						token: this.user_token
+					}
+			});
 		}
 	},
 
@@ -157,14 +138,7 @@ export default {
 	},
 
 	created() {
-		// TODO: Move this to central place somewhere
-		console.log("socket connect", this.user_token)
-		this.socket = io("http://localhost:5173", {
-			path: "/socketo/",
-			auth: {
-					token: this.user_token
-				}
-		});
+		this.create_socket()
 	}
 }
 </script>
@@ -184,10 +158,10 @@ export default {
 		</div>
 		
 		<h1>Contents</h1>
-		<h3 v-if="torrent_loading">Loading</h3>
+		<h3 v-if="!torrent_status">Loading</h3>
 		<div v-else>
 			<h2>Files</h2>
-			<div v-for="file in torrent_files" v-bind:key="file.name">
+			<div v-for="file in torrent_status.files" v-bind:key="file.name">
 				<span> {{ file }} </span>
 			</div>
 
@@ -196,7 +170,7 @@ export default {
 				<span> {{ sub }} </span>
 			</div>
 
-			<div v-if="movie_source" >
+			<div v-if="movie_ready" >
 				<button @click="supervise">Supervise</button>
 				<video ref="movieplayer" controls loop id="videoPlayer" width="500" height="500" muted="muted" autoplay>
 					<source :src='movie_source' type="video/mp4" />
