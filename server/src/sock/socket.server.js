@@ -9,10 +9,13 @@ module.exports = (io, TorGod) => {
     socket.on('add_torrent', (torrent_id) => {
       // TorGod.add_socket_to_torrent_room(socket, torrent_id)
       console.log("adding socket to room")
+      console.log(socket.id, socket.rooms)
+      // console.log("soket rooms",io.sockets.adapter.sids.get(socket.id))
       socket.join(torrent_id)
+      // console.log("soket rooms",io.sockets.adapter.sids.get(socket.id))
       TorGod.handle_add_torrent_event(torrent_id)
       TorGod.bringNewcomerUpToDate(socket, torrent_id)
-      // console.log("soket rooms",io.sockets.adapter.sids.get(socket.id))
+      // io.sockets.socket(socket.id).emit('test')
       // console.log("all rooms",io.sockets.adapter.rooms)
     })
 

@@ -197,7 +197,7 @@ class GodEventHandler {
     if (torrent_watcher == undefined) return
 
     if (torrent_watcher.torrent.ready) {
-      console.log("up to date: ready")
+      console.log("up to date: ready", torrent_watcher.getStatus())
       socket.emit('torrent_ready', torrent_watcher.getStatus())
     }
 
@@ -208,10 +208,10 @@ class GodEventHandler {
       }
     }
 
-    if (torrent_watcher.ready_to_watch) {
-      console.log("up to date: movie ready")
-      socket.emit('ready_to_watch')
-    }
+    // if (torrent_watcher.ready_to_watch) {
+    //   console.log("up to date: movie ready")
+    //   socket.emit('ready_to_watch', 1)
+    // }
   }
 }
 

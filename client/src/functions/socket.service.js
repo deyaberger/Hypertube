@@ -1,12 +1,9 @@
-import { io } from 'socket.io-client';
+import { io } from "socket.io-client";
 
 class TorrentSocketService {
     constructor(user_token) {
       this.user_token       = user_token
       this.socket           = null;
-      this.torrent_status   = null;
-      this.subs             = []
-
       this.refresh_state()
     }
     
@@ -17,7 +14,6 @@ class TorrentSocketService {
 						token: this.user_token
 					}
 			});
-      console.log("SOKE:",this.socket)
     }
 
     delete_socket() {
@@ -33,7 +29,7 @@ class TorrentSocketService {
     refresh_socket() {
       try {
         if (this.socket) {
-          this.socket.disconnect()
+          this.delete_socket()
         }
         this.create_socket()
       }
@@ -73,6 +69,10 @@ class TorrentSocketService {
 
 			this.socket.once('ready_to_watch'), () => {
 				console.log("\n\nready_to_watch\n\n")
+			}
+
+      this.socket.once('test'), () => {
+				console.log("\n\test\n\n")
 			}
 
 			this.socket.emit('add_torrent', torrent_id)
