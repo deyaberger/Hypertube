@@ -2,9 +2,10 @@ import { io } from 'socket.io-client';
 
 class TorrentSocketService {
     constructor(user_token) {
-      this.user_token = user_token
-      this.socket     = null;
-      this.state      = null;
+      this.user_token       = user_token
+      this.socket           = null;
+      this.torrent_status   = null;
+      this.subs             = []
 
       this.refresh_state()
     }
@@ -25,10 +26,8 @@ class TorrentSocketService {
     }
 
     refresh_state() {
-      this.state = {
-        subs             : [],
-        torrent_status   : null,
-      }
+      this.torrent_status   = null;
+      this.subs             = []
     }
 
     refresh_socket() {
@@ -54,21 +53,21 @@ class TorrentSocketService {
 
 			this.socket.once('torrent_ready', (torrent_status) => {
 				console.log("torrent_ready: ", torrent_status)
-				this.state.torrent_status = torrent_status
-        this.state = {...this.state}
+				this.torrent_status = torrent_status
+        this.torrent_status = {...this.torrent_status}
 			})
 
 			this.socket.on('download', (torrent_status) => {
 				console.log("download: ", torrent_status)
-				this.state.torrent_status = torrent_status
-        this.state = {...this.state}
+				this.torrent_status = torrent_status
+        this.torrent_status = {...this.torrent_status}
 			})
 
 			this.socket.on('file_done', (file_status) => {
 				console.log("file_done: ", file_status)
 				if (file_status.type == 'SUBTITLE_FILE') {
-					this.state.subs.push(file_status)
-          this.state = {...this.state}
+					this.subs.push(file_status)
+          this.subs = [...this.subs]
 				}
 			})
 

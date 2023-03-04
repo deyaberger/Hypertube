@@ -23,28 +23,28 @@ export default {
 	computed: {
 		torrent_status() {
 			if (this.torrent_service) {
-				return this.torrent_service.state.torrent_status
+				return this.torrent_service.torrent_status
 			}
 			return null
 		},
 
 		subs() {
 			if (this.torrent_service) {
-				return this.torrent_service.state.subs
+				return this.torrent_service.subs
 			}
 			return []
 		},
 
 		movie_source() {
 			if (this.torrent_service && this.torrent_service.torrent_status) {
-				return `http://localhost:8071/api/torrents/stream_magnet/${encodeURIComponent(this.torrent_service.state.torrent_status.hash)}/${encodeURIComponent(this.torrent_service.state.torrent_status.title)}`
+				return `http://localhost:8071/api/torrents/stream_magnet/${encodeURIComponent(this.torrent_service.torrent_status.hash)}/${encodeURIComponent(this.torrent_service.torrent_status.title)}`
 			}
 			return null
 		},
 
 		movie_ready_to_watch() {
-			if (this.torrent_service && this.torrent_service.state.torrent_status) {
-				return this.torrent_service.state.torrent_status.ready_to_watch
+			if (this.torrent_service && this.torrent_service.torrent_status) {
+				return this.torrent_service.torrent_status.ready_to_watch
 			}
 			return false
 		},
@@ -135,12 +135,12 @@ export default {
 				<span @click="Choose_Torrent(torrent)"> {{ torrent }}</span>
 			</div>
 		</div>
-		<div v-if="torrent_service && torrent_service.state && torrent_service.state.torrent_status">
+		<div v-if="torrent_service && torrent_service.torrent_status">
 			<h1>Contents</h1>
-			<h3 v-if="!torrent_service.state.torrent_status.metadata_ready">Loading</h3>
+			<h3 v-if="!torrent_service.torrent_status.metadata_ready">Loading</h3>
 			<div v-else>
 				<h2>Files</h2>
-				<div v-for="file in torrent_service.state.torrent_status.files" v-bind:key="file.name">
+				<div v-for="file in torrent_service.torrent_status.files" v-bind:key="file.name">
 					<span> {{ file }} </span>
 				</div>
 
