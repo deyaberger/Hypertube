@@ -1,5 +1,4 @@
 const EventEmitter                  = require('events')
-const { Server }                    = require('http')
 const { hash_title_to_magnet_link } = require('../utils/hash_title_to_magnet')
 const torrent_functions_factory     = require('../controllers/torrent')
 const return_codes                  = require('../utils/return_codes')
@@ -22,15 +21,18 @@ class TorrentWatcher extends EventEmitter {
   }
 
   safetyWrapper(func) {
-    return function() {
+    // let this_tmp = this
+    let wrapped = function() {
       try {
         func.apply(this, arguments)
       }
       catch (e) {
-        console.log("error caught by safety wrapper")
-        this.emit(return_codes.UNKNOWN_ERROR)
+        console.log("error caught by safety wrapper", e)
+        this.emit(return_codes.TOR_WATCHER_ERROR)
       }
     }
+    wrapped = wrapped.bind(this)
+    return wrapped
   }
 
   setOnTorrentReady() {
@@ -207,6 +209,12 @@ class GodEventHandler {
   addTorrentWatcher(torrent, torrent_db_data) {
     let torrent_id = torrent_db_data.id
     this.torrentWatchers[torrent_id] = new TorrentWatcher(torrent, torrent_db_data)
+
+    this.torrentWatchers[torrent_id].on(return_codes.TOR_WATCHER_ERROR, () => {
+      console.log("\n\nemit tor watcher error\n\n")
+      this.io.to(torrent_id).emit(return_codes.TOR_WATCHER_ERROR)
+    })
+
     this.torrentWatchers[torrent_id].once('torrent_ready', (torrent_status) => {
       // console.log("emit tor ready", torrent_status)
       console.log("Subs set high prio")

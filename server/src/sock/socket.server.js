@@ -17,15 +17,13 @@ module.exports = (io, TorGod) => {
         throw(e)
         socket.emit()
       }
-
     })
 
     socket.on("disconnecting", () => {
       try {
         const rooms_iterator = socket.rooms[Symbol.iterator]();
 
-        // Turn off torrents that no one is watchin
-        for (const item of rooms_iterator) {
+        for (const item of rooms_iterator) { // Turn off torrents that no one is watchin
           if (item != socket.id) {
             if (io.sockets.adapter.rooms.get(item).size == 1) {
               TorGod.remove_torrent(item)
@@ -37,7 +35,6 @@ module.exports = (io, TorGod) => {
         console.log("error in disconnect torrent clean")
         throw(e)
       }
-
     });
 
     socket.on('disconnect', function () {
