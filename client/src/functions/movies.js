@@ -32,18 +32,18 @@ function _parse_form_for_back(form, lang_nb) {
 
 export const Parse_Single_Movie = (data) => {
 	let parsed_data = {
-		"title"             : data[0].title,
-		"genres"            : data[0].genres_list,
-		"images_list"		: data[0].images_list,
+		"title"             : data.title,
+		"genres"            : data.genres_list,
+		"images_list"		: data.images_list,
 		"list_comments"     : [],
-		"year"              : data[0].year,
-		"runtime"           : data[0].length_minutes,
-		"rating"            : data[0].imdb_rating,
-		"summary"           : data[0].summary,
-		"director"          : data[0].director,
-		"actors"	        : data[0].actors,
-		"is_watched"        : data[0].is_watched,
-		"is_fav"	        : data[0].is_fav,
+		"year"              : data.year,
+		"runtime"           : data.length_minutes,
+		"rating"            : data.imdb_rating,
+		"summary"           : data.summary,
+		"director"          : data.director,
+		"actors"	        : data.actors,
+		"is_watched"        : data.is_watched,
+		"is_fav"	        : data.is_fav,
 	}
 	return parsed_data
 }

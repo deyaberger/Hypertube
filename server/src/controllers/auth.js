@@ -30,12 +30,10 @@ module.exports = (db_pool) => {
             }
         },
 
-
         create_access_token : (userid) => {
             console.log("\n[auth]: Creating token for ", {userid});
             return jwt.sign({user_id: userid}, process.env.TOKEN_SECRET, { expiresIn: 86400 });
         },
-
 
         get_user_from_username: async (username) => {
             console.log("\n[auth]: getting user from ", {username})
@@ -50,7 +48,6 @@ module.exports = (db_pool) => {
             return user_res[0]
         },
 
-
         get_user_from_mail: async (mail) => {
             console.log("getting user from mail: %s.", mail)
             let [user_res, ] = await db_pool.query("\
@@ -64,7 +61,6 @@ module.exports = (db_pool) => {
 
             return user_res[0]
         },
-
 
         check_password : async (user, password) => {
             // console.log("checking password: ", user)
@@ -112,7 +108,6 @@ module.exports = (db_pool) => {
 
             return true
         },
-
 
         reset_pass : async(hash, new_pass) => {
             console.log("resetting password")

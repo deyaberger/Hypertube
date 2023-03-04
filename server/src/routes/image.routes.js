@@ -43,12 +43,12 @@ function upload_func(req, res, next) {
 
 module.exports = (db_pool) => {
     const image_controller = require("../controllers/image.controller")(db_pool)
-    const auth_controller  = require("../controllers/auth.controller" )(db_pool)
+    const auth_middlewares = require("../middlewares/auth.middleware")
 
     var router = require("express").Router();
 
     router.use  ('/get'    , express.static                   ('./uploads' )                              );
-    router.post ("/upload" , auth_controller.authenticateToken, upload_func, image_controller.upload_image);
+    router.post ("/upload" , auth_middlewares.authenticateToken, upload_func, image_controller.upload_image);
 
     return router
 }
