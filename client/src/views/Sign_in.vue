@@ -3,7 +3,6 @@ import { mapState } from 'vuex';
 import textContent from "../assets/language_dict/language_dict.json"
 import NetworkButtons from "../components/Networks_buttons.vue"
 import { Sign_In }        from '../functions/auth'
-import SocketioService from '../functions/socket.service.js';
 
 
 export default {
@@ -56,8 +55,6 @@ export default {
 					console.log("Adding token to state")
 					this.$store.commit('SET_USER_TOKEN', sign_in_res.data.token)
 					this.$store.commit('SET_CONNECTION', true)
-					SocketioService.setupSocketConnection(sign_in_res.data.token);
-					console.log("succ", SocketioService.socket)
 					this.$router.push('/search')
 				}
 				else {
@@ -78,10 +75,6 @@ export default {
 			try {
 				this.$store.commit('SET_USER_TOKEN', this.oauth_token)
 				this.$store.commit('SET_CONNECTION', true)
-				SocketioService.setupSocketConnection(this.oauth_token);
-				console.log("succ", SocketioService.socket)
-
-				// this.$store.commit('SET_SOCKET_SERVICE', SocketioService(this.oauth_token))
 
 				this.$router.push('/search')
 			}

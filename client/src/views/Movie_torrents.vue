@@ -19,25 +19,35 @@ export default {
 		}
 	},
 
-	components: {
-	},
-
 
 	computed: {
-		movie_source() {
-			if (this.torrent_status) {
-				return `http://localhost:8071/api/torrents/stream_magnet/${encodeURIComponent(this.torrent_status.hash)}/${encodeURIComponent(this.torrent_status.title)}`
+		torrent_status() {
+			if (this.torrent_service) {
+				return this.torrent_service.state.torrent_status
 			}
-			throw(new Error("You should be here"))
+			return null
+		},
+
+		subs() {
+			if (this.torrent_service) {
+				return this.torrent_service.state.subs
+			}
+			return []
+		},
+
+		movie_source() {
+			if (this.torrent_service && this.torrent_service.torrent_status) {
+				return `http://localhost:8071/api/torrents/stream_magnet/${encodeURIComponent(this.torrent_service.state.torrent_status.hash)}/${encodeURIComponent(this.torrent_service.state.torrent_status.title)}`
+			}
+			return null
 		},
 
 		movie_ready_to_watch() {
-			if (this.torrent_status) {
-				return this.torrent_status.ready_to_watch
+			if (this.torrent_service && this.torrent_service.state.torrent_status) {
+				return this.torrent_service.state.torrent_status.ready_to_watch
 			}
 			return false
 		},
-
 
 		...mapState({
 			lang_nb    : state => state.lang_nb,
@@ -47,38 +57,15 @@ export default {
 
 
 	methods: {
-		async Choose_Torrent(arg) {
-			this.torrent_status = null
-			this.subs           = []
-
-			if (this.socket) {
-				this.socket.disconnect()
+		async Choose_Torrent(torrent) {
+			try {
+				this.torrent_service.choose_torrent(torrent.id)
 			}
-			this.create_socket()
-
-			this.socket.once('torrent_ready', (torrent_status) => {
-				console.log("torrent_ready: ", torrent_status)
-				this.torrent_status = torrent_status
-			})
-
-			this.socket.on('download', (torrent_status) => {
-				console.log("download: ", torrent_status)
-				this.torrent_status = torrent_status
-			})
-
-			this.socket.on('file_done', (file_status) => {
-				console.log("file_done: ", file_status)
-				if (file_status.type == 'SUBTITLE_FILE') {
-					this.subs.push(file_status)
-					this.subs = [...this.subs]
+			catch (e) {
+				if (e.code == 'SOCKET_CREATION_ERROR') {
+					console.log("Error in socket creation !@")
 				}
-			})
-
-			this.socket.once('ready_to_watch'), () => {
-				console.log("\n\nready_to_watch\n\n")
 			}
-
-			this.socket.emit('add_torrent', arg.id)
 		},
 
 
@@ -135,7 +122,7 @@ export default {
 	},
 
 	created() {
-		this.torrent_service = new TorrentSocketService()
+		this.torrent_service = new TorrentSocketService(this.user_token)
 	}
 }
 </script>
@@ -144,37 +131,36 @@ export default {
 	<div class="homemade-container">
 		<h1>Torrents</h1>
 		<div class="card b-1 hover-shadow mb-20" v-for="(torrent, index) in torrents" :key="index">
-			  <div class="media card-body">
+			<div class="media card-body">
 				<span @click="Choose_Torrent(torrent)"> {{ torrent }}</span>
 			</div>
 		</div>
-		
-		<h1>Contents</h1>
-		<h3 v-if="!torrent_status">Loading</h3>
-		<div v-else>
-			<h2>Files</h2>
-			<div v-for="file in torrent_status.files" v-bind:key="file.name">
-				<span> {{ file }} </span>
-			</div>
+		<div v-if="torrent_service && torrent_service.state && torrent_service.state.torrent_status">
+			<h1>Contents</h1>
+			<h3 v-if="!torrent_service.state.torrent_status.metadata_ready">Loading</h3>
+			<div v-else>
+				<h2>Files</h2>
+				<div v-for="file in torrent_service.state.torrent_status.files" v-bind:key="file.name">
+					<span> {{ file }} </span>
+				</div>
 
-			<h2>Subs</h2>
-			<div v-for="sub in subs" v-bind:key="sub.path">
-				<span> {{ sub }} </span>
-			</div>
+				<h2>Subs</h2>
+				<div v-for="sub in subs" v-bind:key="sub.path">
+					<span> {{ sub }} </span>
+				</div>
 
-			<div v-if="movie_ready_to_watch" >
-				<video ref="movieplayer" controls loop id="videoPlayer" width="500" height="500" muted="muted" autoplay>
-					<source :src='movie_source' type="video/mp4" />
-						<track v-for="sub in subs" v-bind:key="sub.path"
-							:label="sub.name"
-							kind="subtitles"
-							:src="'/api/torrents/subtitles/get/' + encodeURIComponent(sub.path)"
-						/>
-				</video>
+				<div v-if="movie_ready_to_watch" >
+					<video ref="movieplayer" controls loop id="videoPlayer" width="500" height="500" muted="muted" autoplay>
+						<source :src='movie_source' type="video/mp4" />
+							<track v-for="sub in subs" v-bind:key="sub.path"
+								:label="sub.name"
+								kind="subtitles"
+								:src="'/api/torrents/subtitles/get/' + encodeURIComponent(sub.path)"
+							/>
+					</video>
+				</div>
 			</div>
 		</div>
-
-		
 	</div>
 </template>
 
