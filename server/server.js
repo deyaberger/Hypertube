@@ -102,6 +102,10 @@ app.use("/api/watched", watched_router)
 const image_router = require("./src/routes/image.routes")(connection_pool)
 app.use("/api/image", image_router)
 
+// OAUTH
+const oauth_router = require("./src/routes/oauth.routes")(connection_pool)
+app.use("/api/oauth", oauth_router)
+
 
 // Start the server
 

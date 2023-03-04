@@ -85,7 +85,7 @@ export default {
 				let res = await Get_Other_User_Details(this.user_token, this.user_id);
 				if (res.code == 'ERR_NETWORK') {
 					this.network_error = true
-					this.error_text = this.text_content.network_error[this.lang_nb]
+					this.error_text = this.text_content.network_error
 					console.log("ERROR [my_profile]: server down")
 				}
 				else if (res.data != null && res.data.code == "SUCCESS") {
@@ -96,7 +96,7 @@ export default {
 				}
 				else if (res.data != null && (res.data.code == "NO_USER_WITH_THIS_ID" || res.data.code == "FAILURE")) {
 					this.request_error = true
-					this.error_text = this.text_content.no_user_found[this.lang_nb]
+					this.error_text = this.text_content.no_user_found
 					console.log("ERROR [my_profile]: get_user_data", {msg: res.data.msg})
 				}
 				else {
@@ -191,7 +191,7 @@ export default {
 					<div class="card">
 						<div class="p-4 text-black" style="background-color: #f8f9fa;">
 							<div class="justify-content-center text-center py-1">
-								<p class="lead fw-normal mb-1">{{error_text}}</p>
+								<p class="lead fw-normal mb-1">{{error_text[lang_nb]}}</p>
 							</div>
 						</div>
 					</div>
@@ -241,7 +241,7 @@ export default {
 					</div>
 					</div>
 				</div>
-				<div class="card-body p-4 text-black">
+				<div class="card-body p-4 text-black" v-if="user.bio && user.bio.length > 0">
 					<div>
 					<p class="lead fw-normal mb-1">{{text_content.about[lang_nb]}}</p>
 					<div class="p-4" style="background-color: #f8f9fa;">

@@ -41,7 +41,7 @@ module.exports = (db_pool) => {
                 }
                 if ([...new Set(Object.values(user))][0] == null) {
                     console.log("[user.controller]: Nothing about this user. FAILURE")
-                    return res.status(201).send({msg:  `Nothing in database about user ${userid}`, code: "FAILURE"})
+                    return res.status(201).send({msg:  `Nothing in database about user ${user}`, code: "FAILURE"})
                 }
             }
             catch (e) {
@@ -63,10 +63,6 @@ module.exports = (db_pool) => {
                     console.log("\n[user.controller]: update_first_name FAILURE : whitespaces")
                     return res.status(201).send({msg: "Can't change firstname : whitespaces", code: "FAILURE"})
                 }
-                if (new_first_name.length == 0) {
-                    console.log("\n[user.controller]: update_first_name FAILURE : empty")
-                    return res.status(201).send({msg: "Can't change firstname: empty", code: "FAILURE"})
-                }
                 let update_res = await user_functions.update_firstname(user_id, new_first_name)
                 if (update_res.affectedRows == 1) {
                     console.log("[user.controller]: update_first_name SUCCESS")
@@ -87,10 +83,6 @@ module.exports = (db_pool) => {
                 if (new_last_name.match(regex_whitespace) == null) {
                     console.log("\n[user.controller]: update_last_name FAILURE : whitespaces")
                     return res.status(201).send({msg: "Can't change lastname : whitespaces", code: "FAILURE"})
-                }
-                if (new_last_name.length == 0) {
-                    console.log("\n[user.controller]: update_last_name FAILURE : empty")
-                    return res.status(201).send({msg: "Can't change lastname: empty", code: "FAILURE"})
                 }
                 let update_res = await user_functions.update_lastname(user_id, new_last_name)
                 if (update_res.affectedRows == 1) {
@@ -124,13 +116,9 @@ module.exports = (db_pool) => {
                 let user_id = req.user_id
                 let new_email  = req.query.email
                 let regex_mail = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
-                if (new_email.match(regex_mail) == null) {
+                if (new_email != null && new_email != undefined && new_email.match(regex_mail) == null && new_email.length > 0) {
                     console.log("\n[user.controller]: update_email FAILURE (regex)")
                     return res.status(201).send({msg: "Can't change email (regex)", code : "FAILURE"})
-                }
-                if (new_email.length == 0) {
-                    console.log("\n[user.controller]: update_email FAILURE : empty")
-                    return res.status(201).send({msg: "Can't change email (empty string)", code : "FAILURE"})
                 }
                 let update_res = await user_functions.update_user_email(user_id, new_email)
                 if (update_res.affectedRows == 1) {
@@ -139,9 +127,13 @@ module.exports = (db_pool) => {
                 }
             }
             catch (e) {
+                if (e.code == 'ER_DUP_ENTRY') {
+                    console.log("[user.controller]: update_email ER_DUP_ENTRY")
+                    return res.status(201).send({msg: "Can't change email (already taken)", code : "EMAIL_TAKEN"})
+                }
                 if (e.code == 'ER_DATA_TOO_LONG') {
                     console.log("[user.controller]: update_email FAILURE : long")
-                    return res.status(201).send({msg: "Can't change email (too long)", code : "FAILURE"})
+                    return res.status(201).send({msg: "Can't change email (too long)", code : "TOO_LONG"})
                 }
                 throw(e)
             }

@@ -23,6 +23,11 @@ export default {
 			own_profile         : true,
 			user                : null,
 
+			first_name			: null,
+			last_name			: null,
+			email				: null,
+			bio					: null,
+
 			request_error		: false,
 			network_error		: false,
 			error_text			: '',
@@ -44,6 +49,11 @@ export default {
 			last_name_error     : false,
 			email_error		    : false,
 			image_error			: false,
+
+			email_error_text	: textContent.PROFILE.email_error,
+
+			regex_whitespace 	: /^\S*$/,
+			regex_mail 			: /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i,
 		}
 	},
 
@@ -62,6 +72,13 @@ export default {
 				return false
 			}
 			return true
+		},
+
+		parse_modifiable_data(user) {
+			this.first_name	= JSON.parse(JSON.stringify(user.first_name))
+			this.last_name	= JSON.parse(JSON.stringify(user.last_name))
+			this.email		= JSON.parse(JSON.stringify(user.mail))
+			this.bio		= this.user.bio ? JSON.parse(JSON.stringify(this.user.bio)) : ''
 		},
 
 
@@ -100,7 +117,7 @@ export default {
 				}
 				else if (res.data != null && res.data.code == "SUCCESS") {
 					this.user = res.data.user
-					this.user.bio = this.user.bio ? this.user.bio : ''
+					this.parse_modifiable_data(this.user);
 					console.log("[my_profile]: Successfully got user data! ", this.user)
 				}
 				else if (res.data != null && (res.data.code == "NO_USER_WITH_THIS_ID" || res.data.code == "FAILURE")) {
@@ -118,8 +135,9 @@ export default {
 		},
 
 		get_user_profile_pic() { // SAME
-			if (this.user.picture != null) {
-				if (this.user.picture.includes("cdn.intra.42") || this.user.picture.includes("github")) {
+			if (this.user.picture != null && this.user.picture.length > 0) {
+				if (this.user.picture.includes("cdn.intra.42") || this.user.picture.includes("github")
+				|| this.user.picture.includes("googleusercontent")) {
 					return (this.user.picture)
 				}
 				return `${this.pic_prefix}${this.user.picture}`
@@ -142,11 +160,15 @@ export default {
 
 		async save_first_name() {
 			try {
-				let res = await Update_First_Name(this.user_token, this.user.first_name)
+				if (this.first_name != null && this.first_name.length == 0) {
+					this.first_name = null
+				}
+				let res = await Update_First_Name(this.user_token, this.first_name)
 				if (res && res.data.code == "SUCCESS") {
 					this.first_name_is_saved = !this.first_name_is_saved
 					this.first_name_error = false
-					console.log("[my_profile] Succesfully updated firstname to", {first_name : this.user.first_name})
+					this.user.first_name = this.first_name;
+					console.log("[my_profile] Succesfully updated firstname to", {first_name : this.first_name})
 
 				}
 				else if (res && res.data.code == "FAILURE") {
@@ -161,17 +183,27 @@ export default {
 
 		},
 
+		reset_first_name() {
+			this.first_name_is_saved = !this.first_name_is_saved
+			this.first_name_error = false
+			this.first_name = this.user.first_name
+		},
+
 		modify_last_name() {
 			this.last_name_is_saved = !this.last_name_is_saved
 		},
 
 		async save_last_name() {
 			try {
-				let res = await Update_Last_Name(this.user_token, this.user.last_name)
+				if (this.last_name != null && this.last_name.length == 0) {
+					this.last_name = null
+				}
+				let res = await Update_Last_Name(this.user_token, this.last_name)
 				if (res && res.data.code == "SUCCESS") {
 					this.last_name_is_saved = !this.last_name_is_saved
 					this.last_name_error = false
-					console.log("[my_profile] Succesfully updated lastname to", {last_name : this.user.last_name})
+					this.user.last_name = this.last_name;
+					console.log("[my_profile] Succesfully updated lastname to", {last_name : this.last_name})
 
 				}
 				else if (res && res.data.code == "FAILURE") {
@@ -186,17 +218,27 @@ export default {
 
 		},
 
+		reset_last_name() {
+			this.last_name_is_saved = !this.last_name_is_saved
+			this.last_name_error = false
+			this.last_name = JSON.parse(JSON.stringify(this.user.last_name))
+		},
+
 		modify_bio() {
 			this.bio_is_saved = !this.bio_is_saved
 		},
 
 		async save_bio() {
 			try {
-				let res = await Update_Bio(this.user_token, this.user.bio)
+				if (this.bio != null && this.bio.length == 0) {
+					this.bio = null
+				}
+				let res = await Update_Bio(this.user_token, this.bio)
 				if (res.status == 200) {
-					this.bio_is_saved = !this.bio_is_saved
-					this.bio_error = false
-					console.log("[my_profile] Succesfully updated bio to", {bio : this.user.bio})
+					this.bio_is_saved = !this.bio_is_saved;
+					this.bio_error = false;
+					this.user.bio = this.bio;
+					console.log("[my_profile] Succesfully updated bio to", {bio : this.bio})
 				}
 			}
 			catch(e) {
@@ -206,21 +248,44 @@ export default {
 
 		},
 
+		reset_bio() {
+			this.bio_is_saved = !this.bio_is_saved
+			this.bio_error = false
+			this.bio = JSON.parse(JSON.stringify(this.user.bio))
+		},
+
 		modify_mail() {
 			this.email_is_saved = !this.email_is_saved
 		},
 
 		async save_mail() {
 			try {
-				let res = await Update_Email(this.user_token, this.user.mail)
+				if (this.email != null && this.email.length == 0) {
+					this.email = null
+				}
+				let res = await Update_Email(this.user_token, this.email)
+				console.log("res: ", res)
 				if (res && res.data.code == "SUCCESS") {
 					this.email_is_saved = !this.email_is_saved
-					this.email_error = false
-					console.log("[my_profile] Succesfully updated mail to", {mail : this.user.mail})
+					this.email_error = false;
+					this.email_error_text = this.text_content.email_error;
+					this.user.mail = this.email;
+					console.log("[my_profile] Succesfully updated mail to", {mail : this.email})
 
 				}
 				else if (res && res.data.code == "FAILURE") {
 					this.email_error = true;
+					this.email_error_text = this.text_content.email_error;
+					console.log("ERROR [my_profile] in save_mail : ", res.data.msg)
+				}
+				else if (res && res.data.code == "TOO_LONG") {
+					this.email_error = true;
+					this.email_error_text = this.text_content.email_error_long;
+					console.log("ERROR [my_profile] in save_mail : ", res.data.msg)
+				}
+				else if (res && res.data.code == "EMAIL_TAKEN") {
+					this.email_error = true;
+					this.email_error_text = this.text_content.email_error_dup;
 					console.log("ERROR [my_profile] in save_mail : ", res.data.msg)
 				}
 			}
@@ -228,6 +293,12 @@ export default {
 				console.log("UNKOWN ERROR [my_profile] in save_mail ")
 				throw(e)
 			}
+		},
+
+		reset_mail() {
+			this.email_is_saved = !this.email_is_saved
+			this.email_error = false
+			this.email = JSON.parse(JSON.stringify(this.user.mail))
 		},
 
 		async upload_image(event) {
@@ -268,6 +339,44 @@ export default {
 		await this.get_user_fav_movies();
 		await this.get_user_watched_movies();
 	},
+
+	watch: {
+		first_name: {
+			handler:function() {
+				if (this.first_name != null && this.first_name.match(this.regex_whitespace) == null){
+					this.first_name_error = true
+				}
+				else if (this.first_name != null) {
+					this.first_name_error = false
+				}
+			},
+			deep:true
+		},
+		last_name: {
+			handler:function() {
+				if (this.last_name != null && this.last_name.match(this.regex_whitespace) == null){
+					this.last_name_error = true
+				}
+				else if (this.last_name != null) {
+					this.last_name_error = false
+				}
+			},
+			deep:true
+		},
+		email: {
+			handler:function() {
+				if (this.email != null && this.email.length > 0 &&  this.email.match(this.regex_mail) == null){
+					this.email_error_text = this.text_content.email_error;
+					this.email_error = true
+				}
+				else if (this.email != null) {
+					this.email_error = false
+				}
+			},
+			deep:true
+		}
+	}
+
 }
 </script>
 
@@ -303,42 +412,58 @@ export default {
 					</div>
 					<div class="ms-3 main_info" >
 						<div v-if="first_name_is_saved">
-							<span class ="h3 name">{{ user.first_name }}
-							<b-icon-pen class="modify h5" @click="modify_first_name()"></b-icon-pen>
+							<span v-if="first_name != null && first_name.length > 0" class ="h3 name">{{ first_name }}
+								<b-icon-pen class="modify h5" @click="modify_first_name()"></b-icon-pen>
+							</span>
+							<span v-else class ="h3 name tmp">{{ text_content.first_name[lang_nb] }}
+								<b-icon-pen class="modify h5" @click="modify_first_name()"></b-icon-pen>
 							</span>
 						</div>
 						<div  v-else class="input-group">
 							<input
-								v-model = "user.first_name"
+								v-model = "first_name"
 								class="form-control"
 								:class="{ error_input : first_name_error}"
 								name="password"
-								:placeholder="user.first_name"
+								:placeholder="first_name"
 							>
 							<span class="input-group-btn align-items-center">
 								<button class="btn check_button" type="button">
 									<b-icon-check class="h2 m-1 check" @click="save_first_name()"></b-icon-check >
 								</button>
 							</span>
+							<span class="input-group-btn align-items-center">
+								<button class="btn check_button" type="button">
+									<b-icon-x class="h2 m-1 reset" @click="reset_first_name()"></b-icon-x >
+								</button>
+							</span>
 						</div>
 						<p class="error_msg" v-show="first_name_error">{{text_content.first_name_error[lang_nb]}}</p>
 						<div class="mt-3">
 						<div v-if="last_name_is_saved">
-							<span class ="h3 name">{{ user.last_name }}
+							<span v-if="last_name != null && last_name.length > 0" class ="h3 name">{{ last_name }}
+								<b-icon-pen class="modify h5" @click="modify_last_name()"></b-icon-pen>
+							</span>
+							<span v-else class ="h3 name tmp">{{ text_content.last_name[lang_nb] }}
 								<b-icon-pen class="modify h5" @click="modify_last_name()"></b-icon-pen>
 							</span>
 						</div>
 						<div  v-else class="input-group">
 							<input
-								v-model = "user.last_name"
+								v-model = "last_name"
 								class="form-control"
 								:class="{ error_input : last_name_error}"
 								name="password"
-								:placeholder="user.last_name"
+								:placeholder="last_name"
 							>
 							<span class="input-group-btn align-items-center">
 								<button class="btn check_button" type="button">
 									<b-icon-check class="h2 m-1 check" @click="save_last_name()"></b-icon-check >
+								</button>
+							</span>
+							<span class="input-group-btn align-items-center">
+								<button class="btn check_button" type="button">
+									<b-icon-x class="h2 m-1 reset" @click="reset_last_name()"></b-icon-x >
 								</button>
 							</span>
 						</div>
@@ -358,22 +483,28 @@ export default {
 						<div class="col-7">
 							<div>
 								<p class="small text-muted mb-0">email</p>
-								<p v-if="email_is_saved" class="mb-1 h5  email">{{user.mail}}<b-icon-pen class="modify h5 mail" @click="modify_mail()"></b-icon-pen></p>
-								<div  v-else class="input-group email">
+									<p v-if="email_is_saved && email != null && email.length > 0" class="mb-1 h5 email tmp">{{email}}<b-icon-pen class="modify h5 mail" @click="modify_mail()"></b-icon-pen></p>
+									<p v-if="email_is_saved && (email == null || email.length == 0)" class="mb-1 h5 email tmp">{{text_content.missing_email[lang_nb]}}<b-icon-pen class="modify h5 mail" @click="modify_mail()"></b-icon-pen></p>
+									<div  v-if="!email_is_saved" class="input-group email">
 								<input
-									v-model = "user.mail"
+									v-model = "email"
 									class="form-control"
 									:class="{ error_input : email_error}"
 									name="password"
-									:placeholder="user.mail"
+									:placeholder="email"
 								>
 								<span class="input-group-btn align-items-center">
 									<button class="btn check_button  email" type="button">
 										<b-icon-check class="h2 m-1 check" @click="save_mail()"></b-icon-check >
 									</button>
 								</span>
+								<span class="input-group-btn align-items-center">
+								<button class="btn check_button email" type="button">
+									<b-icon-x class="h2 m-1 reset" @click="reset_mail()"></b-icon-x >
+								</button>
+							</span>
 							</div>
-							<p class="error_msg" v-show="email_error">{{text_content.email_error[lang_nb]}}</p>
+							<p class="error_msg" v-show="email_error">{{email_error_text[lang_nb]}}</p>
 							</div>
 
 						</div>
@@ -394,19 +525,23 @@ export default {
 					<p class="lead fw-normal mb-1">{{text_content.about[lang_nb]}}</p>
 					<div class="p-4" style="background-color: #f8f9fa;">
 						<div v-if="bio_is_saved">
-						<p class="font-italic mb-1 about">{{ user.bio }}<b-icon-pen class="modify h5 bio" :class="user.bio.length == 0 ? 'empty' : ''" @click="modify_bio()"></b-icon-pen></p>
+						<p class="font-italic mb-1 about">{{bio}}<b-icon-pen class="modify h5 bio" :class="bio == null || bio.length == 0 ? 'empty' : ''" @click="modify_bio()"></b-icon-pen></p>
 						</div>
 						<div v-else>
 							<b-form-textarea
 								id="textarea"
-								v-model = "user.bio"
+								v-model = "bio"
 								name="password"
-								:placeholder="user.bio"
+								:placeholder="bio"
 								:maxlength=499
 							></b-form-textarea>
 							<p class="max_length">{{text_content.bio_max_length[lang_nb]}}: 500</p>
-							<button class="btn check_button bio" type="button" @click="save_bio()">{{text_content.save[lang_nb]}}
-							</button>
+								<button class="btn check_button bio" type="button" @click="save_bio()">{{text_content.save[lang_nb]}}</button>
+								<span class="input-group-btn align-items-center">
+								<button class="btn check_button" type="button">
+									<b-icon-x class="h2 m-1 reset" @click="reset_bio()"></b-icon-x >
+								</button>
+							</span>
 						</div>
 					</div>
 					</div>
@@ -442,6 +577,15 @@ input[type="file"] {
 .page-link.active, .active > .page-link {
 	background-color: black;
 	border-color: rgb(99, 97, 97);
+}
+
+.reset {
+	color: red
+}
+
+.tmp {
+	font-style: italic;
+	font-weight: normal;
 }
 
 </style>

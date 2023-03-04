@@ -1,8 +1,6 @@
 create table movies
 (
     id             mediumint auto_increment                 primary key,
-    yts_id         int                                         not null,
-    imdb_code      varchar(20)                                 not null,
     title          varchar(500)                                not null,
     imdb_rating    float         default 0                     not null,
     year           int                                         null,
@@ -11,6 +9,8 @@ create table movies
     summary        varchar(4000)                               not null,
     director       varchar(300)                                null,
     actors         varchar(1000)                               null,
+    yts_id         int                                         not null,
+    imdb_code      varchar(20)                                 not null,
     tmdb_id        varchar(20)                                 null,
     max_seeds      int default 0                               null,
 
@@ -67,28 +67,27 @@ create table torrents
 create table users
 (
     id         mediumint auto_increment                 primary key,
-    first_name varchar(100)                                not null,
-    last_name  varchar(100)                                not null,
-    mail       varchar(100)                                not null,
+    username   varchar(100)                                not null,
+    mail       varchar(100)                                null,
+    first_name varchar(100)                                null,
+    last_name  varchar(100)                                null,
     pass       varchar(300)                                not null,
     language   varchar(100) default 'en'                   not null,
     picture    varchar(300)                                null,
-    username   varchar(100)                                not null,
     bio        varchar(500)                                null,
-    city       varchar(100) default 'Citizen of the world' null,
 
     constraint users_id_uindex   unique (id),
-    constraint users_mail_uindex unique (mail),
-    constraint users_name_uindex unique (username)
+    constraint users_name_uindex unique (username),
+    constraint mail_uindex       unique (mail)
 );
 
 create table comments
 (
     id       int auto_increment               primary key,
-    content  varchar(400)                        not null,
     user_id  mediumint                           not null,
-    rating   float                               not null,
     movie_id mediumint                           not null,
+    content  varchar(400)                        not null,
+    rating   float                               not null,
     date     timestamp default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP,
 
     constraint comments_id_uindex unique (id),
@@ -163,13 +162,19 @@ create table watched_movies
 
 create table oauth
 (
-    `42_id`     mediumint null,
-    `github_id` mediumint null,
-    user_id     mediumint null,
+    user_id     mediumint    null,
+    `42_id`     mediumint    null,
+    `github_id` varchar(100) null,
+    `google_id` varchar(100) null,
+    `gitlab_id` varchar(100) null,
     constraint oauth_42_id_uindex
         unique (`42_id`),
     constraint oauth_github_id_uindex
         unique (`github_id`),
+    constraint oauth_google_id_uindex
+        unique (`google_id`),
+    constraint oauth_gitlab_id_uindex
+        unique (`gitlab_id`),
     constraint oauth_to_user_id
         foreign key (user_id) references users (id)
             on delete cascade
