@@ -48,7 +48,10 @@ module.exports = {
         }
         catch (e) {
             console.log("ERROR in auth token: ", e)
+            const err = new Error(return_codes.UNKNOWN_ERROR)
+            err.data  = return_codes.UNKNOWN_ERROR
             throw(e)
+            return next(err)
         }
     },
 }
