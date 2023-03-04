@@ -11,9 +11,14 @@ class TorrentSocketService {
 			this.socket = io("http://localhost:5173", {
 				path: "/socketo/",
 				auth: {
-						token: this.user_token
+						token: null
 					}
 			});
+      this.socket.on('connect_error', (err) => {
+        console.log('connect_error', err.message, err.data)
+        this.delete_socket()
+        this.refresh_state()
+      })
     }
 
     delete_socket() {

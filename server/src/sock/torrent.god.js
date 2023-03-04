@@ -92,7 +92,7 @@ class TorrentWatcher extends EventEmitter {
       name      : file.name,
       path      : file.path,
       // TODO: fix negative downloaded values ?
-      downloaded: file.downloaded,
+      downloaded: file.downloaded < 0 ? 0: file.downloaded,
       size      : file.length,
       type      : this.getFileType(file)
     }
@@ -107,8 +107,6 @@ class TorrentWatcher extends EventEmitter {
       return 'MOVIE_FILE'
     }
   }
-
-
 }
 
 
