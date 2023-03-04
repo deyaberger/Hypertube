@@ -1,7 +1,10 @@
 import { io } from "socket.io-client";
+import EventEmitter from 'events'
 
-class TorrentSocketService {
+class TorrentSocketService extends EventEmitter {
     constructor(user_token) {
+      super()
+
       this.user_token       = user_token
       this.socket           = null;
       this.refresh_state()
@@ -14,6 +17,11 @@ class TorrentSocketService {
 						token: this.user_token
 					}
 			});
+      this.socket.on('connect_error', (err) => {
+        console.log('connect_error', err.message, err.data)
+        this.delete_socket()
+        this.refresh_state()
+      })
     }
 
     delete_socket() {
@@ -42,11 +50,16 @@ class TorrentSocketService {
       }
     }
 
-
-
     async choose_torrent(torrent_id) {
       this.refresh_state()
       this.refresh_socket()
+
+			this.socket.once('TOR_WATCHER_ERROR', (err) => {
+        console.log('TOR_WATCHER_ERROR')
+        this.refresh_state()
+        this.delete_socket()
+        this.emit('TOR_WATCHER_ERROR')
+      })
 
 			this.socket.once('torrent_ready', (torrent_status) => {
 				console.log("torrent_ready: ", torrent_status)
