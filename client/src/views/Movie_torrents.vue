@@ -3,7 +3,7 @@ import { mapState } from 'vuex';
 import { Get_torrents_for_movie } from '../functions/streaming'
 import { Get_Single_Movie_Details } from '../functions/movies'
 import { io } from 'socket.io-client';
-// import SocketioService from '../functions/socket.service.js';
+import TorrentSocketService from '../functions/socket.service.js';
 
 export default {
 	props: {
@@ -14,15 +14,10 @@ export default {
 	data() {
 		return {
 			torrents         : [],
-			selected_torrent : null,
 			movie_details    : null,
-			torrent_status   : null,
-			movie_ready      : false,
-			subs             : [],
-			socket           :null,
+			torrent_service  : null,
 		}
 	},
-
 
 	components: {
 	},
@@ -30,8 +25,19 @@ export default {
 
 	computed: {
 		movie_source() {
-			return 'http://localhost:8071/api/torrents/stream_magnet/${encodeURIComponent(this.selected_torrent.hash)}/${encodeURIComponent(this.movie_details.title)}`'
+			if (this.torrent_status) {
+				return `http://localhost:8071/api/torrents/stream_magnet/${encodeURIComponent(this.torrent_status.hash)}/${encodeURIComponent(this.torrent_status.title)}`
+			}
+			throw(new Error("You should be here"))
 		},
+
+		movie_ready_to_watch() {
+			if (this.torrent_status) {
+				return this.torrent_status.ready_to_watch
+			}
+			return false
+		},
+
 
 		...mapState({
 			lang_nb    : state => state.lang_nb,
@@ -42,8 +48,8 @@ export default {
 
 	methods: {
 		async Choose_Torrent(arg) {
-			this.movie_ready    = false
 			this.torrent_status = null
+			this.subs           = []
 
 			if (this.socket) {
 				this.socket.disconnect()
@@ -95,15 +101,6 @@ export default {
 			}
 		},
 
-		supervise() {
-			console.log("bortsa")
-			console.log(this.$refs.movieplayer)
-			this.$refs.movieplayer.onseeking = (lol) => {
-				console.log("seekeing:", lol)
-			}
-			console.log(this.$refs.movieplayer.networkState)
-		},
-
 		create_socket() {
 			console.log("socket connect", this.user_token)
 			this.socket = io("http://localhost:5173", {
@@ -138,7 +135,7 @@ export default {
 	},
 
 	created() {
-		this.create_socket()
+		this.torrent_service = new TorrentSocketService()
 	}
 }
 </script>
@@ -150,11 +147,6 @@ export default {
 			  <div class="media card-body">
 				<span @click="Choose_Torrent(torrent)"> {{ torrent }}</span>
 			</div>
-		</div>
-		
-		<h1>Selected Torrent</h1>
-		<div v-if="selected_torrent">
-			{{selected_torrent}}
 		</div>
 		
 		<h1>Contents</h1>
@@ -170,8 +162,7 @@ export default {
 				<span> {{ sub }} </span>
 			</div>
 
-			<div v-if="movie_ready" >
-				<button @click="supervise">Supervise</button>
+			<div v-if="movie_ready_to_watch" >
 				<video ref="movieplayer" controls loop id="videoPlayer" width="500" height="500" muted="muted" autoplay>
 					<source :src='movie_source' type="video/mp4" />
 						<track v-for="sub in subs" v-bind:key="sub.path"
