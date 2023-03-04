@@ -12,9 +12,7 @@
 		"-u",
 		"root",
 		"--network",
-		"host",
-		"--name", 
-		"${localEnv:USER}_devcontainer"
+		"host"
 	],
 	"mounts" : [
 		{ "source": "hyper-db", "target": "/var/lib/mysql", "type": "volume" }

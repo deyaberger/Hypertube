@@ -10,19 +10,19 @@ import { Get_Comments_By_Movie_ID, Parse_Comments, Post_Comment } from "../funct
 import { Get_torrents_for_movie } from "../functions/streaming";
 import { Get_Formatted_Time } from "../functions/utils.js";
 import StarRating from 'vue-star-rating';
-import textContent from "../assets/language_dict/language_dict.json"
-
+import textContent from "../assets/language_dict/language_dict.json";
+import { io } from 'socket.io-client';
+import TorrentSocketService from '../functions/socket.service.js';
 
 export default {
 	props: {
 		movie_id: String,
 	},
 
-
 	data() {
 		return {
 			text_content       : textContent.MOVIES,
-			torrents		   : null,
+			torrents		   : [],
 			movie              : [],
 			comments           : [],
 			user_comment       : "",
@@ -30,7 +30,11 @@ export default {
 			Get_Formatted_Time : Get_Formatted_Time,
 			fallbackUrl        : '../src/assets/missing_cover.jpeg',
 			movie_error        : false,
-			torrent_button_text: textContent.MOVIES["see_torrents"]
+			torrent_button_text: textContent.MOVIES["see_torrents"],
+			movie_source : '../src/assets/fake_torrent/documentaire.mp4',
+			on_video : false,
+			torrent_service: null,
+			torrent_loading : false,
 		}
 	},
 
@@ -41,18 +45,73 @@ export default {
 	},
 
 
-	computed: mapState({
-		lang_nb    : state => state.lang_nb,
-		user_token : state =>  state.user_token,
-	}),
+	computed: {
+		torrent_status() {
+			if (this.torrent_service) {
+				return this.torrent_service.torrent_status
+			}
+			return null
+		},
+
+		subs() {
+			if (this.torrent_service) {
+				return this.torrent_service.subs
+			}
+			return []
+		},
+
+		movie_source() {
+			if (this.torrent_service && this.torrent_service.torrent_status) {
+				return `http://localhost:8071/api/torrents/stream_magnet/${encodeURIComponent(this.torrent_service.torrent_status.hash)}/${encodeURIComponent(this.torrent_service.torrent_status.title)}`
+			}
+			return null
+		},
+
+		movie_ready_to_watch() {
+			if (this.torrent_service && this.torrent_service.torrent_status) {
+				if (this.torrent_service.torrent_status.ready_to_watch == true) {
+					this.torrent_loading = false;
+				}
+				return this.torrent_service.torrent_status.ready_to_watch
+			}
+			return false
+		},
+
+		...mapState({
+			lang_nb    : state => state.lang_nb,
+			user_token : state =>  state.user_token,
+		})
+	},
 
 
 	methods: {
+		async Choose_Torrent(torrent) {
+			this.torrent_loading = true;
+			try {
+				this.torrent_service.choose_torrent(torrent.id)
+			}
+			catch (e) {
+				if (e.code == 'SOCKET_CREATION_ERROR') {
+					console.log("Error in socket creation !@")
+				}
+			}
+		},
+
+		create_socket() {
+			console.log("socket connect", this.user_token)
+			this.socket = io("http://localhost:5173", {
+				path: "/socketo/",
+				auth: {
+						token: this.user_token
+					}
+			});
+		},
+
 		async update_watched() {
 			let res = null
 			try {
 				if (this.movie.is_watched == false) {
-					res = await Set_Watched(this.this._id, this.user_token)
+					res = await Set_Watched(this.movie_id, this.user_token)
 				}
 				else {
 					res = await Set_UnWatched(this.movie_id, this.user_token)
@@ -227,7 +286,6 @@ export default {
 		onHide() {
 			this.torrent_button_text = this.text_content["see_torrents"];
 		},
-
 	},
 	async mounted() {
 		await this.get_movie_details();
@@ -235,9 +293,11 @@ export default {
 			this.get_comments();
 			this.get_torrents();
 		}
-		console.log("refs collapes:");
-		console.log(this.$refs.collapse);
 	},
+
+	created() {
+		this.torrent_service = new TorrentSocketService(this.user_token)
+	}
 }
 </script>
 
@@ -247,14 +307,33 @@ export default {
 			<div v-if="movie.length == 0" class="col-md-auto">
 						<b-spinner label="Loading..." variant="success" class="mt-5"></b-spinner>
 				</div>
-			<div v-else class="col video_container">
-				<div class="image_container">
-					<img class="movie_image not_ready" :src="movie.images_list[6]" alt="movie_image" :data-next-index="1" @error="handle_image_error($event, movie)"/>
-					<a class="see_movie" href="#target-element" data-toggle="tooltip" data-placement="top" title="See & select torrents"><b-icon-eye-fill class="on_image"></b-icon-eye-fill></a>
+			<div v-else class="col video_container" id="video_container">
+				<div v-if="movie_ready_to_watch" class="image_container">
+					<video ref="movieplayer" controls loop id="videoPlayer" muted="muted" disablepictureinpicture>
+						<source :src="movie_source" type="video/mp4" />
+						<track v-for="sub in subs" v-bind:key="sub.path"
+							:label="sub.name"
+							kind="subtitles"
+							:src="'/api/torrents/subtitles/get/' + encodeURIComponent(sub.path)"
+						/>
+					</video>
 				</div>
+				<div v-else >
+					<div v-if="!torrent_loading">
+						<img class="movie_image not_ready" :src="movie.images_list[6]" alt="movie_image" :data-next-index="1" @error="handle_image_error($event, movie)"/>
+						<a class="see_movie" href="#target-element" data-toggle="tooltip" data-placement="top" title="See & select torrents"><b-icon-eye-fill class="on_image"></b-icon-eye-fill></a>
+					</div>
+					<div v-else>
+						<img class="movie_image loading" :src="movie.images_list[6]" alt="movie_image" :data-next-index="1" @error="handle_image_error($event, movie)"/>
+						<b-spinner label="Loading..." variant="success" class="loading_video"></b-spinner>
+						<p class="loading_video text">File is loading...</p>
+					</div>
+
+				</div>
+
 			</div>
 		</div>
-		<button v-if="movie.is_watched"
+		<!-- <button v-if="movie.is_watched"
 			@click="update_watched()"
 			class="submit_button"
 			type = "submit">
@@ -265,7 +344,7 @@ export default {
 			class="submit_button"
 			type = "submit">
 			Fake temporary watched button
-		</button>
+		</button> -->
 		<div class="row movie_name_container">
 			<div class="col">
 				<h1>{{movie.title}}</h1>
@@ -317,8 +396,9 @@ export default {
 		<hr class="solid">
 		<div id="target-element" >
 			<b-button v-b-toggle="'collapse'" class="collapse-torrents">{{torrent_button_text[lang_nb]}}</b-button>
+			<a href="#video_container">
 			<b-collapse id="collapse" ref="collapse" @show="onShow" @hide="onHide">
-				<div class="row torrent_container" v-if="torrents != null" v-for="torrent in torrents" :key="torrent">
+				<div class="row torrent_container" v-if="torrents != null" v-for="torrent in torrents" :key="torrent"  @click="Choose_Torrent(torrent)">
 					<button class="bn30 row align-items-center justify-content-center">
 						<div class="col col-5">
 							<span class="torrent_infos"><b-icon-play-circle-fill class="h3 play_button"/></span>
@@ -342,6 +422,7 @@ export default {
 					</button>
 				</div>
 			</b-collapse>
+			</a>
 		</div>
 		<div class="row my_review">
 			<hr class="solid">
@@ -510,14 +591,17 @@ export default {
 }
 
 .image_container {
-  position: relative;
-  display: inline-block;
-  width: 100%;
-  height: 500px;
+	background-color: black;
+	height: 500px;
 }
 
 .not_ready {
-	opacity: 0.5;
+	filter: brightness(0.6);
+	position: absolute;
+}
+
+.loading {
+	filter: brightness(0.3);
 	position: absolute;
 }
 
@@ -537,5 +621,27 @@ export default {
 	text-decoration: none;
 	color: white;
 }
+
+video {
+	height: 100%;
+	width: 100%;
+	// transform: translateX(25%);
+}
+
+.loading_video {
+	z-index: 1;
+	position: absolute;
+	left: calc(50% - 2.5rem);
+  	top: calc(50% - 2.5rem);
+	width: 5rem; height: 5rem;
+}
+
+.loading_video.text {
+	top: calc(50% + 3rem);
+	text-align: center;
+	font-size: 18px;
+
+}
+
 
 </style>

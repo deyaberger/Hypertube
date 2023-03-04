@@ -7,6 +7,10 @@ yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
 
+#torrents:
+**/fake_torrents
+*.mp4
+
 #jsons:
 **/yts_response/*
 
