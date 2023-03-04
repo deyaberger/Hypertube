@@ -1,8 +1,9 @@
-const EventEmitter = require('events')
-const { Server } = require('http')
+const EventEmitter                  = require('events')
+const { Server }                    = require('http')
 const { hash_title_to_magnet_link } = require('../utils/hash_title_to_magnet')
 const torrent_functions_factory     = require('../controllers/torrent')
-const return_codes = require('../utils/return_codes')
+const return_codes                  = require('../utils/return_codes')
+const throw_err_with_code           = require('../utils/error_throw')
 
 
 DOWLOAD_SPAM_LIMIT_MS = 10000
@@ -20,38 +21,50 @@ class TorrentWatcher extends EventEmitter {
     this.setOnTorrentReady()
   }
 
+  safetyWrapper(func) {
+    return function() {
+      try {
+        func.apply(this, arguments)
+      }
+      catch (e) {
+        console.log("error caught by safety wrapper")
+        this.emit(return_codes.UNKNOWN_ERROR)
+      }
+    }
+  }
+
   setOnTorrentReady() {
-    this.torrent.once('ready', () => {
-      console.log("TORRENT REDY", this.torrent.name)
-      this.setOnFileDone()
-      this.setOnDownloadEmitStatus()
-      this.setOnDownloadCheckETA()
-      this.emit('torrent_ready', this.getStatus())
-    })
+    this.torrent.once('ready', this.safetyWrapper(() => {
+        console.log("TORRENT REDY", this.torrent.name)
+        this.setOnFileDone()
+        this.setOnDownloadEmitStatus()
+        this.setOnDownloadCheckETA()
+        this.emit('torrent_ready', this.getStatus())
+    }))
   }
 
   setOnFileDone() {
     for(const file of this.torrent.files) {
-      file.once('done', () => {
+      file.once('done', this.safetyWrapper(() => {
         console.log(`${file.name} is done`)
         this.emit('file_done', this.getFileStatus(file))
-      })
+      }))
     }
   }
 
   setOnDownloadEmitStatus() {
     let last_emit = new Date()
-    this.torrent.on('download', (dl) => {
+    this.torrent.on('download', this.safetyWrapper((dl) => {
       if (new Date() - last_emit > DOWLOAD_SPAM_LIMIT_MS) {
         last_emit = new Date()
         console.log("down", this.torrent.progress, dl, `ETA: ${Math.round(this.torrent.timeRemaining / 1000) / 60} min`)
         this.emit('download', this.getStatus())
       }
-    })
+    }))
   }
 
   setOnDownloadCheckETA() {
-    let handler = () => {
+    let handler = this.safetyWrapper(() => {
       let ETA_minutes    = this.torrent.timeRemaining / 1000 / 60
       // console.log( this.torrent.progress, this.movie_length_minutes)
       let loaded_minutes = this.torrent.progress * this.movie_length_minutes
@@ -62,7 +75,7 @@ class TorrentWatcher extends EventEmitter {
         this.emit('ready_to_watch')
         this.torrent.removeListener('download', handler);
       }
-    }
+    })
     this.torrent.on('download', handler)
   }
 
@@ -139,6 +152,7 @@ class GodEventHandler {
 
       if (this.torrent_client.get(magnet_uri)) {
         console.log("\n\n\nWTF DOUBLE TROUBLE THIS SHOULD NEVER PRINT\n\n\n", torrent_id, Object.keys(this.torrentWatchers))
+        throw_err_with_code("You tried adding a torrent that's already present!", return_codes.BAD_ERROR)
       }
 
       console.log("adding magnete")
@@ -159,8 +173,15 @@ class GodEventHandler {
         console.log("Torrent not exists", id)
         return this.io.to(torrent_id).emit(return_codes.TORRENT_NOT_EXIST)
       }
+
+      if (e.code == return_codes.BAD_ERROR) {
+        console.log("Torrent client availability error", id)
+        return this.io.to(torrent_id).emit(return_codes.BAD_ERROR)
+      }
+      
       console.log("error in add torrent socket")
       throw(e)
+      return this.io.to(torrent_id).emit(return_codes.UNKNOWN_ERROR)
     }
   }
 

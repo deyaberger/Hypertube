@@ -2,6 +2,7 @@ module.exports = {
   SUCCESS            : 'SUCCESS',
   FAILURE            : 'FAILURE',
   UNKNOWN_ERROR      : 'VOODOO_KAKEN',
+  BAD_ERROR          : 'BAD_ERROR',
 
   INVALID_TOKEN      : 'INVALID_TOKEN',
   MAIL_NOT_VERIFIED  : 'MAIL_NOT_VERIFIED',

@@ -1,7 +1,7 @@
-function throw_err_with_code(message, code) {
+function throw_err_with_data(message, data) {
     let e = new Error(message)
-    e.code = code
+    e.data = data
     throw(e);
 }
 
-module.exports = throw_err_with_code
+module.exports = throw_err_with_data
