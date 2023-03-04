@@ -104,7 +104,8 @@
 		"not_specified"   : ["Not specified", "Pas d'information à ce sujet"],
 		"director"		  : ["Director", "Réalisateur"],
 		"actors"		  : ["Actors", "Acteurs"],
-		"see_torrents"	  : ["See the torrent list", "Regarder la liste de torrents"]
+		"see_torrents"	  : ["See the torrent list", "Regarder la liste de torrents"],
+		"hide_torrents"	  : ["Hide the torrent list", "Cacher la list de torrents"]
 
 	},
 	"PROFILE" : {

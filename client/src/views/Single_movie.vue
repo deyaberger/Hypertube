@@ -29,7 +29,8 @@ export default {
 			user_rating        : 0,
 			Get_Formatted_Time : Get_Formatted_Time,
 			fallbackUrl        : '../src/assets/missing_cover.jpeg',
-			movie_error        : false
+			movie_error        : false,
+			torrent_button_text: textContent.MOVIES["see_torrents"]
 		}
 	},
 
@@ -218,7 +219,14 @@ export default {
 			if (quality == '2160') {
 				return ('4K')
 			}
-		}
+		},
+
+		onShow() {
+			this.torrent_button_text = this.text_content["hide_torrents"];
+		},
+		onHide() {
+			this.torrent_button_text = this.text_content["see_torrents"];
+		},
 
 	},
 	async mounted() {
@@ -227,6 +235,8 @@ export default {
 			this.get_comments();
 			this.get_torrents();
 		}
+		console.log("refs collapes:");
+		console.log(this.$refs.collapse);
 	},
 }
 </script>
@@ -238,7 +248,10 @@ export default {
 						<b-spinner label="Loading..." variant="success" class="mt-5"></b-spinner>
 				</div>
 			<div v-else class="col video_container">
-				<img class="movie_image" :src="movie.images_list[6]" alt="movie_image" :data-next-index="1" @error="handle_image_error($event, movie)"/>
+				<div class="image_container">
+					<img class="movie_image not_ready" :src="movie.images_list[6]" alt="movie_image" :data-next-index="1" @error="handle_image_error($event, movie)"/>
+					<a class="see_movie" href="#target-element" data-toggle="tooltip" data-placement="top" title="See & select torrents"><b-icon-eye-fill class="on_image"></b-icon-eye-fill></a>
+				</div>
 			</div>
 		</div>
 		<button v-if="movie.is_watched"
@@ -302,9 +315,9 @@ export default {
 			</div>
 		</div>
 		<hr class="solid">
-		<div>
-			<b-button v-b-toggle="'collapse'" class="collapse-torrents">{{text_content['see_torrents'][lang_nb]}}</b-button>
-			<b-collapse id="collapse">
+		<div id="target-element" >
+			<b-button v-b-toggle="'collapse'" class="collapse-torrents">{{torrent_button_text[lang_nb]}}</b-button>
+			<b-collapse id="collapse" ref="collapse" @show="onShow" @hide="onHide">
 				<div class="row torrent_container" v-if="torrents != null" v-for="torrent in torrents" :key="torrent">
 					<button class="bn30 row align-items-center justify-content-center">
 						<div class="col col-5">
@@ -496,5 +509,33 @@ export default {
 	text-align:right;
 }
 
+.image_container {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+  height: 500px;
+}
+
+.not_ready {
+	opacity: 0.5;
+	position: absolute;
+}
+
+.on_image {
+	z-index: 1;
+	position: absolute;
+	left: 50%;
+	transform: translateX(-50%);
+	top: 50%;
+	cursor: pointer;
+	font-size: 150px;
+	margin-top: calc(-0.5 * 150px);
+}
+
+.see_movie {
+	height: 500px;
+	text-decoration: none;
+	color: white;
+}
 
 </style>
