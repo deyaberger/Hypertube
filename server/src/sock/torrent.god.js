@@ -166,6 +166,25 @@ class GodEventHandler {
     }
   }
 
+  remove_torrent(torrent_id) {
+    try {
+      console.log("\n\n\nremoving torrent", torrent_id)
+      if (this.torrentWatchers[torrent_id]) {
+        let magnet_uri = hash_title_to_magnet_link(this.torrentWatchers[torrent_id].hash, this.torrentWatchers[torrent_id].title)
+        this.torrent_client.remove(magnet_uri)
+        delete this.torrentWatchers[torrent_id]
+      }
+      else {
+        throw(new Error("Removing unexisting torrent from client"))
+      }
+
+    }
+    catch (e) {
+      console.log("err in remove torrent on disconnect")
+      throw(e)
+    }
+  }
+
   addTorrentWatcher(torrent, torrent_db_data) {
     let torrent_id = torrent_db_data.id
     this.torrentWatchers[torrent_id] = new TorrentWatcher(torrent, torrent_db_data)
