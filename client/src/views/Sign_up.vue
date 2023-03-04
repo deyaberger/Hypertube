@@ -265,10 +265,10 @@ export default {
 				<div class = "m-3">{{text_content.or[lang_nb]}}</div>
 			</div>
 		</form>
-	<NetworkButtons type="signup"></NetworkButtons>
-	<div class="change_page mt-4 text-center">
-		<router-link to="/sign_in">{{text_content.already_account[lang_nb]}}</router-link>
-	</div>
+		<NetworkButtons type="signup"></NetworkButtons>
+		<div class="change_page mt-4 text-center">
+			<router-link to="/sign_in">{{text_content.already_account[lang_nb]}}</router-link>
+		</div>
 	</div>
 </template>
 

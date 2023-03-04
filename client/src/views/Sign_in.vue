@@ -12,8 +12,10 @@ export default {
 
 
   props: {
-		oauth_token: {type: String,
-						default: null},
+		oauth_token: {
+			type: String,
+			default: null
+		},
 	},
 
 
@@ -29,9 +31,9 @@ export default {
 
 
 	computed: mapState({
-		user_connected: state =>  state.user_connected,
+		user_connected: state => state.user_connected,
 		lang_nb       : state => state.lang_nb,
-		user_token    : state =>  state.user_token,
+		user_token    : state => state.user_token,
 	}),
 
 
@@ -73,10 +75,11 @@ export default {
 			try {
 				this.$store.commit('SET_USER_TOKEN', this.oauth_token)
 				this.$store.commit('SET_CONNECTION', true)
+
 				this.$router.push('/search')
 			}
 			catch (e) {
-				console.log("Oauth signup issue")
+				console.log("Oauth signup issue", e)
 			}
 		}
 	}

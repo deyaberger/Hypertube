@@ -2,10 +2,12 @@ const express    = require('express')
 const bodyParser = require('body-parser')
 const cors       = require("cors");
 const app        = express();
-
+const torrentGod = require('./src/sock/torrent.god')
 // GET .env file contents
 require('dotenv').config()
 
+
+// ##### MIDDLEWARES #######
 
 app.use(cors({
   origin: "*"
@@ -23,7 +25,33 @@ app.use(sanitizer.clean({
     sqlLevel: 4,
 }, whitelist = ["/api/image/upload"]));
 
+
+// ##### GLOBAL CLIENT #######
+
+const tor_client = require('torrent-client')
+client = new tor_client()
+wsClientList = {}
+
+// ##### DB POOL #######
+
+
 const connection_pool = require('./src/db/create_connection_pool')
+
+
+// ##### SOCKETO #######
+
+const http  = require('http').Server(app);
+const {Server}    = require('socket.io');
+io = new Server(http, {
+  path: "/socketo/"
+});
+TorGod = new torrentGod(io, connection_pool, client)
+
+require('./src/sock/socket.server')(io, TorGod)
+
+
+
+
 
 // AUTH
 const auth_router = require("./src/routes/auth.routes")(connection_pool)
@@ -80,7 +108,9 @@ app.use("/api/oauth", oauth_router)
 
 
 // Start the server
+
 const PORT = process.env.PORT || 8071;
-app.listen(PORT, () => {
+http.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
 });
+

@@ -1,5 +1,3 @@
-const jwt    = require('jsonwebtoken')
-
 module.exports = (db_pool) => {
     const auth_functions = require('./auth')(db_pool)
 
@@ -106,32 +104,6 @@ module.exports = (db_pool) => {
         print_id: async (req, res) => {
             console.log("ID identified: %d.", req.user_id)
             res.status(200).send({userid: req.user_id})
-        },
-
-
-        authenticateToken: (req, res, next) => {
-            try {
-                const authHeader = req.headers['authorization']
-                // console.log(req.headers)
-                // console.log("authing:", authHeader)
-                const token = authHeader && authHeader.split(' ')[1]
-                if (token == null) return res.sendStatus(401)
-                jwt.verify(token, process.env.TOKEN_SECRET, (err, decoded) => {
-                    if (err != null) console.log(err)
-
-                    if (err) {
-                        return res.sendStatus(403)
-                    }
-                    req.user_id = decoded.user_id
-                    // console.log("Authenthicated user %o.", decoded.user_id)
-                    next()
-                })
-            }
-            catch (e) {
-                console.log("ERROR in auth token: ", e)
-                throw(e)
-            }
-
         },
 
 

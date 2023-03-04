@@ -1,6 +1,6 @@
 const axios = require('axios')
-const tor_client = require('torrent-client')
-const client = new tor_client()
+const return_codes = require('../utils/return_codes')
+
 
 module.exports = (db_pool) => {
     
@@ -73,7 +73,6 @@ module.exports = (db_pool) => {
                 {
                     largest = torrent.files[i].length
                     file = torrent.files[i];
-                    console.log("paf: ", torrent.files[i].path)
                 }
             }
             return file
@@ -86,22 +85,14 @@ module.exports = (db_pool) => {
             {
                 if(file.path.endsWith(".srt"))
                 {
+                    file.on('done', () => {
+                        console.log(`${file.name} is done`)
+                    })
                     console.log(file.name)
                     file.select(100)
                 }
             }
         },
-
-        // set_subtitles_high_priority(torrent) {
-        //     console.log("Subs high prio")
-        //     for(const file of torrent.files)
-        //     {
-        //         if(file.path.endsWith(".srt"))
-        //         {
-        //             file.select(100)
-        //         }
-        //     }
-        // },
 
 
         are_subtitles_downloaded(torrent) {
@@ -158,5 +149,41 @@ module.exports = (db_pool) => {
             // console.log("Available subs:", subs.map(s => s.name))
             return subs
         },
+
+        async get_torrent_from_id(torrent_id) {
+            try {
+              let [torrent_res, ] = await db_pool.query(
+                `
+                SELECT
+                  torrents.id,
+                  title,
+                  hash,
+                  length_minutes
+                FROM
+                  torrents
+                LEFT JOIN
+                  movies
+                ON
+                  movies.id = torrents.movie_id
+                WHERE
+                torrents.id=?
+                `,
+                torrent_id
+              )
+              
+              if (torrent_res.length == 0) {
+                let err = new Error('You searched for a torrent that doesnt exist')
+                err.code = return_codes.TORRENT_NOT_EXIST
+                throw(err)
+              }
+              
+              return torrent_res[0]
+            }
+            catch (e) {
+              console.log("get torrent deets")
+              throw(e)
+            }
+          }
+        
     }
 }

@@ -31,7 +31,7 @@ module.exports = (db_pool) => {
                 let max_year          = req.query.max_year
                 let language          = req.query.language
                 let asc_or_desc       = req.query.asc_or_desc
-                let sort_by          = req.query.sort_by
+                let sort_by           = req.query.sort_by
                 let movies_res = await movie_functions.search_movies(user_id, query_term, minimum_rating, genre, quality, min_year, max_year, language, asc_or_desc, sort_by)
                 console.log("[movie.controller]: search SUCCESS")
                 return res.status(200).send({movies: movies_res, code: "SUCCESS"})
@@ -46,7 +46,7 @@ module.exports = (db_pool) => {
                 let user_id = req.user_id
                 let movie_id = Number(req.params.movie_id)
                 let movie_res = await movie_functions.get_movie_details(movie_id, user_id)
-                if (movie_res == null || movie_res.length == 0) {
+                if (movie_res == null) {
                     console.log("[movie.controller]: get_details MISSING_MOVIE")
                     return res.status(200).send({movie: movie_res, code: "MISSING_MOVIE"})
                 }
