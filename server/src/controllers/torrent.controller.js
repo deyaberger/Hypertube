@@ -31,9 +31,17 @@ module.exports = (db_pool) => {
             // console.log("size:", videoSize)
             // const videoSize = file.downloaded;
 
-            const start = Number(range.replace(/\D/g, ""));
+            let start = Number(range.replace(/\D/g, ""));
             const end = Math.min(start + CHUNK_SIZE, videoSize - 1);
+            start = Math.min(end, start)
             const contentLength = end - start + 1;
+
+            console.log("start:", Math.round(start / (1000 * 1000 * 1)), "end:", Math.round(end / (1000 * 1000 * 1)), "file.down:", Math.round(file.downloaded / (1000 * 1000 * 1)))
+
+            if (Math.max(start, end) >= file.downloaded) {
+                console.log("TOO FAR")
+                return res.sendStatus(204)
+            }
 
             const headers = {
                 "Content-Range" : `bytes ${start}-${end}/${videoSize}`,
@@ -41,8 +49,6 @@ module.exports = (db_pool) => {
                 "Content-Length": contentLength,
                 "Content-Type"  : "video/mp4",
             };
-
-            // console.log("start:", Math.round(start / 1000000), "end:", Math.round(end / 1000000), "file.down:", Math.round(file.downloaded / 1000000))
 
             // console.log(start)
             // console.log("Write head")

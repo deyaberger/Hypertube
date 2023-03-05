@@ -88,14 +88,8 @@ export default {
 			}
 		},
 
-		create_socket() {
-			console.log("socket connect", this.user_token)
-			this.socket = io("http://localhost:5173", {
-				path: "/socketo/",
-				auth: {
-						token: this.user_token
-					}
-			});
+		videoErrorHandler(e) {
+			console.log("Viderr:",e )
 		}
 	},
 
@@ -150,7 +144,7 @@ export default {
 				</div>
 
 				<div v-if="movie_ready_to_watch" >
-					<video ref="movieplayer" controls loop id="videoPlayer" width="500" height="500" muted="muted" autoplay>
+					<video ref="movieplayer" controls loop id="videoPlayer" width="500" height="500" muted="muted" autoplay onerror="videoErrorHandler(e)">
 						<source :src='movie_source' type="video/mp4" />
 							<track v-for="sub in subs" v-bind:key="sub.path"
 								:label="sub.name"
