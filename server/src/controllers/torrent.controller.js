@@ -9,8 +9,6 @@ module.exports = (db_pool) => {
 
     return {
         stream_magnet: async (req, res) => {
-            // console.log("Magnet stream")
-
             let magnet = hash_title_to_magnet_link(req.params.hash, req.params.title);
 
             let tor = torrent_functions.get_torrent(magnet);
@@ -22,13 +20,15 @@ module.exports = (db_pool) => {
             let file = torrent_functions.get_largest_file(tor);
             let paf = file.path
             paf = torrent_functions.to_relative_path(paf)
-
+            // paf = './torrents/Your.Honor.US.S02E05.Parte.Quindici.ITA.ENG.1080p.AMZN.WEB-DL.DDP.H.264-MeM.GP.mkv'
             const range = req.headers.range;
             if (!range) {
+                console.log("no range")
                 return res.status(400).send("Requires Range header");
             }
 
             const videoSize = fs.statSync(paf).size;
+            console.log("size:", videoSize)
             // const videoSize = file.downloaded;
 
             const start = Number(range.replace(/\D/g, ""));
