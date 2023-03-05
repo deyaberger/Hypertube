@@ -4,6 +4,7 @@ const fs                            = require("fs");
 const { hash_title_to_magnet_link } = require('../utils/hash_title_to_magnet')
 const torrent_functions_factory     = require('../controllers/torrent')
 const return_codes                  = require('../utils/return_codes')
+const fixtures                      = require('../utils/fixtures')
 const throw_err_with_code           = require('../utils/error_throw')
 
 
@@ -81,7 +82,7 @@ class TorrentWatcher extends EventEmitter {
       // if (fs.existsSync(`./torrents/${this.getLargestFile().path}`)) {
         // console.log(this.sizePrint(this.torrent.downloaded),  this.sizePrint(this.getLargestFile().length), this.sizePrint(fs.statSync(`./torrents/${this.getLargestFile().path}`).size), new Date(fs.statSync(`./torrents/${this.getLargestFile().path}`).mtime.getTime()), new Date())
       // }
-      if (new Date() - dl_start > 5 * 1000 && ETA_minutes * 3 < loaded_minutes) {
+      if (new Date() - dl_start > fixtures.MIN_TORRENT_TIME_S * 1000 && ETA_minutes * fixtures.SAFETY_FACTOR < loaded_minutes) {
         console.log("ITS READYYYY TO WATCH BABY")
         this.ready_to_watch = true
         this.emit('ready_to_watch')
