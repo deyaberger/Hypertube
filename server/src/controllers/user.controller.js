@@ -39,10 +39,11 @@ module.exports = (db_pool) => {
                     console.log("[user.controller]: get_other_user SUCCESS ", {user: user[0]})
                     return res.status(200).send({user : user[0], connected_user_id: my_user, code : "SUCCESS"})
                 }
-                if ([...new Set(Object.values(user))][0] == null) {
+                if (user && [...new Set(Object.values(user))][0] == null) {
                     console.log("[user.controller]: Nothing about this user. FAILURE")
                     return res.status(201).send({msg:  `Nothing in database about user ${user}`, code: "FAILURE"})
                 }
+                return res.status(201).send({msg:  `Unknown error while getting user: ${user}`, code: "FAILURE"})
             }
             catch (e) {
                 if (e.code == 'ER_BAD_FIELD_ERROR') {
@@ -53,23 +54,56 @@ module.exports = (db_pool) => {
             }
         },
 
+        update_username : async(req, res) => {
+            try {
+                let user_id = req.user_id
+                let new_username  = req.query.username
+                let regex_whitespace = /^\S*$/;
+                if (new_username && new_username.match(regex_whitespace) == null) {
+                    console.log("\n[user.controller]: update_username FAILURE : whitespaces")
+                    return res.status(201).send({msg: "Can't change username : whitespaces", code: "FAILURE"})
+                }
+                let update_res = await user_functions.update_username(user_id, new_username)
+                if (update_res && update_res.affectedRows == 1) {
+                    console.log("[user.controller]: update_username SUCCESS")
+                    return res.status(200).send({msg: "successfully changed user username", code: "SUCCESS"})
+                }
+                return res.status(201).send({msg:  `Unknown error while updating_username: ${update_res}`, code: "FAILURE"})
+            }
+            catch (e) {
+                if (e.code == 'ER_DUP_ENTRY') {
+                    console.log("[user.controller]: update_username ER_DUP_ENTRY")
+                    return res.status(201).send({msg: "Can't change username (already taken)", code : "USERNAME_TAKEN"})
+                }
+                if (e.code == 'ER_DATA_TOO_LONG') {
+                    console.log("[user.controller]: update_username FAILURE : long")
+                    return res.status(201).send({msg: "Can't change username (too long)", code : "TOO_LONG"})
+                }
+                throw(e)
+            }
+        },
 
         update_first_name : async(req, res) => {
             try {
                 let user_id = req.user_id
                 let new_first_name  = req.query.firstname
                 let regex_whitespace = /^\S*$/;
-                if (new_first_name.match(regex_whitespace) == null) {
+                if (new_first_name && new_first_name.match(regex_whitespace) == null) {
                     console.log("\n[user.controller]: update_first_name FAILURE : whitespaces")
                     return res.status(201).send({msg: "Can't change firstname : whitespaces", code: "FAILURE"})
                 }
                 let update_res = await user_functions.update_firstname(user_id, new_first_name)
-                if (update_res.affectedRows == 1) {
+                if (update_res && update_res.affectedRows == 1) {
                     console.log("[user.controller]: update_first_name SUCCESS")
                     return res.status(200).send({msg: "successfully changed user firstname", code: "SUCCESS"})
                 }
+                return res.status(201).send({msg:  `Unknown error while updating_first_name: ${update_res}`, code: "FAILURE"})
             }
             catch (e) {
+                if (e.code == 'ER_DATA_TOO_LONG') {
+                    console.log("[user.controller]: update_first_name FAILURE : long")
+                    return res.status(201).send({msg: "Can't change first_name (too long)", code : "TOO_LONG"})
+                }
                 console.log("[user.controller]: update_first_name ERROR")
                 throw(e)
             }
@@ -80,17 +114,22 @@ module.exports = (db_pool) => {
                 let user_id = req.user_id
                 let new_last_name  = req.query.lastname
                 let regex_whitespace = /^\S*$/;
-                if (new_last_name.match(regex_whitespace) == null) {
+                if (new_last_name && new_last_name.match(regex_whitespace) == null) {
                     console.log("\n[user.controller]: update_last_name FAILURE : whitespaces")
                     return res.status(201).send({msg: "Can't change lastname : whitespaces", code: "FAILURE"})
                 }
                 let update_res = await user_functions.update_lastname(user_id, new_last_name)
-                if (update_res.affectedRows == 1) {
+                if (update_res && update_res.affectedRows == 1) {
                     console.log("[user.controller]: update_last_name SUCCESS")
                     return res.status(200).send({msg: "successfully changed user lastname", code: "SUCCESS"})
                 }
+                return res.status(201).send({msg:  `Unknown error while updating_last_name: ${update_res}`, code: "FAILURE"})
             }
             catch (e) {
+                if (e.code == 'ER_DATA_TOO_LONG') {
+                    console.log("[user.controller]: update_last_name FAILURE : long")
+                    return res.status(201).send({msg: "Can't change last_name (too long)", code : "TOO_LONG"})
+                }
                 console.log("[user.controller]: update_last_name ERROR")
                 throw(e)
             }
@@ -105,6 +144,7 @@ module.exports = (db_pool) => {
                     console.log("[user.controller]: update_last_name SUCCESS")
                     return res.status(200).send({msg: "successfully changed user bio", code: "SUCCESS"})
                 }
+                return res.status(201).send({msg:  `Unknown error in update_bio: ${update_res}`, code: "FAILURE"})
             }
             catch (e) {
                 throw(e)
@@ -125,6 +165,7 @@ module.exports = (db_pool) => {
                     console.log("[user.controller]: update_email SUCCESS")
                     return res.status(200).send({msg: "successfully changed user email", code: "SUCCESS"})
                 }
+                return res.status(201).send({msg:  `Unknown error in update_email: ${update_res}`, code: "FAILURE"})
             }
             catch (e) {
                 if (e.code == 'ER_DUP_ENTRY') {

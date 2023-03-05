@@ -1,4 +1,5 @@
 <script>
+import { ref, computed } from 'vue'
 import { mapState } from 'vuex';
 import textContent from "../assets/language_dict/language_dict.json"
 
@@ -6,56 +7,67 @@ import textContent from "../assets/language_dict/language_dict.json"
 export default {
 	data() {
 		return {
-			text_content : textContent.RESETPASS
+			visible        : false,
+			username       : '',
+			password       : '',
+			text_content   : textContent.NEWPASS
 		}
 	},
 	computed: mapState({
-		lang_nb    : state => state.lang_nb,
+		lang_nb: state => state.lang_nb,
 		user_token : state =>  state.user_token,
-	})
+		mdp_error: state => state.mdp_error, // TO BE CHAAAAAAAAAAAANGED!!!
+	}),
+	methods: {
+		update_password_visibility() {
+			this.visible = !this.visible
+		},
+	},
 }
 </script>
+
 
 <template>
 	<div class="container homemade-container ">
 		<form>
-			<h2 class="text-center">{{text_content.forgot_pwd[lang_nb]}}</h2>
-			<p class="text-center">{{text_content.sentence[lang_nb]}}</p>
+			<h2 class="mb-4 text-center">{{text_content.reset[lang_nb]}}</h2>
 			<div class="input mt-5">
-				<label class = "mb-2" for="email">{{text_content.email[lang_nb]}}</label>
-				<input
-				class="form-control"
-				type="text"
-				name="email"
-				placeholder="email@adress.com"
-				/>
+				<label class = "mb-2" for="password">{{text_content.reset_pwd[lang_nb]}}</label>
+				<div class="input-group">
+					<input
+					v-model = "password"
+					class="form-control"
+					:class="{ error_input : mdp_error}"
+					:type="visible ? 'text' : 'password'"
+					name="password"
+					:placeholder="text_content.pwd[lang_nb]"
+					>
+					<span class="input-group-btn">
+						<button class="btn" v-on:click="update_password_visibility" type="button">
+							<b-icon-eye-fill v-if="!visible"></b-icon-eye-fill>
+							<b-icon-eye-slash-fill v-else></b-icon-eye-slash-fill>
+						</button>
+					</span>
+				</div>
+				<p class="error_msg" v-show="mdp_error">{{text_content.error[lang_nb]}}</p>
 			</div>
-			<div class="col-md-12 text-center mt-4">
-				<button class="submit_button" type="submit">{{text_content.send[lang_nb]}}</button>
+			<div class="col-md-12 text-center mt-5">
+				<button class="submit_button" type="submit">{{text_content.confirm[lang_nb]}}</button>
 			</div>
 		</form>
 	</div>
 </template>
 
 
-
 <style scoped>
 @import "../assets/shared_scss/login.scss";
 @import "../assets/shared_scss/shared.scss";
 
-
-.container {
-	width: 500px;
+.homemade-container {
+	margin: 0px;
+	margin: 0px;
+	top: 300px;
 }
 
-h2 {
-	font-size: 25px;
-}
-
-p {
-	letter-spacing: 0px;
-	text-transform: none;
-	font-size: 15px;
-}
 
 </style>

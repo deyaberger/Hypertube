@@ -1,69 +1,131 @@
 <script>
 import { mapState } from 'vuex';
-import vue3StarRatings from "vue3-star-ratings";
 import { Get_Single_Movie_Details,
 		 Parse_Single_Movie,
 		 Set_Watched,
 		 Set_UnWatched,
 		 Remove_From_Favorites, Add_To_Favorites } from "../functions/movies";
-import { Get_Comments_By_Movie_ID, Parse_Comments, Post_Comment } from "../functions/comments";
-import { Get_Formatted_Time } from "../functions/utils.js";
-import StarRating from 'vue-star-rating';
-import textContent from "../assets/language_dict/language_dict.json"
-
+import textContent from "../assets/language_dict/language_dict.json";
+import { io } from 'socket.io-client';
+import TorrentSocketService from '../functions/socket.service.js';
+import store from '../stores/store';
+import Comments from '../components/Comments.vue'
+import Torrents_buttons from '../components/Torrents_buttons.vue'
+import Movie_infos from '../components/Movie_infos.vue'
 
 export default {
+	name: "SingleMovie",
+
+	beforeRouteEnter(to, from, next) {
+		const isAuthenticated = store.state.user_token != null // check if the user is authenticated
+		if (!isAuthenticated) {
+			console.log("[single_movie]: not logged in yeat, redirecting to sign in")
+			next("/sign_in") // redirect to sign-in page if the user is not authenticated
+		} else {
+			next() // continue with navigation
+		}
+	},
+
 	props: {
 		movie_id: String,
 	},
 
+	components: {
+		Comments,
+		Torrents_buttons,
+		Movie_infos
+	},
 
 	data() {
 		return {
-			text_content       : textContent.MOVIES,
-			movie              : [],
-			comments           : [],
-			user_comment       : "",
-			user_rating        : 0,
-			Get_Formatted_Time : Get_Formatted_Time,
-			fallbackUrl        : '../src/assets/missing_cover.jpeg',
-			movie_error        : false
+			text_content        : textContent.MOVIES,
+			movie               : [],
+			movie_error         : false,
+			fallbackUrl         : '../src/assets/missing_cover.jpeg',
+			on_video            : false,
+			torrent_service     : null,
+			torrent_loading     : false,
 		}
 	},
 
+	computed: {
+		torrent_status() {
+			if (this.torrent_service) {
+				return this.torrent_service.torrent_status
+			}
+			return null
+		},
 
-	components: {
-		vue3StarRatings,
-		StarRating
+		subs() {
+			if (this.torrent_service) {
+				return this.torrent_service.subs
+			}
+			return []
+		},
+
+		movie_source() {
+			if (this.torrent_service && this.torrent_service.torrent_status) {
+				return `http://localhost:8071/api/torrents/stream_magnet/${encodeURIComponent(this.torrent_service.torrent_status.hash)}/${encodeURIComponent(this.torrent_service.torrent_status.title)}`
+			}
+			return null
+		},
+
+		movie_ready_to_watch() {
+			if (this.torrent_service && this.torrent_service.torrent_status) {
+				if (this.torrent_service.torrent_status.ready_to_watch == true) {
+					this.set_watched();
+					this.torrent_loading = false;
+				}
+				return this.torrent_service.torrent_status.ready_to_watch
+			}
+			return false
+		},
+
+		...mapState({
+			lang_nb    : state => state.lang_nb,
+			user_token : state =>  state.user_token,
+		})
 	},
 
 
-	computed: mapState({
-		lang_nb    : state => state.lang_nb,
-		user_token : state =>  state.user_token,
-	}),
-
-
 	methods: {
-		async update_watched() {
-			let res = null
+		Choose_Torrent(value) {
+			const torrent = JSON.parse(JSON.stringify((value.torrent)));
+			this.torrent_loading = true;
 			try {
-				if (this.movie.is_watched == false) {
-					res = await Set_Watched(this.this._id, this.user_token)
+				this.torrent_service.choose_torrent(torrent.id)
+			}
+			catch (e) {
+				if (e.code == 'SOCKET_CREATION_ERROR') {
+					console.log("Error in socket creation !@")
 				}
-				else {
-					res = await Set_UnWatched(this.movie_id, this.user_token)
-				}
+			}
+		},
+
+		create_socket() {
+			console.log("socket connect", this.user_token)
+			this.socket = io("http://localhost:5173", {
+				path: "/socketo/",
+				auth: {
+						token: this.user_token
+					}
+			});
+		},
+
+		async set_watched() {
+			try {
+				console.log("[single_movie]: Setting movie to watched: ...", {id: this.movie_id})
+				let res = await Set_Watched(this.movie_id, this.user_token)
 				if (res.data.code == "SUCCESS") {
 					console.log("[single_movie]: Successfully updated watched!")
 					this.movie.is_watched = !this.movie.is_watched
 				}
 				else {
-					console.log("ERROR: [single_movie] in update_watched: ", res)
+					console.log("ERROR: [single_movie] in set_watched: ", res)
 				}
 			}
 			catch(e) {
-				console.log("UNKNOWN ERROR [single_movie]: in update_watched")
+				console.log("UNKNOWN ERROR [single_movie]: in set_watched")
 				throw(e)
 			}
 		},
@@ -91,24 +153,6 @@ export default {
 			}
 		},
 
-		async get_comments() {
-			try {
-				console.log("[single_movie]: getting movie comments...")
-				let res = await Get_Comments_By_Movie_ID(this.movie_id, this.user_token);
-				if (res.data.code == "SUCCESS") {
-					this.comments = Parse_Comments(res.data.comments);
-					console.log("[single_movie]: Successfully got movie comments! ", this.comments)
-				}
-				else {
-					console.log("ERROR [single_movie]: in get comments: ", res)
-				}
-			}
-			catch (e) {
-				console.log("UNKNOWN ERROR [single_movie]: in get_comments")
-				throw(e)
-			}
-		},
-
 		async get_movie_details() {
 			try {
 				console.log("[single_movie]: getting movie details...")
@@ -116,17 +160,14 @@ export default {
 				if (res.data.code == "SUCCESS") {
 					this.movie = Parse_Single_Movie(res.data.movie);
 					console.log("[single_movie]: Successfully got movie details! ", this.movie)
-					return true
 				}
 				else if (res.data.code == "MISSING_MOVIE") {
 					this.movie_error = true
 					console.log("ERROR [single_movie]: No Movie found with id: ", this.movie_id)
-					return false
 				}
 				else if (res.data.code == "FAILURE") {
 					this.movie_error = true
 					console.log("ERROR [single_movie]: ", res.data.msg)
-					return false
 				}
 			}
 			catch (e) {
@@ -134,47 +175,6 @@ export default {
 				console.log("UNKNOWN ERROR [single_movie]: in get_movie_details")
 				throw(e)
 			}
-		},
-
-		reset_comment_input() {
-			this.user_comment = ''
-			this.user_rating = 0
-		},
-
-		async post_comment(content, rating) {
-			try {
-				let res = await Post_Comment(this.movie_id, content, rating, this.user_token)
-				if (res.data.code == "SUCCESS") {
-					this.get_comments();
-					this.reset_comment_input();
-					console.log("[single_movie]: Succesfully added comment to db!")
-				}
-			}
-			catch (e) {
-				throw(e)
-			}
-		},
-
-		reviewComplete() {
-			if (this.user_rating != 0 && this.user_comment.length > 0) {
-				console.log("[single_movie]: review complete!")
-				return true
-			}
-			return false
-		},
-
-		get_separator(index, text_list) {
-			return (index < text_list.length - 1 ? ", " : "")
-		},
-
-		get_rating_level(rating) {
-			if (rating <= 3.5) {
-				return "bad"
-			}
-			if (rating <= 7) {
-				return "bof"
-			}
-			return null
 		},
 
 		handle_image_error(event, movie) {
@@ -185,129 +185,59 @@ export default {
 			} else {
 				event.target.src = this.fallbackUrl;
 			}
-		}
+		},
+	},
+	mounted() {
+		this.get_movie_details();
+	},
 
+	created() {
+		this.torrent_service = new TorrentSocketService(this.user_token)
 	},
-	async mounted() {
-		await this.get_movie_details();
-		if (!this.movie_error) {
-			this.get_comments();
+
+	unmounted () {
+		console.log("unmounting")
+		if (this.torrent_service) {
+			this.torrent_service.delete_socket()
 		}
-	},
+	}
+
 }
 </script>
 
 <template>
-	<div class="homemade-container" v-if="!movie_error">
+	<div class="homemade-container" v-if="!movie_error && movie">
 		<div class="row justify-content-md-center">
 			<div v-if="movie.length == 0" class="col-md-auto">
 						<b-spinner label="Loading..." variant="success" class="mt-5"></b-spinner>
 				</div>
-			<div v-else class="col video_container">
-				<img class="movie_image" :src="movie.images_list[6]" alt="movie_image" :data-next-index="1" @error="handle_image_error($event, movie)"/>
+			<div v-else class="col video_container" id="video_container">
+				<div v-if="movie_ready_to_watch" class="image_container">
+					<video ref="movieplayer" controls loop id="videoPlayer" muted="muted" disablepictureinpicture>
+						<source :src="movie_source" type="video/mp4" />
+						<track v-for="sub in subs" v-bind:key="sub.path"
+							:label="sub.name"
+							kind="subtitles"
+							:src="'/api/torrents/subtitles/get/' + encodeURIComponent(sub.path)"
+						/>
+					</video>
+				</div>
+				<div v-else >
+					<div v-if="!torrent_loading">
+						<img class="movie_image not_ready" :src="movie.images_list[6]" alt="movie_image" :data-next-index="1" @error="handle_image_error($event, movie)"/>
+						<a class="see_movie" href="#target-element" data-toggle="tooltip" data-placement="top" title="See & select torrents"><b-icon-eye-fill class="on_image"></b-icon-eye-fill></a>
+					</div>
+					<div v-else>
+						<img class="movie_image loading" :src="movie.images_list[6]" alt="movie_image" :data-next-index="1" @error="handle_image_error($event, movie)"/>
+						<b-spinner label="Loading..." variant="success" class="loading_video"></b-spinner>
+						<p class="loading_video text">File is loading...</p>
+					</div>
+				</div>
 			</div>
 		</div>
-		<button v-if="movie.is_watched"
-			@click="update_watched()"
-			class="submit_button"
-			type = "submit">
-			Fake tmp Unwatch button
-		</button>
-		<button v-else
-			@click="update_watched()"
-			class="submit_button"
-			type = "submit">
-			Fake temporary watched button
-		</button>
-		<div class="row movie_name_container">
-			<div class="col">
-				<h1>{{movie.title}}</h1>
-			</div>
-		</div>
-		<div class="row general_infos-container align-items-center">
-			<div class="col infos">
-				<b-icon-camera-reels-fill class="icon genre"></b-icon-camera-reels-fill>
-				<span v-for="(genre, index) in movie.genres" :key="index" class="infos_content">{{genre}}{{get_separator(index, movie.genres)}}</span>
-			</div>
-			<div class="col infos">
-				<b-icon-calendar2-minus-fill class="icon year"></b-icon-calendar2-minus-fill>
-				<span class="infos_content">{{movie.year}}</span>
-			</div>
-			<div class="col infos">
-				<b-icon-clock-fill class="icon time"></b-icon-clock-fill>
-				<span class="infos_content">{{Get_Formatted_Time(movie.runtime)}}</span>
-			</div>
-			<div class="col infos">
-				<span class="infos_content"><b-icon-star-fill class="icon score" :class="get_rating_level(movie.rating)"></b-icon-star-fill></span>
-				<span class="infos_content"><span class="big">{{movie.rating}}</span>/10</span>
-			</div>
-			<div class="col-1 infos">
-				<span v-if="movie.is_fav" class="btn-group" role="group" aria-label="Basic example"  data-toggle="tooltip" data-placement="top" title="Remove from favorites">
-					<b-icon-heart-fill class="h2 favorites" @click="update_fav()"></b-icon-heart-fill>
-				</span>
-				<span v-else class="btn-group" role="group" aria-label="Basic example"  data-toggle="tooltip" data-placement="top" title="Add to favorites">
-					<b-icon-heart class="h2 favorites" @click="update_fav()"></b-icon-heart>
-				</span>
-			</div>
-		</div>
-		<div class="row summary_container">
-			<div class="col">
-				<p class="summary">{{movie.summary}}</p>
-			</div>
-		</div>
-		<div class="row cast_container">
-			<div class="col">
-				<span class="infos_title_horizontal">{{text_content["director"][lang_nb]}}: </span>
-				<span class="names">{{ movie.director ? movie.director : text_content["not_specified"][lang_nb]}}</span>
-			</div>
-		</div>
-		<div class="row cast_container">
-			<div class="col">
-				<span class="infos_title_horizontal">{{text_content["actors"][lang_nb]}}: </span>
-				<span class="names">{{ movie.actors ? movie.actors : text_content["not_specified"][lang_nb]}}</span>
-				<!-- <span class="names" v-for="actor in movie.cast" :key="actor">{{actor.name}}, </span> -->
-			</div>
-		</div>
-		<hr class="solid">
-		<div class="row my_review">
-			<div class="infos_title">{{ text_content["add_review"][lang_nb] }}:</div>
-			<star-rating
-				v-model:rating="user_rating"
-				class="stars_container"
-				inactive-color="#474848"
-				:numberOfStars=10
-				:increment="1"
-				:star-size="20"
-				:max-rating="10"
-			/>
-			<b-form-textarea
-				id="textarea"
-				v-model="user_comment"
-				placeholder="Enter something..."
-				rows="3"
-				max-rows="6"
-				></b-form-textarea>
-			<button @click="post_comment(user_comment, user_rating)"
-				:disabled="!reviewComplete()"
-				class="submit_button"
-				type = "submit">
-				{{ text_content['send_review'][lang_nb] }}
-			</button>
-		</div>
-		<div v-for="comment in comments" :key="comment" class="row people_reviews">
-			<hr class="solid">
-			<div class="col-3 rating">
-				<b-icon-star-fill class="icon score" :class="get_rating_level(comment.rating)"></b-icon-star-fill>
-				<span><span class="big">{{comment.rating}}</span>/10</span>
-			</div>
-			<div class="col username">
-				@{{comment.username}}
-			</div>
-			<div class="col-3 time">
-				<span>{{comment.date}}</span>
-			</div>
-			<div class="comment">'{{comment.content}}'</div>
-		</div>
+		<Movie_infos :movie="movie" @updating_fav="update_fav"></Movie_infos>
+		<Torrents_buttons v-if="!movie_error" :movie_id="movie_id" @choosing_torrent="Choose_Torrent"></Torrents_buttons>
+		<Comments v-if="!movie_error" :movie_id="movie_id"></Comments>
 	</div>
 	<div class="homemade-container" v-else>
 		<div class="row movie_name_container">
@@ -318,8 +248,6 @@ export default {
 	</div>
 </template>
 
-
-
 <style lang="scss" scoped>
 @import "../assets/shared_scss/single_movie.scss";
 
@@ -327,16 +255,57 @@ export default {
 	text-align: end;
 }
 
-.icon.score.bof {
-	color: rgba(255, 196, 0, 0.671)
+.image_container {
+	background-color: black;
+	height: 500px;
 }
 
-.icon.score.bad {
-	color: rgba(255, 0, 0, 0.671)
+.not_ready {
+	filter: brightness(0.6);
+	position: absolute;
 }
 
-.favorites {
+.loading {
+	filter: brightness(0.3);
+	position: absolute;
+}
+
+.on_image {
+	z-index: 1;
+	position: absolute;
+	left: 50%;
+	transform: translateX(-50%);
+	top: 50%;
 	cursor: pointer;
+	font-size: 150px;
+	margin-top: calc(-0.5 * 150px);
+}
+
+.see_movie {
+	height: 500px;
+	text-decoration: none;
+	color: white;
+}
+
+video {
+	height: 100%;
+	width: 100%;
+	// transform: translateX(25%);
+}
+
+.loading_video {
+	z-index: 1;
+	position: absolute;
+	left: calc(50% - 2.5rem);
+  	top: calc(50% - 2.5rem);
+	width: 5rem; height: 5rem;
+}
+
+.loading_video.text {
+	top: calc(50% + 3rem);
+	text-align: center;
+	font-size: 18px;
+
 }
 
 </style>

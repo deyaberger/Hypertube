@@ -10,6 +10,7 @@
 .video_container {
 	width         : 100%;
 	height        : 500px;
+	position: relative;
 }
 
 h1 {
@@ -29,6 +30,11 @@ h1 {
 	vertical-align: -.05em;
 	margin-right: 3%;
 }
+
+.favorites {
+	cursor: pointer;
+}
+
 
 .rating .icon {
 	margin-right: 1%;
@@ -67,7 +73,6 @@ h1 {
 	width         : 100%;
 	margin-top    : 1%;
 	margin-bottom : 2%;
-	margin-left   : 1%;
 	margin-right  : 1%;
 	color         : white;
 	background    : black;
@@ -121,6 +126,82 @@ h1 {
 .comment {
 	margin-top: 1%;
 }
+
+.comment_text{
+	word-wrap: break-word; /* Break long words if necessary */
+  	overflow-wrap: break-word;
+}
+
+.icon.score.bof {
+	color: rgba(255, 196, 0, 0.671)
+}
+
+.icon.score.bad {
+	color: rgba(255, 0, 0, 0.671)
+}
+
+.max_length {
+	margin-top: -1.5%;
+	margin-bottom: 3%;
+	font-weight: lighter;
+	font-size: 13px;
+}
+
+.warning {
+	color: red;
+}
+
+
+.collapse-torrents {
+	margin: 0px;
+	height: 50px;
+	border: black;
+	background-image: linear-gradient(-45deg, #4568dc, #b753bb);
+}
+
+.collapse-torrents:hover {
+	margin: 0px;
+	transform: scale(1.1);
+	transition: 0.8s;
+	background-image: linear-gradient(-45deg, #587bee, #e370e7);
+}
+
+.torrent_container {
+	height: 80px;
+	margin-top: 0.5%;
+}
+
+.torrent_container > * {
+	font-size: 18px;
+}
+
+.torrent_infos {
+	font-weight: bold;
+}
+
+.torrent_icon {
+	margin-top: -1%;
+	margin-right: 3%;
+}
+
+.play_button {
+	border-right: 1px;
+	border-color: white;
+}
+
+.bn30 > .col:first-of-type {
+	text-align:left;
+}
+
+.bn30 > .col {
+	text-align:right;
+}
+
+
+.torrent_button {
+	text-decoration: none;
+}
+
 
 
 @media (max-width: 690px) {

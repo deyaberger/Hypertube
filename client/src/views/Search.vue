@@ -2,11 +2,24 @@
 import SearchBar from '../components/Search_bar.vue'
 import SearchResults from '../components/Search_results.vue'
 import { mapState } from 'vuex';
+import store from '../stores/store';
 import textContent from "../assets/language_dict/language_dict.json"
 import { Get_Movies_Research,
 	     Get_Recommendations} from "../functions/movies"
 
 export default {
+
+	name: "Search",
+
+	beforeRouteEnter(to, from, next) {
+		const isAuthenticated = store.state.user_token != null // check if the user is authenticated
+		if (!isAuthenticated) {
+			console.log("[search]: not logged in yeat, redirecting to sign in")
+			next("/sign_in") // redirect to sign-in page if the user is not authenticated
+		} else {
+			next() // continue with navigation
+		}
+	},
 
 
 	components: {
@@ -58,7 +71,7 @@ export default {
 			}
 			catch(e) {
 				this.error = true
-				console.log("UNKOWN ERROR [search]: ")
+				console.log("UNKNOWN ERROR [search]: ")
 				throw(e)
 			}
 		},
@@ -70,7 +83,7 @@ export default {
 			}
 			catch(e) {
 				this.error = true
-				console.log("UNKOWN ERROR [search]: ", e)
+				console.log("UNKNOWN ERROR [search]: ", e)
 				throw(e)
 			}
 		},
@@ -136,12 +149,11 @@ export default {
 
 
 	computed: {
-	...mapState({
-      	lang_nb    : state =>  state.lang_nb,
-      	user_token : state =>  state.user_token,
-    })
+		...mapState({
+			lang_nb    : state =>  state.lang_nb,
+			user_token : state =>  state.user_token,
+		})
 	},
-
 
 	watch: {
 		currentPage: {
