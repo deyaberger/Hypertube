@@ -1,4 +1,6 @@
 const EventEmitter                  = require('events')
+const fs                            = require("fs");
+
 const { hash_title_to_magnet_link } = require('../utils/hash_title_to_magnet')
 const torrent_functions_factory     = require('../controllers/torrent')
 const return_codes                  = require('../utils/return_codes')
@@ -65,13 +67,21 @@ class TorrentWatcher extends EventEmitter {
     }))
   }
 
+  sizePrint(num) {
+    return `${Math.round(num / (1000 * 1000 * 10)) / 100} Gb`
+  }
+
   setOnDownloadCheckETA() {
+    let dl_start = new Date()
     let handler = this.safetyWrapper(() => {
       let ETA_minutes    = this.torrent.timeRemaining / 1000 / 60
       // console.log( this.torrent.progress, this.movie_length_minutes)
       let loaded_minutes = this.torrent.progress * this.movie_length_minutes
       // console.log(`ETA_minutes ${Math.round(ETA_minutes)} loaded_minutes ${Math.round(loaded_minutes)}`)
-      if (ETA_minutes * 3 < loaded_minutes) {
+      // if (fs.existsSync(`./torrents/${this.getLargestFile().path}`)) {
+        // console.log(this.sizePrint(this.torrent.downloaded),  this.sizePrint(this.getLargestFile().length), this.sizePrint(fs.statSync(`./torrents/${this.getLargestFile().path}`).size), new Date(fs.statSync(`./torrents/${this.getLargestFile().path}`).mtime.getTime()), new Date())
+      // }
+      if (new Date() - dl_start > 5 * 1000 && ETA_minutes * 3 < loaded_minutes) {
         console.log("ITS READYYYY TO WATCH BABY")
         this.ready_to_watch = true
         this.emit('ready_to_watch')
@@ -99,6 +109,12 @@ class TorrentWatcher extends EventEmitter {
       status.files[file.name] = this.getFileStatus(file)
     }
     return status
+  }
+
+  getLargestFile() {
+    return this.torrent.files.reduce(function(prev, current) {
+      return (prev.length > current.length) ? prev : current
+    })
   }
 
   getFileStatus(file) {

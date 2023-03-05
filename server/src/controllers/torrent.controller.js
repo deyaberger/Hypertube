@@ -28,7 +28,7 @@ module.exports = (db_pool) => {
             }
 
             const videoSize = fs.statSync(paf).size;
-            console.log("size:", videoSize)
+            // console.log("size:", videoSize)
             // const videoSize = file.downloaded;
 
             const start = Number(range.replace(/\D/g, ""));
