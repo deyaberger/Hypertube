@@ -117,7 +117,7 @@ class TorrentWatcher extends EventEmitter {
     if (file.name.endsWith('.srt')) {
       return 'SUBTITLE_FILE'
     }
-    
+
     if (file.name.endsWith('.avi') || file.name.endsWith('.mp4')) {
       return 'MOVIE_FILE'
     }
@@ -146,7 +146,7 @@ class GodEventHandler {
     }
 
   }
-  
+
   async add_torrent(torrent_id) {
     try {
       let torrent_db_data = await this.torrent_functions.get_torrent_from_id(torrent_id)
@@ -161,7 +161,7 @@ class GodEventHandler {
       let torrent = this.torrent_client.add(
         magnet_uri,
         {
-            path      : "./torrents",                            
+            path      : "./torrents",
             strategy  : "sequential"
         }
       )
@@ -180,7 +180,7 @@ class GodEventHandler {
         console.log("Torrent client availability error", id)
         return this.io.to(torrent_id).emit(return_codes.BAD_ERROR)
       }
-      
+
       console.log("error in add torrent socket")
       throw(e)
       return this.io.to(torrent_id).emit(return_codes.UNKNOWN_ERROR)
@@ -240,7 +240,7 @@ class GodEventHandler {
       this.torrent_functions.set_subtitles_high_priority(torrent)
       this.io.to(torrent_id).emit('torrent_ready', torrent_status)
     })
-    
+
 
     this.torrentWatchers[torrent_id].on('download', (torrent_status) => {
       console.log("emit dl")

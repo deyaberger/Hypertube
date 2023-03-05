@@ -97,5 +97,4 @@ class TorrentSocketService extends EventEmitter {
 		}
 
   }
-
 export default TorrentSocketService;
