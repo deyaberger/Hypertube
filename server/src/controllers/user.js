@@ -42,6 +42,21 @@ module.exports = (db_pool) => {
             }
         },
 
+        update_username: async(user_id, username) => {
+            console.log("\n[user]: update_username: ", {user_id, username});
+            try {
+                let [update_result, ] = await db_pool.query(`
+                update users
+                set username = ?
+                where id = ?
+                `, [username, user_id])
+                return update_result
+            }
+            catch(e) {
+                throw (e)
+            }
+        },
+
         update_firstname: async(user_id, firstname) => {
             console.log("\n[user]: update_firstname: ", {user_id, firstname});
             try {

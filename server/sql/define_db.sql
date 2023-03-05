@@ -67,12 +67,12 @@ create table torrents
 create table users
 (
     id         mediumint auto_increment                 primary key,
-    username   varchar(100)                                not null,
-    mail       varchar(100)                                null,
-    first_name varchar(100)                                null,
-    last_name  varchar(100)                                null,
+    username   varchar(50)                                not null,
+    mail       varchar(100)                               null,
+    first_name varchar(50)                                null,
+    last_name  varchar(50)                                null,
     pass       varchar(300)                                not null,
-    language   varchar(100) default 'en'                   not null,
+    language   varchar(10) default 'en'                   not null,
     picture    varchar(300)                                null,
     bio        varchar(500)                                null,
 
@@ -149,6 +149,7 @@ create table watched_movies
     id       mediumint auto_increment primary key,
     movie_id mediumint                   not null,
     user_id  mediumint                   not null,
+    last_updated timestamp default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP,
 
     constraint id unique (id),
     constraint no_duplicate_watches unique (movie_id, user_id),

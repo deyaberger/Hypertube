@@ -95,6 +95,10 @@ module.exports = (db_pool) => {
                 return res.status(201).send({message: "Signin failed", token: token})
             }
             catch (e) {
+                if (e.code == 'ER_DATA_TOO_LONG') {
+                    console.log("[user.controller]: signin FAILURE : long")
+                    return res.status(201).send({msg: "username too long", code : "TOO_LONG"})
+                }
                 console.log("\n\nError in signin.\n\n")
                 throw (e)
             }

@@ -53,6 +53,33 @@ module.exports = (db_pool) => {
             }
         },
 
+        update_username : async(req, res) => {
+            try {
+                let user_id = req.user_id
+                let new_username  = req.query.username
+                let regex_whitespace = /^\S*$/;
+                if (new_username && new_username.match(regex_whitespace) == null) {
+                    console.log("\n[user.controller]: update_username FAILURE : whitespaces")
+                    return res.status(201).send({msg: "Can't change username : whitespaces", code: "FAILURE"})
+                }
+                let update_res = await user_functions.update_username(user_id, new_username)
+                if (update_res.affectedRows == 1) {
+                    console.log("[user.controller]: update_username SUCCESS")
+                    return res.status(200).send({msg: "successfully changed user username", code: "SUCCESS"})
+                }
+            }
+            catch (e) {
+                if (e.code == 'ER_DUP_ENTRY') {
+                    console.log("[user.controller]: update_username ER_DUP_ENTRY")
+                    return res.status(201).send({msg: "Can't change username (already taken)", code : "USERNAME_TAKEN"})
+                }
+                if (e.code == 'ER_DATA_TOO_LONG') {
+                    console.log("[user.controller]: update_username FAILURE : long")
+                    return res.status(201).send({msg: "Can't change username (too long)", code : "TOO_LONG"})
+                }
+                throw(e)
+            }
+        },
 
         update_first_name : async(req, res) => {
             try {
@@ -70,6 +97,10 @@ module.exports = (db_pool) => {
                 }
             }
             catch (e) {
+                if (e.code == 'ER_DATA_TOO_LONG') {
+                    console.log("[user.controller]: update_first_name FAILURE : long")
+                    return res.status(201).send({msg: "Can't change first_name (too long)", code : "TOO_LONG"})
+                }
                 console.log("[user.controller]: update_first_name ERROR")
                 throw(e)
             }
@@ -91,6 +122,10 @@ module.exports = (db_pool) => {
                 }
             }
             catch (e) {
+                if (e.code == 'ER_DATA_TOO_LONG') {
+                    console.log("[user.controller]: update_last_name FAILURE : long")
+                    return res.status(201).send({msg: "Can't change last_name (too long)", code : "TOO_LONG"})
+                }
                 console.log("[user.controller]: update_last_name ERROR")
                 throw(e)
             }

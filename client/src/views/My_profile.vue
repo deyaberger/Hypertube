@@ -5,6 +5,7 @@ import SearchResults from '../components/Search_results.vue';
 import { Get_User_Fav_Movies,
 	     Get_User_Watched_Movies} from '../functions/movies';
 import { Get_User_Details,
+		 Update_Username,
 		 Update_First_Name,
 		 Update_Last_Name,
 		 Update_Bio,
@@ -19,41 +20,47 @@ export default {
 
 	data() {
 		return {
-			text_content		: textContent.PROFILE,
-			own_profile         : true,
-			user                : null,
+			text_content          : textContent.PROFILE,
+			own_profile           : true,
+			user                  : null,
 
-			first_name			: null,
-			last_name			: null,
-			email				: null,
-			bio					: null,
+			username              : null,
+			first_name            : null,
+			last_name             : null,
+			email                 : null,
+			bio                   : null,
 
-			request_error		: false,
-			network_error		: false,
-			error_text			: '',
-			image_error_text	: '',
+			request_error         : false,
+			network_error         : false,
+			error_text            : '',
+			image_error_text      : '',
 
-			watched_movies      : null,
-			fav_movies		    : null,
+			watched_movies        : null,
+			fav_movies            : null,
 
-			profile_pic			: null,
-			pic_prefix			: "http://127.0.0.1:8071/api/image/get/",
-			fallbackUrl			: '../src/assets/generic_profile_pic.jpg',
+			profile_pic           : null,
+			pic_prefix            : "http://127.0.0.1:8071/api/image/get/",
+			fallbackUrl           : '../src/assets/generic_profile_pic.jpg',
 
-			first_name_is_saved : true,
-			last_name_is_saved  : true,
-			bio_is_saved        : true,
-			email_is_saved		: true,
+			username_is_saved     : true,
+			first_name_is_saved   : true,
+			last_name_is_saved    : true,
+			bio_is_saved          : true,
+			email_is_saved        : true,
 
-			first_name_error    : false,
-			last_name_error     : false,
-			email_error		    : false,
-			image_error			: false,
+			username_error        : false,
+			first_name_error      : false,
+			last_name_error       : false,
+			email_error           : false,
+			image_error           : false,
 
-			email_error_text	: textContent.PROFILE.email_error,
+			username_error_text   : textContent.PROFILE.username_error,
+			last_name_error_text  : textContent.PROFILE.last_name_error,
+			first_name_error_text : textContent.PROFILE.first_name_error,
+			email_error_text      : textContent.PROFILE.email_error,
 
-			regex_whitespace 	: /^\S*$/,
-			regex_mail 			: /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i,
+			regex_whitespace      : /^\S*$/,
+			regex_mail            : /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i,
 		}
 	},
 
@@ -75,6 +82,7 @@ export default {
 		},
 
 		parse_modifiable_data(user) {
+			this.username	= JSON.parse(JSON.stringify(user.username))
 			this.first_name	= JSON.parse(JSON.stringify(user.first_name))
 			this.last_name	= JSON.parse(JSON.stringify(user.last_name))
 			this.email		= JSON.parse(JSON.stringify(user.mail))
@@ -173,7 +181,13 @@ export default {
 				}
 				else if (res && res.data.code == "FAILURE") {
 					this.first_name_error = true;
+					this.first_name_error_text = this.text_content.first_name_error
 					console.log("ERROR [my_profile] in save_first_name : ", res.data.msg)
+				}
+				else if (res && res.data.code == "TOO_LONG") {
+					this.first_name_error = true;
+					this.first_name_error_text = this.text_content.first_name_error_long
+					console.log("ERROR [my_profile] in save_first_name: ", res.data.msg)
 				}
 			}
 			catch(e) {
@@ -208,6 +222,12 @@ export default {
 				}
 				else if (res && res.data.code == "FAILURE") {
 					this.last_name_error = true;
+					this.last_name_error_text = this.text_content.last_name_error
+					console.log("ERROR [my_profile] in save_last_name : ", res.data.msg)
+				}
+				else if (res && res.data.code == "TOO_LONG") {
+					this.last_name_error = true;
+					this.last_name_error_text = this.text_content.last_name_error_long
 					console.log("ERROR [my_profile] in save_last_name : ", res.data.msg)
 				}
 			}
@@ -252,6 +272,57 @@ export default {
 			this.bio_is_saved = !this.bio_is_saved
 			this.bio_error = false
 			this.bio = JSON.parse(JSON.stringify(this.user.bio))
+		},
+
+		modify_username() {
+			this.username_is_saved = !this.username_is_saved
+		},
+
+		async save_username() {
+			try {
+				if (this.username == this.user.username) {
+					this.username_is_saved = !this.username_is_saved
+					this.username_error = false;
+					this.username_error_text = this.text_content.username_error;
+					return
+				}
+				if (this.username != null && this.username.length == 0) {
+					this.username = null
+				}
+				let res = await Update_Username(this.user_token, this.username)
+				if (res && res.data.code == "SUCCESS") {
+					this.username_is_saved = !this.username_is_saved
+					this.username_error = false;
+					this.username_error_text = this.text_content.username_error;
+					this.user.username = this.username;
+					console.log("[my_profile] Succesfully updated username to", {username : this.username})
+				}
+				else if (res && res.data.code == "FAILURE") {
+					this.username_error = true;
+					this.username_error_text = this.text_content.username_error;
+					console.log("ERROR [my_profile] in save_username : ", res.data.msg)
+				}
+				else if (res && res.data.code == "TOO_LONG") {
+					this.username_error = true;
+					this.username_error_text = this.text_content.username_error_long;
+					console.log("ERROR [my_profile] in save_username : ", res.data.msg)
+				}
+				else if (res && res.data.code == "USERNAME_TAKEN") {
+					this.username_error = true;
+					this.username_error_text = this.text_content.username_error_dup;
+					console.log("ERROR [my_profile] in save_username : ", res.data.msg)
+				}
+			}
+			catch(e) {
+				console.log("UNKOWN ERROR [my_profile] in save_username ")
+				throw(e)
+			}
+		},
+
+		reset_username() {
+			this.username_is_saved = !this.username_is_saved
+			this.username_error = false
+			this.username = JSON.parse(JSON.stringify(this.user.username))
 		},
 
 		modify_mail() {
@@ -341,6 +412,17 @@ export default {
 	},
 
 	watch: {
+		username: {
+			handler:function() {
+				if (this.username != null && this.username.match(this.regex_whitespace) == null){
+					this.username_error = true
+				}
+				else if (this.username != null) {
+					this.username_error = false
+				}
+			},
+			deep:true
+		},
 		first_name: {
 			handler:function() {
 				if (this.first_name != null && this.first_name.match(this.regex_whitespace) == null){
@@ -425,6 +507,7 @@ export default {
 								class="form-control"
 								:class="{ error_input : first_name_error}"
 								name="password"
+								:maxlength="49"
 								:placeholder="first_name"
 							>
 							<span class="input-group-btn align-items-center">
@@ -438,7 +521,7 @@ export default {
 								</button>
 							</span>
 						</div>
-						<p class="error_msg" v-show="first_name_error">{{text_content.first_name_error[lang_nb]}}</p>
+						<p class="error_msg" v-show="first_name_error">{{first_name_error_text[lang_nb]}}</p>
 						<div class="mt-3">
 						<div v-if="last_name_is_saved">
 							<span v-if="last_name != null && last_name.length > 0" class ="h3 name">{{ last_name }}
@@ -454,6 +537,7 @@ export default {
 								class="form-control"
 								:class="{ error_input : last_name_error}"
 								name="password"
+								:maxlength="49"
 								:placeholder="last_name"
 							>
 							<span class="input-group-btn align-items-center">
@@ -467,7 +551,7 @@ export default {
 								</button>
 							</span>
 						</div>
-						<p class="error_msg" v-show="last_name_error">{{text_content.last_name_error[lang_nb]}}</p>
+						<p class="error_msg" v-show="last_name_error">{{last_name_error_text[lang_nb]}}</p>
 						</div>
 					</div>
 				</div>
@@ -476,21 +560,45 @@ export default {
 					<div class="justify-content-center text-center py-1">
 					<div>
 						<div class="row">
-						<div class="col">
+						<div class="col-3">
+							<div>
 							<p class="small text-muted mb-0">{{text_content.username[lang_nb]}}</p>
-							<p>@{{user.username}}</p>
+							<p v-if="username_is_saved && username != null && username.length > 0" class="mb-1 h5">@{{username}}<b-icon-pen class="modify h5 mail" @click="modify_username()"></b-icon-pen></p>
+							<div  v-if="!username_is_saved" class="input-group username">
+								<input
+									v-model = "username"
+									class="form-control"
+									:class="{ error_input : username_error}"
+									name="username"
+									:maxlength="49"
+									:placeholder="username"
+								>
+								<span class="input-group-btn align-items-center">
+									<button class="btn check_button username" type="button">
+										<b-icon-check class="h2 m-1 check" @click="save_username()"></b-icon-check >
+									</button>
+								</span>
+								<span class="input-group-btn align-items-center">
+									<button class="btn check_button username" type="button">
+										<b-icon-x class="h2 m-1 reset" @click="reset_username()"></b-icon-x >
+									</button>
+								</span>
+							</div>
+								<p class="error_msg next_line" v-show="username_error">{{username_error_text[lang_nb]}}</p>
+							</div>
 						</div>
-						<div class="col-7">
+						<div class="col">
 							<div>
 								<p class="small text-muted mb-0">email</p>
-									<p v-if="email_is_saved && email != null && email.length > 0" class="mb-1 h5 email tmp">{{email}}<b-icon-pen class="modify h5 mail" @click="modify_mail()"></b-icon-pen></p>
+									<p v-if="email_is_saved && email != null && email.length > 0" class="mb-1 h5 email">{{email}}<b-icon-pen class="modify h5 mail" @click="modify_mail()"></b-icon-pen></p>
 									<p v-if="email_is_saved && (email == null || email.length == 0)" class="mb-1 h5 email tmp">{{text_content.missing_email[lang_nb]}}<b-icon-pen class="modify h5 mail" @click="modify_mail()"></b-icon-pen></p>
 									<div  v-if="!email_is_saved" class="input-group email">
 								<input
 									v-model = "email"
 									class="form-control"
 									:class="{ error_input : email_error}"
-									name="password"
+									name="email"
+									:maxlength="99"
 									:placeholder="email"
 								>
 								<span class="input-group-btn align-items-center">
@@ -508,11 +616,11 @@ export default {
 							</div>
 
 						</div>
-						<div class="col">
+						<div class="col-2">
 							<p class="small text-muted mb-0">{{text_content.followers[lang_nb]}}</p>
 							<p class="mb-1 h5">{{user.followers}}</p>
 						</div>
-						<div class="col">
+						<div class="col-2">
 							<p class="small text-muted mb-0">{{text_content.followings[lang_nb]}}</p>
 							<p class="mb-1 h5">{{user.followings}}</p>
 						</div>
@@ -535,7 +643,7 @@ export default {
 								:placeholder="bio"
 								:maxlength=499
 							></b-form-textarea>
-							<p class="max_length">{{text_content.bio_max_length[lang_nb]}}: 500</p>
+							<p :class="bio.length >= 499 ? 'max_length reset' : 'max_length'">{{text_content.bio_max_length[lang_nb]}}: 500</p>
 								<button class="btn check_button bio" type="button" @click="save_bio()">{{text_content.save[lang_nb]}}</button>
 								<span class="input-group-btn align-items-center">
 								<button class="btn check_button" type="button">
@@ -572,20 +680,6 @@ export default {
 
 input[type="file"] {
 	display: none;
-}
-
-.page-link.active, .active > .page-link {
-	background-color: black;
-	border-color: rgb(99, 97, 97);
-}
-
-.reset {
-	color: red
-}
-
-.tmp {
-	font-style: italic;
-	font-weight: normal;
 }
 
 </style>
