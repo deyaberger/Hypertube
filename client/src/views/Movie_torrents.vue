@@ -151,7 +151,7 @@ export default {
 
 				<div v-if="movie_ready_to_watch" >
 					<video ref="movieplayer" controls loop id="videoPlayer" width="500" height="500" muted="muted" autoplay>
-						<source :src='movie_source' type="video/mp4" />
+						<source :src='movie_source' type="video/x-matroska" />
 							<track v-for="sub in subs" v-bind:key="sub.path"
 								:label="sub.name"
 								kind="subtitles"
