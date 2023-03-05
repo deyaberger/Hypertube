@@ -86,7 +86,7 @@ create table comments
     id       int auto_increment               primary key,
     user_id  mediumint                           not null,
     movie_id mediumint                           not null,
-    content  varchar(400)                        not null,
+    content  varchar(500)                        not null,
     rating   float                               not null,
     date     timestamp default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP,
 

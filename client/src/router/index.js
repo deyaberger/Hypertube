@@ -1,8 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Sign_in          from "../views/Sign_in.vue";
 import Sign_up          from "../views/Sign_up.vue";
-import Reset_pwd        from "../views/Reset_password.vue";
-import New_pwd          from "../views/New_password.vue";
+import Forgot_pwd        from "../views/Forgot_password.vue";
+import reset_pwd          from "../views/Reset_password.vue";
 import Search           from "../views/Search.vue";
 import Profile          from "../views/Profile.vue";
 import SingleMovie      from "../views/Single_movie.vue";
@@ -38,14 +38,14 @@ const router = createRouter({
       component: Sign_up,
     },
     {
-      path: "/reset_pwd",
-      name: "reset_pwd",
-      component: Reset_pwd,
+      path: "/forgot_pwd",
+      name: "forgot_pwd",
+      component: Forgot_pwd,
     },
     {
-      path: "/new_pwd",
-      name: "new_pwd",
-      component: New_pwd,
+      path: "/reset_pwd",
+      name: "reset_pwd",
+      component: reset_pwd,
     },
 		{
 			path: "/search",

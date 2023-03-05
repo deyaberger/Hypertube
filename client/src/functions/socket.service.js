@@ -25,8 +25,11 @@ class TorrentSocketService extends EventEmitter {
     }
 
     delete_socket() {
-      this.socket.close()
-      this.socket == null
+      console.log("close connetion socket")
+      if (this.socket) {
+        this.socket.close()
+        this.socket == null
+      }
     }
 
     refresh_state() {

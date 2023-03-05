@@ -106,7 +106,8 @@ hr {
 }
 
 .movie-image.seen {
-	opacity: 0.6;
+	filter: brightness(0.6);
+	opacity: 0.9;
 }
 
 .movie-card:hover {
@@ -114,7 +115,8 @@ hr {
 }
 
 .movie-card:hover .movie-image {
-	opacity: 0.7
+	filter: brightness(0.8);
+	opacity: 0.8;
 }
 
 .movie-card:hover .header-icon {

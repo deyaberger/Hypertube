@@ -50,11 +50,14 @@
 						"Entrez votre adresse email. Si vous avez un compte, vous recevrez un lien pour recréer votre mot de passe"
 					   ],
 		"email"      : ["email address:", "adresse email:"],
-		"send"       : ["Send", "Envoyer"]
+		"send"       : ["Send", "Envoyer"],
+		"error"	 	 : ["There was an error handling your request, please try again shortly.", "Erreur lors de l'envoie de votre requete. Veuillez reessayer plus tard"],
+		"email_sent" : ["An email was sent to", "Un email a été envoyé à"],
+		"infos" : ["Check your inbox to reset your password, the link is only valid for 15 minutes. If you haven't received anything, you may have enterred an incorrect email, or it is not associated with any account.", "Regardez votre boite mail pour creer un nouveau mot de passe. Le lien n'est valable que 15 minutes. Si vous n'avez rien reçu, vous avez peut être entré une addresse email invalide ou vous n'avez pas encore de compte chez nous."]
 	},
 	"NEWPASS" : {
 		"reset"      : ["Reset Password                                                                                                        :", "Créer un nouveau mot de passe                                                                                :"],
-		"new_pwd"    : ["New password                                                                                                          :", "nouveau mot de passe                                                                                         :"],
+		"reset_pwd"    : ["New password                                                                                                          :", "nouveau mot de passe                                                                                         :"],
 		"pwd"        : ["password", "motdepasse"],
 		"confirm"    : ["Confirm", "Confirmer"],
 		"error"      : [
