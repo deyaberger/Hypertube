@@ -40,7 +40,7 @@ module.exports = (db_pool) => {
 
             if (Math.max(start, end) >= file.downloaded) {
                 console.log("TOO FAR")
-                return res.sendStatus(204)
+                return res.sendStatus(206)
             }
 
             const headers = {
