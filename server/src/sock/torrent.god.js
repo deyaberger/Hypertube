@@ -82,7 +82,17 @@ class TorrentWatcher extends EventEmitter {
       // if (fs.existsSync(`./torrents/${this.getLargestFile().path}`)) {
         // console.log(this.sizePrint(this.torrent.downloaded),  this.sizePrint(this.getLargestFile().length), this.sizePrint(fs.statSync(`./torrents/${this.getLargestFile().path}`).size), new Date(fs.statSync(`./torrents/${this.getLargestFile().path}`).mtime.getTime()), new Date())
       // }
-      if (new Date() - dl_start > fixtures.MIN_TORRENT_TIME_S * 1000 && ETA_minutes * fixtures.SAFETY_FACTOR < loaded_minutes) {
+
+      if (this.getLargestFile().name.endsWith('.mkv') && this.getLargestFile().done) {
+        console.log("ITS READYYYY TO WATCH MKV")
+        this.torrent.removeListener('download', handler);
+        this.ready_to_watch = true
+        this.emit('ready_to_watch')
+      }
+      else if (this.getLargestFile().name.endsWith('.mp4') 
+                && new Date() - dl_start > fixtures.MIN_TORRENT_TIME_S * 1000 
+                && ETA_minutes * fixtures.SAFETY_FACTOR < loaded_minutes) 
+                {
         console.log("ITS READYYYY TO WATCH BABY")
         this.ready_to_watch = true
         this.emit('ready_to_watch')
