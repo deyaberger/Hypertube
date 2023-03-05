@@ -1,7 +1,6 @@
 module.exports = (db_pool) => {
     const auth_controller  = require("../controllers/auth.controller" )(db_pool)
     const auth_middlewares = require("../middlewares/auth.middleware")
-    const oauth_controller = require("../controllers/oauth.controller")(db_pool)
     var router = require("express").Router();
 
     router.post("/signup"          , auth_controller.signup    );

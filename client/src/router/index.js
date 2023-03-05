@@ -8,6 +8,7 @@ import Profile          from "../views/Profile.vue";
 import SingleMovie      from "../views/Single_movie.vue";
 import My_profile       from "../views/My_profile.vue";
 import Populate         from "../views/Populate.vue";
+import NotFound         from "../views/NotFound.vue";
 import MovieTorrents    from "../views/Movie_torrents.vue";
 
 
@@ -15,6 +16,11 @@ import MovieTorrents    from "../views/Movie_torrents.vue";
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
+	{
+        path: "/:catchAll(.*)",
+        name:'NotFound',
+        component: NotFound
+	},
     {
       path: "/",
       name: "home",
@@ -45,28 +51,33 @@ const router = createRouter({
 			path: "/search",
 			name: "search",
 			component: Search,
+			meta: { requiresAuth: true }
 		},
 		{
 			path: "/profile",
 			name: "profile",
 			component: Profile,
+			meta: { requiresAuth: true }
 		},
 		{
 			path: "/my_profile",
 			name: "edit",
 			component: My_profile,
+			meta: { requiresAuth: true }
 		},
 		{
 			path: "/profile/:user_id",
 			name: "profile",
 			props: true,
 			component: Profile,
+			meta: { requiresAuth: true }
 		},
 		{
 			path: "/movie/:movie_id",
 			name: "movie",
 			props: true,
 			component: SingleMovie,
+			meta: { requiresAuth: true }
 		},
 		{
 			path: "/populate",

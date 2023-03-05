@@ -64,6 +64,22 @@ module.exports = (db_pool) => {
                     return res.status(201).send({specific_errors: specific_errors, message: 'There was an error parsing your request', code: e.code})
                 }
                 else if (e.code == 'ER_DATA_TOO_LONG') {
+                    if (e.sqlMessage.includes("username")) {
+                        username_error = true
+                    }
+                    if (e.sqlMessage.includes("mail")) {
+                        mail_error = true
+                    }
+                    if (e.sqlMessage.includes("first_name")) {
+                        firstName_error = true
+                    }
+                    if (e.sqlMessage.includes("last_name")) {
+                        lastName_error = true
+                    }
+                    if (e.sqlMessage.includes("pass")) {
+                        password_error = true
+                    }
+                    specific_errors = {username_error, firstName_error, lastName_error, mail_error, password_error}
                     console.log("[auth.controller]: signup ER_DATA_TOO_LONG", e.sqlMessage)
                     return res.status(201).send({specific_errors: specific_errors, message: 'Data too long', code: e.code})
                 }

@@ -74,6 +74,9 @@ export default {
 					if (this.username_error == true && sign_up_res.data.code == "ER_DUP_ENTRY") {
 						this.username_error_text = this.text_content.error_username_dup
 					}
+					else if (this.username_error == true && sign_up_res.data.code == "ER_DATA_TOO_LONG") {
+						this.username_error_text = this.text_content.error_username_long
+					}
 					else {
 						this.username_error_text = this.text_content.error_username
 					}
@@ -197,6 +200,7 @@ export default {
 				:class="{ error_input : username_error}"
 				type="text"
 				name="username"
+				:maxlength="49"
 				:placeholder="text_content.username[lang_nb]"
 				/>
 				<p class="error_msg" v-show="username_error">{{username_error_text[lang_nb]}}</p>
@@ -209,6 +213,7 @@ export default {
 				:class="{ error_input : firstname_error}"
 				type="text"
 				name="firstname"
+				:maxlength="49"
 				:placeholder="text_content.first_name[lang_nb]"
 				/>
 				<p class="error_msg" v-show="firstname_error">{{text_content.error_first_name[lang_nb]}}</p>
@@ -221,6 +226,7 @@ export default {
 				:class="{ error_input : lastname_error}"
 				type="text"
 				name="lastname"
+				:maxlength="49"
 				:placeholder="text_content.last_name[lang_nb]"
 				/>
 				<p class="error_msg" v-show="lastname_error">{{text_content.error_last_name[lang_nb]}}</p>
@@ -233,6 +239,7 @@ export default {
 				:class="{ error_input : email_error}"
 				type="text"
 				name="email"
+				:maxlength="99"
 				placeholder="email@adress.com"
 				/>
 				<p class="error_msg" v-show="email_error">{{email_error_text[lang_nb]}}</p>
@@ -246,6 +253,7 @@ export default {
 					:class="{ error_input : mdp_error}"
 					:type="visible ? 'text' : 'password'"
 					name="password"
+					:maxlength="49"
 					:placeholder="text_content.pwd[lang_nb]"
 					>
 					<span class="input-group-btn">

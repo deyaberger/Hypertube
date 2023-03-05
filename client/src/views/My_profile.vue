@@ -10,9 +10,23 @@ import { Get_User_Details,
 		 Update_Last_Name,
 		 Update_Bio,
 		 Update_Email,
-		 Upload_Image} from "../functions/user"
+		 Upload_Image} from "../functions/user";
+import store from '../stores/store';
+
 
 export default {
+	name: "My_profile",
+
+	beforeRouteEnter(to, from, next) {
+		const isAuthenticated = store.state.user_token != null // check if the user is authenticated
+		if (!isAuthenticated) {
+			console.log("[my_profile]: not logged in yeat, redirecting to sign in")
+			next("/sign_in") // redirect to sign-in page if the user is not authenticated
+		} else {
+			next() // continue with navigation
+		}
+	},
+
 	components: {
 		SearchResults
 	},
@@ -21,7 +35,6 @@ export default {
 	data() {
 		return {
 			text_content          : textContent.PROFILE,
-			own_profile           : true,
 			user                  : null,
 
 			username              : null,
@@ -382,6 +395,11 @@ export default {
 					this.image_error = false
 					console.log("[my_profile]: Successfully uploaded image ", this.user.picture)
 				}
+				else if (res.data.code == "LIMIT_FILE_SIZE") {
+					this.image_error = true
+					this.image_error_text = this.text_content.image_size_error[this.lang_nb]
+					console.log("ERROR [my_profile]: in upload_image ", res.data.message)
+				}
 				else if (res.data.code == "FILE_TYPE_ERROR") {
 					this.image_error = true
 					this.image_error_text = this.text_content.image_type_error[this.lang_nb]
@@ -492,7 +510,7 @@ export default {
 						<p class="error_msg" v-if="image_error">{{image_error_text}}</p>
 					</div>
 					</div>
-					<div class="ms-3 main_info" >
+					<div class="ms-3 main_info">
 						<div v-if="first_name_is_saved">
 							<span v-if="first_name != null && first_name.length > 0" class ="h3 name">{{ first_name }}
 								<b-icon-pen class="modify h5" @click="modify_first_name()"></b-icon-pen>

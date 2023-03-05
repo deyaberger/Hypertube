@@ -1,8 +1,6 @@
 import { createStore } from 'vuex'
 import createPersistedState from 'vuex-persistedstate'
 
-
-
 const store = createStore({
 	plugins: [
 		createPersistedState({
@@ -32,6 +30,11 @@ const store = createStore({
 		},
 		SET_USER_ID(state, id) {
 			state.user_id = id
+		},
+		LOGOUT_USER(state) {
+			state.user_connected = false
+			state.user_token = null
+			state.user_id = null
 		},
   }
 })

@@ -13,8 +13,22 @@ import StarRating from 'vue-star-rating';
 import textContent from "../assets/language_dict/language_dict.json";
 import { io } from 'socket.io-client';
 import TorrentSocketService from '../functions/socket.service.js';
+import store from '../stores/store';
+
 
 export default {
+	name: "SingleMovie",
+
+	beforeRouteEnter(to, from, next) {
+		const isAuthenticated = store.state.user_token != null // check if the user is authenticated
+		if (!isAuthenticated) {
+			console.log("[single_movie]: not logged in yeat, redirecting to sign in")
+			next("/sign_in") // redirect to sign-in page if the user is not authenticated
+		} else {
+			next() // continue with navigation
+		}
+	},
+
 	props: {
 		movie_id: String,
 	},
@@ -31,7 +45,6 @@ export default {
 			fallbackUrl        : '../src/assets/missing_cover.jpeg',
 			movie_error        : false,
 			torrent_button_text: textContent.MOVIES["see_torrents"],
-			movie_source : '../src/assets/fake_torrent/documentaire.mp4',
 			on_video : false,
 			torrent_service: null,
 			torrent_loading : false,

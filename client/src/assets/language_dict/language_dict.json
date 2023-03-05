@@ -21,6 +21,7 @@
 		"create_user"        :["create a username:", "créer un pseudo:"],
 		"username"           :["username", "pseudo"],
 		"error_username_dup" :["Username already in use", "Pseudo déjà pris"],
+		"error_username_long" :["Username too long", "Pseudo trop long"],
 		"error_username"	 :["Username can't be empty or contain whitespaces", "Un pseudo ne peut pas contenir des espaces"],
 		"create_first_name"  :["Your First Name:", "Votre prénom:"],
 		"first_name"         :["firstname", "prénom"],
@@ -138,6 +139,8 @@
 		"username_error_dup"    :["Username already in use", "Pseudo déjà pris"],
 		"username_error"        :["Username can't be empty or contain whitespaces", "Un pseudo ne peut pas contenir des espaces"],
 		"username_error_long"   :["Username too long", "Pseudo trop long"],
-		"image_type_error"      :["Only .png, .jpg, .jpeg and .webp format allowed", "Seuls les formats .png, .jpg, .jpeg and .webp sont acceptés"]
+		"image_type_error"      :["Only .png, .jpg, .jpeg and .webp format allowed", "Seuls les formats .png, .jpg, .jpeg and .webp sont acceptés"],
+		"image_size_error"      :["Image too big", "Image trop grande"],
+		"image_error"      		:["Error in uploading image", "Cet image n'a pas pu etre enregistree"]
 	}
 }
