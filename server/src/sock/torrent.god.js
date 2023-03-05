@@ -106,7 +106,6 @@ class TorrentWatcher extends EventEmitter {
       done      : file.done,
       name      : file.name,
       path      : file.path,
-      // TODO: fix negative downloaded values ?
       downloaded: file.downloaded < 0 ? 0: file.downloaded,
       size      : file.length,
       type      : this.getFileType(file)
