@@ -21,6 +21,11 @@ class TorrentSocketService extends EventEmitter {
         console.log('connect_error', err.message, err.data)
         this.delete_socket()
         this.refresh_state()
+        if (err && err.data == 'EXPIRED_TOKEN' || err.data == 'CORRUPTED_TOKEN') {
+          return this.emit("TOKEN_ERROR")
+        }
+        this.emit("TOKEN_ERROR")
+        throw(err)
       })
     }
 
@@ -64,10 +69,18 @@ class TorrentSocketService extends EventEmitter {
         this.emit('TOR_WATCHER_ERROR')
       })
 
+      this.socket.once('NO_STREAMABLE_FILE', () => {
+        console.log('NO_STREAMABLE_FILE')
+        this.refresh_state()
+        this.delete_socket()
+        this.emit('NO_STREAMABLE_FILE')
+      })
+
 			this.socket.once('torrent_ready', (torrent_status) => {
 				console.log("torrent_ready: ", torrent_status)
 				this.torrent_status = torrent_status
         this.torrent_status = {...this.torrent_status}
+        this.emit('torrent_ready', torrent_status)
 			})
 
 			this.socket.on('download', (torrent_status) => {
@@ -84,14 +97,10 @@ class TorrentSocketService extends EventEmitter {
 				}
 			})
 
-			this.socket.once('ready_to_watch'), () => {
-				console.log("\n\nready_to_watch\n\n")
+			this.socket.on('ready_to_watch'), () => {
+				console.log("ready_to_watch event recieved")
 			}
 
-      this.socket.once('torrent_added'), () => {
-				console.log("torrent_added")
-        this.torrent_added = true;
-			}
 
 			this.socket.emit('add_torrent', torrent_id)
 		}
