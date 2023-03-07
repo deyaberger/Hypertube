@@ -186,6 +186,7 @@ export default {
 				<div v-for="sub in subs" v-bind:key="sub.path">
 					<span> {{ sub }} </span>
 				</div>
+				<span v-if="!movie_file_type_ok && torrent_status!=null">MOVIE TYPE INCOMPATIBULE</span>
 
 				<div v-if="movie_ready_to_watch && movie_file_type_ok" >
 					<video ref="movieplayer" controls loop id="videoPlayer" width="500" height="500" muted="muted" autoplay onerror="videoErrorHandler(e)">
