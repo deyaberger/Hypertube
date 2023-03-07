@@ -34,9 +34,9 @@ const store = createStore({
 			state.user_id = id
 		},
 		LOGOUT_USER(state) {
-			this.user_id    = null
-			this.user_token = null
-			this.logged_in  = false
+			state.user_id    = null
+			state.user_token = null
+			state.user_connected  = false
 		}
   }
 })

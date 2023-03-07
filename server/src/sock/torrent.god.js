@@ -42,6 +42,7 @@ class TorrentWatcher extends EventEmitter {
     this.torrent.once('ready', this.safetyWrapper(() => {
         console.log("TORRENT REDY", this.torrent.name)
         if (this.getFileType(this.getLargestFile()) != "MOVIE_FILE") {
+          console.log("Largest", this.getLargestFile(), "type" , this.getFileType(this.getLargestFile()), this.getStatus())
           this.emit(event_names.NO_STREAMABLE_FILE)
         }
         else {
@@ -109,16 +110,17 @@ class TorrentWatcher extends EventEmitter {
 
   getStatus() {
     let status = {
-      name          : this.torrent.name,
-      downloaded    : this.torrent.downloaded,
-      hash          : this.hash,
-      title         : this.title,
-      size          : this.torrent.length,
-      metadata_ready: this.torrent.ready,
-      ready_to_watch: this.ready_to_watch,
-      downloadSpeed : this.torrent.downloadSpeed,
-      uploadSpeed   : this.torrent.uploadSpeed,
-      files         : {},
+      name           : this.torrent.name,
+      downloaded     : this.torrent.downloaded,
+      hash           : this.hash,
+      title          : this.title,
+      size           : this.torrent.length,
+      video_file_type: this.getLargestFile().name.slice(-4),
+      metadata_ready : this.torrent.ready,
+      ready_to_watch : this.ready_to_watch,
+      downloadSpeed  : this.torrent.downloadSpeed,
+      uploadSpeed    : this.torrent.uploadSpeed,
+      files          : {},
     }
 
     for(const file of this.torrent.files) {
@@ -267,6 +269,7 @@ class GodEventHandler {
 
     // TODO: test NO_STREAMABLE_FILE on front and back
     this.torrentWatchers[torrent_id].once(event_names.NO_STREAMABLE_FILE, () => {
+      console.log("emit no streamable")
       this.io.to(torrent_id).emit(event_names.NO_STREAMABLE_FILE)
       this.remove_torrent(torrent_id)
     })

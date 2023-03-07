@@ -7,14 +7,13 @@ export default {
   components: { LangDrop },
 	data() {
       return {
-		text_content : textContent.NAV
+				text_content : textContent.NAV
       }
     },
 	methods : {
 		logout() {
 			this.$store.commit('LOGOUT_USER')
 			this.$router.push('/sign_in')
-			alert("Session expired")
 		}
 	},
 	computed: mapState({
@@ -33,25 +32,25 @@ export default {
     <b-collapse id="nav-collapse" is-nav>
       <b-navbar-nav class="ms-auto" v-if="!user_connected">
         <b-nav-item>
-			<router-link to="/sign_in" class="nav-link">{{text_content.sign_in[lang_nb]}}</router-link>
-		</b-nav-item>
-		<b-nav-item>
-			<router-link to="/sign_up" class="nav-link">{{text_content.sign_up[lang_nb]}}</router-link>
-		</b-nav-item>
-		<LangDrop></LangDrop>
+					<router-link to="/sign_in" class="nav-link">{{text_content.sign_in[lang_nb]}}</router-link>
+				</b-nav-item>
+				<b-nav-item>
+					<router-link to="/sign_up" class="nav-link">{{text_content.sign_up[lang_nb]}}</router-link>
+				</b-nav-item>
+				<LangDrop></LangDrop>
       </b-navbar-nav>
 
       <b-navbar-nav class="ms-auto" v-else>
-		<b-nav-item>
-			<router-link to="/search" class="nav-link">{{text_content.movies[lang_nb]}} <b-icon-search/></router-link>
-		</b-nav-item>
-        <b-nav-item>
-			<router-link to="/my_profile" class="nav-link">{{text_content.profile[lang_nb]}} <b-icon-person-circle/></router-link>
-		</b-nav-item>
-		<LangDrop></LangDrop>
-		<b-nav-item>
-			<router-link to="/" class="nav-link" @click="logout()">{{text_content.logout[lang_nb]}} <b-icon-arrow-bar-right /></router-link>
-		</b-nav-item>
+				<b-nav-item>
+					<router-link to="/search" class="nav-link">{{text_content.movies[lang_nb]}} <b-icon-search/></router-link>
+				</b-nav-item>
+						<b-nav-item>
+					<router-link to="/my_profile" class="nav-link">{{text_content.profile[lang_nb]}} <b-icon-person-circle/></router-link>
+				</b-nav-item>
+				<LangDrop></LangDrop>
+				<b-nav-item>
+					<router-link to="/" class="nav-link" @click="logout()">{{text_content.logout[lang_nb]}} <b-icon-arrow-bar-right /></router-link>
+				</b-nav-item>
       </b-navbar-nav>
     </b-collapse>
 </b-navbar>

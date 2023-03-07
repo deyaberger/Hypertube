@@ -76,6 +76,7 @@ class TorrentSocketService extends EventEmitter {
 				console.log("torrent_ready: ", torrent_status)
 				this.torrent_status = torrent_status
         this.torrent_status = {...this.torrent_status}
+        this.emit('torrent_ready', torrent_status)
 			})
 
 			this.socket.on('download', (torrent_status) => {
