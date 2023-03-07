@@ -50,9 +50,6 @@ TorGod = new torrentGod(io, connection_pool, client)
 require('./src/sock/socket.server')(io, TorGod)
 
 
-
-
-
 // AUTH
 const auth_router = require("./src/routes/auth.routes")(connection_pool)
 app.use("/api/auth", auth_router)

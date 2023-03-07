@@ -1,13 +1,14 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Sign_in          from "../views/Sign_in.vue";
 import Sign_up          from "../views/Sign_up.vue";
-import Reset_pwd        from "../views/Reset_password.vue";
-import New_pwd          from "../views/New_password.vue";
+import Forgot_pwd        from "../views/Forgot_password.vue";
+import reset_pwd          from "../views/Reset_password.vue";
 import Search           from "../views/Search.vue";
 import Profile          from "../views/Profile.vue";
 import SingleMovie      from "../views/Single_movie.vue";
 import My_profile       from "../views/My_profile.vue";
 import Populate         from "../views/Populate.vue";
+import NotFound         from "../views/NotFound.vue";
 import MovieTorrents    from "../views/Movie_torrents.vue";
 
 
@@ -15,6 +16,11 @@ import MovieTorrents    from "../views/Movie_torrents.vue";
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
+	{
+        path: "/:catchAll(.*)",
+        name:'NotFound',
+        component: NotFound
+	},
     {
       path: "/",
       name: "home",
@@ -32,41 +38,46 @@ const router = createRouter({
       component: Sign_up,
     },
     {
-      path: "/reset_pwd",
-      name: "reset_pwd",
-      component: Reset_pwd,
+      path: "/forgot_pwd",
+      name: "forgot_pwd",
+      component: Forgot_pwd,
     },
     {
-      path: "/new_pwd",
-      name: "new_pwd",
-      component: New_pwd,
+      path: "/reset_pwd",
+      name: "reset_pwd",
+      component: reset_pwd,
     },
 		{
 			path: "/search",
 			name: "search",
 			component: Search,
+			meta: { requiresAuth: true }
 		},
 		{
 			path: "/profile",
 			name: "profile",
 			component: Profile,
+			meta: { requiresAuth: true }
 		},
 		{
 			path: "/my_profile",
 			name: "edit",
 			component: My_profile,
+			meta: { requiresAuth: true }
 		},
 		{
 			path: "/profile/:user_id",
 			name: "profile",
 			props: true,
 			component: Profile,
+			meta: { requiresAuth: true }
 		},
 		{
 			path: "/movie/:movie_id",
 			name: "movie",
 			props: true,
 			component: SingleMovie,
+			meta: { requiresAuth: true }
 		},
 		{
 			path: "/populate",

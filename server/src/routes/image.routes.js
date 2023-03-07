@@ -26,7 +26,10 @@ function upload_func(req, res, next) {
 	upload(req, res, function (err) {
 		if (err instanceof multer.MulterError) {
 			console.log("<image.routes> MULTER_ERROR: ", err.code)
-			return res.status(400).send({code: "MULTER_ERROR", message: err.message})
+      if (err.code == 'LIMIT_FILE_SIZE') {
+  			return res.status(201).send({code: "LIMIT_FILE_SIZE", message: err.message})
+      }
+			return res.status(201).send({code: "MULTER_ERROR", message: err.message})
 		}
 		else if (err && err.message == "Only .png, .jpg, .jpeg and .webp format allowed!") {
             console.log("err type images")

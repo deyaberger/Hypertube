@@ -7,9 +7,23 @@ import { Get_User_Fav_Movies,
 import { Get_Other_User_Details,
 		 Is_Following,
 		 Follow,
-		 UnFollow } from "../functions/user"
+		 UnFollow } from "../functions/user";
+import store from '../stores/store';
+
 
 export default {
+	name: "Profile",
+
+	beforeRouteEnter(to, from, next) {
+		const isAuthenticated = store.state.user_token != null // check if the user is authenticated
+		if (!isAuthenticated) {
+			console.log("[profile]: not logged in yeat, redirecting to sign in")
+			next("/sign_in") // redirect to sign-in page if the user is not authenticated
+		} else {
+			next() // continue with navigation
+		}
+	},
+
 	props: {
 		user_id: String,
 	},
@@ -228,6 +242,7 @@ export default {
 							<button v-else class="btn check_button follow" type="button" @click="update_follow()">{{text_content.follow[lang_nb]}}</button>
 						</div>
 						<div class="col-9 button_container" v-else>
+							Hey there, narcissist
 						</div>
 						<div class="col">
 							<p class="small text-muted mb-0">{{text_content.followers[lang_nb]}}</p>

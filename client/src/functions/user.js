@@ -39,6 +39,27 @@ export const Get_Other_User_Details = async(token, other_user_id) => {
 	}
 }
 
+export const Update_Username = async(token, username) => {
+	let request = {
+		url: `http://127.0.0.1:8071/api/user/update_username`,
+		method: "post",
+		headers: {
+			'Access-Control-Allow-Origin': '*',
+			"Content-type"               : "application/json",
+			'Authorization'				 : `Bearer ${token}`
+		},
+		params : {
+			username : username
+		}
+	};
+	try {
+		const response = await axios(request);
+		return response;
+	}
+	catch(e) {
+		return (e.toJSON())
+	}
+}
 
 export const Update_First_Name = async(token, firstname) => {
 	let request = {

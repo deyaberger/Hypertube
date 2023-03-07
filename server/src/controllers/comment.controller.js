@@ -16,6 +16,10 @@ module.exports = (db_pool) => {
                 return res.status(201).send({comment_res: comment_res, code: "FAILURE"})
             }
             catch (e) {
+                if (e.code == 'ER_DATA_TOO_LONG') {
+                    console.log("[comment.controller]: post_comment ER_DATA_TOO_LONG")
+                    return res.status(201).send({comment_res: e.sqlMessage, code: "TOO_LONG"})
+                }
                 throw (e)
             }
         },

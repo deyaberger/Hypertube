@@ -12,6 +12,7 @@ export default {
     },
 	methods : {
 		logout() {
+			console.log("[Nav] Loging out, deleting user tokens & co")
 			this.$store.commit('LOGOUT_USER')
 			this.$router.push('/sign_in')
 		}
@@ -27,7 +28,7 @@ export default {
 
 <template>
 <b-navbar toggleable="lg" class="navbar navbar-dark horizontal">
-    <b-navbar-brand href="#"><routerLink to="/" class="navbar-brand"><span class = "brand_text">HYPERTUBE</span><img class="logo" src="../assets/logo_white.png"/></routerLink></b-navbar-brand>
+    <b-navbar-brand href="#"><routerLink :to="user_connected ? '/search' : '/'" class="navbar-brand"><span class = "brand_text">HYPERTUBE</span><img class="logo" src="../assets/logo_white.png"/></routerLink></b-navbar-brand>
     <b-navbar-toggle class="toggle" target="nav-collapse"></b-navbar-toggle>
     <b-collapse id="nav-collapse" is-nav>
       <b-navbar-nav class="ms-auto" v-if="!user_connected">

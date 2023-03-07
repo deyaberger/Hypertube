@@ -17,7 +17,7 @@
 	cursor: pointer
 }
 
-.about, .email {
+.about, .email, .username {
 	position: relative;
 }
 
@@ -67,12 +67,18 @@
 	color: white;
 }
 
-.input-group.email > * {
+.input-group.email > *,
+.input-group.username > * {
 	background-color: white;
 	color: black;
+}
+
+.input-group.email > * {
 	margin-left : 15%
 }
-.check_button.email {
+
+.check_button.email,
+.check_button.username {
 	border-color: rgb(190, 189, 189);
 }
 
@@ -122,7 +128,6 @@
 	opacity: .85;
 	transition: none;
 }
-
 
 
 .col {
@@ -191,6 +196,24 @@
 	text-transform: none;
   }
 
+
+.page-link.active, .active > .page-link {
+	background-color: black;
+	border-color: rgb(99, 97, 97);
+}
+
+.reset {
+	color: red
+}
+
+.tmp {
+	font-style: italic;
+	font-weight: normal;
+}
+
+.next_line {
+	white-space: initial;
+}
 
 
 @media screen and (max-width: 781px) {

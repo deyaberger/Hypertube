@@ -28,7 +28,7 @@ module.exports = (db_pool) => {
                 ON movies.id = wm.movie_id
                 AND wm.user_id = ${user_id}
             GROUP BY movies.id, title, imdb_rating, year, length_minutes, language, summary, max_seeds
-            ORDER BY movies.imdb_rating DESC
+            ORDER BY max_seeds DESC
             LIMIT 24 OFFSET 0
             `
             try {

@@ -11,6 +11,7 @@
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore"
   },
   "dependencies": {
+    "@videojs-player/vue": "^1.0.0",
     "axios": "^1.2.1",
     "bootstrap-icons-vue": "^1.8.1",
     "bootstrap-vue-3": "^0.3.5",
@@ -19,7 +20,6 @@
     "pinia": "^2.0.21",
     "socket.io-client": "^4.6.1",
     "srt-webvtt": "^2.0.0",
-    "vue-browser-detect-plugin": "^0.1.18",
     "vue-router": "^4.1.5",
     "vue-star-rating": "^2.1.0",
     "vue-tweet": "^2.0.2",

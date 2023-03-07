@@ -9,7 +9,7 @@ class TorrentSocketService extends EventEmitter {
       this.socket           = null;
       this.refresh_state()
     }
-    
+
     create_socket() {
 			this.socket = io("http://localhost:5173", {
 				path: "/socketo/",
@@ -30,13 +30,17 @@ class TorrentSocketService extends EventEmitter {
     }
 
     delete_socket() {
-      this.socket.close()
-      this.socket == null
+      console.log("close connetion socket")
+      if (this.socket) {
+        this.socket.close()
+        this.socket == null
+      }
     }
 
     refresh_state() {
       this.torrent_status   = null;
-      this.subs             = []
+      this.subs             = [];
+      this.torrent_added    = false;
     }
 
     refresh_socket() {
@@ -97,13 +101,13 @@ class TorrentSocketService extends EventEmitter {
 				console.log("\n\nready_to_watch\n\n")
 			}
 
-      this.socket.once('test'), () => {
-				console.log("\n\test\n\n")
+      this.socket.once('torrent_added'), () => {
+				console.log("torrent_added")
+        this.torrent_added = true;
 			}
 
 			this.socket.emit('add_torrent', torrent_id)
 		}
 
   }
-  
 export default TorrentSocketService;

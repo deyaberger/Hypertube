@@ -122,7 +122,7 @@ export default {
         </div>
       </div>
       <div class="mt-2 change_page">
-        <router-link to="/reset_pwd">{{text_content.forgot_pwd[lang_nb]}}</router-link>
+        <router-link to="/forgot_pwd">{{text_content.forgot_pwd[lang_nb]}}</router-link>
       </div>
       <div class="col-md-12 text-center" :class="{ 'mt-4' : connection_error, 'mt-4' : !connection_error }">
         <p class="error_msg" v-show="connection_error">{{text_content.error[lang_nb]}}</p>
