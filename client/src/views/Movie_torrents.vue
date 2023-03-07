@@ -2,7 +2,6 @@
 import { mapState } from 'vuex';
 import { Get_torrents_for_movie } from '../functions/streaming'
 import { Get_Single_Movie_Details } from '../functions/movies'
-import { io } from 'socket.io-client';
 import TorrentSocketService from '../functions/socket.service.js';
 
 export default {
@@ -73,8 +72,7 @@ export default {
 			console.log("gettings details")
 			try {
 				let res = await Get_Single_Movie_Details(this.movie_id, this.user_token)
-				// TODO: && res.code == "SUCCESS"
-				if (res.status == 200) {
+				if (res.status == 200 && res.code == "SUCCESS") {
 					console.log(res.data.movie)
 					this.movie_details = res.data.movie
 					console.log("deets", this.movie_details)
@@ -84,7 +82,13 @@ export default {
 				}
 			}
 			catch (e) {
-				console.log("erro in movie details", e)
+				if (e.code = 'EXPIRED_TOKEN' || e.code == 'CORRUPTED_TOKEN') {
+					this.$store.commit('LOGOUT_USER')
+					this.$router.push('/sign_in')
+					return alert("Session expired")
+				}
+				console.log("erro in movie details", e.code)
+				throw(e)
 			}
 		},
 
@@ -117,6 +121,11 @@ export default {
 
 	created() {
 		this.torrent_service = new TorrentSocketService(this.user_token)
+		this.torrent_service.on('TOKEN_ERROR', () => {
+			this.$store.commit('LOGOUT_USER')
+			this.$router.push('/sign_in')
+			alert("Session expired")
+		})
 	}
 }
 </script>

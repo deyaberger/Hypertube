@@ -3,7 +3,7 @@ const fs                            = require("fs");
 
 const { hash_title_to_magnet_link } = require('../utils/hash_title_to_magnet')
 const torrent_functions_factory     = require('../controllers/torrent')
-const return_codes                  = require('../utils/return_codes')
+const event_names                   = require('../utils/events')
 const fixtures                      = require('../utils/fixtures')
 const throw_err_with_code           = require('../utils/error_throw')
 
@@ -31,7 +31,7 @@ class TorrentWatcher extends EventEmitter {
       }
       catch (e) {
         console.log("error caught by safety wrapper", e)
-        this.emit(return_codes.TOR_WATCHER_ERROR)
+        this.emit(event_names.TOR_WATCHER_ERROR)
       }
     }
     wrapped = wrapped.bind(this)
@@ -41,10 +41,15 @@ class TorrentWatcher extends EventEmitter {
   setOnTorrentReady() {
     this.torrent.once('ready', this.safetyWrapper(() => {
         console.log("TORRENT REDY", this.torrent.name)
-        this.setOnFileDone()
-        this.setOnDownloadEmitStatus()
-        this.setOnDownloadCheckETA()
-        this.emit('torrent_ready', this.getStatus())
+        if (this.getFileType(this.getLargestFile()) != "MOVIE_FILE") {
+          this.emit(event_names.NO_STREAMABLE_FILE)
+        }
+        else {
+          this.setOnFileDone()
+          this.setOnDownloadEmitStatus()
+          this.setOnDownloadCheckETA()
+          this.emit('torrent_ready', this.getStatus())
+        }
     }))
   }
 
@@ -144,7 +149,7 @@ class TorrentWatcher extends EventEmitter {
       return 'SUBTITLE_FILE'
     }
     
-    if (file.name.endsWith('.avi') || file.name.endsWith('.mp4')) {
+    if (file.name.endsWith('.mkv') || file.name.endsWith('.mp4')) {
       return 'MOVIE_FILE'
     }
   }
@@ -197,19 +202,19 @@ class GodEventHandler {
       // console.log(this.torrentWatchers[torrent_id])
     }
     catch (e) {
-      if (e.code == return_codes.TORRENT_NOT_EXIST) {
+      if (e.code == event_names.TORRENT_NOT_EXIST) {
         console.log("Torrent not exists", id)
-        return this.io.to(torrent_id).emit(return_codes.TORRENT_NOT_EXIST)
+        return this.io.to(torrent_id).emit(event_names.TORRENT_NOT_EXIST)
       }
 
-      if (e.code == return_codes.BAD_ERROR) {
+      if (e.code == event_names.BAD_ERROR) {
         console.log("Torrent client availability error", id)
-        return this.io.to(torrent_id).emit(return_codes.BAD_ERROR)
+        return this.io.to(torrent_id).emit(event_names.BAD_ERROR)
       }
       
       console.log("error in add torrent socket")
       throw(e)
-      return this.io.to(torrent_id).emit(return_codes.UNKNOWN_ERROR)
+      return this.io.to(torrent_id).emit(event_names.UNKNOWN_ERROR)
     }
   }
 
@@ -255,9 +260,16 @@ class GodEventHandler {
     let torrent_id = torrent_db_data.id
     this.torrentWatchers[torrent_id] = new TorrentWatcher(torrent, torrent_db_data)
 
-    this.torrentWatchers[torrent_id].on(return_codes.TOR_WATCHER_ERROR, () => {
+    this.torrentWatchers[torrent_id].on(event_names.TOR_WATCHER_ERROR, () => {
       console.log("\n\nemit tor watcher error\n\n")
-      this.io.to(torrent_id).emit(return_codes.TOR_WATCHER_ERROR)
+      this.io.to(torrent_id).emit(event_names.TOR_WATCHER_ERROR)
+    })
+
+    this.torrentWatchers[torrent_id].once(event_names.NO_STREAMABLE_FILE, (torrent_status) => {
+      // console.log("emit tor ready", torrent_status)
+      console.log("Subs set high prio")
+      this.torrent_functions.set_subtitles_high_priority(torrent)
+      this.io.to(torrent_id).emit('torrent_ready', torrent_status)
     })
 
     this.torrentWatchers[torrent_id].once('torrent_ready', (torrent_status) => {

@@ -1,5 +1,6 @@
-const jwt    = require('jsonwebtoken')
+const jwt          = require('jsonwebtoken')
 const return_codes = require('../utils/return_codes')
+const event_names  = require('../utils/events')
 
 module.exports = {
     authenticateToken: (req, res, next) => {
@@ -10,10 +11,10 @@ module.exports = {
             jwt.verify(token, process.env.TOKEN_SECRET, (err, decoded) => {
                 if (err != null) console.log(err)
                 if (err && err instanceof jwt.TokenExpiredError){
-                    return res.status(403).send({code: return_codes.EXPIRED_TOKEN})
+                    return res.status(401).send({code: return_codes.EXPIRED_TOKEN})
                 }
                 if (err) {
-                    return res.status(403).send({code: return_codes.CORRUPTED_TOKEN})
+                    return res.status(401).send({code: return_codes.CORRUPTED_TOKEN})
                 }
                 req.user_id = decoded.user_id
                 next()
@@ -29,17 +30,22 @@ module.exports = {
         try {
             const token = socket.handshake.auth.token
             if (token == null) {
-                console.log("authenticateTokenSocket", return_codes.MISSING_TOKEN)
-                const err = new Error(return_codes.MISSING_TOKEN)
-                err.data  = return_codes.MISSING_TOKEN
+                console.log("authenticateTokenSocket", event_names.MISSING_TOKEN)
+                const err = new Error(event_names.MISSING_TOKEN)
+                err.data  = event_names.MISSING_TOKEN
                 return next(err)
             }
             jwt.verify(token, process.env.TOKEN_SECRET, (err, decoded) => {
                 if (err != null) console.log("authenticateTokenSocket err:\n", err, "\nhandled")
 
+                if (err && err instanceof jwt.TokenExpiredError){
+                    const err = new Error(event_names.EXPIRED_TOKEN)
+                    err.data  = event_names.EXPIRED_TOKEN
+                    return next(err)
+                }
                 if (err) {
-                    const err = new Error(return_codes.CORRUPTED_TOKEN)
-                    err.data  = return_codes.CORRUPTED_TOKEN
+                    const err = new Error(event_names.CORRUPTED_TOKEN)
+                    err.data  = event_names.CORRUPTED_TOKEN
                     return next(err)
                 }
                 socket.user_id = decoded.user_id
@@ -48,8 +54,8 @@ module.exports = {
         }
         catch (e) {
             console.log("ERROR in auth token: ", e)
-            const err = new Error(return_codes.UNKNOWN_ERROR)
-            err.data  = return_codes.UNKNOWN_ERROR
+            const err = new Error(event_names.UNKNOWN_ERROR)
+            err.data  = event_names.UNKNOWN_ERROR
             throw(e)
             return next(err)
         }

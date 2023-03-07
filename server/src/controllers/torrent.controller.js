@@ -50,7 +50,7 @@ module.exports = (db_pool) => {
                 "Content-Type"  : "video/mp4",
             };
 
-            // console.log(start)
+            // console.log(start) 
             // console.log("Write head")
             res.writeHead(206, headers);
             

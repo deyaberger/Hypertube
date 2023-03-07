@@ -12,8 +12,9 @@ export default {
     },
 	methods : {
 		logout() {
-			this.$store.commit('SET_CONNECTION', false)
+			this.$store.commit('LOGOUT_USER')
 			this.$router.push('/sign_in')
+			alert("Session expired")
 		}
 	},
 	computed: mapState({

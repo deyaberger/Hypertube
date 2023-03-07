@@ -21,6 +21,11 @@ class TorrentSocketService extends EventEmitter {
         console.log('connect_error', err.message, err.data)
         this.delete_socket()
         this.refresh_state()
+        if (err && err.data == 'EXPIRED_TOKEN' || err.data == 'CORRUPTED_TOKEN') {
+          return this.emit("TOKEN_ERROR")
+        }
+        this.emit("TOKEN_ERROR")
+        throw(err)
       })
     }
 

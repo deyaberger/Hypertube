@@ -33,6 +33,11 @@ const store = createStore({
 		SET_USER_ID(state, id) {
 			state.user_id = id
 		},
+		LOGOUT_USER(state) {
+			this.user_id    = null
+			this.user_token = null
+			this.logged_in  = false
+		}
   }
 })
 
