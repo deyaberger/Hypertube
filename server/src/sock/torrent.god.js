@@ -265,11 +265,10 @@ class GodEventHandler {
       this.io.to(torrent_id).emit(event_names.TOR_WATCHER_ERROR)
     })
 
-    this.torrentWatchers[torrent_id].once(event_names.NO_STREAMABLE_FILE, (torrent_status) => {
-      // console.log("emit tor ready", torrent_status)
-      console.log("Subs set high prio")
-      this.torrent_functions.set_subtitles_high_priority(torrent)
-      this.io.to(torrent_id).emit('torrent_ready', torrent_status)
+    // TODO: test NO_STREAMABLE_FILE on front and back
+    this.torrentWatchers[torrent_id].once(event_names.NO_STREAMABLE_FILE, () => {
+      this.io.to(torrent_id).emit(event_names.NO_STREAMABLE_FILE)
+      this.remove_torrent(torrent_id)
     })
 
     this.torrentWatchers[torrent_id].once('torrent_ready', (torrent_status) => {

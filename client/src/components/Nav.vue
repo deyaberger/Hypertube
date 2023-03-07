@@ -20,7 +20,7 @@ export default {
 	computed: mapState({
       user_connected  : state =>  state.user_connected,
       lang_nb         : state =>  state.lang_nb,
-	  user_token      : state =>  state.user_token,
+	  	user_token      : state =>  state.user_token,
     })
 }
 </script>

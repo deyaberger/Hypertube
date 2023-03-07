@@ -65,6 +65,13 @@ class TorrentSocketService extends EventEmitter {
         this.emit('TOR_WATCHER_ERROR')
       })
 
+      this.socket.once('NO_STREAMABLE_FILE', () => {
+        console.log('NO_STREAMABLE_FILE')
+        this.refresh_state()
+        this.delete_socket()
+        this.emit('NO_STREAMABLE_FILE')
+      })
+
 			this.socket.once('torrent_ready', (torrent_status) => {
 				console.log("torrent_ready: ", torrent_status)
 				this.torrent_status = torrent_status

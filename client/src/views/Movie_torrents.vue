@@ -126,6 +126,9 @@ export default {
 			this.$router.push('/sign_in')
 			alert("Session expired")
 		})
+		this.torrent_service.on('NO_STREAMABLE_FILE', () => {
+			alert("NO_STREAMABLE_FILE, stopped torrent.")
+		})
 	}
 }
 </script>
