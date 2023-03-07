@@ -91,8 +91,9 @@ export default {
 			}
 			catch (e) {
 				if (e.code = 'EXPIRED_TOKEN' || e.code == 'CORRUPTED_TOKEN') {
-					this.$store.commit('LOGOUT_USER')
-					this.$router.push('/sign_in')
+					// TODO: turn this back on
+					// this.$store.commit('LOGOUT_USER')
+					// this.$router.push('/sign_in')
 					return alert("Session expired")
 				}
 				console.log("erro in movie details", e.code)
@@ -143,8 +144,9 @@ export default {
 		this.torrent_service = new TorrentSocketService(this.user_token)
 		
 		this.torrent_service.on('TOKEN_ERROR', () => {
-			this.$store.commit('LOGOUT_USER')
-			this.$router.push('/sign_in')
+			// TODO: turn this back on
+			// this.$store.commit('LOGOUT_USER')
+			// this.$router.push('/sign_in')
 			alert("Session expired")
 		})
 

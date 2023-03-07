@@ -97,14 +97,10 @@ class TorrentSocketService extends EventEmitter {
 				}
 			})
 
-			this.socket.once('ready_to_watch'), () => {
-				console.log("\n\nready_to_watch\n\n")
+			this.socket.on('ready_to_watch'), () => {
+				console.log("ready_to_watch event recieved")
 			}
 
-      this.socket.once('torrent_added'), () => {
-				console.log("torrent_added")
-        this.torrent_added = true;
-			}
 
 			this.socket.emit('add_torrent', torrent_id)
 		}

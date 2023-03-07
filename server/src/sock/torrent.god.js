@@ -172,7 +172,7 @@ class GodEventHandler {
   handle_add_torrent_event(torrent_id) {
     console.log("handling add tor for", torrent_id)
     if (this.torrentWatchers[torrent_id] != undefined) {
-      this.io.to(torrent_id).emit('torrent_added')
+      this.io.to(torrent_id).emit('torrent_added', torrent_id)
       return console.log("torrent watcher already exists", torrent_id)
     }
     else {
@@ -293,7 +293,7 @@ class GodEventHandler {
       this.io.to(torrent_id).emit('file_done', file_status)
     })
 
-    this.io.to(torrent_id).emit('torrent_added')
+    this.io.to(torrent_id).emit('torrent_added', torrent_id)
   }
 
   bringNewcomerUpToDate(socket, torrent_id) {
