@@ -3,7 +3,6 @@ import { mapState } from 'vuex';
 import { Get_torrents_for_movie } from '../functions/streaming'
 import { Get_Single_Movie_Details } from '../functions/movies'
 import TorrentSocketService from '../functions/socket.service.js';
-import { createElementBlock } from 'vue';
 
 export default {
 	props: {
