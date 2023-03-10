@@ -81,7 +81,7 @@ module.exports = (db_pool) => {
                 }
                 if (e.code == 'ER_BAD_NULL_ERROR') {
                     console.log("[user.controller]: update_username FAILURE : ER_BAD_NULL_ERROR")
-                    return res.status(201).send({msg: "Can't change username (too (empty)", code : "EMPTY"})
+                    return res.status(201).send({msg: "Can't change username (empty)", code : "EMPTY"})
                 }
                 throw(e)
                 return res.status(201).send({msg: "Can't change username.", code : "UNKNOWN_ERROR"})
@@ -109,6 +109,10 @@ module.exports = (db_pool) => {
                     console.log("[user.controller]: update_first_name FAILURE : long")
                     return res.status(201).send({msg: "Can't change first_name (too long)", code : "TOO_LONG"})
                 }
+                if (e.code == 'ER_BAD_NULL_ERROR') {
+                    console.log("[user.controller]: update_first_name FAILURE : ER_BAD_NULL_ERROR")
+                    return res.status(201).send({msg: "Can't change first_name (empty)", code : "EMPTY"})
+                }
                 console.log("[user.controller]: update_first_name ERROR")
                 throw(e)
             }
@@ -134,6 +138,10 @@ module.exports = (db_pool) => {
                 if (e.code == 'ER_DATA_TOO_LONG') {
                     console.log("[user.controller]: update_last_name FAILURE : long")
                     return res.status(201).send({msg: "Can't change last_name (too long)", code : "TOO_LONG"})
+                }
+                if (e.code == 'ER_BAD_NULL_ERROR') {
+                    console.log("[user.controller]: update_last_name FAILURE : ER_BAD_NULL_ERROR")
+                    return res.status(201).send({msg: "Can't change last_name (empty)", code : "EMPTY"})
                 }
                 console.log("[user.controller]: update_last_name ERROR")
                 throw(e)
@@ -180,6 +188,10 @@ module.exports = (db_pool) => {
                 if (e.code == 'ER_DATA_TOO_LONG') {
                     console.log("[user.controller]: update_email FAILURE : long")
                     return res.status(201).send({msg: "Can't change email (too long)", code : "TOO_LONG"})
+                }
+                if (e.code == 'ER_BAD_NULL_ERROR') {
+                    console.log("[user.controller]: update_email FAILURE : ER_BAD_NULL_ERROR")
+                    return res.status(201).send({msg: "Can't change email (empty)", code : "EMPTY"})
                 }
                 throw(e)
             }
