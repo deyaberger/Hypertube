@@ -165,18 +165,25 @@ export default {
 			}
 			catch(e) {
 				throw(e)
+				this.parse_modifiable_data(res.data.user);
 			}
 		},
 
 		get_user_profile_pic() { // SAME
-			if (this.user.picture != null && this.user.picture.length > 0) {
-				if (this.user.picture.includes("cdn.intra.42") || this.user.picture.includes("github")
-				|| this.user.picture.includes("googleusercontent")) {
-					return (this.user.picture)
+			try {
+				if (this.user.picture != null && this.user.picture.length > 0) {
+					if (this.user.picture.includes("cdn.intra.42") || this.user.picture.includes("github")
+					|| this.user.picture.includes("googleusercontent")) {
+						return (this.user.picture)
+					}
+					return `${this.pic_prefix}${this.user.picture}`
 				}
-				return `${this.pic_prefix}${this.user.picture}`
+				return null
 			}
-			return null
+			catch (e) {
+				throw(e)
+				return null
+			}
 		},
 
 		async updating_movies(value) {  // SAME
@@ -267,6 +274,8 @@ export default {
 			}
 			catch(e) {
 				console.log("UNKOWN ERROR [my_profile] in save_last_name ")
+				this.last_name_error = true;
+				this.last_name_error_text = this.text_content.last_name_error
 				throw(e)
 			}
 
@@ -274,8 +283,8 @@ export default {
 
 		reset_last_name() {
 			this.last_name_is_saved = !this.last_name_is_saved
-			this.last_name_error = false
-			this.last_name = JSON.parse(JSON.stringify(this.user.last_name))
+			this.last_name_error    = false
+			this.last_name          = copy(this.user.last_name)
 		},
 
 		modify_bio() {
@@ -297,18 +306,20 @@ export default {
 					this.user.bio = this.bio;
 					console.log("[my_profile] Succesfully updated bio to", {bio : this.bio})
 				}
+				else {
+					this.bio_error = true;
+				}
 			}
 			catch(e) {
 				console.log("UNKOWN ERROR [my_profile] in save_bio ")
 				throw(e)
 			}
-
 		},
 
 		reset_bio() {
 			this.bio_is_saved = !this.bio_is_saved
 			this.bio_error = false
-			this.bio = JSON.parse(JSON.stringify(this.user.bio))
+			this.bio = copy(this.user.bio)
 		},
 
 		modify_username() {
@@ -317,9 +328,9 @@ export default {
 
 		async save_username() {
 			try {
-				// if (this.username_error) {
-				// 	return
-				// }
+				if (this.username_error) {
+					return
+				}
 				if (this.username == this.user.username) {
 					this.username_is_saved = !this.username_is_saved
 					this.username_error = false;
@@ -355,6 +366,8 @@ export default {
 			catch(e) {
 				console.log("UNKOWN ERROR [my_profile] in save_username ")
 				throw(e)
+				this.username_error = true;
+				this.username_error_text = ["There was an error modifying your username.", 'There was an error modifying your username.'];
 			}
 		},
 
@@ -405,6 +418,8 @@ export default {
 			catch(e) {
 				console.log("UNKOWN ERROR [my_profile] in save_mail ")
 				throw(e)
+				this.email_error = true;
+				this.email_error_text = this.text_content.email_error;
 			}
 		},
 
@@ -437,6 +452,8 @@ export default {
 			}
 			catch(e) {
 				throw(e)
+				this.image_error = true
+				this.image_error_text = "Unexpected error with your image. Try another."
 			}
 		},
 
@@ -473,10 +490,14 @@ export default {
 			},
 			deep:true
 		},
+
 		first_name: {
 			handler:function() {
 				if (this.first_name != null && this.first_name.match(this.regex_whitespace) == null){
 					this.first_name_error = true
+				}
+				else if (this.first_name == '') {
+					this.username_error = true
 				}
 				else if (this.first_name != null) {
 					this.first_name_error = false
@@ -484,10 +505,14 @@ export default {
 			},
 			deep:true
 		},
+
 		last_name: {
 			handler:function() {
 				if (this.last_name != null && this.last_name.match(this.regex_whitespace) == null){
 					this.last_name_error = true
+				}
+				else if (this.last_name == '') {
+					this.username_error = true
 				}
 				else if (this.last_name != null) {
 					this.last_name_error = false
@@ -495,6 +520,7 @@ export default {
 			},
 			deep:true
 		},
+
 		email: {
 			handler:function() {
 				if (this.email != null && this.email.length > 0 &&  this.email.match(this.regex_mail) == null){
