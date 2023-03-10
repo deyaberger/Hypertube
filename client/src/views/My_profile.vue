@@ -254,21 +254,26 @@ export default {
 					this.last_name = null
 				}
 				let res = await Update_Last_Name(this.user_token, this.last_name)
-				if (res && res.data.code == "SUCCESS") {
+				if (res && res.data && res.data.code == "SUCCESS") {
 					this.last_name_is_saved = !this.last_name_is_saved
 					this.last_name_error = false
 					this.user.last_name = this.last_name;
 					console.log("[my_profile] Succesfully updated lastname to", {last_name : this.last_name})
 
 				}
-				else if (res && res.data.code == "FAILURE") {
+				else if (res && res.data && res.data.code == "FAILURE") {
 					this.last_name_error = true;
 					this.last_name_error_text = this.text_content.last_name_error
 					console.log("ERROR [my_profile] in save_last_name : ", res.data.msg)
 				}
-				else if (res && res.data.code == "TOO_LONG") {
+				else if (res && res.data && res.data.code == "TOO_LONG") {
 					this.last_name_error = true;
 					this.last_name_error_text = this.text_content.last_name_error_long
+					console.log("ERROR [my_profile] in save_last_name : ", res.data.msg)
+				}
+				else if (res && res.data && res.data.code == "EMPTY") {
+					this.last_name_error = true;
+					this.last_name_error_text = this.text_content.last_name_error_empty
 					console.log("ERROR [my_profile] in save_last_name : ", res.data.msg)
 				}
 			}
@@ -497,7 +502,7 @@ export default {
 					this.first_name_error = true
 				}
 				else if (this.first_name == '') {
-					this.username_error = true
+					this.first_name_error = true
 				}
 				else if (this.first_name != null) {
 					this.first_name_error = false
@@ -512,7 +517,7 @@ export default {
 					this.last_name_error = true
 				}
 				else if (this.last_name == '') {
-					this.username_error = true
+					this.last_name_error = true
 				}
 				else if (this.last_name != null) {
 					this.last_name_error = false
@@ -582,8 +587,8 @@ export default {
 								v-model = "first_name"
 								class="form-control"
 								:class="{ error_input : first_name_error}"
-								name="password"
-								:maxlength="49"
+								name="fname"
+								:maxlength="15"
 								:placeholder="first_name"
 							>
 							<span class="input-group-btn align-items-center">
@@ -612,8 +617,8 @@ export default {
 								v-model = "last_name"
 								class="form-control"
 								:class="{ error_input : last_name_error}"
-								name="password"
-								:maxlength="49"
+								name="l_name"
+								:maxlength="20"
 								:placeholder="last_name"
 							>
 							<span class="input-group-btn align-items-center">
@@ -646,7 +651,7 @@ export default {
 									class="form-control"
 									:class="{ error_input : username_error}"
 									name="username"
-									:maxlength="49"
+									:maxlength="20"
 									:placeholder="username"
 								>
 								<span class="input-group-btn align-items-center">
@@ -715,7 +720,7 @@ export default {
 							<b-form-textarea
 								id="textarea"
 								v-model = "bio"
-								name="password"
+								name="bio_form"
 								:placeholder="bio"
 								:maxlength=499
 							></b-form-textarea>
