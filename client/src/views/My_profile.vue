@@ -2,8 +2,8 @@
 import { mapState } from 'vuex';
 import textContent from "../assets/language_dict/language_dict.json";
 import SearchResults from '../components/Search_results.vue';
-import { Get_User_Fav_Movies,
-	     Get_User_Watched_Movies} from '../functions/movies';
+import { Get_User_Fav_Movies, Get_User_Watched_Movies} from '../functions/movies';
+import { copy } from '../functions/utils'
 import { Get_User_Details,
 		 Update_Username,
 		 Update_First_Name,
@@ -95,13 +95,12 @@ export default {
 		},
 
 		parse_modifiable_data(user) {
-			this.username	= JSON.parse(JSON.stringify(user.username))
-			this.first_name	= JSON.parse(JSON.stringify(user.first_name))
-			this.last_name	= JSON.parse(JSON.stringify(user.last_name))
-			this.email		= JSON.parse(JSON.stringify(user.mail))
-			this.bio		= this.user.bio ? JSON.parse(JSON.stringify(this.user.bio)) : ''
+			this.username   = copy(user.username)
+			this.first_name = copy(user.first_name)
+			this.last_name  = copy(user.last_name)
+			this.email      = copy(user.mail)
+			this.bio        = this.user.bio ? copy(this.user.bio) : ''
 		},
-
 
 		async get_user_fav_movies() { // SAME
 			console.log("[my_profile]: getting user fav movies...")
@@ -181,31 +180,36 @@ export default {
 
 		async save_first_name() {
 			try {
+				if (this.last_name_error) {
+					return
+				}
 				if (this.first_name != null && this.first_name.length == 0) {
 					this.first_name = null
 				}
 				let res = await Update_First_Name(this.user_token, this.first_name)
-				if (res && res.data.code == "SUCCESS") {
+				if (res && res.data && res.data.code == "SUCCESS") {
 					this.first_name_is_saved = !this.first_name_is_saved
 					this.first_name_error = false
 					this.user.first_name = this.first_name;
 					console.log("[my_profile] Succesfully updated firstname to", {first_name : this.first_name})
 
 				}
-				else if (res && res.data.code == "FAILURE") {
+				else {
+					this.first_name = this.user.first_name
 					this.first_name_error = true;
+				}
+
+				if (res && res.status == 201 && res.data && (res.data.code == "FAILURE" || res.data.code == "TOO_LONG" || res.data.code == "EMPTY")) {
 					this.first_name_error_text = this.text_content.first_name_error
 					console.log("ERROR [my_profile] in save_first_name : ", res.data.msg)
-				}
-				else if (res && res.data.code == "TOO_LONG") {
-					this.first_name_error = true;
-					this.first_name_error_text = this.text_content.first_name_error_long
-					console.log("ERROR [my_profile] in save_first_name: ", res.data.msg)
 				}
 			}
 			catch(e) {
 				console.log("UNKOWN ERROR [my_profile] in save_first_name ")
 				throw(e)
+				this.first_name = this.user.first_name
+				this.first_name_error = true;
+				this.first_name_error_text = this.text_content.first_name_error
 			}
 
 		},
@@ -222,6 +226,9 @@ export default {
 
 		async save_last_name() {
 			try {
+				if (this.last_name_error) {
+					return
+				}
 				if (this.last_name != null && this.last_name.length == 0) {
 					this.last_name = null
 				}
@@ -263,6 +270,9 @@ export default {
 
 		async save_bio() {
 			try {
+				if (this.bio_error) {
+					return
+				}
 				if (this.bio != null && this.bio.length == 0) {
 					this.bio = null
 				}
@@ -293,6 +303,9 @@ export default {
 
 		async save_username() {
 			try {
+				if (this.username_error) {
+					return
+				}
 				if (this.username == this.user.username) {
 					this.username_is_saved = !this.username_is_saved
 					this.username_error = false;
@@ -303,24 +316,24 @@ export default {
 					this.username = null
 				}
 				let res = await Update_Username(this.user_token, this.username)
-				if (res && res.data.code == "SUCCESS") {
+				if (res && res.data && res.data.code == "SUCCESS") {
 					this.username_is_saved = !this.username_is_saved
 					this.username_error = false;
 					this.username_error_text = this.text_content.username_error;
 					this.user.username = this.username;
 					console.log("[my_profile] Succesfully updated username to", {username : this.username})
 				}
-				else if (res && res.data.code == "FAILURE") {
+				else if (res && res.data && res.data.code == "FAILURE") {
 					this.username_error = true;
 					this.username_error_text = this.text_content.username_error;
 					console.log("ERROR [my_profile] in save_username : ", res.data.msg)
 				}
-				else if (res && res.data.code == "TOO_LONG") {
+				else if (res && res.data && res.data.code == "TOO_LONG") {
 					this.username_error = true;
 					this.username_error_text = this.text_content.username_error_long;
 					console.log("ERROR [my_profile] in save_username : ", res.data.msg)
 				}
-				else if (res && res.data.code == "USERNAME_TAKEN") {
+				else if (res && res.data && res.data.code == "USERNAME_TAKEN") {
 					this.username_error = true;
 					this.username_error_text = this.text_content.username_error_dup;
 					console.log("ERROR [my_profile] in save_username : ", res.data.msg)
@@ -335,7 +348,7 @@ export default {
 		reset_username() {
 			this.username_is_saved = !this.username_is_saved
 			this.username_error = false
-			this.username = JSON.parse(JSON.stringify(this.user.username))
+			this.username = copy(this.user.username)
 		},
 
 		modify_mail() {
@@ -344,12 +357,15 @@ export default {
 
 		async save_mail() {
 			try {
+				if (this.email_error) {
+					return
+				}
 				if (this.email != null && this.email.length == 0) {
 					this.email = null
 				}
 				let res = await Update_Email(this.user_token, this.email)
 				console.log("res: ", res)
-				if (res && res.data.code == "SUCCESS") {
+				if (res && res.data && res.data.code == "SUCCESS") {
 					this.email_is_saved = !this.email_is_saved
 					this.email_error = false;
 					this.email_error_text = this.text_content.email_error;
@@ -357,17 +373,17 @@ export default {
 					console.log("[my_profile] Succesfully updated mail to", {mail : this.email})
 
 				}
-				else if (res && res.data.code == "FAILURE") {
+				else if (res && res.data && res.data.code == "FAILURE") {
 					this.email_error = true;
 					this.email_error_text = this.text_content.email_error;
 					console.log("ERROR [my_profile] in save_mail : ", res.data.msg)
 				}
-				else if (res && res.data.code == "TOO_LONG") {
+				else if (res && res.data && res.data.code == "TOO_LONG") {
 					this.email_error = true;
 					this.email_error_text = this.text_content.email_error_long;
 					console.log("ERROR [my_profile] in save_mail : ", res.data.msg)
 				}
-				else if (res && res.data.code == "EMAIL_TAKEN") {
+				else if (res && res.data && res.data.code == "EMAIL_TAKEN") {
 					this.email_error = true;
 					this.email_error_text = this.text_content.email_error_dup;
 					console.log("ERROR [my_profile] in save_mail : ", res.data.msg)
@@ -390,17 +406,17 @@ export default {
 			try {
 				console.log("[my_profile]: Uploading image....")
 				let res = await Upload_Image(this.user_token, file)
-				if (res.data.code == "SUCCESS") {
+				if (res && res.data && res.data.code == "SUCCESS") {
 					this.user.picture = `${res.data.filename}`
 					this.image_error = false
 					console.log("[my_profile]: Successfully uploaded image ", this.user.picture)
 				}
-				else if (res.data.code == "LIMIT_FILE_SIZE") {
+				else if (res && res.data && res.data.code == "LIMIT_FILE_SIZE") {
 					this.image_error = true
 					this.image_error_text = this.text_content.image_size_error[this.lang_nb]
 					console.log("ERROR [my_profile]: in upload_image ", res.data.message)
 				}
-				else if (res.data.code == "FILE_TYPE_ERROR") {
+				else if (res && res.data && res.data.code == "FILE_TYPE_ERROR") {
 					this.image_error = true
 					this.image_error_text = this.text_content.image_type_error[this.lang_nb]
 					console.log("ERROR [my_profile]: in upload_image ", res.data.message)
@@ -433,6 +449,9 @@ export default {
 		username: {
 			handler:function() {
 				if (this.username != null && this.username.match(this.regex_whitespace) == null){
+					this.username_error = true
+				}
+				else if (this.username == '') {
 					this.username_error = true
 				}
 				else if (this.username != null) {
@@ -616,7 +635,7 @@ export default {
 									class="form-control"
 									:class="{ error_input : email_error}"
 									name="email"
-									:maxlength="99"
+									:maxlength="50"
 									:placeholder="email"
 								>
 								<span class="input-group-btn align-items-center">

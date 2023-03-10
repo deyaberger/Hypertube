@@ -79,7 +79,12 @@ module.exports = (db_pool) => {
                     console.log("[user.controller]: update_username FAILURE : long")
                     return res.status(201).send({msg: "Can't change username (too long)", code : "TOO_LONG"})
                 }
+                if (e.code == 'ER_BAD_NULL_ERROR') {
+                    console.log("[user.controller]: update_username FAILURE : ER_BAD_NULL_ERROR")
+                    return res.status(201).send({msg: "Can't change username (too (empty)", code : "EMPTY"})
+                }
                 throw(e)
+                return res.status(201).send({msg: "Can't change username.", code : "UNKNOWN_ERROR"})
             }
         },
 

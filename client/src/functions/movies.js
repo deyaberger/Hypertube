@@ -55,7 +55,7 @@ export const Get_Recommendations = async(token) => {
 		headers: {
 			'Access-Control-Allow-Origin': '*',
 			"Content-type"               : "application/json",
-			'Authorization'				 : `Bearer ${token}`
+			'Authorization'				       : `Bearer ${token}`
 		}
 	};
 	const response = await axios(request);

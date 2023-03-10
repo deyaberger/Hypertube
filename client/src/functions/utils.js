@@ -20,3 +20,7 @@ export function Get_Rating_Level(rating) {
 export function Get_Separator(index, text_list) {
     return (index < text_list.length - 1 ? ", " : "")
 }
+
+export function copy(obj) {
+    return JSON.parse(JSON.stringify(obj))
+}
