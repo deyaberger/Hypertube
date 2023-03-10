@@ -119,18 +119,24 @@ export default {
 				throw(e)
 				this.fav_movies = null
 			}
-
 		},
 
 		async get_user_watched_movies() { // SAME
 			console.log("[my_profile]: getting user watched movies...")
-			let res = await Get_User_Watched_Movies(this.user_token);
-			if (res.data.code == "SUCCESS") {
-				this.watched_movies = res.data.watched;
-				console.log("[my_profile]: Successfully got user watched movies!", this.watched_movies)
+			try {
+				let res = await Get_User_Watched_Movies(this.user_token);
+				if (res.data.code == "SUCCESS") {
+					this.watched_movies = res.data.watched;
+					console.log("[my_profile]: Successfully got user watched movies!", this.watched_movies)
+				}
+				else {
+					console.log("ERROR [my_profile]: in get_user_watched_movies ", res)
+				}
 			}
-			else {
-				console.log("ERROR [my_profile]: in get_user_watched_movies ", res)
+			catch (e) {
+				console.log("wierd erro in get user watched")
+				throw(e)
+				this.watched_movies = null
 			}
 		},
 
