@@ -104,14 +104,22 @@ export default {
 
 		async get_user_fav_movies() { // SAME
 			console.log("[my_profile]: getting user fav movies...")
-			let res = await Get_User_Fav_Movies(this.user_token);
-			if (res.data.code == "SUCCESS") {
-				this.fav_movies = res.data.favorites
-				console.log("[my_profile]: Successfully got user fav movies!", this.fav_movies)
+			try {
+				let res = await Get_User_Fav_Movies(this.user_token);
+				if (res && res.data && res.data.code == "SUCCESS") {
+					this.fav_movies = res.data.favorites
+					console.log("[my_profile]: Successfully got user fav movies!", this.fav_movies)
+				}
+				else {
+					console.log("ERROR [my_profile]: in get_user_fav_movies ", res)
+				}
 			}
-			else {
-				console.log("ERROR [my_profile]: in get_user_fav_movies ", res)
+			catch (e) {
+				console.log("wierd erro in get use favourites")
+				throw(e)
+				this.fav_movies = null
 			}
+
 		},
 
 		async get_user_watched_movies() { // SAME
@@ -180,7 +188,7 @@ export default {
 
 		async save_first_name() {
 			try {
-				if (this.last_name_error) {
+				if (this.first_name_error) {
 					return
 				}
 				if (this.first_name != null && this.first_name.length == 0) {
@@ -303,9 +311,9 @@ export default {
 
 		async save_username() {
 			try {
-				if (this.username_error) {
-					return
-				}
+				// if (this.username_error) {
+				// 	return
+				// }
 				if (this.username == this.user.username) {
 					this.username_is_saved = !this.username_is_saved
 					this.username_error = false;
@@ -319,7 +327,6 @@ export default {
 				if (res && res.data && res.data.code == "SUCCESS") {
 					this.username_is_saved = !this.username_is_saved
 					this.username_error = false;
-					this.username_error_text = this.text_content.username_error;
 					this.user.username = this.username;
 					console.log("[my_profile] Succesfully updated username to", {username : this.username})
 				}
