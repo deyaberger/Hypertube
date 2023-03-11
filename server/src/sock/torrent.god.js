@@ -231,9 +231,12 @@ class GodEventHandler {
       if (this.torrentWatchers[torrent_id]) {
         console.log("watcher found")
         let magnet_uri = hash_title_to_magnet_link(this.torrentWatchers[torrent_id].hash, this.torrentWatchers[torrent_id].title)
-        console.log("DELE", this.torrentWatchers[torrent_id].torrent.listeners('download'))
-        this.torrent_client.remove(magnet_uri)
-        console.log("DELE", this.torrentWatchers[torrent_id].torrent.listeners('download'))
+        let tor = this.torrentWatchers[torrent_id].torrent
+        console.log("torpaf", tor.path, Object.keys(tor), tor.info, tor.info.files[0].path)
+        // this.torrentWatchers[torrent_id].torrent.destroy({destroyStore})
+        this.torrent_client.remove(magnet_uri, {
+          destroyStore: true
+        })
         delete this.torrentWatchers[torrent_id]
       }
       else {

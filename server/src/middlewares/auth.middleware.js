@@ -2,6 +2,7 @@ const jwt          = require('jsonwebtoken')
 const return_codes = require('../utils/return_codes')
 const event_names  = require('../utils/events')
 
+// TODO: Maybe:? both the token middlewares only care if the token is correct. If the user id doesn't exist they let you through.
 module.exports = {
     authenticateToken: (req, res, next) => {
         try {

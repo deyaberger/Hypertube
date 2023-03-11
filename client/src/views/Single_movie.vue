@@ -103,16 +103,6 @@ export default {
 			}
 		},
 
-		create_socket() {
-			console.log("socket connect", this.user_token)
-			this.socket = io("http://localhost:5173", {
-				path: "/socketo/",
-				auth: {
-						token: this.user_token
-					}
-			});
-		},
-
 		async set_watched() {
 			try {
 				console.log("[single_movie]: Setting movie to watched: ...", {id: this.movie_id})
@@ -140,7 +130,7 @@ export default {
 				else {
 					res = await Add_To_Favorites(this.movie_id, this.user_token)
 				}
-				if (res.data.code == "SUCCESS") {
+				if (res.data && res.data.code == "SUCCESS") {
 					console.log("[single_movie]: Successfully updated fav!")
 					this.movie.is_fav = !this.movie.is_fav
 				}
