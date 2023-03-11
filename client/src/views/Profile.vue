@@ -36,21 +36,21 @@ export default {
 
 	data() {
 		return {
-			text_content		: textContent.PROFILE, // SAME
-			user                : null, // SAME
-			my_id				: null,
+			text_content   : textContent.PROFILE, // SAME
+			user           : null, // SAME
+			my_id          : null,
 
-			request_error		: false, // SAME
-			network_error		: false, // SAME
-			error_text			: '', // SAME
+			request_error  : false, // SAME
+			network_error  : false, // SAME
+			error_text     : '', // SAME
 
-			watched_movies      : null, // SAME
-			fav_movies		    : null, // SAME
+			watched_movies : null, // SAME
+			fav_movies     : null, // SAME
 
-			pic_prefix			: "http://127.0.0.1:8071/api/image/get/", // SAME
-			fallbackUrl			: '../src/assets/generic_profile_pic.jpg', // SAME
+			pic_prefix     : "http://127.0.0.1:8071/api/image/get/", // SAME
+			fallbackUrl    : '../src/assets/generic_profile_pic.jpg', // SAME
 
-			followed			: false,
+			followed       : false,
 		}
 	},
 
@@ -62,6 +62,7 @@ export default {
 				'error'   : false
 			}
 		},
+
 		exists(movies) { // SAME
 			if (movies == null || (movies != null && movies.length == 0)) {
 				return false
@@ -183,8 +184,8 @@ export default {
 
 
 	computed: mapState({  // SAME
-      	lang_nb  : state =>  state.lang_nb,
-		user_token : state =>  state.user_token,
+      lang_nb  : state =>  state.lang_nb,
+			user_token : state =>  state.user_token,
     }),
 
 
