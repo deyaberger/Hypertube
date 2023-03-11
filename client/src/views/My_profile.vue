@@ -401,6 +401,7 @@ export default {
 		},
 
 		async save_mail() {
+			console.log("email err", email_error)
 			try {
 				if (this.email_error) {
 					return
@@ -541,11 +542,14 @@ export default {
 
 		email: {
 			handler:function() {
+				console.log("handling mail")
 				if (!is_empty(this.email) && this.email.match(this.regex_mail) == null){
+				console.log("handling mail err")
 					this.email_error_text = this.text_content.email_error;
 					this.email_error = true
 				}
 				else {
+				console.log("handling mail good")
 					this.email_error = false
 				}
 			},
