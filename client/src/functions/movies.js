@@ -111,7 +111,7 @@ export const Get_Recommendations_Page = async(token, offset, limit) => {
 		},
 		params: {
 			offset: offset,
-			page: page
+			limit: limit
 		}
 	};
 	const response = await axios(request);

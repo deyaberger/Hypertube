@@ -6,6 +6,7 @@ import store from '../stores/store';
 import textContent from "../assets/language_dict/language_dict.json"
 import { Get_Movies_Research,
 	     Get_Recommendations} from "../functions/movies"
+import Paginator from '../functions/pagination.service'
 
 export default {
 
@@ -45,7 +46,8 @@ export default {
 			only_show_fav     : false,
 			error             : false,
 			saved_movies      : null,
-			reset             : false
+			reset             : false,
+			paginator         : null
 		}
 	},
 
@@ -177,12 +179,19 @@ export default {
 		currentPage: {
 			handler:function() {
 				this.get_movies_page_slice()
+				if (this.paginator) {
+					this.paginator.set_page(this.currentPage)
+				}
 			},
 			deep:true
 		},
 		form: {
 			handler:function() {
 				this.get_form_results()
+				if (this.paginator) {
+					this.paginator.set_search_form(this.form)
+					this.paginator.set_search_form(null)
+				}
 			},
 			deep:true
 		},
@@ -192,6 +201,14 @@ export default {
 			},
 			deep:true
 		}
+	},
+
+	mounted() {
+		this.paginator = new Paginator(this.user_token)
+		this.paginator.on("GET_MOVIE_ERROR", () => {
+			throw(new Error("SEARCH MOVIE ERROR"))
+		})
+		this.paginator.set_page(2)
 	}
 }
 

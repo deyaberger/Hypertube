@@ -9,6 +9,10 @@ class Paginator extends EventEmitter {
 
       this.movies_per_page = 24
       this.user_token = user_token
+      this.fresh_state()
+    }
+
+    fresh_state() {
       this.search_form = null
       this.error = false
       this.movies = {}
@@ -26,44 +30,38 @@ class Paginator extends EventEmitter {
       return Math.min(max_loaded, this.current_page + 4)
     }
 
-    set_page(page_number) {
+    async set_page(page_number) {
       console.log("set page number", page_number)
       this.current_page = page_number
       this.loading = true
 
-      let min = Math.max(0, this.page_number - 4)
+      let min = Math.max(1, page_number - 4)
       let max = this.current_page
-
-      for (const i = min; i <= max; i++) {
+      console.log("min", min, 'max', max)
+      for (let i = min; i <= max; i++) {
         console.log("handling", i)
-        if (!i in this.movies) {
+        if (!(i in Object.keys(this.movies))) {
           console.log("no cache")
-          let new_movies = this.get_page_from_server(page_number)
+          let new_movies = await this.get_page_from_server(page_number)
           console.log("new mov", new_movies)
           if (new_movies.length == 0) {
             break
           }
           this.movies[page_number] = new_movies
         }
+        else {
+          console.log(i, 'in movies', Object.keys(this.movies))
+        }
       }
-      this.movies = [...this.movies]
+      this.current_page_movies = [...this.movies[page_number]]
       this.loading = false
     }
 
     set_search_form(form) {
+      console.log("setting form", form)
+      this.fresh_state()
       this.search_form = form
-    }
-
-    get_page(page_number) {
-      console.log("Getting page", page_number)
-      if (! page_number in this.movies) {
-        console.log("cache hit")
-      }
-      else {
-        console.log("fetching from api")
-        this.movies[page_number] = this.get_page_from_server(page_number)
-      }
-      return this.movies[page_number]
+      this.set_page(1)
     }
 
     async get_page_from_server(page_number) {
@@ -93,6 +91,18 @@ class Paginator extends EventEmitter {
         throw(e)
         this.emit('GET_MOVIE_ERROR')
       }
+    }
+
+    get_page(page_number) {
+      console.log("Getting page", page_number)
+      if (! page_number in this.movies) {
+        console.log("cache hit")
+      }
+      else {
+        console.log("fetching from api")
+        this.movies[page_number] = this.get_page_from_server(page_number)
+      }
+      return this.movies[page_number]
     }
   }
 export default Paginator;
