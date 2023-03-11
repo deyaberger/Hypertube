@@ -1,4 +1,5 @@
 <script>
+import { url } from 'inspector';
 import { mapState } from 'vuex';
 import textContent from "../assets/language_dict/language_dict.json";
 import SearchResults from '../components/Search_results.vue';
@@ -9,7 +10,7 @@ import { Get_Other_User_Details,
 		 Follow,
 		 UnFollow } from "../functions/user";
 import store from '../stores/store';
-
+import fallbackUrll from '/src/assets/generic_profile_pic.png'
 
 export default {
 	name: "Profile",
@@ -48,7 +49,7 @@ export default {
 			fav_movies		    : null, // SAME
 
 			pic_prefix			: "http://127.0.0.1:8071/api/image/get/", // SAME
-			fallbackUrl			: '../src/assets/generic_profile_pic.jpg', // SAME
+			fallbackUrl			: fallbackUrll,
 
 			followed			: false,
 		}

@@ -12,6 +12,7 @@ import { Get_User_Details,
 		 Update_Email,
 		 Upload_Image} from "../functions/user";
 import store from '../stores/store';
+import fallbackUrll from '/src/assets/generic_profile_pic.png'
 
 
 export default {
@@ -53,7 +54,7 @@ export default {
 
 			profile_pic           : null,
 			pic_prefix            : "http://127.0.0.1:8071/api/image/get/",
-			fallbackUrl           : '../src/assets/generic_profile_pic.jpg',
+			fallbackUrl           : fallbackUrll,
 
 			username_is_saved     : true,
 			first_name_is_saved   : true,

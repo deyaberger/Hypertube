@@ -44,7 +44,11 @@ export default defineConfig({
       // },
     },
   },
+  
   build: {
-    outDir: '../server/client_dist'
-  }
+    outDir: '../server/client_dist',
+  },
+
+  assetsInclude: ['**/*.jpg'],
+
 })
