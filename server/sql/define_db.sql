@@ -56,6 +56,7 @@ create table torrents
     size       varchar(40)                  not null,
     size_bytes varchar(40)                  not null,
     last_added timestamp default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP,
+    folder      varchar(500)                null,
 
 
     constraint hash unique (hash),
