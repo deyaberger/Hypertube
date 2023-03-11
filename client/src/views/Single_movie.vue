@@ -65,7 +65,7 @@ export default {
 
 		movie_source() {
 			if (this.torrent_service && this.torrent_service.torrent_status) {
-				return `http://localhost:8071/api/torrents/stream_magnet/${encodeURIComponent(this.torrent_service.torrent_status.hash)}/${encodeURIComponent(this.torrent_service.torrent_status.title)}`
+				return `/api/torrents/stream_magnet/${encodeURIComponent(this.torrent_service.torrent_status.hash)}/${encodeURIComponent(this.torrent_service.torrent_status.title)}`
 			}
 			return null
 		},
