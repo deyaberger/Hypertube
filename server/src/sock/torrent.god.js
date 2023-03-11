@@ -206,9 +206,7 @@ class GodEventHandler {
       let magnet_uri = hash_title_to_magnet_link(torrent_db_data.hash, `torrent_db_data.title_${torrent_id}`)
 
       if (this.torrent_client.get(magnet_uri)) {
-        console.log("\n\n\nWTF DOUBLE TROUBLE THIS SHOULD NEVER PRINT\n\n\n", 
-            torrent_id, Object.keys(this.torrentWatchers),
-            Object.keys(this.torrent_client.get(magnet_uri)))
+        console.log("\n\n\nWTF DOUBLE TROUBLE THIS SHOULD NEVER PRINT\n\n\n", torrent_id)
 
         throw_err_with_code("You tried adding a torrent that's already present!", event_names.BAD_ERROR)
         this.io.to(torrent_id).emit(event_names.NO_STREAMABLE_FILE)
