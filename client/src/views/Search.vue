@@ -12,6 +12,7 @@ export default {
 	name: "Search",
 
 	beforeRouteEnter(to, from, next) {
+		// TODO: This fails if the token is invalid or expired.
 		const isAuthenticated = store.state.user_token != null // check if the user is authenticated
 		if (!isAuthenticated) {
 			console.log("[search]: not logged in yeat, redirecting to sign in")
@@ -34,17 +35,17 @@ export default {
 			text_content      : textContent.MOVIES,
 			movies            : null,
 			movies_slice      : null,
-			limit			  : 50,
+			limit             : 50,
 			number_of_results : 0,
-			movie_count		  : 0,
+			movie_count       : 0,
 			currentPage       : 1,
 			rows              : 0,
 			perPage           : 24,
 			user_research     : 0,
-			only_show_fav	  : false,
-			error			  : false,
-			saved_movies	  : null,
-			reset			  : false
+			only_show_fav     : false,
+			error             : false,
+			saved_movies      : null,
+			reset             : false
 		}
 	},
 
@@ -71,7 +72,20 @@ export default {
 			}
 			catch(e) {
 				this.error = true
-				console.log("UNKNOWN ERROR [search]: ")
+				if (e.code == 'ERR_BAD_REQUEST') { // i.e. it's an axios error
+					if (e.response && e.response.status == 401)  {
+						let data = e.response.data
+						this.$store.commit('LOGOUT_USER')
+						if (data && data.code == 'EXPIRED_TOKEN') {
+							alert("Your session expired.")
+						}
+						else {
+							alert("Please login.")
+						}
+						return this.$router.push('/sign_in')
+					}
+				}
+				console.log("UNKNOWN ERROR [get_reco]: ", Object.keys(e), e.code, e.name, e.response)
 				throw(e)
 			}
 		},
@@ -79,11 +93,13 @@ export default {
 		async get_search() {
 			console.log("[search] : getting search ...")
 			try {
-				return await Get_Movies_Research(this.form, this.lang_nb, this.user_token);
+				let res = await Get_Movies_Research(this.form, this.lang_nb, this.user_token);
+				return res
 			}
 			catch(e) {
 				this.error = true
-				console.log("UNKNOWN ERROR [search]: ", e)
+				console.log("RES", res, "RES")
+				console.log("UNKNOWN ERROR [search]: ")
 				throw(e)
 			}
 		},
@@ -110,6 +126,8 @@ export default {
 			}
 			else {
 				throw("Unknow error code getting movies")
+				this.$store.commit('LOGOUT_USER')
+				this.$router.push('/sign_in')
 			}
 		},
 

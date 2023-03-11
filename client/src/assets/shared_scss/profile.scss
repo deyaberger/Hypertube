@@ -6,6 +6,20 @@
 	font-size: 12px;
 }
 
+.black_rectangle {
+	background-color: black;
+	height: 250px;
+}
+
+.pic_container {
+	width: 200px;
+	margin-top: 50px;
+}
+
+.main_info {
+	margin-left: 20px;
+}
+
 .movies {
 	margin-top: 0px;
 	margin-bottom: 0px;
@@ -19,6 +33,15 @@
 
 .about, .email, .username {
 	position: relative;
+}
+
+.name, .email, .username {
+	word-wrap: break-word; /* Break long words if necessary */
+	overflow-wrap: break-word;
+}
+
+.email_container {
+	max-width: 40%;
 }
 
 .modify.mail {
@@ -142,6 +165,7 @@
 
 .main_info {
 	margin-top: 90px;
+	width: 50%;
 }
 
 .name
@@ -149,7 +173,6 @@
 	text-transform: capitalize;
 	color: white;
 	margin-right: 5%;
-
 }
 
 .remove {
@@ -215,10 +238,43 @@
 	white-space: initial;
 }
 
+@media screen and (max-width: 991px) {
+	.h5 {
+		font-size: 15px;
+	}
+	.h3 {
+		font-size: 20px;
+	}
+	.lead {
+		font-size: 18px;
+	}
+	.about {
+		font-size: 15px;
+	}
+	.profile_pic {
+		width: 180px;
+		height: 180px;
+	}
+	.black_rectangle {
+		height: 230px;
+	}
+	.main_info {
+		margin-left: 5px;
+	}
+}
 
 @media screen and (max-width: 781px) {
 	.gradient-custom-2 {
 		height: 120vw;
+	}
+	.small {
+		font-size: 12px;
+	}
+	.h5 {
+		font-size: 14px;
+	}
+	.main_info {
+		margin-left: 8px;
 	}
 }
 
@@ -234,6 +290,40 @@
 	}
 }
 
+@media screen and (max-width: 540px) {
+	.small {
+		font-size: 10px;
+	}
+	.h5 {
+		font-size: 12px;
+	}
+	.h3 {
+		font-size: 15px;
+	}
+	.profile_pic {
+		width: 150px;
+		height: 150px;
+	}
+	.black_rectangle {
+		height: 210px;
+	}
+	.change_icon {
+		right: 40px;
+	}
+	.pic_container {
+		width: 150px;
+	}
+	.pseudo_and_co > * {
+		padding: 2px;
+	}
+	.lead {
+		font-size: 15px;
+	}
+	.about {
+		font-size: 12px;
+	}
+}
+
 @media screen and (max-width: 530px) {
 	.gradient-custom-2 {
 		height: 180vw;
@@ -244,10 +334,51 @@
 	.gradient-custom-2 {
 		height: 220vw;
 	}
+	.profile_pic {
+		width: 130px;
+		height: 130px;
+	}
+	.black_rectangle {
+		height: 190px;
+	}
+	.change_icon {
+		right: 60px;
+	}
+	.pic_container {
+		width: 130px;
+	}
 }
 
 @media screen and (max-width: 375px) {
 	.gradient-custom-2 {
 		height: 280vw;
+	}
+	.profile_pic {
+		width: 110px;
+		height: 110px;
+	}
+	.black_rectangle {
+		height: 150px;
+	}
+	.change_icon {
+		right: 80px;
+	}
+	.pic_container {
+		margin-top: 30px;
+		width: 130px;
+	}
+	.main_info {
+		margin-left: 0px;
+		margin-top: 50px;
+	}
+	.h5 {
+		font-size: 10px;
+		font-weight: normal;
+	}
+	.h3 {
+		font-size: 13px;
+	}
+	.small {
+		font-size: 9px;
 	}
 }
