@@ -136,8 +136,6 @@
 		"last_name_error"       :["Last name can't contain whitespaces", "Un nom ne peut pas contenir des espaces"],
 		"first_name_error_long" :["First name too long", "Prenom trop long"],
 		"last_name_error_long"  :["Last name too long", "nom trop long"],
-		"last_name_error_empty" :["name empty", "pas de nom"],
-		"first_name_error_empty":["name empty", "pas de nom"],
 		"email_error"           :["Please enter a valid email address", "Adresse invalide"],
 		"email_error_dup"       :["Email already taken", "Email déjà pris"],
 		"email_error_long"      :["Email too long", "Email trop long"],

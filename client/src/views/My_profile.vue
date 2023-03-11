@@ -213,17 +213,22 @@ export default {
 					this.first_name_error = false
 					this.user.first_name = this.first_name;
 					console.log("[my_profile] Succesfully updated firstname to", {first_name : this.first_name})
-
 				}
 				else {
-					this.first_name = this.user.first_name
 					this.first_name_error = true;
+					if (res && res.data && (res.data.code == "FAILURE")) {
+						this.first_name_error_text = this.text_content.first_name_error
+						console.log("ERROR [my_profile] in save_first_name : ", res.data.msg)
+					}
+					else if (res && res.data && (res.data.code == "TOO_LONG")) {
+						this.first_name_error_text = this.text_content.first_name_error_long
+						console.log("ERROR [my_profile] in save_first_name : ", res.data.msg)
+					}
+					else {
+						console.log("UNKOWN ERROR [my_profile] in save_first_name ")
+					}
 				}
 
-				if (res && res.status == 201 && res.data && (res.data.code == "FAILURE" || res.data.code == "TOO_LONG" || res.data.code == "EMPTY")) {
-					this.first_name_error_text = this.text_content.first_name_error
-					console.log("ERROR [my_profile] in save_first_name : ", res.data.msg)
-				}
 			}
 			catch(e) {
 				console.log("UNKOWN ERROR [my_profile] in save_first_name ")
@@ -259,23 +264,22 @@ export default {
 					this.last_name_error = false
 					this.user.last_name = this.last_name;
 					console.log("[my_profile] Succesfully updated lastname to", {last_name : this.last_name})
+				}
+				else {
+					this.last_name_error = true;
+					if (res && res.data && res.data.code == "FAILURE") {
+						this.last_name_error_text = this.text_content.last_name_error
+						console.log("ERROR [my_profile] in save_last_name : ", res.data.msg)
+					}
+					else if (res && res.data && res.data.code == "TOO_LONG") {
+						this.last_name_error_text = this.text_content.last_name_error_long
+						console.log("ERROR [my_profile] in save_last_name : ", res.data.msg)
+					}
+					else {
+						console.log("UNKOWN ERROR [my_profile] in save_first_name ")
+					}
+				}
 
-				}
-				else if (res && res.data && res.data.code == "FAILURE") {
-					this.last_name_error = true;
-					this.last_name_error_text = this.text_content.last_name_error
-					console.log("ERROR [my_profile] in save_last_name : ", res.data.msg)
-				}
-				else if (res && res.data && res.data.code == "TOO_LONG") {
-					this.last_name_error = true;
-					this.last_name_error_text = this.text_content.last_name_error_long
-					console.log("ERROR [my_profile] in save_last_name : ", res.data.msg)
-				}
-				else if (res && res.data && res.data.code == "EMPTY") {
-					this.last_name_error = true;
-					this.last_name_error_text = this.text_content.last_name_error_empty
-					console.log("ERROR [my_profile] in save_last_name : ", res.data.msg)
-				}
 			}
 			catch(e) {
 				console.log("UNKOWN ERROR [my_profile] in save_last_name ")
@@ -501,9 +505,6 @@ export default {
 				if (this.first_name != null && this.first_name.match(this.regex_whitespace) == null){
 					this.first_name_error = true
 				}
-				else if (this.first_name == '') {
-					this.first_name_error = true
-				}
 				else if (this.first_name != null) {
 					this.first_name_error = false
 				}
@@ -514,9 +515,6 @@ export default {
 		last_name: {
 			handler:function() {
 				if (this.last_name != null && this.last_name.match(this.regex_whitespace) == null){
-					this.last_name_error = true
-				}
-				else if (this.last_name == '') {
 					this.last_name_error = true
 				}
 				else if (this.last_name != null) {
