@@ -309,13 +309,14 @@ export default {
 					this.bio = null
 				}
 				let res = await Update_Bio(this.user_token, this.bio)
-				if (res.status == 200) {
+				if (res && res.data && res.data.code == "SUCCESS") {
 					this.bio_is_saved = !this.bio_is_saved;
 					this.bio_error = false;
 					this.user.bio = this.bio;
 					console.log("[my_profile] Succesfully updated bio to", {bio : this.bio})
 				}
 				else {
+					console.log("UNKOWN ERROR [my_profile] in save_bio ")
 					this.bio_error = true;
 				}
 			}

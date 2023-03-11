@@ -154,12 +154,17 @@ module.exports = (db_pool) => {
                 let new_bio  = req.query.bio
                 let update_res = await user_functions.update_user_bio(user_id, new_bio)
                 if (update_res.affectedRows == 1) {
-                    console.log("[user.controller]: update_last_name SUCCESS")
+                    console.log("[user.controller]: update_bio SUCCESS")
                     return res.status(200).send({msg: "successfully changed user bio", code: "SUCCESS"})
                 }
+                console.log("[user.controller]: update_bio SUCCESS")
                 return res.status(201).send({msg:  `Unknown error in update_bio: ${update_res}`, code: "FAILURE"})
             }
             catch (e) {
+                if (e.code == 'ER_DATA_TOO_LONG') {
+                    console.log("[user.controller]: update_bio ER_DATA_TOO_LONG")
+                    return res.status(201).send({msg: "Can't change bio (too long)", code : "TOO_LONG"})
+                }
                 throw(e)
             }
         },
