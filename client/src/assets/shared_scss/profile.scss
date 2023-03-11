@@ -18,6 +18,7 @@
 
 .main_info {
 	margin-left: 20px;
+	z-index: 1;
 }
 
 .movies {
@@ -41,7 +42,8 @@
 }
 
 .email_container {
-	max-width: 40%;
+	// max-width: 40%;
+	// max-width: 50%;
 }
 
 .modify.mail {
@@ -96,8 +98,9 @@
 	color: black;
 }
 
-.input-group.email > * {
-	margin-left : 15%
+col.not_saved{
+	background-color: blue;
+
 }
 
 .check_button.email,
@@ -154,7 +157,7 @@
 
 
 .col {
-	width: 80%;
+	// width: 80%;
 }
 
 .dark_input {
@@ -238,6 +241,10 @@
 	white-space: initial;
 }
 
+.follows_container {
+	max-width: 15%;
+}
+
 @media screen and (max-width: 991px) {
 	.h5 {
 		font-size: 15px;
@@ -274,15 +281,26 @@
 		font-size: 14px;
 	}
 	.main_info {
-		margin-left: 8px;
+		margin-left: 10px;
 	}
+	.input-group > span > button > * {
+		width: 20px;
+	}
+	.form-control {
+		font-size: 12px;
+	}
+	.input-group.email {
+		width: 100%;
+	}
+	.form-control.email, .form-control.username {
+		padding: 2px;
+	}
+	.follows_container {
+		max-width: 20%;
+	}
+
 }
 
-@media screen and (max-width: 681px) {
-	.gradient-custom-2 {
-		height: 140vw;
-	}
-}
 
 @media screen and (max-width: 681px) {
 	.gradient-custom-2 {
@@ -290,10 +308,14 @@
 	}
 }
 
-@media screen and (max-width: 540px) {
-	.small {
-		font-size: 10px;
+@media screen and (max-width : 660px) {
+	.error_msg {
+		font-size: 15px;
 	}
+
+}
+
+@media screen and (max-width: 540px) {
 	.h5 {
 		font-size: 12px;
 	}
@@ -322,6 +344,16 @@
 	.about {
 		font-size: 12px;
 	}
+	.check_button.bio {
+		font-size: 12px;
+		margin-top: 0px
+	}
+	.check_button.followed, .check_button.follow {
+		width: 150px
+	}
+	.error_msg {
+		font-size: 10px;
+	}
 }
 
 @media screen and (max-width: 530px) {
@@ -347,6 +379,12 @@
 	.pic_container {
 		width: 130px;
 	}
+	.follows_container {
+		max-width: 27%;
+	}
+	.check_button.followed, .check_button.follow {
+		width: 100px
+	}
 }
 
 @media screen and (max-width: 375px) {
@@ -362,6 +400,7 @@
 	}
 	.change_icon {
 		right: 80px;
+		font-size: 30px;
 	}
 	.pic_container {
 		margin-top: 30px;
@@ -373,12 +412,11 @@
 	}
 	.h5 {
 		font-size: 10px;
-		font-weight: normal;
 	}
 	.h3 {
 		font-size: 13px;
 	}
-	.small {
-		font-size: 9px;
+	.follows_container {
+		max-width: 30%;
 	}
 }

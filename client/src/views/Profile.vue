@@ -51,6 +51,7 @@ export default {
 			fallbackUrl    : '../src/assets/generic_profile_pic.jpg', // SAME
 
 			followed       : false,
+			window_width          : window.innerWidth
 		}
 	},
 
@@ -178,8 +179,11 @@ export default {
 				console.log("UNKNOWN ERROR [update_follow]: ")
 				throw(e)
 			}
-
 		},
+
+		updateWidth() {
+			this.window_width = window.innerWidth;
+		}
 	},
 
 
@@ -194,7 +198,12 @@ export default {
 		await this.get_user_fav_movies();
 		await this.get_user_watched_movies();
 		await this.is_following();
-	}
+		window.addEventListener('resize', this.updateWidth);
+	},
+
+	beforeUnmount() {
+    	window.removeEventListener('resize', this.updateWidth);
+  	},
 }
 </script>
 
@@ -219,13 +228,13 @@ export default {
 			<div class="row d-flex justify-content-center align-items-start h-100">
 			<div class="col col-lg-9 col-xl-7">
 				<div class="card">
-				<div class="rounded-top text-white d-flex flex-row" style="background-color: #000; height:250px;">
-					<div class="ms-4 mt-5 d-flex flex-column" style="width: 200px;">
+					<div class="rounded-top text-white d-flex flex-row black_rectangle">
+						<div class="ms-4 d-flex flex-column pic_container">
 					<div class="profile_header mt-4" >
 						<img :src="get_user_profile_pic()" alt="profile pic" class="profile_pic" @error="handle_image_error"/>
 					</div>
 					</div>
-					<div class="ms-3 main_info" >
+					<div class="main_info" >
 						<div>
 							<span class ="h3 name">{{ user.first_name }} {{ user.last_name }}
 							</span>
@@ -238,11 +247,11 @@ export default {
 					<div class="justify-content-center text-center py-1">
 					<div>
 						<div class="row">
-						<div class="col-9 button_container" v-if="user.id != my_id">
+						<div class="button_container" :class="window_width > 1415 ? 'col-9' : 'col-7'" v-if="user.id != my_id">
 							<button v-if="followed" class="btn check_button followed" @click="update_follow()" type="button" data-toggle="tooltip" data-placement="top" :title="text_content.unfollow[lang_nb]">{{text_content.followed[lang_nb]}}</button>
 							<button v-else class="btn check_button follow" type="button" @click="update_follow()">{{text_content.follow[lang_nb]}}</button>
 						</div>
-						<div class="col-9 button_container" v-else>
+						<div v-else class="button_container" :class="window_width > 1415 ? 'col-9' : 'col-7'">
 							Hey there, narcissist
 						</div>
 						<div class="col">
