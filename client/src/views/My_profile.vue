@@ -12,6 +12,7 @@ import { Get_User_Details,
 		 Update_Email,
 		 Upload_Image} from "../functions/user";
 import store from '../stores/store';
+import fallbackUrll from '/src/assets/generic_profile_pic.png'
 
 
 export default {
@@ -53,8 +54,8 @@ export default {
 			fav_movies            : null,
 
 			profile_pic           : null,
-			pic_prefix            : "http://127.0.0.1:8071/api/image/get/",
-			fallbackUrl           : '../src/assets/generic_profile_pic.jpg',
+			pic_prefix            : "/api/image/get/",
+			fallbackUrl           : fallbackUrll,
 
 			username_is_saved     : true,
 			first_name_is_saved   : true,
@@ -173,8 +174,7 @@ export default {
 		get_user_profile_pic() { // SAME
 			try {
 				if (!is_empty(this.user.picture)) {
-					if (this.user.picture.includes("cdn.intra.42") || this.user.picture.includes("github")
-					|| this.user.picture.includes("googleusercontent")) {
+					if (this.user.picture.startsWith('http')) {
 						return (this.user.picture)
 					}
 					return `${this.pic_prefix}${this.user.picture}`
@@ -540,11 +540,14 @@ export default {
 
 		email: {
 			handler:function() {
+				console.log("handling mail")
 				if (!is_empty(this.email) && this.email.match(this.regex_mail) == null){
+				console.log("handling mail err")
 					this.email_error_text = this.text_content.email_error;
 					this.email_error = true
 				}
 				else {
+				console.log("handling mail good")
 					this.email_error = false
 				}
 			},

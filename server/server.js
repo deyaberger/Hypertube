@@ -104,6 +104,38 @@ const oauth_router = require("./src/routes/oauth.routes")(connection_pool)
 app.use("/api/oauth", oauth_router)
 
 
+
+
+const history = require('connect-history-api-fallback');
+
+const historyMiddleware = history({
+  verbose: true,
+});
+
+app.use((req, res, next) => {
+  console.log(req.path)
+  let route_base = req.path.split('/')[1]
+  console.log(route_base)
+  if (route_base != 'api') {
+    historyMiddleware(req, res, next);
+  } else {
+    next();
+  }
+});
+
+// app.use(function (req, res, next) {
+//   if (req.path.substr(-1) == '/' && req.path.length > 1) {
+//     let query = req.url.slice(req.path.length)
+//     res.redirect(301, req.path.slice(0, -1) + query)
+//   } else {
+//     next()
+//   }
+// })
+
+app.use("/", express.static(__dirname + '/client_dist'));
+
+
+
 // Start the server
 
 const PORT = process.env.PORT || 8071;

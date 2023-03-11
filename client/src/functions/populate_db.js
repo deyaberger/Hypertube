@@ -6,7 +6,7 @@ import axios from "axios"
 export const Get_All_Movies = async (source, page) => {
 	console.log("Getting all movies from : ", source, ", page:", page);
 	let request = {
-		url: `http://127.0.0.1:8071/api/populate/fetch`,
+		url: `/api/populate/fetch`,
 		method: "get",
 		headers: {
 			'Access-Control-Allow-Origin': '*',
@@ -28,7 +28,7 @@ export const Dump_Json_To_DB = async (source, page) => {
 	console.log("Getting all movies from : ", source, ", page:", page);
 	let response = null;
 	let request = {
-		url: `http://127.0.0.1:8071/api/populate/add_to_db`,
+		url: `/api/populate/add_to_db`,
 		method: "get",
 		headers: {
 			'Access-Control-Allow-Origin': '*',
@@ -51,7 +51,7 @@ export const Dump_Json_To_DB = async (source, page) => {
 
 export const Get_All_Movies_IMDB_Ids = async () => {
 	let request = {
-		url: `http://127.0.0.1:8071/api/populate/get_all_imdb_ids`,
+		url: `/api/populate/get_all_imdb_ids`,
 		method: "get",
 		headers: {
 			'Access-Control-Allow-Origin': '*',
@@ -65,7 +65,7 @@ export const Get_All_Movies_IMDB_Ids = async () => {
 
 export const Fetch_And_Add_TMDB = async (imdb_code, id) => {
 	let request = {
-		url: `http://127.0.0.1:8071/api/populate/fetch_tmdb/${imdb_code}`,
+		url: `/api/populate/fetch_tmdb/${imdb_code}`,
 		method: "get",
 		headers: {
 			'Access-Control-Allow-Origin': '*',
@@ -82,7 +82,7 @@ export const Fetch_And_Add_TMDB = async (imdb_code, id) => {
 
 export const Opti_DB = async () => {
 	let request = {
-		url: `http://127.0.0.1:8071/api/populate/opti`,
+		url: `/api/populate/opti`,
 		method: "get",
 		headers: {
 			'Access-Control-Allow-Origin': '*',

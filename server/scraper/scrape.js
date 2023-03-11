@@ -46,7 +46,7 @@ async function get_movies_from_home_api(movies_titles, movie_years, movie_ids, s
     for (let i =0; i <= movies_titles.length; i++) {
         console.log("")
         let request = {
-            url: 'http://localhost:8080/api/v1/search',
+            url: '/api/v1/search',
             method: "get",
             headers: {
                 'Access-Control-Allow-Origin': '*',

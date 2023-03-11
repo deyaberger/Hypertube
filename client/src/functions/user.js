@@ -3,7 +3,7 @@ import axios from "axios"
 // ------------------------------------------ USER DETAILS -------------------------------------------------------------
 export const Get_User_Details = async(token) => {
 	let request = {
-		url: `http://127.0.0.1:8071/api/user/me`,
+		url: `/api/user/me`,
 		method: "get",
 		headers: {
 			'Access-Control-Allow-Origin': '*',
@@ -22,7 +22,7 @@ export const Get_User_Details = async(token) => {
 
 export const Get_Other_User_Details = async(token, other_user_id) => {
 	let request = {
-		url: `http://127.0.0.1:8071/api/user/profile/${other_user_id}`,
+		url: `/api/user/profile/${other_user_id}`,
 		method: "get",
 		headers: {
 			'Access-Control-Allow-Origin': '*',
@@ -41,7 +41,7 @@ export const Get_Other_User_Details = async(token, other_user_id) => {
 
 export const Update_Username = async(token, username) => {
 	let request = {
-		url: `http://127.0.0.1:8071/api/user/update_username`,
+		url: `/api/user/update_username`,
 		method: "post",
 		headers: {
 			'Access-Control-Allow-Origin': '*',
@@ -63,7 +63,7 @@ export const Update_Username = async(token, username) => {
 
 export const Update_First_Name = async(token, firstname) => {
 	let request = {
-		url: `http://127.0.0.1:8071/api/user/update_first_name`,
+		url: `/api/user/update_first_name`,
 		method: "post",
 		headers: {
 			'Access-Control-Allow-Origin': '*',
@@ -86,7 +86,7 @@ export const Update_First_Name = async(token, firstname) => {
 
 export const Update_Last_Name = async(token, lastname) => {
 	let request = {
-		url: `http://127.0.0.1:8071/api/user/update_last_name`,
+		url: `/api/user/update_last_name`,
 		method: "post",
 		headers: {
 			'Access-Control-Allow-Origin': '*',
@@ -108,7 +108,7 @@ export const Update_Last_Name = async(token, lastname) => {
 
 export const Update_Bio = async(token, bio) => {
 	let request = {
-		url: `http://127.0.0.1:8071/api/user/update_bio`,
+		url: `/api/user/update_bio`,
 		method: "post",
 		headers: {
 			'Access-Control-Allow-Origin': '*',
@@ -130,7 +130,7 @@ export const Update_Bio = async(token, bio) => {
 
 export const Update_Email = async(token, email) => {
 	let request = {
-		url: `http://127.0.0.1:8071/api/user/update_email`,
+		url: `/api/user/update_email`,
 		method: "post",
 		headers: {
 			'Access-Control-Allow-Origin': '*',
@@ -153,7 +153,7 @@ export const Update_Email = async(token, email) => {
 // ------------------------------------------ FOLLOWS -------------------------------------------------------------
 export const Get_User_Followings = async(token, user_id) => {
 	let request = {
-		url: `http://127.0.0.1:8071/api/follow/who_do_you_follow`,
+		url: `/api/follow/who_do_you_follow`,
 		method: "get",
 		headers: {
 			'Access-Control-Allow-Origin': '*',
@@ -170,7 +170,7 @@ export const Get_User_Followings = async(token, user_id) => {
 
 export const Get_User_Followers = async(token, user_id) => {
 	let request = {
-		url: `http://127.0.0.1:8071/api/follow/who_follows_you`,
+		url: `/api/follow/who_follows_you`,
 		method: "get",
 		headers: {
 			'Access-Control-Allow-Origin': '*',
@@ -188,7 +188,7 @@ export const Get_User_Followers = async(token, user_id) => {
 
 export const Is_Following = async(token, user_id) => {
 	let request = {
-		url: `http://127.0.0.1:8071/api/follow/is_following/${user_id}`,
+		url: `/api/follow/is_following/${user_id}`,
 		method: "get",
 		headers: {
 			'Access-Control-Allow-Origin': '*',
@@ -203,7 +203,7 @@ export const Is_Following = async(token, user_id) => {
 
 export const Follow = async(token, user_id) => {
 	let request = {
-		url: `http://127.0.0.1:8071/api/follow/follow/${user_id}`,
+		url: `/api/follow/follow/${user_id}`,
 		method: "post",
 		headers: {
 			'Access-Control-Allow-Origin': '*',
@@ -217,7 +217,7 @@ export const Follow = async(token, user_id) => {
 
 export const UnFollow = async(token, user_id) => {
 	let request = {
-		url: `http://127.0.0.1:8071/api/follow/unfollow/${user_id}`,
+		url: `/api/follow/unfollow/${user_id}`,
 		method: "post",
 		headers: {
 			'Access-Control-Allow-Origin': '*',
@@ -234,7 +234,7 @@ export const Upload_Image = async(token, image_file) => {
 	const formData = new FormData()
 	formData.append('file', image_file)
 	let request = {
-		url: `http://127.0.0.1:8071/api/image/upload`,
+		url: `/api/image/upload`,
 		method: "post",
 		headers: {
 			'Access-Control-Allow-Origin': '*',
