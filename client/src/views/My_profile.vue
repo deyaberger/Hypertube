@@ -174,8 +174,7 @@ export default {
 		get_user_profile_pic() { // SAME
 			try {
 				if (!is_empty(this.user.picture)) {
-					if (this.user.picture.includes("cdn.intra.42") || this.user.picture.includes("github")
-					|| this.user.picture.includes("googleusercontent")) {
+					if (this.user.picture.startsWith('http')) {
 						return (this.user.picture)
 					}
 					return `${this.pic_prefix}${this.user.picture}`
