@@ -2,7 +2,6 @@
 import { mapState } from 'vuex';
 import { Get_torrents_for_movie } from '../functions/streaming'
 import { Get_Single_Movie_Details } from '../functions/movies'
-import { io } from 'socket.io-client';
 import TorrentSocketService from '../functions/socket.service.js';
 
 export default {
@@ -49,6 +48,13 @@ export default {
 			return false
 		},
 
+		movie_file_type_ok() {
+			if (this.torrent_service && this.torrent_service.torrent_status) {
+				return this.isVideoFormatCompatible(this.torrent_service.torrent_status.video_file_type)
+			}
+			return false
+		},
+
 		...mapState({
 			lang_nb    : state => state.lang_nb,
 			user_token : state =>  state.user_token,
@@ -73,8 +79,7 @@ export default {
 			console.log("gettings details")
 			try {
 				let res = await Get_Single_Movie_Details(this.movie_id, this.user_token)
-				// TODO: && res.code == "SUCCESS"
-				if (res.status == 200) {
+				if (res.status == 200 && res.data.code == "SUCCESS") {
 					console.log(res.data.movie)
 					this.movie_details = res.data.movie
 					console.log("deets", this.movie_details)
@@ -84,18 +89,31 @@ export default {
 				}
 			}
 			catch (e) {
-				console.log("erro in movie details", e)
+				if (e.code = 'EXPIRED_TOKEN' || e.code == 'CORRUPTED_TOKEN') {
+					// TODO: turn this back on
+					// this.$store.commit('LOGOUT_USER')
+					// this.$router.push('/sign_in')
+					return alert("Session expired")
+				}
+				console.log("erro in movie details", e.code)
+				throw(e)
 			}
 		},
 
-		create_socket() {
-			console.log("socket connect", this.user_token)
-			this.socket = io("http://localhost:5173", {
-				path: "/socketo/",
-				auth: {
-						token: this.user_token
-					}
-			});
+		videoErrorHandler(e) {
+			console.log("Viderr:",e )
+		},
+
+		isVideoFormatCompatible(format) {
+			if (format == ".mp4") {
+				return true
+			}
+
+			if (format == '.mkv' && navigator.userAgent.includes("Chrome")) {
+				return true
+			}
+
+			return false
 		}
 	},
 
@@ -123,6 +141,26 @@ export default {
 
 	created() {
 		this.torrent_service = new TorrentSocketService(this.user_token)
+		
+		this.torrent_service.on('TOKEN_ERROR', () => {
+			// TODO: turn this back on
+			// this.$store.commit('LOGOUT_USER')
+			// this.$router.push('/sign_in')
+			alert("Session expired")
+		})
+
+		this.torrent_service.on('NO_STREAMABLE_FILE', () => {
+			alert("NO_STREAMABLE_FILE, stopped torrent.")
+		})
+
+		this.torrent_service.on('NO_STREAMABLE_FILE', (status) => {
+			let okidoki = this.isVideoFormatCompatible(status.video_file_type)
+			if (!okidoki) {
+				alert("NO_STREAMABLE_FILE, stopped torrent.")
+				throw(new Error("PLAYING MKV ON FIREFOX WILL CAUSE ERROR"))
+			}
+		})
+
 	}
 }
 </script>
@@ -148,9 +186,10 @@ export default {
 				<div v-for="sub in subs" v-bind:key="sub.path">
 					<span> {{ sub }} </span>
 				</div>
+				<span v-if="!movie_file_type_ok && torrent_status!=null">MOVIE TYPE INCOMPATIBULE</span>
 
-				<div v-if="movie_ready_to_watch" >
-					<video ref="movieplayer" controls loop id="videoPlayer" width="500" height="500" muted="muted" autoplay>
+				<div v-if="movie_ready_to_watch && movie_file_type_ok" >
+					<video ref="movieplayer" controls loop id="videoPlayer" width="500" height="500" muted="muted" autoplay onerror="videoErrorHandler(e)">
 						<source :src='movie_source' type="video/mp4" />
 							<track v-for="sub in subs" v-bind:key="sub.path"
 								:label="sub.name"

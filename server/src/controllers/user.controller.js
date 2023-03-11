@@ -79,7 +79,12 @@ module.exports = (db_pool) => {
                     console.log("[user.controller]: update_username FAILURE : long")
                     return res.status(201).send({msg: "Can't change username (too long)", code : "TOO_LONG"})
                 }
+                if (e.code == 'ER_BAD_NULL_ERROR') {
+                    console.log("[user.controller]: update_username FAILURE : ER_BAD_NULL_ERROR")
+                    return res.status(201).send({msg: "Can't change username (empty)", code : "EMPTY"})
+                }
                 throw(e)
+                return res.status(201).send({msg: "Can't change username.", code : "UNKNOWN_ERROR"})
             }
         },
 
@@ -103,6 +108,10 @@ module.exports = (db_pool) => {
                 if (e.code == 'ER_DATA_TOO_LONG') {
                     console.log("[user.controller]: update_first_name FAILURE : long")
                     return res.status(201).send({msg: "Can't change first_name (too long)", code : "TOO_LONG"})
+                }
+                if (e.code == 'ER_BAD_NULL_ERROR') {
+                    console.log("[user.controller]: update_first_name FAILURE : ER_BAD_NULL_ERROR")
+                    return res.status(201).send({msg: "Can't change first_name (empty)", code : "EMPTY"})
                 }
                 console.log("[user.controller]: update_first_name ERROR")
                 throw(e)
@@ -130,6 +139,10 @@ module.exports = (db_pool) => {
                     console.log("[user.controller]: update_last_name FAILURE : long")
                     return res.status(201).send({msg: "Can't change last_name (too long)", code : "TOO_LONG"})
                 }
+                if (e.code == 'ER_BAD_NULL_ERROR') {
+                    console.log("[user.controller]: update_last_name FAILURE : ER_BAD_NULL_ERROR")
+                    return res.status(201).send({msg: "Can't change last_name (empty)", code : "EMPTY"})
+                }
                 console.log("[user.controller]: update_last_name ERROR")
                 throw(e)
             }
@@ -141,12 +154,17 @@ module.exports = (db_pool) => {
                 let new_bio  = req.query.bio
                 let update_res = await user_functions.update_user_bio(user_id, new_bio)
                 if (update_res.affectedRows == 1) {
-                    console.log("[user.controller]: update_last_name SUCCESS")
+                    console.log("[user.controller]: update_bio SUCCESS")
                     return res.status(200).send({msg: "successfully changed user bio", code: "SUCCESS"})
                 }
+                console.log("[user.controller]: update_bio SUCCESS")
                 return res.status(201).send({msg:  `Unknown error in update_bio: ${update_res}`, code: "FAILURE"})
             }
             catch (e) {
+                if (e.code == 'ER_DATA_TOO_LONG') {
+                    console.log("[user.controller]: update_bio ER_DATA_TOO_LONG")
+                    return res.status(201).send({msg: "Can't change bio (too long)", code : "TOO_LONG"})
+                }
                 throw(e)
             }
         },
@@ -175,6 +193,10 @@ module.exports = (db_pool) => {
                 if (e.code == 'ER_DATA_TOO_LONG') {
                     console.log("[user.controller]: update_email FAILURE : long")
                     return res.status(201).send({msg: "Can't change email (too long)", code : "TOO_LONG"})
+                }
+                if (e.code == 'ER_BAD_NULL_ERROR') {
+                    console.log("[user.controller]: update_email FAILURE : ER_BAD_NULL_ERROR")
+                    return res.status(201).send({msg: "Can't change email (empty)", code : "EMPTY"})
                 }
                 throw(e)
             }
