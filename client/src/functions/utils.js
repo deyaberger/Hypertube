@@ -24,3 +24,7 @@ export function Get_Separator(index, text_list) {
 export function copy(obj) {
     return JSON.parse(JSON.stringify(obj))
 }
+
+export function is_empty(string) {
+    return string == null || string.length == 0
+}
