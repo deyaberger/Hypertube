@@ -74,7 +74,6 @@ export default {
 			if (this.torrent_service && this.torrent_service.torrent_status) {
 				if (this.torrent_service.torrent_status.ready_to_watch == true) {
 					// TODO: maybe we don't care because it works: we send set watched many many times
-					this.set_watched();
 					this.torrent_loading = false;
 				}
 				return this.torrent_service.torrent_status.ready_to_watch
@@ -184,6 +183,9 @@ export default {
 
 	created() {
 		this.torrent_service = new TorrentSocketService(this.user_token)
+		this.torrent_service.on('torrent_ready', (torrent_status) => {
+			this.set_watched()
+		})
 	},
 
 	unmounted () {
