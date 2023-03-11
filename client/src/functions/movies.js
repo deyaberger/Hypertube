@@ -162,7 +162,7 @@ export const Get_User_Watched_Movies = async(token, user_id) => {
 		headers: {
 			'Access-Control-Allow-Origin': '*',
 			"Content-type"               : "application/json",
-			'Authorization'				 : `Bearer ${token}`
+			'Authorization'              : `Bearer ${token}`
 		}
 	};
 	const response = await axios(request);
@@ -176,7 +176,7 @@ export const Set_Watched = async(movie_id, token) => {
 		headers: {
 			'Access-Control-Allow-Origin': '*',
 			"Content-type"               : "application/json",
-			'Authorization'				 : `Bearer ${token}`
+			'Authorization'              : `Bearer ${token}`
 		}
 	};
 	const response = await axios(request);
@@ -190,7 +190,7 @@ export const Set_UnWatched = async(movie_id, token) => {
 		headers: {
 			'Access-Control-Allow-Origin': '*',
 			"Content-type"               : "application/json",
-			'Authorization'				 : `Bearer ${token}`
+			'Authorization'              : `Bearer ${token}`
 		}
 	};
 	const response = await axios(request);
@@ -204,7 +204,7 @@ export const Is_Watched = async(movie_id, token) => {
 		headers: {
 			'Access-Control-Allow-Origin': '*',
 			"Content-type"               : "application/json",
-			'Authorization'				 : `Bearer ${token}`
+			'Authorization'              : `Bearer ${token}`
 		}
 	};
 	const response = await axios(request);

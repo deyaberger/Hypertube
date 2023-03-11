@@ -184,11 +184,15 @@ class GodEventHandler {
   async add_torrent(torrent_id) {
     try {
       let torrent_db_data = await this.torrent_functions.get_torrent_from_id(torrent_id)
-      let magnet_uri = hash_title_to_magnet_link(torrent_db_data.hash, torrent_db_data.title)
+      let magnet_uri = hash_title_to_magnet_link(torrent_db_data.hash, `torrent_db_data.title_${torrent_id}`)
 
       if (this.torrent_client.get(magnet_uri)) {
-        console.log("\n\n\nWTF DOUBLE TROUBLE THIS SHOULD NEVER PRINT\n\n\n", torrent_id, Object.keys(this.torrentWatchers))
-        throw_err_with_code("You tried adding a torrent that's already present!", return_codes.BAD_ERROR)
+        console.log("\n\n\nWTF DOUBLE TROUBLE THIS SHOULD NEVER PRINT\n\n\n", 
+            torrent_id, Object.keys(this.torrentWatchers),
+            Object.keys(this.torrent_client.get(magnet_uri)))
+
+        throw_err_with_code("You tried adding a torrent that's already present!", event_names.BAD_ERROR)
+        this.io.to(torrent_id).emit(event_names.NO_STREAMABLE_FILE)
       }
 
       console.log("adding magnete")
@@ -202,7 +206,6 @@ class GodEventHandler {
 
       console.log("adding tor watcher")
       this.addTorrentWatcher(torrent, torrent_db_data)
-      // console.log(this.torrentWatchers[torrent_id])
     }
     catch (e) {
       if (e.code == event_names.TORRENT_NOT_EXIST) {
@@ -223,32 +226,18 @@ class GodEventHandler {
 
   remove_torrent(torrent_id) {
     try {
-      console.log("\n\n\nremoving torrent", torrent_id)
+      console.log("removing torrentt", torrent_id)
+
       if (this.torrentWatchers[torrent_id]) {
+        console.log("watcher found")
         let magnet_uri = hash_title_to_magnet_link(this.torrentWatchers[torrent_id].hash, this.torrentWatchers[torrent_id].title)
+        console.log("DELE", this.torrentWatchers[torrent_id].torrent.listeners('download'))
         this.torrent_client.remove(magnet_uri)
+        console.log("DELE", this.torrentWatchers[torrent_id].torrent.listeners('download'))
         delete this.torrentWatchers[torrent_id]
       }
       else {
-        throw(new Error("Removing unexisting torrent from client"))
-      }
-
-    }
-    catch (e) {
-      console.log("err in remove torrent on disconnect")
-      throw(e)
-    }
-  }
-
-  remove_torrent(torrent_id) {
-    try {
-      console.log("\n\n\nremoving torrent", torrent_id)
-      if (this.torrentWatchers[torrent_id]) {
-        let magnet_uri = hash_title_to_magnet_link(this.torrentWatchers[torrent_id].hash, this.torrentWatchers[torrent_id].title)
-        this.torrent_client.remove(magnet_uri)
-        delete this.torrentWatchers[torrent_id]
-      }
-      else {
+        console.log("watcher not found")
         throw(new Error("Removing unexisting torrent from client"))
       }
 
@@ -322,3 +311,4 @@ class GodEventHandler {
 }
 
 module.exports = GodEventHandler
+

@@ -73,6 +73,7 @@ export default {
 		movie_ready_to_watch() {
 			if (this.torrent_service && this.torrent_service.torrent_status) {
 				if (this.torrent_service.torrent_status.ready_to_watch == true) {
+					// TODO: maybe we don't care because it works: we send set watched many many times
 					this.set_watched();
 					this.torrent_loading = false;
 				}
@@ -118,7 +119,7 @@ export default {
 				let res = await Set_Watched(this.movie_id, this.user_token)
 				if (res.data.code == "SUCCESS") {
 					console.log("[single_movie]: Successfully updated watched!")
-					this.movie.is_watched = !this.movie.is_watched
+					this.movie.is_watched = true
 				}
 				else {
 					console.log("ERROR: [single_movie] in set_watched: ", res)
