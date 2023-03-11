@@ -133,6 +133,7 @@ app.use((req, res, next) => {
   }
 });
 
+
 // app.use(function (req, res, next) {
 //   if (req.path.substr(-1) == '/' && req.path.length > 1) {
 //     let query = req.url.slice(req.path.length)
@@ -145,7 +146,9 @@ app.use((req, res, next) => {
 app.use("/", express.static(__dirname + '/client_dist'));
 
 
-
+app.use((req, res, next) => {
+  res.redirect('/404_by_joep')
+})
 // Start the server
 
 const PORT = process.env.PORT || 8071;
