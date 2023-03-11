@@ -73,7 +73,7 @@ export default {
 		movie_ready_to_watch() {
 			if (this.torrent_service && this.torrent_service.torrent_status) {
 				if (this.torrent_service.torrent_status.ready_to_watch == true) {
-					this.set_watched();
+					// TODO: maybe we don't care because it works: we send set watched many many times
 					this.torrent_loading = false;
 				}
 				return this.torrent_service.torrent_status.ready_to_watch
@@ -102,23 +102,13 @@ export default {
 			}
 		},
 
-		create_socket() {
-			console.log("socket connect", this.user_token)
-			this.socket = io("http://localhost:5173", {
-				path: "/socketo/",
-				auth: {
-						token: this.user_token
-					}
-			});
-		},
-
 		async set_watched() {
 			try {
 				console.log("[single_movie]: Setting movie to watched: ...", {id: this.movie_id})
 				let res = await Set_Watched(this.movie_id, this.user_token)
 				if (res.data.code == "SUCCESS") {
 					console.log("[single_movie]: Successfully updated watched!")
-					this.movie.is_watched = !this.movie.is_watched
+					this.movie.is_watched = true
 				}
 				else {
 					console.log("ERROR: [single_movie] in set_watched: ", res)
@@ -139,7 +129,7 @@ export default {
 				else {
 					res = await Add_To_Favorites(this.movie_id, this.user_token)
 				}
-				if (res.data.code == "SUCCESS") {
+				if (res.data && res.data.code == "SUCCESS") {
 					console.log("[single_movie]: Successfully updated fav!")
 					this.movie.is_fav = !this.movie.is_fav
 				}
@@ -193,6 +183,9 @@ export default {
 
 	created() {
 		this.torrent_service = new TorrentSocketService(this.user_token)
+		this.torrent_service.on('torrent_ready', (torrent_status) => {
+			this.set_watched()
+		})
 	},
 
 	unmounted () {
