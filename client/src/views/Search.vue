@@ -199,8 +199,8 @@ export default {
 </script>
 
 <template>
-	<div>
-		<SearchBar ref="search_bar" @search_form="update_form" :reset="reset"/>
+	<div class="test">
+		<SearchBar ref="search_bar" @search_form="update_form" :reset="reset" :nb_of_res="number_of_results"/>
 		<div ref="results_container" class="results_container">
 			<div class="search_header">
 				<div v-if="user_research > 1" class="title">
@@ -238,6 +238,10 @@ export default {
 
 <style lang="scss" scoped>
 
+.test {
+	background-color: blue;
+}
+
 .form-check > *, .form-switch > * {
 	cursor: pointer;
 }
@@ -262,6 +266,7 @@ export default {
 	min-height: 100%;
 	transition : none;
 	background-color: rgba(34, 35, 40, 0.864);
+	min-height: 1150px;
 }
 
 .small_sidebar + .results_container {

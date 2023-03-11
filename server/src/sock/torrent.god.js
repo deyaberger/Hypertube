@@ -95,9 +95,9 @@ class TorrentWatcher extends EventEmitter {
         this.ready_to_watch = true
         this.emit('ready_to_watch')
       }
-      else if (this.getLargestFile().name.endsWith('.mp4') 
-                && new Date() - dl_start > fixtures.MIN_TORRENT_TIME_S * 1000 
-                && ETA_minutes * fixtures.SAFETY_FACTOR < loaded_minutes) 
+      else if (this.getLargestFile().name.endsWith('.mp4')
+                && new Date() - dl_start > fixtures.MIN_TORRENT_TIME_S * 1000
+                && ETA_minutes * fixtures.SAFETY_FACTOR < loaded_minutes)
                 {
         console.log("ITS READYYYY TO WATCH BABY")
         this.ready_to_watch = true
@@ -151,7 +151,7 @@ class TorrentWatcher extends EventEmitter {
     if (file.name.endsWith('.srt')) {
       return 'SUBTITLE_FILE'
     }
-    
+
     if (file.name.endsWith('.mkv') || file.name.endsWith('.mp4')) {
       return 'MOVIE_FILE'
     }

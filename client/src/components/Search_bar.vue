@@ -7,7 +7,8 @@ import StarRating from 'vue-star-rating';
 
 export default {
 	props: {
-		reset : Boolean
+		reset : Boolean,
+		nb_of_res: Number
 	},
 
 
@@ -33,7 +34,9 @@ export default {
 									min_year      : 1900,
 									sort_by       : 'title',
 									asc_or_desc   : 'asc',
-								}
+								},
+
+			window_height		: 0,
 		}
 	},
 
@@ -99,13 +102,16 @@ export default {
 		submit(e) {
 			e.preventDefault()
 		},
-	},
 
+		update_height(){
+			this.window_height = document.documentElement.scrollHeight;
+			console.log("height: ", this.window_height)
+		}
+	},
 
 	mounted() {
-		this.emit_form()
+		this.emit_form();
 	},
-
 
 	watch: {
 		form: {
@@ -127,7 +133,7 @@ export default {
 
 
 <template>
-	<nav class="navbar nav flex-column search_bar" :class="{small_sidebar : !show}">
+	<nav class="navbar nav flex-column search_bar" :class="{small_sidebar : !show}"  :style="{ height: window_height - 75 + 'px' }">
 		<div class="sidebar_menu">
 			<button @click="show = !show" class="btn navbar-nav ms-auto"><b-icon-filter-left class = "h1 show_bar"></b-icon-filter-left></button>
 			<div v-if="show">
