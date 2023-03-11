@@ -11,7 +11,7 @@ class TorrentSocketService extends EventEmitter {
     }
 
     create_socket() {
-			this.socket = io("http://localhost:5173", {
+			this.socket = io("", {
 				path: "/socketo/",
 				auth: {
 						token: this.user_token

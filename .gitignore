@@ -10,3 +10,4 @@ node_modules
 **/yts_response/*
 
 server/scraper/data
+server/client_dist

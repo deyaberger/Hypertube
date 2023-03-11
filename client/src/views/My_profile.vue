@@ -401,7 +401,6 @@ export default {
 		},
 
 		async save_mail() {
-			console.log("email err", email_error)
 			try {
 				if (this.email_error) {
 					return

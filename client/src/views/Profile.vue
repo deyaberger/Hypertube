@@ -1,5 +1,4 @@
 <script>
-import { url } from 'inspector';
 import { mapState } from 'vuex';
 import textContent from "../assets/language_dict/language_dict.json";
 import SearchResults from '../components/Search_results.vue';
