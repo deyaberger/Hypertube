@@ -44,12 +44,12 @@ body {
  	font-family: Roboto, sans-serif;
  	color: #f6f8fc;
  	background-color:  rgba(34, 35, 40);
- 	background-image: linear-gradient(to bottom, transparent, rgba(34, 35, 40, 1), rgba(34, 35, 40, 1)), url("/src/assets/background2.jpg");
+ 	background-image: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0), rgba(34, 35, 40, 1)), url("/src/assets/background2.jpg");
  	background-size: cover;
  	background-repeat: no-repeat;
  	background-position: center;
  	width: 100%;
-	height: 170vh;
+	height: 150vh;
 }
 
 
