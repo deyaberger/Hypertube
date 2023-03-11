@@ -51,7 +51,8 @@ export default {
 			fallbackUrl    : '../src/assets/generic_profile_pic.jpg', // SAME
 
 			followed       : false,
-			window_width          : window.innerWidth
+			window_width   : window.innerWidth,
+			window_height  : document.documentElement.scrollHeight
 		}
 	},
 
@@ -183,6 +184,8 @@ export default {
 
 		updateWidth() {
 			this.window_width = window.innerWidth;
+			this.window_height = document.documentElement.scrollHeight;
+			console.log("Height: ", this.window_height)
 		}
 	},
 

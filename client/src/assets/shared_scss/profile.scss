@@ -199,7 +199,6 @@ col.not_saved{
 
 .gradient-custom-2 {
 	background: linear-gradient(to right, rgba(251, 194, 235, 1), rgba(166, 193, 238, 1));
-	height: 100vw;
 }
 
 .remove_pic {
@@ -271,9 +270,6 @@ col.not_saved{
 }
 
 @media screen and (max-width: 781px) {
-	.gradient-custom-2 {
-		height: 120vw;
-	}
 	.small {
 		font-size: 12px;
 	}
@@ -301,12 +297,6 @@ col.not_saved{
 
 }
 
-
-@media screen and (max-width: 681px) {
-	.gradient-custom-2 {
-		height: 160vw;
-	}
-}
 
 @media screen and (max-width : 660px) {
 	.error_msg {
@@ -356,16 +346,7 @@ col.not_saved{
 	}
 }
 
-@media screen and (max-width: 530px) {
-	.gradient-custom-2 {
-		height: 180vw;
-	}
-}
-
 @media screen and (max-width: 470px) {
-	.gradient-custom-2 {
-		height: 220vw;
-	}
 	.profile_pic {
 		width: 130px;
 		height: 130px;
@@ -388,9 +369,6 @@ col.not_saved{
 }
 
 @media screen and (max-width: 375px) {
-	.gradient-custom-2 {
-		height: 280vw;
-	}
 	.profile_pic {
 		width: 110px;
 		height: 110px;
