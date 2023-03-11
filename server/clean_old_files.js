@@ -1,5 +1,7 @@
 const mysql = require('mysql2/promise');
-const { EXPIRED_TOKEN } = require('./src/utils/return_codes');
+const fs = require('fs')
+const { hash_title_to_magnet_link } = require('./src/utils/hash_title_to_magnet')
+
 require('dotenv').config()
 
 async function make_connection() {
@@ -14,31 +16,40 @@ async function make_connection() {
 
 async function get_movies_to_delete(db_conn) {
   let [res, ] = await db_conn.query(`
-  WITH UNWATCHED_MOVIES AS (
-    SELECT
-        movie_id,
-        MAX(last_updated) as most_recent_watch,
-        TIMESTAMPDIFF(DAY, MAX(last_updated), CURRENT_TIMESTAMP) as diffy
-    FROM watched_movies
-    GROUP BY movie_id
-    HAVING
-        diffy >= 0
-  )
-
   SELECT
-      *
+    folder,
+    TIMESTAMPDIFF(DAY, last_added, CURRENT_TIMESTAMP) as diffy
   FROM torrents
-  INNER JOIN UNWATCHED_MOVIES
-  ON UNWATCHED_MOVIES.movie_id=torrents.movie_id
+  HAVING diffy >= 30
   `)
   return res
 }
 
 async function clean_up() {
+  start = new Date()
   console.log("creating connection")
   let db = await make_connection()
   let  movies_to_delete = await get_movies_to_delete(db)
-  console.log(movies_to_delete)
+  
+  let tordir = process.argv[2]
+  console.log("tordir", tordir)
+  for (const movie of movies_to_delete) {
+    console.log("mov:", movie)
+    try {
+      fs.unlinkSync(tordir + movie.folder)
+    }
+    catch (ue) {
+      try {
+        fs.rmdirSync(tordir + movie.folder, {recursive: true}) 
+      }
+      catch (e) {
+        if (e.code != 'ENOENT') {
+          console.log("unlink err", ue)
+          console.log("rm dir err", e)
+        }
+      }
+    }
+  }
   process.exit()
 }
 

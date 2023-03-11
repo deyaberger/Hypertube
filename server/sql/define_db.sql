@@ -55,6 +55,8 @@ create table torrents
     peers      int default 0                not null,
     size       varchar(40)                  not null,
     size_bytes varchar(40)                  not null,
+    last_added timestamp default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP,
+
 
     constraint hash unique (hash),
     constraint id   unique (id),

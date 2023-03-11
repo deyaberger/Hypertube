@@ -50,6 +50,7 @@ class TorrentWatcher extends EventEmitter {
           this.setOnDownloadEmitStatus()
           this.setOnDownloadCheckETA()
           this.emit('torrent_ready', this.getStatus())
+          this.emit('set_torrent_expiration', this.torrent.name)
         }
     }))
   }
@@ -181,6 +182,24 @@ class GodEventHandler {
 
   }
 
+  async add_expiration_date(torrent_id, name) {
+    console.log("adding expiration date", torrent_id, name)
+    try {
+      await this.db_pool.query(`
+      UPDATE torrents 
+      set 
+        last_added=CURRENT_TIMESTAMP,
+        folder=?
+      WHERE id=?
+      `, [name, torrent_id])
+    }
+    catch (e) {
+      throw(e)
+      console.log("oopsies add expiration date")
+    }
+    
+  }
+
   async add_torrent(torrent_id) {
     try {
       let torrent_db_data = await this.torrent_functions.get_torrent_from_id(torrent_id)
@@ -203,6 +222,8 @@ class GodEventHandler {
             strategy  : "sequential"
         }
       )
+      
+      // this.add_expiration_date(torrent_id)
 
       console.log("adding tor watcher")
       this.addTorrentWatcher(torrent, torrent_db_data)
@@ -267,6 +288,11 @@ class GodEventHandler {
       this.remove_torrent(torrent_id)
     })
 
+    this.torrentWatchers[torrent_id].once('set_torrent_expiration', (name) => {
+      console.log("expirationnne", name, torrent_id)
+      this.add_expiration_date(torrent_id, name)
+    })
+    
     this.torrentWatchers[torrent_id].once('torrent_ready', (torrent_status) => {
       // console.log("emit tor ready", torrent_status)
       console.log("Subs set high prio")
