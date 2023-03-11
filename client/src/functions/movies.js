@@ -50,7 +50,7 @@ export const Parse_Single_Movie = (data) => {
 
 export const Get_Recommendations = async(token) => {
 	let request = {
-		url: `http://127.0.0.1:8071/api/movie/reco`,
+		url: `/api/movie/reco`,
 		method: "get",
 		headers: {
 			'Access-Control-Allow-Origin': '*',
@@ -67,7 +67,7 @@ export const Get_Movies_Research = async(form, lang_nb, token) => {
 	const params = _parse_form_for_back(form, lang_nb)
 	console.log("<movies> : params ", params)
 	let request = {
-		url: `http://127.0.0.1:8071/api/movie/search`,
+		url: `/api/movie/search`,
 		method: "get",
 		headers: {
 			'Access-Control-Allow-Origin': '*',
@@ -84,7 +84,7 @@ export const Get_Movies_Research = async(form, lang_nb, token) => {
 
 export const Get_Single_Movie_Details = async(movie_id, token) => {
 	let request = {
-		url: `http://127.0.0.1:8071/api/movie/get_details/${movie_id}`,
+		url: `/api/movie/get_details/${movie_id}`,
 		method: "get",
 		headers: {
 			'Access-Control-Allow-Origin': '*',
@@ -99,7 +99,7 @@ export const Get_Single_Movie_Details = async(movie_id, token) => {
 // ------------------------------------------ FAVORITES --------------------------------------------------------------
 export const Get_User_Fav_Movies = async(token, user_id) => {
 	let request = {
-		url: `http://127.0.0.1:8071/api/favorites/${user_id}`,
+		url: `/api/favorites/${user_id}`,
 		method: "get",
 		headers: {
 			'Access-Control-Allow-Origin': '*',
@@ -113,7 +113,7 @@ export const Get_User_Fav_Movies = async(token, user_id) => {
 
 export const Add_To_Favorites = async(movie_id, token) => {
 	let request = {
-		url: `http://127.0.0.1:8071/api/favorites/add/${movie_id}`,
+		url: `/api/favorites/add/${movie_id}`,
 		method: "post",
 		headers: {
 			'Access-Control-Allow-Origin': '*',
@@ -127,7 +127,7 @@ export const Add_To_Favorites = async(movie_id, token) => {
 
 export const Remove_From_Favorites = async(movie_id, token) => {
 	let request = {
-		url: `http://127.0.0.1:8071/api/favorites/remove/${movie_id}`,
+		url: `/api/favorites/remove/${movie_id}`,
 		method: "post",
 		headers: {
 			'Access-Control-Allow-Origin': '*',
@@ -141,7 +141,7 @@ export const Remove_From_Favorites = async(movie_id, token) => {
 
 export const Is_Fav_Movie = async(token, movie_id) => {
 	let request = {
-		url : `http://127.0.0.1:8071/api/favorites/is_fav/${movie_id}`,
+		url : `/api/favorites/is_fav/${movie_id}`,
 		method: "get",
 		headers: {
 			'Access-Control-Allow-Origin': '*',
@@ -157,7 +157,7 @@ export const Is_Fav_Movie = async(token, movie_id) => {
 // ------------------------------------------ WATCHED --------------------------------------------------------------
 export const Get_User_Watched_Movies = async(token, user_id) => {
 	let request = {
-		url: `http://127.0.0.1:8071/api/watched/${user_id}`,
+		url: `/api/watched/${user_id}`,
 		method: "get",
 		headers: {
 			'Access-Control-Allow-Origin': '*',
@@ -171,7 +171,7 @@ export const Get_User_Watched_Movies = async(token, user_id) => {
 
 export const Set_Watched = async(movie_id, token) => {
 	let request = {
-		url: `http://127.0.0.1:8071/api/watched/set_watched/${movie_id}`,
+		url: `/api/watched/set_watched/${movie_id}`,
 		method: "post",
 		headers: {
 			'Access-Control-Allow-Origin': '*',
@@ -185,7 +185,7 @@ export const Set_Watched = async(movie_id, token) => {
 
 export const Set_UnWatched = async(movie_id, token) => {
 	let request = {
-		url: `http://127.0.0.1:8071/api/watched/set_unwatched/${movie_id}`,
+		url: `/api/watched/set_unwatched/${movie_id}`,
 		method: "post",
 		headers: {
 			'Access-Control-Allow-Origin': '*',
@@ -199,7 +199,7 @@ export const Set_UnWatched = async(movie_id, token) => {
 
 export const Is_Watched = async(movie_id, token) => {
 	let request = {
-		url: `http://127.0.0.1:8071/api/watched/is_watched/${movie_id}`,
+		url: `/api/watched/is_watched/${movie_id}`,
 		method: "get",
 		headers: {
 			'Access-Control-Allow-Origin': '*',

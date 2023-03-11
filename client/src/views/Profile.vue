@@ -47,7 +47,7 @@ export default {
 			watched_movies : null, // SAME
 			fav_movies     : null, // SAME
 
-			pic_prefix			: "http://127.0.0.1:8071/api/image/get/", // SAME
+			pic_prefix			: "/api/image/get/", // SAME
 			fallbackUrl			: fallbackUrll,
 
 			followed       : false,

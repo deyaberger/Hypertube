@@ -54,7 +54,7 @@ export default {
 			fav_movies            : null,
 
 			profile_pic           : null,
-			pic_prefix            : "http://127.0.0.1:8071/api/image/get/",
+			pic_prefix            : "/api/image/get/",
 			fallbackUrl           : fallbackUrll,
 
 			username_is_saved     : true,
