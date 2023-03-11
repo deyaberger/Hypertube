@@ -27,7 +27,6 @@ function _parse_form_for_back(form, lang_nb) {
 		"sort_by"        : sort_by
 	}
 	return params
-
 }
 
 export const Parse_Single_Movie = (data) => {
@@ -80,7 +79,44 @@ export const Get_Movies_Research = async(form, lang_nb, token) => {
 	return response;
 }
 
+export const Get_Movies_Research_Page = async(form, lang_nb, token, offset, limit) => {
+	let params = _parse_form_for_back(form, lang_nb)
+	params.offset = offset
+	params.limit  = limit
 
+	console.log("<movies> : params ", params)
+	let request = {
+		url: `/api/movie/search_page`,
+		method: "get",
+		headers: {
+			'Access-Control-Allow-Origin': '*',
+			"Content-type"               : "application/json",
+			'Authorization'				 : `Bearer ${token}`
+		},
+		params : params
+	};
+	const response = await axios(request);
+	return response;
+}
+
+
+export const Get_Recommendations_Page = async(token, offset, limit) => {
+	let request = {
+		url: `/api/movie/reco_page`,
+		method: "get",
+		headers: {
+			'Access-Control-Allow-Origin': '*',
+			"Content-type"               : "application/json",
+			'Authorization'				       : `Bearer ${token}`
+		},
+		params: {
+			offset: offset,
+			page: page
+		}
+	};
+	const response = await axios(request);
+	return response;
+}
 
 export const Get_Single_Movie_Details = async(movie_id, token) => {
 	let request = {
