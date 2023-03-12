@@ -3,7 +3,7 @@ import { mapState } from 'vuex';
 import textContent from "../assets/language_dict/language_dict.json"
 import { Get_Formatted_Time } from "../functions/utils.js"
 import { Remove_From_Favorites, Add_To_Favorites } from "../functions/movies.js"
-import fallbackUrll from '../src/assets/missing_cover.jpeg'
+import fallbackUrll from '/src/assets/missing_cover.jpeg'
 
 export default {
 	props: {

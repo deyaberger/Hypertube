@@ -25,16 +25,15 @@ export default {
 			sorting_list       : textContent.MOVIES.sorting_list,
 			tmp_title		   : '',
 			quality_list       : ['720p', '1080p', '4k'],
-
 			form               : {
-				title         : '',
-				min_rating    : 0,
-				genre         : '',
-				quality       : '',
-				min_year      : 1900,
-				sort_by       : 'title',
-				asc_or_desc   : 'asc',
-			}
+									title         : '',
+									min_rating    : 0,
+									genre         : '',
+									quality       : '',
+									min_year      : 1900,
+									sort_by       : 'title',
+									asc_or_desc   : 'asc',
+								}
 		}
 	},
 
@@ -47,7 +46,6 @@ export default {
 
 	methods: {
 		emit_form() {
-			console.log('search_form', this.form);
 			this.$emit('search_form', this.form);
 		},
 
@@ -112,7 +110,7 @@ export default {
 	watch: {
 		form: {
 			handler:function() {
-				// this.emit_form();
+				this.emit_form();
 			},
 			deep:true
 		},
@@ -133,7 +131,7 @@ export default {
 		<div class="sidebar_menu">
 			<button @click="show = !show" class="btn navbar-nav ms-auto"><b-icon-filter-left class = "h1 show_bar"></b-icon-filter-left></button>
 			<div v-if="show">
-			<form @submit="submit" @change="emit_form" class="search-form">
+			<form @submit="submit" class="search-form">
 				<div class = "nav-item input-group">
 					<input class="input_text" type="text" v-model="tmp_title" v-on:keyup.enter="form.title = tmp_title"
 					:placeholder="text_content.title_research[lang_nb]"/>
