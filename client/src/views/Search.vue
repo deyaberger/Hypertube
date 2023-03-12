@@ -39,7 +39,7 @@ export default {
 			limit             : 50,
 			number_of_results : 0,
 			movie_count       : 0,
-			currentPage       : 1,
+			currentPage       : 0,
 			rows              : 0,
 			perPage           : 24,
 			user_research     : 0,
@@ -62,7 +62,7 @@ export default {
 		},
 
 		get_movies_page_slice() {
-			var start = (this.currentPage - 1) * this.perPage
+			var start = (this.currentPage) * this.perPage
 			var end = start + this.perPage
 			this.movies_slice = this.movies.slice(start, end)
 		},
@@ -135,8 +135,7 @@ export default {
 
 		update_form(value) {
 			this.reset = false;
-			let form = JSON.parse(JSON.stringify(value));
-			this.form = form;
+			this.form = JSON.parse(JSON.stringify(value));
 			this.user_research += 1
 		},
 
@@ -156,7 +155,7 @@ export default {
 				this.saved_movies  = this.movies
 				this.movies = this.movies.filter(item => item.is_fav == true);
 				this.number_of_results = this.movies.length;
-				this.currentPage = 1
+				this.currentPage = 0
 				this.get_movies_page_slice();
 			}
 			else {
@@ -180,7 +179,7 @@ export default {
 			handler:function() {
 				this.get_movies_page_slice()
 				if (this.paginator) {
-					this.paginator.set_page(this.currentPage - 1)
+					this.paginator.set_page(this.currentPage)
 				}
 			},
 			deep:true
