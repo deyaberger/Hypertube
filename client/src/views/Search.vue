@@ -32,18 +32,16 @@ export default {
 
 	data() {
 		return {
-			form              : '',
+			form              : {},
 			text_content      : textContent.MOVIES,
 			movies            : null,
-			movies_slice      : null,
 			limit             : 50,
 			number_of_results : 0,
 			movie_count       : 0,
 			currentPage       : 0,
 			rows              : 0,
 			perPage           : 24,
-			user_research     : 0,
-			only_show_fav     : false,
+			user_research     : "RECO", // or "SEARCH"
 			error             : false,
 			saved_movies      : null,
 			reset             : false,
@@ -51,6 +49,49 @@ export default {
 		}
 	},
 
+
+	computed: {
+		movies_slice() {
+			if (this.paginator) return this.paginator.recommendations
+			console.log("MOBVI SLICE")
+			if (this.paginator && this.user_research == 'SEARCH') {
+			console.log("serch")
+				return this.paginator.currentPage
+			}
+			else if (this.paginator && this.user_research == 'RECO') {
+				console.log("reco")
+				return this.paginator.recommendations
+			}
+			return null
+		},
+
+		...mapState({
+			lang_nb    : state =>  state.lang_nb,
+			user_token : state =>  state.user_token,
+		})
+	},
+
+	
+	watch: {
+		currentPage: {
+			handler:function() {
+				// this.get_movies_page_slice()
+				if (this.paginator) {
+					this.paginator.set_page(this.currentPage)
+				}
+			},
+			deep:true
+		},
+		form: {
+			handler:function() {
+				// this.get_form_results()
+				if (this.paginator) {
+					this.paginator.set_search_form(this.form)
+				}
+			},
+			deep:true
+		}
+	},
 
 	methods: {
 		set_movie_props() {
@@ -61,152 +102,31 @@ export default {
 			}
 		},
 
-		get_movies_page_slice() {
-			var start = (this.currentPage) * this.perPage
-			var end = start + this.perPage
-			this.movies_slice = this.movies.slice(start, end)
-		},
-
-		async get_reco() {
-			console.log("[search] : getting_reco...")
-			try {
-				return await Get_Recommendations(this.user_token);
-			}
-			catch(e) {
-				this.error = true
-				if (e.code == 'ERR_BAD_REQUEST') { // i.e. it's an axios error
-					if (e.response && e.response.status == 401)  {
-						let data = e.response.data
-						this.$store.commit('LOGOUT_USER')
-						if (data && data.code == 'EXPIRED_TOKEN') {
-							alert("Your session expired.")
-						}
-						else {
-							alert("Please login.")
-						}
-						return this.$router.push('/sign_in')
-					}
-				}
-				console.log("UNKNOWN ERROR [get_reco]: ", Object.keys(e), e.code, e.name, e.response)
-				throw(e)
-			}
-		},
-
-		async get_search() {
-			console.log("[search] : getting search ...")
-			try {
-				let res = await Get_Movies_Research(this.form, this.lang_nb, this.user_token);
-				return res
-			}
-			catch(e) {
-				this.error = true
-				console.log("RES", res, "RES")
-				console.log("UNKNOWN ERROR [search]: ")
-				throw(e)
-			}
-		},
-
-		async get_form_results() {
-			let res = null
-			this.movies = null
-			this.movies_slice = null
-			if (this.user_research <= 1) {
-				res = await this.get_reco()
-			}
-			else {
-				res = await this.get_search()
-			}
-			if (res != null && res.data.code == "SUCCESS") {
-				this.movies = res.data.movies
-				this.number_of_results = this.movies.length;
-				this.get_movies_page_slice();
-				console.log("[search] : succesfully received movies!")
-			}
-			else if (res != null && res.data.code == "FAILURE") {
-				this.error = true
-				console.log({'msg' : res.data.msg})
-			}
-			else {
-				throw("Unknow error code getting movies")
-				this.$store.commit('LOGOUT_USER')
-				this.$router.push('/sign_in')
-			}
-		},
-
 		update_form(value) {
 			this.reset = false;
 			this.form = JSON.parse(JSON.stringify(value));
-			this.user_research += 1
+			this.user_research = "SEARCH"
 		},
 
 		from_research_to_reco() {
-			this.user_research = 0,
+			this.user_research = 'RECO'
 			console.log("[search] : reseting form") // CHECK THIS: NOT WORKING....
 			this.reset= true;
 		},
 
 		from_reco_to_research() {
-			this.user_research = 2,
+			this.user_research = "SEARCH"
 			this.reset= true;
 		},
-
-		show_favorites() {
-			if (this.only_show_fav == true) {
-				this.saved_movies  = this.movies
-				this.movies = this.movies.filter(item => item.is_fav == true);
-				this.number_of_results = this.movies.length;
-				this.currentPage = 0
-				this.get_movies_page_slice();
-			}
-			else {
-				this.movies = this.saved_movies;
-				this.number_of_results = this.movies.length;
-				this.get_movies_page_slice();
-			}
-		}
 	},
 
-
-	computed: {
-		...mapState({
-			lang_nb    : state =>  state.lang_nb,
-			user_token : state =>  state.user_token,
-		})
-	},
-
-	watch: {
-		currentPage: {
-			handler:function() {
-				this.get_movies_page_slice()
-				if (this.paginator) {
-					this.paginator.set_page(this.currentPage)
-				}
-			},
-			deep:true
-		},
-		form: {
-			handler:function() {
-				this.get_form_results()
-				if (this.paginator) {
-					this.paginator.set_search_form(this.form)
-				}
-			},
-			deep:true
-		},
-		only_show_fav: {
-			handler:function() {
-				this.show_favorites()
-			},
-			deep:true
-		}
-	},
 
 	mounted() {
-		this.paginator = new Paginator(this.user_token, this.lang_nb)
-		// this.paginator.on("GET_MOVIE_ERROR", () => {
-		// 	throw(new Error("SEARCH MOVIE ERROR"))
-		// })
-		this.paginator.set_page(2)
+		this.paginator = new Paginator(this.user_token, this.lang_nb, this.perPage)
+		this.paginator.on("GET_MOVIE_ERROR", () => {
+			throw(new Error("SEARCH MOVIE ERROR"))
+		})
+		console.log('MOUNTED', this.paginator)
 	}
 }
 
@@ -217,35 +137,40 @@ export default {
 	<div>
 		<SearchBar ref="search_bar" @search_form="update_form" :reset="reset"/>
 		<div ref="results_container" class="results_container">
+		
 			<div class="search_header">
-				<div v-if="user_research > 1" class="title">
+				<div v-if="user_research == 'SEARCH'" class="title">
 					<p class="actual">{{ text_content.research[lang_nb] }}:</p>
 					<p class="nav-link">or</p>
 					<a class="nav-link active" href="#" @click="from_research_to_reco()">{{text_content.see_reco[lang_nb]}}</a>
 				</div>
+
 				<div v-else class="title">
 					<p class="actual">{{text_content.recommendations[lang_nb]}}:</p>
 					<p class="nav-link">or</p>
 					<a class="nav-link active" href="#" @click="from_reco_to_research()">{{text_content.see_all[lang_nb]}}</a>
 				</div>
-				<div class = "row">
+
+				<!-- <div class = "row">
 					<div v-if="number_of_results > 0" class="number_of_results col-11">{{movies_slice ? movies_slice.length : 0}}/{{number_of_results}} {{text_content.results[lang_nb]}}</div>
 					<div v-else class="number_of_results col-11">{{number_of_results}} {{text_content.results[lang_nb]}}</div>
-					<div class="show_favorites col"><b-form-checkbox v-model="only_show_fav" switch data-toggle="tooltip" data-placement="top" :title="only_show_fav ? 'show all movies' : 'only show favorites'"></b-form-checkbox></div>
+				</div> -->
+			</div>
+
+			<SearchResults :movie_list="movies_slice" :error="error" :profile="false" class="search_res"/>
+			
+			<div class="pagination overflow-auto">
+				<div v-if="number_of_results > 0">
+					<b-pagination
+						v-model="currentPage"
+						:total-rows="number_of_results"
+						:per-page="perPage"
+						first-number
+						class="custom_pagination"
+					></b-pagination>
 				</div>
 			</div>
-			<SearchResults :movie_list="set_movie_props()" class="search_res"/>
-			<div class="pagination overflow-auto">
-			<div v-if="number_of_results > 0">
-				<b-pagination
-					v-model="currentPage"
-					:total-rows="number_of_results"
-					:per-page="perPage"
-					first-number
-					class="custom_pagination"
-				></b-pagination>
-			</div>
-			</div>
+
 		</div>
 	</div>
 </template>

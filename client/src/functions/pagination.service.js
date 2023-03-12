@@ -6,15 +6,14 @@ import { Get_Movies_Research_Page, Get_Recommendations} from "./movies"
 let page_range = 4
 
 class Paginator extends EventEmitter {
-    constructor(user_token, lang_nb) {
+    constructor(user_token, lang_nb, perPage) {
       super()
 
-      this.movies_per_page = 24
+      this.movies_per_page = perPage
       this.user_token = user_token
       this.lang_nb = lang_nb
       this.fresh_state()
       this.get_reco()
-      console.log("myrec", this.recommendations)
     }
 
     fresh_state() {
@@ -80,11 +79,12 @@ class Paginator extends EventEmitter {
         this.loading_reco = true
         console.log("recommendcations")
         res = await Get_Recommendations(this.user_token);
-        console.log("GOT MOBIES DAT:", res.data)
         if (res && res.data && res.data.code == 'SUCCESS') {
-          console.log("GOT MOBIES:", res.data.movies)
+          console.log("GOT RECO:", res.data.movies)
           this.recommendations = res.data.movies
+          this.recommendations = [...this.recommendations]
           this.loading_reco = false
+          return
         }
         throw(new Error("Search movies error"))
       }

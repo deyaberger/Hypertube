@@ -103,7 +103,7 @@ export default {
 
 
 	mounted() {
-		this.emit_form()
+		// this.emit_form()
 	},
 
 

@@ -752,11 +752,11 @@ export default {
 				</div>
 				<div class="card-body p-4 text-black movies" v-if="exists(fav_movies)">
 					<p class="lead fw-normal mb-4">{{text_content.favorites[lang_nb]}}:</p>
-					<SearchResults :movie_list="set_movie_props(fav_movies)" @updating="updating_movies"/>
+					<SearchResults :movie_list="fav_movies" :profile="true" :error="false" @updating="updating_movies"/>
 				</div>
 				<div class="card-body p-4 text-black movies" v-if="exists(watched_movies)">
 					<p class="lead fw-normal mb-4">{{text_content.watched[lang_nb]}}:</p>
-					<SearchResults :movie_list="set_movie_props(watched_movies)" @updating="updating_movies"/>
+					<SearchResults :movie_list="watched_movies" :profile="true" :error="false" @updating="updating_movies"/>
 				</div>
 				</div>
 			</div>

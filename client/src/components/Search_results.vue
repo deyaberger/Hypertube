@@ -7,7 +7,9 @@ import fallbackUrll from '/src/assets/missing_cover.jpeg'
 
 export default {
 	props: {
-		movie_list: Object
+		movie_list : Array,
+		error      : Boolean,
+		profile    : Boolean
 	},
 	data() {
 		return {
@@ -59,14 +61,14 @@ export default {
 
 <template>
 	<div class="row movies justify-content-md-center">
-		<div v-if="movie_list['data'] == null && movie_list['error'] == false" class = "col-md-auto">
+		<div v-if="movie_list == null && error == false" class = "col-md-auto">
 			<b-spinner label="Loading..." variant="success" class="mt-5"></b-spinner>
 		</div>
-		<div v-if="movie_list['data'] == null && movie_list['error'] == true" class = "col-md-auto">
+		<div v-if="movie_list == null && error == true" class = "col-md-auto">
 			<p class="error text-center">Server not responding...</p>
 			<img src="https://media.giphy.com/media/W0c3xcZ3F1d0EYYb0f/giphy.gif">
 		</div>
-			<div v-else :class="movie_list['profile'] ? 'col-md-4 movie-card profile' :'col-md-4 movie-card'" v-for="movie, index in movie_list['data']" :key="movie.id" style="text-decoration: none">
+			<div v-else :class="profile ? 'col-md-4 movie-card profile' :'col-md-4 movie-card'" v-for="movie, index in movie_list" :key="movie.id" style="text-decoration: none">
 				<router-link :to="'/movie/' + movie.id">
 				<div class="movie-header">
 					<img :class="movie.is_watched ? 'movie-image seen' : 'movie-image'" :src="movie.images_list[1]" alt="movie_image" :data-next-index="6" @error="handle_image_error($event, movie)"/>
