@@ -3,7 +3,7 @@ const return_codes = require('../utils/return_codes')
 
 
 module.exports = (db_pool) => {
-    
+
     return {
         to_relative_path(paf) {
             return "./torrents/" + paf
@@ -35,7 +35,7 @@ module.exports = (db_pool) => {
         add_torrent(magnet, ready_callback) {
             return client.add(  torrentId = magnet,
                                 {
-                                    path      : "./torrents",                            
+                                    path      : "./torrents",
                                     strategy  : "sequential"
                                 },
                                 ready_callback);
@@ -80,7 +80,7 @@ module.exports = (db_pool) => {
 
 
         set_subtitles_high_priority(torrent) {
-            console.log("Subs high prio")
+            console.log("\n[torrent] Subs high prio")
             for(const file of torrent.files)
             {
                 if(file.path.endsWith(".srt"))
@@ -98,7 +98,7 @@ module.exports = (db_pool) => {
         are_subtitles_downloaded(torrent) {
             let subs = []
             let file
-            
+
             for(i = 0; i < torrent.files.length; i++)
             {
                 file = torrent.files[i]
@@ -114,7 +114,7 @@ module.exports = (db_pool) => {
         get_downloaded_subtitles(torrent) {
             let subs = []
             let file
-            
+
             for(i = 0; i < torrent.files.length; i++)
             {
                 file = torrent.files[i]
@@ -134,7 +134,7 @@ module.exports = (db_pool) => {
         get_available_subtitles(torrent) {
             let subs = []
             let file
-            
+
             for(i = 0; i < torrent.files.length; i++)
             {
                 file = torrent.files[i]
@@ -170,13 +170,13 @@ module.exports = (db_pool) => {
                 `,
                 torrent_id
               )
-              
+
               if (torrent_res.length == 0) {
                 let err = new Error('You searched for a torrent that doesnt exist')
                 err.code = return_codes.TORRENT_NOT_EXIST
                 throw(err)
               }
-              
+
               return torrent_res[0]
             }
             catch (e) {
@@ -184,6 +184,6 @@ module.exports = (db_pool) => {
               throw(e)
             }
           }
-        
+
     }
 }
