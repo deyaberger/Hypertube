@@ -28,9 +28,11 @@
 .error_msg {
 	padding-left: 2%;
 	color: rgb(235, 44, 44);;
-	white-space: pre;
+  white-space: normal; /* or nowrap */
+	overflow-wrap: break-word;
 	text-transform: none;
-  }
+	max-width: 100%;
+}
 
 .error_input {
 	border: 2px solid rgb(193, 6, 6);

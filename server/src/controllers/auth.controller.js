@@ -107,8 +107,7 @@ module.exports = (db_pool) => {
                     let token = auth_functions.create_access_token(user.id)
                     return res.status(200).send({message: "Login Sucess", token: token})
                 }
-
-                return res.status(201).send({message: "Signin failed", code: "FAILURE"})
+                return res.status(201).send({message: "Signin failed", code : "FAILURE"})
             }
             catch (e) {
                 if (e.code == 'ER_DATA_TOO_LONG') {

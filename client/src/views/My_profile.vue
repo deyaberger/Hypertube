@@ -76,6 +76,8 @@ export default {
 
 			regex_whitespace      : /^\S*$/,
 			regex_mail            : /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i,
+
+			window_width          : window.innerWidth
 		}
 	},
 
@@ -482,6 +484,10 @@ export default {
 
 		mimic_click() {
 			this.$refs.fileInput.click();
+		},
+
+		updateWidth() {
+			this.window_width = window.innerWidth;
 		}
 	},
 
@@ -496,7 +502,12 @@ export default {
 		await this.get_user_data();
 		await this.get_user_fav_movies();
 		await this.get_user_watched_movies();
+		window.addEventListener('resize', this.updateWidth);
 	},
+
+	beforeUnmount() {
+    	window.removeEventListener('resize', this.updateWidth);
+  	},
 
 	watch: {
 		username: {
@@ -600,7 +611,7 @@ export default {
 						<div  v-else class="input-group">
 							<input
 								v-model = "first_name"
-								class="form-control"
+								class="form-control firstname"
 								:class="{ error_input : first_name_error}"
 								name="fname"
 								:maxlength="20"
@@ -630,7 +641,7 @@ export default {
 						<div  v-else class="input-group">
 							<input
 								v-model = "last_name"
-								class="form-control"
+								class="form-control lastname"
 								:class="{ error_input : last_name_error}"
 								name="l_name"
 								:maxlength="20"
@@ -655,15 +666,25 @@ export default {
 				<div class="p-4 pt-5 text-black pseudo_and_co_container" style="background-color: #f8f9fa;">
 					<div class="justify-content-center text-center py-1">
 					<div>
+						<div class="row">
+						<div :class="window_width > 510 ? 'col-2 follows_container' : 'col-4 follows_container'">
+							<p class="small text-muted mb-0">{{text_content.followers[lang_nb]}}</p>
+							<p class="mb-1 h5">{{user.followers}}</p>
+						</div>
+						<div class="col follows_container">
+							<p class="small text-muted mb-0">{{text_content.followings[lang_nb]}}</p>
+							<p class="mb-1 h5">{{user.followings}}</p>
+						</div>
+						</div>
 						<div class="row pseudo_and_co">
-						<div class="col-3 username_container">
+						<div :class="username_is_saved ? 'col username_container' : 'row username_container'">
 							<div>
 							<p class="small text-muted mb-0">{{text_content.username[lang_nb]}}</p>
 							<p v-if="username_is_saved && username != null && username.length > 0" class="mb-1 h5">@{{username}}<b-icon-pen class="modify h5 mail" @click="modify_username()"></b-icon-pen></p>
 							<div  v-if="!username_is_saved" class="input-group username">
 								<input
 									v-model = "username"
-									class="form-control"
+									class="form-control username"
 									:class="{ error_input : username_error}"
 									name="username"
 									:maxlength="20"
@@ -683,7 +704,7 @@ export default {
 								<p class="error_msg next_line" v-show="username_error">{{username_error_text[lang_nb]}}</p>
 							</div>
 						</div>
-						<div class="col email_container">
+						<div :class="email_is_saved ? 'col email_container' : 'row email_container'">
 							<div>
 								<p class="small text-muted mb-0 ">email</p>
 									<p v-if="email_is_saved && email != null && email.length > 0" class="mb-1 h5 email">{{email}}<b-icon-pen class="modify h5 mail" @click="modify_mail()"></b-icon-pen></p>
@@ -691,7 +712,7 @@ export default {
 									<div  v-if="!email_is_saved" class="input-group email">
 										<input
 											v-model = "email"
-											class="form-control"
+											class="form-control email"
 											:class="{ error_input : email_error}"
 											name="email"
 											:maxlength="50"
@@ -708,19 +729,11 @@ export default {
 										</button>
 									</span>
 							</div>
-							<p class="error_msg" v-show="email_error">{{email_error_text[lang_nb]}}</p>
+							<p class="error_msg next_line" v-show="email_error">{{email_error_text[lang_nb]}}</p>
 							</div>
 
 						</div>
-						<div class="col-2 follows_container">
-							<p class="small text-muted mb-0">{{text_content.followers[lang_nb]}}</p>
-							<p class="mb-1 h5">{{user.followers}}</p>
-						</div>
-						<div class="col-2 follows_container">
-							<p class="small text-muted mb-0">{{text_content.followings[lang_nb]}}</p>
-							<p class="mb-1 h5">{{user.followings}}</p>
-						</div>
-						</div>
+					</div>
 					</div>
 					</div>
 				</div>

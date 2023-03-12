@@ -199,8 +199,8 @@ export default {
 </script>
 
 <template>
-	<div>
-		<SearchBar ref="search_bar" @search_form="update_form" :reset="reset"/>
+	<div class="test">
+		<SearchBar ref="search_bar" @search_form="update_form" :reset="reset" :nb_of_res="number_of_results"/>
 		<div ref="results_container" class="results_container">
 			<div class="search_header">
 				<div v-if="user_research > 1" class="title">
@@ -216,7 +216,7 @@ export default {
 				<div class = "row">
 					<div v-if="number_of_results > 0" class="number_of_results col-11">{{movies_slice ? movies_slice.length : 0}}/{{number_of_results}} {{text_content.results[lang_nb]}}</div>
 					<div v-else class="number_of_results col-11">{{number_of_results}} {{text_content.results[lang_nb]}}</div>
-					<div class="show_favorites col"><b-form-checkbox v-model="only_show_fav" switch data-toggle="tooltip" data-placement="top" :title="only_show_fav ? 'show all movies' : 'only show favorites'"></b-form-checkbox></div>
+					<!-- <div class="show_favorites col"><b-form-checkbox v-model="only_show_fav" switch data-toggle="tooltip" data-placement="top" :title="only_show_fav ? 'show all movies' : 'only show favorites'"></b-form-checkbox></div> -->
 				</div>
 			</div>
 			<SearchResults :movie_list="set_movie_props()" class="search_res"/>
@@ -237,6 +237,10 @@ export default {
 
 
 <style lang="scss" scoped>
+
+.test {
+	background-color: blue;
+}
 
 .form-check > *, .form-switch > * {
 	cursor: pointer;
@@ -262,6 +266,7 @@ export default {
 	min-height: 100%;
 	transition : none;
 	background-color: rgba(34, 35, 40, 0.864);
+	min-height: 1150px;
 }
 
 .small_sidebar + .results_container {
