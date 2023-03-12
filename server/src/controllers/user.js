@@ -1,5 +1,3 @@
-const { buildPatchQuery, buildPatchArgs } = require('../utils/update_args')
-
 module.exports = (db_pool) => {
     return {
         get_my_user: async (userid) => {

@@ -100,14 +100,13 @@ module.exports = (db_pool) => {
                 let user = await auth_functions.get_user_from_username(req.body.username)
 				console.log("[auth.controller]: get_user_from_username ", {user})
 				if (user == null) {
-					return res.status(201).send("Signin failed")
+					return res.status(201).send({message: "Signin failed", code: "FAILURE"})
 				}
                 let is_password_ok = await auth_functions.check_password(user, req.body.password)
                 if (is_password_ok) {
                     let token = auth_functions.create_access_token(user.id)
                     return res.status(200).send({message: "Login Sucess", token: token})
                 }
-
                 return res.status(201).send({message: "Signin failed", code : "FAILURE"})
             }
             catch (e) {
@@ -129,17 +128,18 @@ module.exports = (db_pool) => {
 
         request_reset_pass: async (req, res) => {
             try {
-                let mail = req.params.mail
+                let mail = req.query.mail
                 let request_sucess = await auth_functions.request_new_pass(mail)
 
                 if (request_sucess) {
-                    return res.sendStatus(200)
+                    console.log("[auth.controller]: request_reset_pass SUCCESS")
+                    return res.status(200).send({msg: "reset pass request successfully sent", code : "SUCCESS"})
                 }
-                console.log("the request for pass reset failed")
-                return res.sendStatus(400)
+                console.log("[auth.controller]: No user with this email: request_Reset_pass failed")
+                return res.status(201).send({msg: "No user with this email: request_Reset_pass failed", code : "FAILURE"})
             }
             catch (e) {
-                console.log("REQUIERT RESET ERROR:")
+                console.log("[auth.controller]: UNKOWN ERROR request_reset_pass, ", e.code)
                 throw(e)
             }
         },
@@ -147,19 +147,24 @@ module.exports = (db_pool) => {
 
         reset_pass: async (req, res) => {
             try {
-                let new_pass = req.body.new_pass
-                let hash     = req.body.hash
+                let new_pass = req.query.new_pwd
+                let hash     = req.query.hash
 
                 let reset_success = await auth_functions.reset_pass(hash, new_pass)
 
                 if (reset_success) {
-                    return res.sendStatus(200)
+                    console.log("[auth.controller]: reset_pass SUCCESS")
+                    return res.status(200).send({msg: "reset_pass successfull", code : "SUCCESS"})
                 }
-                return res.sendStatus(400)
-
+                console.log("[auth.controller]: Could not reset pass")
+                return res.status(201).send({msg: "Could not reset pass", code : "FAILURE"})
             }
             catch (e) {
-                console.log("RESET PASS ERROR:")
+                if (e.code == "ER_PARSE_ERROR") {
+                    console.log("[auth.controller]: ER_PARSE_ERROR in reset_pass, ", e.sqlMessage)
+                    return res.status(201).send({msg: "ER_PARSE_ERROR", code : "FAILURE"})
+                }
+                console.log("[auth.controller]: UNKOWN ERROR reset_pass, ", e.code)
                 throw(e)
             }
         }

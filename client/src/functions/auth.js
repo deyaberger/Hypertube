@@ -65,9 +65,29 @@ export const Request_Pass_Reset = async function(mail) {
 			"Content-type" : "application/json",
 			// 'Accept-Encoding': 'gzip, deflate, br',
 		},
-        data: JSON.stringify({
-            "mail"  : mail,
-        })
+        params: {
+			mail : mail
+		}
+	};
+
+	let response = await axios(request);
+	return response;
+}
+
+
+export const New_Pass = async function(hash, new_pwd) {
+	let request = {
+		url: "/api/auth/resetpass",
+		method: "POST",
+		headers: {
+			'Access-Control-Allow-Origin': '*',
+			"Content-type" : "application/json",
+			// 'Accept-Encoding': 'gzip, deflate, br',
+		},
+        params: {
+			hash : hash,
+			new_pwd : new_pwd
+		}
 	};
 
 	let response = await axios(request);

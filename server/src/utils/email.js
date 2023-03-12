@@ -1,14 +1,13 @@
 require('dotenv').config()
 
- 
-const API_KEY = process.env.APIkey;
-const DOMAIN = process.env.APIurl;
+const MAILGUN_API_KEY = process.env.MAILGUN_API_KEY;
+const DOMAIN = process.env.MAILGUN_URL;
 
 const formData = require('form-data');
 const Mailgun = require('mailgun.js');
 
 const mailgun = new Mailgun(formData);
-const client = mailgun.client({username: 'api', key: API_KEY, url:"https://api.eu.mailgun.net"});
+const client = mailgun.client({username: 'api', key: MAILGUN_API_KEY, url:"https://api.eu.mailgun.net"});
 // console.log(client)
 
 
