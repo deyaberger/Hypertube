@@ -4,8 +4,6 @@ import SearchResults from '../components/Search_results.vue'
 import { mapState } from 'vuex';
 import store from '../stores/store';
 import textContent from "../assets/language_dict/language_dict.json"
-import { Get_Movies_Research,
-	     Get_Recommendations} from "../functions/movies"
 import Paginator from '../functions/pagination.service'
 
 export default {
@@ -34,16 +32,10 @@ export default {
 		return {
 			form              : {},
 			text_content      : textContent.MOVIES,
-			movies            : null,
-			limit             : 50,
-			number_of_results : 0,
-			movie_count       : 0,
 			currentPage       : 0,
-			rows              : 0,
 			perPage           : 24,
 			user_research     : "RECO", // or "SEARCH"
 			error             : false,
-			saved_movies      : null,
 			reset             : false,
 			paginator         : null
 		}
@@ -51,18 +43,16 @@ export default {
 
 
 	computed: {
-		movies_slice() {
-			if (this.paginator) return this.paginator.recommendations
-			console.log("MOBVI SLICE")
-			if (this.paginator && this.user_research == 'SEARCH') {
-			console.log("serch")
-				return this.paginator.currentPage
-			}
-			else if (this.paginator && this.user_research == 'RECO') {
-				console.log("reco")
-				return this.paginator.recommendations
-			}
-			return null
+		reco_slice() {
+			return this.paginator.recommendations
+		},
+
+		search_slice() {
+			return this.paginator.current_page_movies
+		},
+
+		reco_ready() {
+			return !this.paginator.loading_reco
 		},
 
 		...mapState({
@@ -74,54 +64,43 @@ export default {
 	
 	watch: {
 		currentPage: {
-			handler:function() {
-				// this.get_movies_page_slice()
+			handler: async function() {
+				console.log('current_page handler')
 				if (this.paginator) {
-					this.paginator.set_page(this.currentPage)
+					await this.paginator.set_page(this.currentPage)
+					this.current_movies = this.paginator.currentPage
 				}
 			},
 			deep:true
 		},
-		form: {
-			handler:function() {
-				// this.get_form_results()
-				if (this.paginator) {
-					this.paginator.set_search_form(this.form)
-				}
-			},
-			deep:true
-		}
 	},
 
 	methods: {
-		set_movie_props() {
-			return {
-				'data'    : this.movies_slice,
-				'profile' : false,
-				'error'   : this.error,
-			}
-		},
-
 		update_form(value) {
+			console.log("update form")
 			this.reset = false;
 			this.form = JSON.parse(JSON.stringify(value));
 			this.user_research = "SEARCH"
+			if (this.paginator) {
+					this.paginator.set_search_form(this.form)
+			}
 		},
 
 		from_research_to_reco() {
+			console.log("to reco")
 			this.user_research = 'RECO'
-			console.log("[search] : reseting form") // CHECK THIS: NOT WORKING....
-			this.reset= true;
 		},
 
 		from_reco_to_research() {
+			console.log("to search")
 			this.user_research = "SEARCH"
+			console.log("user", this.user_research)
 			this.reset= true;
 		},
 	},
 
 
-	mounted() {
+	created() {
 		this.paginator = new Paginator(this.user_token, this.lang_nb, this.perPage)
 		this.paginator.on("GET_MOVIE_ERROR", () => {
 			throw(new Error("SEARCH MOVIE ERROR"))
@@ -150,20 +129,15 @@ export default {
 					<p class="nav-link">or</p>
 					<a class="nav-link active" href="#" @click="from_reco_to_research()">{{text_content.see_all[lang_nb]}}</a>
 				</div>
-
-				<!-- <div class = "row">
-					<div v-if="number_of_results > 0" class="number_of_results col-11">{{movies_slice ? movies_slice.length : 0}}/{{number_of_results}} {{text_content.results[lang_nb]}}</div>
-					<div v-else class="number_of_results col-11">{{number_of_results}} {{text_content.results[lang_nb]}}</div>
-				</div> -->
 			</div>
 
-			<SearchResults :movie_list="movies_slice" :error="error" :profile="false" class="search_res"/>
+			<SearchResults v-if="!paginator.loading_reco" :movie_list="reco_slice" :error="false" :profile="false" class="search_res"/>
+			<SearchResults v-if="!paginator.loading_reco" :movie_list="reco_slice" :error="false" :profile="false" class="search_res"/>
 			
 			<div class="pagination overflow-auto">
-				<div v-if="number_of_results > 0">
+				<div v-if="user_research == 'SEARCH'">
 					<b-pagination
 						v-model="currentPage"
-						:total-rows="number_of_results"
 						:per-page="perPage"
 						first-number
 						class="custom_pagination"
