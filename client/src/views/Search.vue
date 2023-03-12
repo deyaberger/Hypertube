@@ -81,6 +81,7 @@ export default {
 			if (this.paginator) {
 					this.paginator.set_search_form(this.form)
 			}
+			this.currentPage = 1
 		},
 
 		from_research_to_reco() {
@@ -147,7 +148,7 @@ export default {
 				<div v-if="user_research == 'SEARCH' && current_movies.length != 0">
 					<b-pagination
 						v-model="currentPage"
-						:limit=7
+						:limit=5
 						:total-rows="totalo"
 						:per-page="perPage"
 						first-number
