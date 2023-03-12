@@ -108,7 +108,7 @@ module.exports = (db_pool) => {
                     return res.status(200).send({message: "Login Sucess", token: token})
                 }
 
-                return res.status(201).send({message: "Signin failed", token: token})
+                return res.status(201).send({message: "Signin failed", code : "FAILURE"})
             }
             catch (e) {
                 if (e.code == 'ER_DATA_TOO_LONG') {

@@ -6,8 +6,8 @@ export default {
 	components: {
 		Nav
 	},
-	
-	
+
+
 	data() {
 		return {
 			test : false,
@@ -43,14 +43,13 @@ export default {
 body {
  	font-family: Roboto, sans-serif;
  	color: #f6f8fc;
- 	background-color: black;
- 	// background-image: linear-gradient(to bottom, transparent 80%, black, black), url("/src/assets/background.jpg");
- 	background-image: url("/src/assets/background2.jpg");
+ 	background-color:  rgba(34, 35, 40);
+ 	background-image: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0), rgba(34, 35, 40, 1)), url("/src/assets/background2.jpg");
  	background-size: cover;
  	background-repeat: no-repeat;
  	background-position: center;
  	width: 100%;
-	height: 100vh;
+	height: 150vh;
 }
 
 

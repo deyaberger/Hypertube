@@ -33,39 +33,13 @@ hr {
 	margin-top: 0px;
 }
 
-@media screen and (max-width: 1410px) {
-	.movie-card.profile {
-		width: 350px
-	}
-}
-
-@media screen and (max-width: 1200px) {
-	.movie-card.profile {
-		width: 300px
-	}
-}
-
-@media screen and (max-width: 991px) {
-	.movie-card.profile {
-		width: 250px
-	}
-}
-
-@media screen and (max-width: 767px) {
-	.movie-card.profile {
-		width: 200px;
-	}
-}
-
-@media screen and (max-width: 538px) {
-	.movie-card.profile {
-		width: 350px;
-		margin-left: 3%;
-	}
-}
 
 .movie-header, .favorites {
 	cursor: pointer;
+}
+
+.heart {
+	left: 5%;
 }
 
 
@@ -134,6 +108,9 @@ hr {
 	margin: 0;
 	background-color: white;
 	border-radius: 0% 0% 10px 10px;
+	border: solid;
+	border-color: rgba(165, 163, 163, 0.548);
+	border-width: 0.1em;
 }
 
 .movie-content-header, .movie-info {
@@ -186,24 +163,87 @@ hr {
 	max-width: 300px;
 }
 
-
-@media screen and (max-width: 590px) {
-	.movie-header, .movie-image{
-	height: 200px;
-	}
-
-	.movie-title {
-		font-size: 15px;
-	}
-	.movie-info {
-	margin-top: 0em;
-	}
-
-	.movie-content {
-		padding: 12px 12px 10px 12px;
-		margin: 0;
-	}
+.movie-card.profile > .movie-content > .movie-content-header > .movie-title {
+	max-width: 390px;
 }
 
 
 
+@media screen and (max-width: 1410px) {
+	.movie-card.profile {
+		width: 350px
+	}
+	.movie-card.profile > .movie-content> .movie-content-header > .movie-title {
+		max-width: 300px;
+	}
+}
+
+@media screen and (max-width: 1200px) {
+	.movie-card.profile {
+		width: 300px
+	}
+	.movie-card.profile > .movie-content> .movie-content-header > .movie-title {
+		font-size: 20px;
+		width: 250px;
+	}
+}
+
+@media screen and (max-width: 991px) {
+	.movie-card.profile {
+		width: 350px
+	}
+	.movie-card.profile > .movie-content> .movie-content-header > .movie-title {
+		font-size: 25px;
+		width: 400px;
+	}
+}
+
+@media screen and (max-width: 767px) {
+	.movie-card.profile {
+		margin-left: 8%;
+	}
+	.movie-card.profile > .movie-content> .movie-content-header > .movie-title {
+		font-size: 20px;
+	}
+}
+
+@media screen and (max-width: 590px) {
+	.movie-header, .movie-image{
+		height: 200px;
+	}
+	.movie-card.profile > .movie-content> .movie-content-header > .movie-title {
+		font-size: 15px;
+	}
+}
+
+@media screen and (max-width: 538px) {
+	.movie-card.profile {
+		margin-left: 5%;
+	}
+}
+
+@media screen and (max-width: 490px) {
+	.movie-card.profile {
+		margin-left: 2%;
+	}
+	.movie-card.profile > .movie-content> .movie-content-header > .movie-title {
+		max-width: 270px;
+	}
+}
+@media screen and (max-width: 430px) {
+	.movie-card.profile > .movie-content> .movie-content-header > .movie-title {
+		max-width: 250px;
+	}
+}
+
+@media screen and (max-width: 380px) {
+	.movie-card.profile > .movie-content> .movie-content-header > .movie-title {
+		max-width: 210px;
+	}
+}
+
+@media screen and (max-width: 350px) {
+	.movie-card.profile > .movie-content> .movie-content-header > .movie-title {
+		max-width: 150px;
+	}
+}

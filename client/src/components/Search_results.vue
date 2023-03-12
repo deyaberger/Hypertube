@@ -81,28 +81,28 @@ export default {
 					<div class="movie-info">
 						<div class="info-section">
 							<label class="fav_label">Fav</label>
-							<div v-if="movie.is_fav" class="btn-group" role="group" aria-label="Basic example"  data-toggle="tooltip" data-placement="top" title="Remove from favorites">
+							<div v-if="movie.is_fav" class="btn-group heart" role="group" aria-label="Basic example"  data-toggle="tooltip" data-placement="top" title="Remove from favorites">
 								<b-icon-heart-fill class="h2 favorites" @click="update_favorite(movie)"></b-icon-heart-fill>
 							</div>
-							<div v-else class="btn-group" role="group" aria-label="Basic example"  data-toggle="tooltip" data-placement="top" title="Add to favorites">
+							<div v-else class="btn-group heart" role="group" aria-label="Basic example"  data-toggle="tooltip" data-placement="top" title="Add to favorites">
 								<b-icon-heart class="h2 favorites" @click="update_favorite(movie)"></b-icon-heart>
 							</div>
 						</div>
 						<div class="info-section">
 							<label>{{text_content.year[lang_nb]}}</label>
-							<span>{{movie.year}}</span>
+							<span class="detail">{{movie.year}}</span>
 						</div>
 						<div class="info-section">
 							<label>{{text_content.time[lang_nb]}}</label>
-							<span class="time">{{Get_Formatted_Time(movie.length_minutes)}}</span>
+							<span class="time detail">{{Get_Formatted_Time(movie.length_minutes)}}</span>
 						</div>
 						<div class="info-section">
 							<label>{{text_content.rating[lang_nb]}}</label>
-							<span>{{movie.imdb_rating}}/10</span>
+							<span class="detail">{{movie.imdb_rating}}/10</span>
 						</div>
 						<div class="info-section">
 							<label>{{text_content.seeds[lang_nb]}}</label>
-							<span>{{movie.max_seeds}}</span>
+							<span class="detail">{{movie.max_seeds}}</span>
 						</div>
 					</div>
 				</div>
