@@ -32,7 +32,7 @@ export default {
 		return {
 			form              : {},
 			text_content      : textContent.MOVIES,
-			currentPage       : 0,
+			currentPage       : 1,
 			perPage           : 24,
 			user_research     : "RECO", // or "SEARCH"
 			error             : false,
@@ -45,14 +45,6 @@ export default {
 
 
 	computed: {
-		reco_slice() {
-			return this.paginator.recommendations
-		},
-
-		search_slice() {
-			return this.paginator.current_page_movies
-		},
-
 		reco_ready() {
 			return !this.paginator.loading_reco
 		},
@@ -73,8 +65,7 @@ export default {
 			handler: async function() {
 				console.log('current_page handler')
 				if (this.paginator) {
-					await this.paginator.set_page(this.currentPage)
-					// this.current_movies = this.paginator.currentPage
+					await this.paginator.set_page(this.currentPage - 1)
 				}
 			}
 		},
@@ -86,6 +77,7 @@ export default {
 			this.reset = false;
 			this.form = JSON.parse(JSON.stringify(value));
 			this.user_research = "SEARCH"
+			this.current_movies = []
 			if (this.paginator) {
 					this.paginator.set_search_form(this.form)
 			}
@@ -113,12 +105,12 @@ export default {
 
 		this.paginator.once('reco_done', (recos) => {
 			console.log("reco done")
-			this.recommendations = recos
+			this.recommendations = [...recos]
 		})
 
 		this.paginator.on('search_done', (movies) => {
-			console.log("reco done")
-			this.current_movies = movies
+			console.log("search done", movies)
+			this.current_movies = [...movies]
 		})
 		console.log('MOUNTED', this.paginator)
 	}
@@ -152,10 +144,10 @@ export default {
 			<SearchResults v-if="user_research == 'RECO'" :movie_list="recommendations" :error="false" :profile="false" class="search_res"/>
 			
 			<div class="pagination overflow-auto">
-				<div v-if="user_research == 'SEARCH'">
+				<div v-if="user_research == 'SEARCH' && current_movies.length != 0">
 					<b-pagination
 						v-model="currentPage"
-						limit=7
+						:limit=7
 						:total-rows="totalo"
 						:per-page="perPage"
 						first-number

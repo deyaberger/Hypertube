@@ -3,7 +3,7 @@ import EventEmitter from 'events'
 
 import { Get_Movies_Research_Page, Get_Recommendations} from "./movies"
 
-let page_range = 2
+let page_range = 4
 
 class Paginator extends EventEmitter {
     constructor(user_token, lang_nb, perPage) {
@@ -17,13 +17,12 @@ class Paginator extends EventEmitter {
     }
 
     fresh_state() {
-      this.loading_search      = false
+      this.loading_search      = true
       this.loading_reco        = true
       this.search_form         = null
       this.searched_movies     = {}
       this.current_page        = 0
       this.recommendations     = []
-      this.current_page_movies = []
       this.total_movies        = 0
       this.search_form = {"title":"","min_rating":0,"genre":"Action","quality":"","min_year":1900,"sort_by":"title","asc_or_desc":"asc"}
     }
@@ -40,34 +39,40 @@ class Paginator extends EventEmitter {
     }
 
     async set_page(page_number) {
-      // console.log("set page number", page_number)
+      console.log("set page number", page_number)
+      if (this.searched_movies[page_number]) {
+        console.log("cache hit")
+        this.emit('search_done', this.searched_movies[page_number])
+      }
+      
       this.current_page   = page_number
       this.loading_search = true
 
-      let min = Math.max(1, page_number - page_range)
+      let min = Math.max(0, page_number - page_range)
       let max = this.current_page + page_range
-      // console.log("min", min, 'max', max)
+      console.log("min", min, 'max', max)
 
       for (let i = min; i <= max; i++) {
-        // console.log("handling", i)
+        console.log("handling", i)
         if (!(i in Object.keys(this.searched_movies))) {
-          // console.log("no cache")
-          let new_movies = await this.get_page_from_server(page_number)
+          console.log("no cache")
+          let new_movies = await this.get_page_from_server(i)
           // console.log("new mov", new_movies)
           if (new_movies.length == 0) {
+            console.log("no more movies")
             break
           }
-          this.searched_movies[page_number] = new_movies
+          this.searched_movies[i] = new_movies
           this.total_movies += new_movies.length
+          if (i == page_number) {
+            this.loading_search = false
+            this.emit('search_done', new_movies)
+          }
         }
         else {
-          // console.log(i, 'in movies', Object.keys(this.searched_movies))
+          console.log(i, 'in movies', Object.keys(this.searched_movies))
         }
       }
-      this.current_page_movies = [...this.searched_movies[page_number]]
-      this.searched_movies =  JSON.parse(JSON.stringify(this.searched_movies))
-      this.loading_search = false
-      this.emit('search_done', this.current_page_movies)
     }
 
     set_search_form(form) {
@@ -108,7 +113,7 @@ class Paginator extends EventEmitter {
     async get_page_from_server(page_number) {
       try {
         let res
-        // console.log("search", this.search_form, this.lang_nb, this.user_token, page_number * this.movies_per_page, this.movies_per_page )
+        console.log("search", page_number * this.movies_per_page, this.movies_per_page )
         res = await Get_Movies_Research_Page(this.search_form, this.lang_nb, this.user_token, page_number * this.movies_per_page, this.movies_per_page);
 
         if (res && res.data && res.data.code == 'SUCCESS') {
