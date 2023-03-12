@@ -1,26 +1,30 @@
+import { BIconHandThumbsUpFill } from 'bootstrap-icons-vue'
 import EventEmitter from 'events'
 
-import { Get_Movies_Research_Page, Get_Recommendations_Page} from "./movies"
+import { Get_Movies_Research_Page, Get_Recommendations} from "./movies"
 
 let page_range = 4
 
 class Paginator extends EventEmitter {
-    constructor(user_token) {
+    constructor(user_token, lang_nb) {
       super()
 
       this.movies_per_page = 24
       this.user_token = user_token
+      this.lang_nb = lang_nb
       this.fresh_state()
-      this.recommendations = this.get_reco()
+      this.get_reco()
+      console.log("myrec", this.recommendations)
     }
 
     fresh_state() {
-      this.loading             = true
+      this.loading_search      = false
+      this.loading_reco        = true
       this.search_form         = null
       this.searched_movies     = {}
       this.current_page        = 0
       this.recommendations     = []
-      this.loading             = false
+      this.search_form = {"title":"","min_rating":0,"genre":"Action","quality":"","min_year":1900,"sort_by":"title","asc_or_desc":"asc"}
     }
 
     get_min_page() {
@@ -36,8 +40,8 @@ class Paginator extends EventEmitter {
 
     async set_page(page_number) {
       console.log("set page number", page_number)
-      this.current_page = page_number
-      this.loading      = true
+      this.current_page   = page_number
+      this.loading_search = true
 
       let min = Math.max(1, page_number - page_range)
       let max = this.current_page + page_range
@@ -59,7 +63,8 @@ class Paginator extends EventEmitter {
         }
       }
       this.current_page_movies = [...this.searched_movies[page_number]]
-      this.loading = false
+      this.searched_movies = {...this.searched_movies}
+      this.loading_search = false
     }
 
     set_search_form(form) {
@@ -69,14 +74,17 @@ class Paginator extends EventEmitter {
       this.set_page(0)
     }
 
-    async get_reco(page_number) {
+    async get_reco() {
       try {
         let res
+        this.loading_reco = true
         console.log("recommendcations")
-        res = await Get_Recommendations_Page(this.user_token, page_number * this.movies_per_page, this.movies_per_page);
-
+        res = await Get_Recommendations(this.user_token);
+        console.log("GOT MOBIES DAT:", res.data)
         if (res && res.data && res.data.code == 'SUCCESS') {
-          return res.data.movies
+          console.log("GOT MOBIES:", res.data.movies)
+          this.recommendations = res.data.movies
+          this.loading_reco = false
         }
         throw(new Error("Search movies error"))
       }
@@ -96,8 +104,8 @@ class Paginator extends EventEmitter {
     async get_page_from_server(page_number) {
       try {
         let res
-        console.log("search")
-        res = await Get_Movies_Research_Page(this.form, this.lang_nb, this.user_token, page_number * this.movies_per_page, this.movies_per_page);
+        console.log("search", this.search_form, this.lang_nb, this.user_token, page_number * this.movies_per_page, this.movies_per_page )
+        res = await Get_Movies_Research_Page(this.search_form, this.lang_nb, this.user_token, page_number * this.movies_per_page, this.movies_per_page);
 
         if (res && res.data && res.data.code == 'SUCCESS') {
           return res.data.movies
@@ -111,7 +119,7 @@ class Paginator extends EventEmitter {
             this.emit('GET_MOVIE_ERROR')
           }
         }
-        console.log("UNKNOWN ERROR [get_reco]: ", Object.keys(e), e.code, e.name, e.response)
+        console.log("UNKNOWN ERROR [search pagi]: ", Object.keys(e), e.code, e.name, e.response)
         throw(e)
         this.emit('GET_MOVIE_ERROR')
       }

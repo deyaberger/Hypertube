@@ -179,19 +179,18 @@ export default {
 		currentPage: {
 			handler:function() {
 				this.get_movies_page_slice()
-				// if (this.paginator) {
-				// 	this.paginator.set_page(this.currentPage)
-				// }
+				if (this.paginator) {
+					this.paginator.set_page(this.currentPage - 1)
+				}
 			},
 			deep:true
 		},
 		form: {
 			handler:function() {
 				this.get_form_results()
-				// if (this.paginator) {
-				// 	this.paginator.set_search_form(this.form)
-				// 	this.paginator.set_search_form(null)
-				// }
+				if (this.paginator) {
+					this.paginator.set_search_form(this.form)
+				}
 			},
 			deep:true
 		},
@@ -204,11 +203,11 @@ export default {
 	},
 
 	mounted() {
-		// this.paginator = new Paginator(this.user_token)
+		this.paginator = new Paginator(this.user_token, this.lang_nb)
 		// this.paginator.on("GET_MOVIE_ERROR", () => {
 		// 	throw(new Error("SEARCH MOVIE ERROR"))
 		// })
-		// this.paginator.set_page(2)
+		this.paginator.set_page(2)
 	}
 }
 
