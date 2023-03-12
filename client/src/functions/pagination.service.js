@@ -3,7 +3,7 @@ import EventEmitter from 'events'
 
 import { Get_Movies_Research_Page, Get_Recommendations} from "./movies"
 
-let page_range = 4
+let page_range = 2
 
 class Paginator extends EventEmitter {
     constructor(user_token, lang_nb, perPage) {
@@ -24,6 +24,7 @@ class Paginator extends EventEmitter {
       this.current_page        = 0
       this.recommendations     = []
       this.current_page_movies = []
+      this.total_movies        = 0
       this.search_form = {"title":"","min_rating":0,"genre":"Action","quality":"","min_year":1900,"sort_by":"title","asc_or_desc":"asc"}
     }
 
@@ -57,6 +58,7 @@ class Paginator extends EventEmitter {
             break
           }
           this.searched_movies[page_number] = new_movies
+          this.total_movies += new_movies.length
         }
         else {
           // console.log(i, 'in movies', Object.keys(this.searched_movies))
