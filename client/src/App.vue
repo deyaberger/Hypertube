@@ -49,7 +49,7 @@ body {
  	background-repeat: no-repeat;
  	background-position: center;
  	width: 100%;
-	height: 150vh;
+	height: 200vh;
 }
 
 
