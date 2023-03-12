@@ -2,10 +2,23 @@
 import { mapState } from 'vuex';
 import textContent from "../assets/language_dict/language_dict.json"
 import NetworkButtons from "../components/Networks_buttons.vue"
-import { Sign_In }        from '../functions/auth'
+import { Sign_In }        from '../functions/auth';
+import store from '../stores/store';
 
 
 export default {
+	name: "Sign_in",
+
+	beforeRouteEnter(to, from, next) {
+		const isAuthenticated = store.state.user_token != null // check if the user is authenticated
+		if (isAuthenticated) {
+			console.log("[sign_in]: already logged in, you need to logout if you want to log in again")
+			next("/search") // redirect to search page
+		} else {
+			next() // continue with navigation
+		}
+	},
+
 	components: {
 		NetworkButtons
 	},
