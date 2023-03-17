@@ -6,6 +6,8 @@ module.exports = (db_pool) => {
 
     router.get ("/reco"                  , auth_middlewares.authenticateToken, movie_controller.get_recommendations);
     router.get ("/search"                , auth_middlewares.authenticateToken, movie_controller.search             );
+    router.get ("/reco_page"             , auth_middlewares.authenticateToken, movie_controller.get_recommendations_page);
+    router.get ("/search_page"           , auth_middlewares.authenticateToken, movie_controller.search_page             );
     router.get ("/get_details/:movie_id" , auth_middlewares.authenticateToken, movie_controller.get_details        );
 
     return router
