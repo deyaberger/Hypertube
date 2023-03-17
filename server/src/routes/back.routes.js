@@ -6,9 +6,10 @@ module.exports = (db_pool) => {
 
   var router = require("express").Router();
 
-  router.post("/oauth/token"                                        , auth_controller.signin_oauth );
-  router.get ("/users"          , auth_middlewares.authenticateToken, user_controller.get_all_users);
-  router.get ("/users/:user_id" , auth_middlewares.authenticateToken, user_controller.get_user_back);
+  router.post ("/oauth/token"                                        , auth_controller.signin_oauth );
+  router.get  ("/users"          , auth_middlewares.authenticateToken, user_controller.get_all_users);
+  router.get  ("/users/:user_id" , auth_middlewares.authenticateToken, user_controller.get_user_back);
+  router.patch("/users/:user_id" , auth_middlewares.authenticateToken, user_controller.update_user);
 
   return router
 }

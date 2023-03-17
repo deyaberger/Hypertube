@@ -94,7 +94,6 @@ module.exports = (db_pool) => {
             }
         },
 
-
         signin: async (req, res) => {
             try {
                 let user = await auth_functions.get_user_from_username(req.body.username)
@@ -148,7 +147,6 @@ module.exports = (db_pool) => {
             res.status(200).send({userid: req.user_id})
         },
 
-
         request_reset_pass: async (req, res) => {
             try {
                 let mail = req.query.mail
@@ -166,7 +164,6 @@ module.exports = (db_pool) => {
                 throw(e)
             }
         },
-
 
         reset_pass: async (req, res) => {
             try {
@@ -191,6 +188,5 @@ module.exports = (db_pool) => {
                 throw(e)
             }
         }
-
     }
 }

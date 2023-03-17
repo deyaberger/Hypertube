@@ -1,3 +1,9 @@
+const bcrypt              = require('bcrypt')
+
+const hashPassword = (password) => {
+    return bcrypt.hashSync(password, 8);
+}
+
 module.exports = (db_pool) => {
     const user_functions = require('./user')(db_pool)
 
@@ -72,6 +78,61 @@ module.exports = (db_pool) => {
                 }
                 throw (e)
                 return res.status(400).send({msg:  `Malformed Request`, code: "FAILURE"})
+            }
+        },
+
+        update_user:  async (req, res) => {
+            const tolerated_keys = ['username', 'mail', 'pass', 'picture']
+            try {
+                if (req.user_id != req.params.user_id) {
+                    return res.status(403).send({msg: "Modify your own iser profile", code: "FORBIDDEN"})
+                }
+                if (req.body && Object.keys(req.body).length === 0) {
+                    return res.status(200).send({code: 'SUCCESS'})
+                }
+                let update = req.body
+                console.log("update ", update)
+                Object.keys(update).forEach(key => {
+                    if (!tolerated_keys.includes(key)) {
+                        delete update[key]
+                    }
+                });
+
+                console.log("filtered_update", update)
+
+                if (update.username && (update.username.length == 0 || update.username.match(regex_whitespace) == null)) {
+                    return res.status(400).send({msg: "Invalid username", code: "USERNAME_ERROR"})
+                }
+                let regex_mail = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+                console.log("username test passed")
+
+                if (update.mail && (update.mail.length == 0 || update.mail.match(regex_mail) == null)) {
+                    return res.status(400).send({msg: "Invalid mail", code: "MAIL_ERROR"})
+                }
+                let regex_pwd = /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{6,}$/;
+                console.log("mail test passed")
+
+                if (update.pass && (update.pass.match(regex_pwd) == null)) {
+                    return res.status(400).send({msg: "Invalid password", code: "PASSWORD_ERROR"})
+                }
+                console.log("password test passed")
+                
+                if (update.pass) {
+                    update.pass = hashPassword(update.pass)
+                }
+
+                await db_pool.query(`
+                UPDATE users
+                    SET   ?
+                    WHERE id=?
+		        `,
+                [update, req.user_id])
+                res.status(200).send({msg: "Succesfully updated user profile", code: "SUCCESS"})
+            }
+            catch (e) {
+                console.log("error in update user")
+                throw(e)
+                return res.status(400).send({msg: "Invalid data", code: "USER_UPDATE_ERROR"})
             }
         },
 
