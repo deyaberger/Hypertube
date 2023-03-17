@@ -7,7 +7,21 @@ const formData = require('form-data');
 const Mailgun = require('mailgun.js');
 
 const mailgun = new Mailgun(formData);
-const client = mailgun.client({username: 'api', key: MAILGUN_API_KEY, url:"https://api.eu.mailgun.net"});
+try {
+	const client = mailgun.client({username: 'api', key: MAILGUN_API_KEY, url:"https://api.eu.mailgun.net"});
+}
+catch (e) {
+	console.log("\n\nERROR IN MAILGUN SETUP MAILS WONT BE SENT\n\n")
+	client = {
+		messages: {
+			create: async function(DOMAIN, messageData) {
+				console.log("Fake MAIL", DOMAIN)
+				console.log(messageData)
+				return
+			}
+		}
+	}
+}
 // console.log(client)
 
 
