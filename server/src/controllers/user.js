@@ -59,6 +59,31 @@ module.exports = (db_pool) => {
             }
         },
 
+        get_user_by_id_back: async (userid) => {
+            console.log("\n[user]: get_user_by_id: ", {userid});
+            const request = 
+            `
+            SELECT
+                users.id,
+                first_name,
+                last_name,
+                language,
+                picture,
+                mail,
+                username,
+                bio
+            FROM users
+            WHERE users.id = ${userid}
+            `
+            try {
+                [user, ] = await db_pool.query(request)
+                return user
+            }
+            catch(e) {
+                throw(e)
+            }
+        },
+
         update_username: async(user_id, username) => {
             console.log("\n[user]: update_username: ", {user_id, username});
             try {

@@ -51,6 +51,27 @@ module.exports = (db_pool) => {
                     return res.status(201).send({msg:  `A user id should be a number`, code: "FAILURE"})
                 }
                 throw (e)
+                return res.status(400).send({msg:  `Malformed Request`, code: "FAILURE"})
+            }
+        },
+
+        get_user_back : async (req, res) => {
+            try {
+                let other_user = Number(req.params.user_id)
+                let user = await user_functions.get_user_by_id_back(other_user)
+                if (user != null && user.length == 1) {
+                    console.log("[user.controller]: get_other_user SUCCESS ", {user: user[0]})
+                    return res.status(200).send({user : user[0], code : "SUCCESS"})
+                }
+                return res.status(204).send({msg:  `user doesn't exist`, code: "FAILURE"})
+            }
+            catch (e) {
+                if (e.code == 'ER_BAD_FIELD_ERROR') {
+                    console.log("[user.controller]: get_other_user FAILURE (A user id should be a number)")
+                    return res.status(400).send({msg:  `A user id should be a number`, code: "FAILURE"})
+                }
+                throw (e)
+                return res.status(400).send({msg:  `Malformed Request`, code: "FAILURE"})
             }
         },
 
