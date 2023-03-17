@@ -83,12 +83,14 @@ module.exports = (db_pool) => {
         delete_comment : async (req, res) => {
             try {
                 let comment_id = Number(req.params.id)
-                let comments = await comment_functions.get_comment_by_id(comment_id)
-                console.log("[comment.controller]: get by id SUCCESS")
-                if (comments.length == 0) {
-                    return res.status(204).send({msg: 'No comments with this id', code: "SUCCESS"})
-                }
-                return res.status(200).send({comments: comments, code: "SUCCESS"})
+                let del = await db_pool.query(
+                    `
+                    DELETE FROM comments WHERE id=? AND user_id=?
+                    `,
+                    [comment_id, req.user_id]
+                )
+                console.log("[comment.controller]: delete SUCCESS", del)
+                return res.status(200).send({code: "SUCCESS"})
             }
             catch (e) {
                 if (e.code == 'ER_BAD_FIELD_ERROR') {

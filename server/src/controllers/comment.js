@@ -36,8 +36,6 @@ module.exports = (db_pool) => {
             }
         },
 
-        
-
         get_latest: async (id) => {
             console.log("\n[comment]: getting latest: ")
             try {
@@ -78,7 +76,6 @@ module.exports = (db_pool) => {
                 throw(e)
             }
         },
-
 
         post_comment: async (user_id, movie_id, content, rating) => {
             console.log("\n[comment]:posting comment: ", {user_id, movie_id, content, rating})
