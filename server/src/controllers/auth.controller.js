@@ -119,6 +119,29 @@ module.exports = (db_pool) => {
             }
         },
 
+        signin_oauth: async (req, res) => {
+            try {
+                let user = await auth_functions.get_user_from_username(req.body.username)
+				console.log("[auth.controller]: get_user_from_username ", {user})
+				if (user == null) {
+					return res.status(403).send({message: "Signin failed", code: "FAILURE"})
+				}
+                let is_password_ok = await auth_functions.check_password(user, req.body.password)
+                if (is_password_ok) {
+                    let token = auth_functions.create_access_token(user.id)
+                    return res.status(200).send({message: "Login Sucess", token: token})
+                }
+                return res.status(403).send({message: "Signin failed", code : "FAILURE"})
+            }
+            catch (e) {
+                if (e.code == 'ER_DATA_TOO_LONG') {
+                    console.log("[user.controller]: signin FAILURE : long")
+                    return res.status(400).send({msg: "username too long", code : "TOO_LONG"})
+                }
+                console.log("\n\nError in oauth signin.\n\n")
+                throw (e)
+            }
+        },
 
         print_id: async (req, res) => {
             console.log("ID identified: %d.", req.user_id)

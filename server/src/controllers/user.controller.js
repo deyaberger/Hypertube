@@ -54,6 +54,17 @@ module.exports = (db_pool) => {
             }
         },
 
+        get_all_users : async (req, res) => {
+            try {
+                let users = await user_functions.get_all_users()
+                return res.status(200).send({users: users, code: "SUCCESS"})
+            }
+            catch (e) {
+                throw (e)
+                return res.status(400).send({CODE: 'FAILURE', msg: 'Unknown error while getting users'})
+            }
+        },
+
         update_username : async(req, res) => {
             try {
                 let user_id = req.user_id
