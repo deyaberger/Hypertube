@@ -2,10 +2,23 @@
 import { mapState } from 'vuex';
 import textContent from "../assets/language_dict/language_dict.json"
 import NetworkButtons from "../components/Networks_buttons.vue"
-import { Sign_In }        from '../functions/auth'
+import { Sign_In }        from '../functions/auth';
+import store from '../stores/store';
 
 
 export default {
+	name: "Sign_in",
+
+	beforeRouteEnter(to, from, next) {
+		const isAuthenticated = store.state.user_token != null // check if the user is authenticated
+		if (isAuthenticated) {
+			console.log("[sign_in]: already logged in, you need to logout if you want to log in again")
+			next("/search") // redirect to search page
+		} else {
+			next() // continue with navigation
+		}
+	},
+
 	components: {
 		NetworkButtons
 	},
@@ -25,7 +38,8 @@ export default {
 			username: '',
 			password: '',
 			connection_error : false,
-			text_content : textContent.SIGNIN
+			text_content : textContent.SIGNIN,
+			deactivate_button	: false
 		}
 	},
 
@@ -82,6 +96,37 @@ export default {
 				console.log("Oauth signup issue", e)
 			}
 		}
+	},
+
+	watch: {
+		username: {
+			handler:function() {
+				this.mdp_error = false
+				this.username_error = false
+				this.deactivate_button = false
+				this.connection_error = false
+			},
+			deep:true
+		},
+		password: {
+			handler:function() {
+				this.mdp_error = false
+				this.username_error = false
+				this.deactivate_button = false
+				this.connection_error = false
+			},
+			deep:true
+		},
+		connection_error: {
+			handler: function() {
+				if (this.connection_error == false) {
+					this.deactivate_button = false
+				}
+				else {
+					this.deactivate_button = true
+				}
+			}
+		}
 	}
 }
 </script>
@@ -126,7 +171,8 @@ export default {
       </div>
       <div class="col-md-12 text-center" :class="{ 'mt-4' : connection_error, 'mt-4' : !connection_error }">
         <p class="error_msg" v-show="connection_error">{{text_content.error[lang_nb]}}</p>
-        <button class="submit_button" type = "submit">{{text_content.sign_in[lang_nb]}}</button>
+		<button v-if="deactivate_button" class="submit_button" type="submit" disabled>{{text_content.sign_in[lang_nb]}} </button>
+        <button v-else class="submit_button" type = "submit">{{text_content.sign_in[lang_nb]}}</button>
         <div class = "m-3">{{text_content.or[lang_nb]}}</div>
       </div>
     </form>

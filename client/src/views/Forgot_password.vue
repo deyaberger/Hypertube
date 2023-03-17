@@ -27,12 +27,20 @@ export default {
 			console.log("[forgot pwd]: Requesting reset...");
 			e.preventDefault();
 			try {
-				await Request_Pass_Reset(this.mail)
-				console.log("[forgot pwd]: Successfully requested reset pwd!")
-				this.requestSent = true;
+				let res = await Request_Pass_Reset(this.mail)
+				if (res && res.data && res.data.code == "SUCCESS") {
+					console.log("[forgot pwd]: Successfully requested reset pwd!")
+					this.requestSent = true;
+				}
+				else if (res && res.data && res.data.code == "FAILURE") {
+					console.log("[forgot pwd]: ", res.data.msg)
+				}
+				else {
+					console.log("[forgot pwd]: UNKOWN ERROR in forgot pwd!", res)
+				}
 			}
 			catch (e) {
-				console.log("ERROR [forgot pwd] ", e)
+				console.log("[forgot pwd]: UNKOWN ERROR in forgot pwd!", e)
 				this.error = true
 			}
 		},

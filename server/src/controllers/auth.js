@@ -1,6 +1,9 @@
 const bcrypt              = require('bcrypt')
 const jwt                 = require('jsonwebtoken')
-
+const { nanoid }          = require("nanoid");
+const querystring         = require('querystring');
+const front_hostname      = require('../utils/hostname.js').front_hostname;
+const sendMail             = require('../utils/email');
 const throw_err_with_code = require('../utils/error_throw')
 
 
@@ -77,50 +80,39 @@ module.exports = (db_pool) => {
 
 
         request_new_pass : async (mail) => {
-            console.log("Reset pass: ", mail)
+            console.log("\n[auth] request_new_pass: ", mail)
             let [user_res, ] = await db_pool.query("\
             SELECT * FROM users \
             WHERE mail=?;",
             [mail])
-            let user
-            if (user_res.length == 0) {
-                user = null
-            }
-            else {
-                user = user_res[0]
-            }
-
-            if (user == null) {
-                console.log("MISSING USER")
+            if (user_res == null || user_res.length == 0) {
                 return false
             }
-
-            let hash = hashPassword(user.id.toString(), 8)
+            let user = user_res[0]
+            let hash = nanoid(48)
             await db_pool.query(
                 "INSERT INTO reset_pass \
                 (user_id, id_hash) \
                 VALUES (?,?);",
                 [user.id, hash]
             )
-
-            // sendMail(req.body.mail, "Sekesi Password Reset",  "Click here to reset password: " + "https://matcha.yoopster.com/#/reset/" + encodeURIComponent(hash))
-            console.log("reset pass hash:\n", hash)
-
+			const query = querystring.stringify({hash : hash});
+			const url_reset = `${front_hostname}/reset_pwd?${query}`
+            sendMail(mail, "Reset your password", "To reset your password, click on the following link: " + `${url_reset}`)
+            // console.log("reset pass hash:\n", url_reset)
             return true
         },
 
         reset_pass : async(hash, new_pass) => {
-            console.log("resetting password")
+            console.log("\n[auth] reset pass")
             let [verify_reset_result, ] = await db_pool.query(
                 "SELECT * FROM reset_pass \
                 where id_hash=?",
                 hash)
 
-            if (verify_reset_result.length == 0) {
-                console.log("no hash found for reset pass")
+            if (!verify_reset_result || verify_reset_result.length == 0) {
                 return false
             }
-
             let user_id = verify_reset_result[0].user_id
 
             await db_pool.query(
@@ -137,7 +129,7 @@ module.exports = (db_pool) => {
                 "UPDATE users SET pass=? WHERE users.id=?",
                 [password_hash, user_id]
             )
-            console.log(upda)
+            console.log("[auth] reset_pass update: ", upda)
             return true
         },
 
