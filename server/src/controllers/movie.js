@@ -187,6 +187,49 @@ module.exports = (db_pool) => {
             }
         },
 
+        get_movie_details_back: async (movie_id, user_id) => {
+            console.log("\n[movie]: getting movie details: ", movie_id)
+            const request = `
+            WITH aggregate_genres as (SELECT movie_id, JSON_ARRAYAGG(name) as genres_list
+                from genres
+                group by movie_id)
+            SELECT movies.id,
+                yts_id,
+                imdb_code,
+                title,
+                imdb_rating,
+                year,
+                length_minutes,
+                language,
+                summary,
+                genres_list,
+                json_objectagg(IFNULL(images.size, ''), images.url) as images_list,
+                director,
+                actors,
+                (SELECT COUNT(comments.id) FROM comments WHERE comments.movie_id = movies.id) as number_of_comments
+            FROM movies
+                LEFT JOIN aggregate_genres
+                    ON movies.id = aggregate_genres.movie_id
+                LEFT JOIN images
+                    ON movies.id = images.movie_id
+
+            WHERE movies.id = ${movie_id}
+            GROUP BY movies.id`
+            try {
+                let [insert_res, ] = await db_pool.query(request)
+                if (insert_res && insert_res.length == 1) {
+                    return insert_res[0]
+                }
+                else {
+                    console.log("No movie found", movie_id, insert_res)
+                    return null
+                }
+            }
+            catch (e) {
+                throw (e)
+            }
+        },
+
         get_movie_details: async (movie_id, user_id) => {
             console.log("\n[movie]: getting movie details: ", movie_id)
             const request = `
@@ -236,5 +279,5 @@ module.exports = (db_pool) => {
             }
         }
 
-    }
+}
 }

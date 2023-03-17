@@ -106,5 +106,27 @@ module.exports = (db_pool) => {
                 throw(e)
             }
         },
+
+        get_details_back: async (req, res) => {
+            try {
+                let user_id = req.user_id
+                let movie_id = Number(req.params.movie_id)
+                console.log("movi id", movie_id, typeof movie_id)
+                let movie_res = await movie_functions.get_movie_details_back(movie_id, user_id)
+                if (movie_res == null) {
+                    console.log("[movie.controller]: get_details MISSING_MOVIE")
+                    return res.status(200).send({movie: movie_res, code: "MISSING_MOVIE"})
+                }
+                console.log("[movie.controller]: get_details SUCCESS")
+                return res.status(200).send({movie: movie_res, code: "SUCCESS"})
+            }
+            catch (e) {
+                if (e.code == "ER_BAD_FIELD_ERROR") {
+                    console.log("ERROR [movie.controller]: ER_BAD_FIELD_ERROR")
+                    return res.status(201).send({msg: "the path /movie/:movie_id should contain a number as movie id", code: "FAILURE"})
+                }
+                throw(e)
+            }
+        },
     }
 }
