@@ -138,7 +138,7 @@ export default {
 
 <template>
 	<div class="test">
-		<SearchBar ref="search_bar" @search_form="update_form" :reset="reset" :nb_of_res="number_of_results"/>
+		<SearchBar ref="search_bar" @search_form="update_form" :reset="reset"/>
 		<div ref="results_container" class="results_container">
 		
 			<div class="search_header">
