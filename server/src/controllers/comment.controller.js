@@ -4,10 +4,14 @@ module.exports = (db_pool) => {
     return {
         post_comment : async (req, res) => {
             try {
-                let user_id       = Number(req.user_id)
-                let movie_id      = Number(req.query.movie_id)
-                let content       = req.query.content
-                let rating        = Number(req.query.rating)
+                let user_id       = req.user_id
+                let movie_id      = Number(req.params.movie_id)
+                if (!movie_id || isNaN(movie_id)) {
+                    movie_id = req.body.movie_id
+                }
+                let content       = req.body.content
+                let rating        = req.body.rating
+                console.log(`user_id: ${user_id} movie_id: ${movie_id} content: ${ content} rating: ${ rating}`)
                 let comment_res   = await comment_functions.post_comment(user_id, movie_id, content, rating)
                 if (comment_res != null && comment_res.affectedRows == 1) {
                     console.log("[comment.controller]: post_comment SUCCESS")
@@ -16,9 +20,17 @@ module.exports = (db_pool) => {
                 return res.status(201).send({comment_res: comment_res, code: "FAILURE"})
             }
             catch (e) {
+                if (e.code == 'ER_BAD_FIELD_ERROR') {
+                    console.log("[comment.controller]: post_comment bad field error")
+                    return res.status(400).send({code: "FAILURE", msg: 'invalid id'})
+                }
                 if (e.code == 'ER_DATA_TOO_LONG') {
                     console.log("[comment.controller]: post_comment ER_DATA_TOO_LONG")
-                    return res.status(201).send({comment_res: e.sqlMessage, code: "TOO_LONG"})
+                    return res.status(400).send({comment_res: e.sqlMessage, code: "TOO_LONG"})
+                }
+                if (e.sqlMessage=="Check constraint 'number_range_check' is violated.") {
+                    console.log("[comment.controller]: post_comment bad rating")
+                    return res.status(400).send({comment_res: e.sqlMessage, code: "BAD_RATING"})
                 }
                 throw (e)
             }
@@ -110,7 +122,7 @@ module.exports = (db_pool) => {
                 let comment_id = Number(req.params.id)
 
                 let update = req.body
-                console.log("update comments ", update)
+                console.log("update comments ", update, comment_id, req.user_id)
                 Object.keys(update).forEach(key => {
                     if (!tolerated_keys.includes(key)) {
                         delete update[key]
@@ -118,12 +130,13 @@ module.exports = (db_pool) => {
                 });
 
                 console.log("filtered_update comment", update)
-                let comment = await db_pool.query(`
+                let [comment, ] = await db_pool.query(`
                 SELECT * FROM comments
                     WHERE id=?
 		        `,
                 comment_id)
 
+                console.log("trying to modify:", comment)
                 if (comment.length == 0) {
                     return res.status(204).send({code: 'FAILURE'})
                 }
@@ -132,13 +145,12 @@ module.exports = (db_pool) => {
                     return res.status(403).send({msg: 'You can only modify your own comments', code: 'FAILURE'})
                 }
 
-                let rese = await db_pool.query(`
+                await db_pool.query(`
                 UPDATE comments
                     SET content=?
                     WHERE id=? AND user_id=?
 		        `,
                 [update.content, comment_id, req.user_id])
-                console.log("RERE", rese)
                 res.status(200).send({msg: "Succesfully updated comment", code: "SUCCESS"})
             }
             catch (e) {

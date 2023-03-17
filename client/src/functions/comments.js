@@ -35,18 +35,17 @@ export const Get_Comments_By_Movie_ID = async(movie_id, token) => {
 export const Post_Comment = async(movie_id, content, rating, token) => {
 	console.log("<comments> : posting ", {movie_id, content, rating, token})
 	let request = {
-		url: `/api/comment/post/:${movie_id}`,
+		url: `/api/comment/post/${movie_id}`,
 		method: "post",
 		headers: {
 			'Access-Control-Allow-Origin': '*',
 			"Content-type"               : "application/json",
 			'Authorization'				 : `Bearer ${token}`
 		},
-		params : {
-			"movie_id" : movie_id,
+		data : JSON.stringify({
 			"content" : content,
 			"rating" : rating
-		}
+		})
 	};
 	const response = await axios(request);
 	return response;
