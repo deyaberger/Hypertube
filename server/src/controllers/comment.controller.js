@@ -72,9 +72,81 @@ module.exports = (db_pool) => {
                 return res.status(200).send({comments: comments, code: "SUCCESS"})
             }
             catch (e) {
+                if (e.code == 'ER_BAD_FIELD_ERROR') {
+                    return res.status(400).send({code: "FAILURE", msg: 'invalid id'})
+                }
                 throw(e)
                 return res.status(400).send({code: "FAILURE"})
             }
-        }
+        },
+
+        delete_comment : async (req, res) => {
+            try {
+                let comment_id = Number(req.params.id)
+                let comments = await comment_functions.get_comment_by_id(comment_id)
+                console.log("[comment.controller]: get by id SUCCESS")
+                if (comments.length == 0) {
+                    return res.status(204).send({msg: 'No comments with this id', code: "SUCCESS"})
+                }
+                return res.status(200).send({comments: comments, code: "SUCCESS"})
+            }
+            catch (e) {
+                if (e.code == 'ER_BAD_FIELD_ERROR') {
+                    return res.status(400).send({code: "FAILURE", msg: 'invalid id'})
+                }
+                throw(e)
+                return res.status(400).send({code: "FAILURE"})
+            }
+        },
+
+        update_comment:  async (req, res) => {
+            const tolerated_keys = ['content']
+            try {
+                if (!req.body || !req.body.content) {
+                    return res.status(400).send({code: 'FAILURE'})
+                }
+                let comment_id = Number(req.params.id)
+
+                let update = req.body
+                console.log("update comments ", update)
+                Object.keys(update).forEach(key => {
+                    if (!tolerated_keys.includes(key)) {
+                        delete update[key]
+                    }
+                });
+
+                console.log("filtered_update comment", update)
+                let comment = await db_pool.query(`
+                SELECT * FROM comments
+                    WHERE id=?
+		        `,
+                comment_id)
+
+                if (comment.length == 0) {
+                    return res.status(204).send({code: 'FAILURE'})
+                }
+
+                if (comment[0].user_id != req.user_id) {
+                    return res.status(403).send({msg: 'You can only modify your own comments', code: 'FAILURE'})
+                }
+
+                let rese = await db_pool.query(`
+                UPDATE comments
+                    SET content=?
+                    WHERE id=? AND user_id=?
+		        `,
+                [update.content, comment_id, req.user_id])
+                console.log("RERE", rese)
+                res.status(200).send({msg: "Succesfully updated comment", code: "SUCCESS"})
+            }
+            catch (e) {
+                console.log("error in update comment")
+                if (e.code == 'ER_BAD_FIELD_ERROR') {
+                    return res.status(400).send({code: "FAILURE", msg: 'invalid id'})
+                }
+                throw(e)
+                return res.status(400).send({msg: "Invalid data", code: "COMMENT_UPDATE_ERROR"})
+            }
+        },
     }
 }

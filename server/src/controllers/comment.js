@@ -15,7 +15,7 @@ module.exports = (db_pool) => {
         },
 
         get_comment_by_id: async (id) => {
-            console.log("\n[comment]:getting comment by author id: ", id)
+            console.log("\n[comment]:getting comment by id: ", id)
             try {
                 [comments, ] = await db_pool.query(`
                 SELECT
@@ -35,6 +35,8 @@ module.exports = (db_pool) => {
                 throw(e)
             }
         },
+
+        
 
         get_latest: async (id) => {
             console.log("\n[comment]: getting latest: ")

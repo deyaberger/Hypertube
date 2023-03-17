@@ -21,6 +21,8 @@ module.exports = (db_pool) => {
 
   router.get  ("/comments"         , auth_middlewares.authenticateToken, comment_controller.get_latest_comments);
   router.get  ("/comments/:id"     , auth_middlewares.authenticateToken, comment_controller.get_comment_by_id);
+  router.patch("/comments/:id"     , auth_middlewares.authenticateToken, comment_controller.update_comment);
+  
   return router
 }
 
