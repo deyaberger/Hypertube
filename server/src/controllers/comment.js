@@ -17,9 +17,17 @@ module.exports = (db_pool) => {
         get_comment_by_id: async (id) => {
             console.log("\n[comment]:getting comment by author id: ", id)
             try {
-                [comments, ] = await db_pool.query("\
-                SELECT * FROM comments \
-                WHERE id=?;",
+                [comments, ] = await db_pool.query(`
+                SELECT
+                    comments.id,
+                    comments.date,
+                    comments.content,
+                    comments.rating,
+                    users.username
+                FROM comments
+                INNER JOIN users
+                    ON users.id = comments.user_id
+                WHERE comments.id = ?`,
                 id)
                 return comments
             }
