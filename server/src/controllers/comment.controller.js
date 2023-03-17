@@ -59,7 +59,22 @@ module.exports = (db_pool) => {
             catch (e) {
                 throw(e)
             }
+        },
+        
+        get_comment_by_id : async (req, res) => {
+            try {
+                let comment_id = Number(req.params.id)
+                let comments = await comment_functions.get_comment_by_id(comment_id)
+                console.log("[comment.controller]: get by id SUCCESS")
+                if (comments.length == 0) {
+                    return res.status(204).send({msg: 'No comments with this id', code: "SUCCESS"})
+                }
+                return res.status(200).send({comments: comments, code: "SUCCESS"})
+            }
+            catch (e) {
+                throw(e)
+                return res.status(400).send({code: "FAILURE"})
+            }
         }
-
     }
 }
