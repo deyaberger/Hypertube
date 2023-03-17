@@ -3,6 +3,7 @@ module.exports = (db_pool) => {
   const user_controller  = require("../controllers/user.controller" )(db_pool)
   const auth_controller  = require("../controllers/auth.controller" )(db_pool)
   const movie_controller = require("../controllers/movie.controller")(db_pool)
+  const comment_controller = require("../controllers/comment.controller")(db_pool)
   const auth_middlewares = require("../middlewares/auth.middleware" )
 
   var router = require("express").Router();
@@ -17,6 +18,7 @@ module.exports = (db_pool) => {
   router.get  ("/movies/:movie_id" , auth_middlewares.authenticateToken, movie_controller.get_details_back        );
 
 
+  router.get  ("/comments"         , auth_middlewares.authenticateToken, comment_controller.get_latest_comments);
   return router
 }
 

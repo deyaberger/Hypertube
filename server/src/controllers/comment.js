@@ -15,6 +15,21 @@ module.exports = (db_pool) => {
         },
 
 
+        get_latest: async (id) => {
+            console.log("\n[comment]: getting latest: ")
+            try {
+                [comments, ] = await db_pool.query(`
+                SELECT * FROM comments
+                ORDER BY date DESC
+                LIMIT 20 OFFSET 0
+                `)
+                return comments
+            }
+            catch(e) {
+                throw(e)
+            }
+        },
+
         get_comment_by_movie_id: async (movie_id) => {
             console.log("\n[comment]:getting comment by movie id: ", movie_id)
             try {

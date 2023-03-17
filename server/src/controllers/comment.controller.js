@@ -48,6 +48,17 @@ module.exports = (db_pool) => {
             catch (e) {
                 throw(e)
             }
+        },
+
+        get_latest_comments : async (req, res) => {
+            try {
+                let comments = await comment_functions.get_latest()
+                console.log("[comment.controller]: get latest SUCCESS")
+                return res.status(200).send({comments: comments, code: "SUCCESS"})
+            }
+            catch (e) {
+                throw(e)
+            }
         }
 
     }

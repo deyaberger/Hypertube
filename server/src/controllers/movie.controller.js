@@ -118,6 +118,8 @@ module.exports = (db_pool) => {
                     return res.status(200).send({movie: movie_res, code: "MISSING_MOVIE"})
                 }
                 console.log("[movie.controller]: get_details SUCCESS")
+                // TODO: get the subtitles ?
+                movie_res.subtitles = []
                 return res.status(200).send({movie: movie_res, code: "SUCCESS"})
             }
             catch (e) {
