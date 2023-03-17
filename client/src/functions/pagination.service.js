@@ -1,4 +1,3 @@
-import { BIconHandThumbsUpFill } from 'bootstrap-icons-vue'
 import EventEmitter from 'events'
 
 import { Get_Movies_Research_Page, Get_Recommendations} from "./movies"
@@ -12,6 +11,7 @@ class Paginator extends EventEmitter {
       this.movies_per_page = perPage
       this.user_token = user_token
       this.lang_nb = lang_nb
+      this.recommendations     = []
       this.fresh_state()
       this.get_reco()
     }
@@ -22,7 +22,6 @@ class Paginator extends EventEmitter {
       this.search_form         = null
       this.searched_movies     = {}
       this.current_page        = 0
-      this.recommendations     = []
       this.total_movies        = 0
       this.search_form = {"title":"","min_rating":0,"genre":"Action","quality":"","min_year":1900,"sort_by":"title","asc_or_desc":"asc"}
     }
@@ -52,27 +51,42 @@ class Paginator extends EventEmitter {
       let max = this.current_page + page_range
       console.log("min", min, 'max', max)
 
-      for (let i = min; i <= max; i++) {
-        console.log("handling", i)
-        if (!(i in Object.keys(this.searched_movies))) {
-          console.log("no cache")
-          let new_movies = await this.get_page_from_server(i)
-          // console.log("new mov", new_movies)
-          if (new_movies.length == 0) {
-            console.log("no more movies")
-            break
+      try {
+        for (let i = min; i <= max; i++) {
+          console.log("handling", i)
+          if (!(i in Object.keys(this.searched_movies))) {
+            console.log("no cache")
+            let new_movies = await this.get_page_from_server(i)
+            this.searched_movies[i] = new_movies
+            this.total_movies += new_movies.length
+            if (i == page_number) {
+              this.loading_search = false
+              this.emit('search_done', new_movies)
+            }
+            if (new_movies.length == 0) {
+              console.log("no more movies")
+              break
+            }
           }
-          this.searched_movies[i] = new_movies
-          this.total_movies += new_movies.length
-          if (i == page_number) {
-            this.loading_search = false
-            this.emit('search_done', new_movies)
+          else {
+            console.log(i, 'in cache')
+            if (this.searched_movies[i].length == 0) {
+              console.log("stop at", i)
+              break
+            }
           }
-        }
-        else {
-          console.log(i, 'in movies', Object.keys(this.searched_movies))
         }
       }
+      catch (e) {
+        console.log("ERRORORE SETTE PAGE", e)
+        if (e.code == 'GET_MOVIE_ERROR_CODE') {
+          console.log("emit GET_MOVIE_ERROR")
+          return this.emit('GET_MOVIE_ERROR')
+        }
+        throw(e)
+      }
+
+  
     }
 
     set_search_form(form) {
@@ -123,10 +137,11 @@ class Paginator extends EventEmitter {
       }
       catch(e) {
         this.error = true
-        if (e.code == 'ERR_BAD_REQUEST') { // i.e. it's an axios error
-          if (e.response && e.response.status == 401)  {
-            this.emit('GET_MOVIE_ERROR')
-          }
+        if (e.code == 'ERR_BAD_REQUEST' || e.code == 'ERR_BAD_RESPONSE') { // i.e. it's an axios error
+          console.log("catching request fail")
+          let err = new Error(e.msg)
+          err.code = 'GET_MOVIE_ERROR_CODE'
+          throw(err)
         }
         // console.log("UNKNOWN ERROR [search pagi]: ", Object.keys(e), e.code, e.name, e.response)
         throw(e)

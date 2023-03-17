@@ -101,17 +101,33 @@ export default {
 	created() {
 		this.paginator = new Paginator(this.user_token, this.lang_nb, this.perPage)
 		this.paginator.on("GET_MOVIE_ERROR", () => {
-			throw(new Error("SEARCH MOVIE ERROR"))
+			// throw(new Error("SEARCH MOVIE ERROR"))
+						// TODO: turn this back on
+			this.$store.commit('LOGOUT_USER')
+			this.$router.push('/sign_in')
+			alert("Session expired (search)")
 		})
 
 		this.paginator.once('reco_done', (recos) => {
 			console.log("reco done")
-			this.recommendations = [...recos]
+			try {
+				this.recommendations = [...recos]
+			}
+			catch (e) {
+				console.log("error in reco_done", e, "################## HANDLED #############")
+				this.recommendations = []
+			}
 		})
 
 		this.paginator.on('search_done', (movies) => {
 			console.log("search done", movies)
-			this.current_movies = [...movies]
+			try {
+				this.current_movies = [...movies]
+			}
+			catch (e) {
+				console.log("error in search_done", e, "HANDLED")
+				this.current_movies = []
+			}
 		})
 		console.log('MOUNTED', this.paginator)
 	}

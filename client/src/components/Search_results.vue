@@ -43,8 +43,12 @@ export default {
 
 		},
 		handle_image_error(event, movie) {
+			// console.log("movie", movie.title, movie.images_list)
 			const nextIndex = parseInt(event.target.dataset.nextIndex)
+			// console.log("nextIndex", nextIndex)
 			const nextImage = movie.images_list[nextIndex];
+			console.log(movie.images_list)
+			// console.log("nextImage", nextImage)
 			if (nextImage) {
 				event.target.src = nextImage;
 			} else {
