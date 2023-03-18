@@ -110,7 +110,8 @@ export default {
 	},
 
 	mounted() {
-		this.emit_form();
+		// TODO: understand why this .emit_form() was here ? and if removing it is safe ?
+ 		// this.emit_form()
 	},
 
 	watch: {

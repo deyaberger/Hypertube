@@ -80,10 +80,6 @@ const torrent_router = require("./src/routes/torrent.routes")(connection_pool)
 app.use("/api/torrents", torrent_router)
 
 
-// POPULATE
-const populate_router = require("./src/routes/populate.routes")(connection_pool)
-app.use("/api/populate", populate_router)
-
 
 // FAVORITE
 const favorites_router = require("./src/routes/favorite.routes")(connection_pool)
@@ -104,6 +100,55 @@ const oauth_router = require("./src/routes/oauth.routes")(connection_pool)
 app.use("/api/oauth", oauth_router)
 
 
+// POPULATE
+
+if (process.env.ENABLE_POPULATE == 'TRUE') {
+  console.log("Populate Enabled")
+  const populate_router = require("./src/routes/populate.routes")(connection_pool)
+  app.use("/api/populate", populate_router)
+}
+else {
+  console.log("Populate Disabled")
+}
+
+
+
+const history = require('connect-history-api-fallback');
+
+const historyMiddleware = history({
+  verbose: true,
+});
+
+app.use((req, res, next) => {
+  console.log(req.path)
+  let route_base = req.path.split('/')[1]
+  console.log("LIOL", route_base)
+  if (route_base == 'populate' && process.env.ENABLE_POPULATE != 'TRUE') {
+    return res.redirect('/')
+  }
+  if (route_base != 'api') {
+    historyMiddleware(req, res, next);
+  } else {
+    next();
+  }
+});
+
+
+// app.use(function (req, res, next) {
+//   if (req.path.substr(-1) == '/' && req.path.length > 1) {
+//     let query = req.url.slice(req.path.length)
+//     res.redirect(301, req.path.slice(0, -1) + query)
+//   } else {
+//     next()
+//   }
+// })
+
+app.use("/", express.static(__dirname + '/client_dist'));
+
+
+app.use((req, res, next) => {
+  res.redirect('/404_by_joep')
+})
 // Start the server
 
 const PORT = process.env.PORT || 8071;

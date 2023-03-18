@@ -22,10 +22,13 @@ module.exports = (db_pool) => {
                 let update_res  = await watched_functions.post_watched(user_id, movie_id)
                 if (update_res.affectedRows == 1) {
                     console.log("[watched.controller]: set_watched SUCCESS")
-                    return res.status(200).send({update_res: update_res, code: "SUCCESS"})
+                    return res.status(200).send({code: "SUCCESS"})
                 }
             }
             catch (e) {
+                if (e.code == 'ER_DUP_ENTRY') {
+                    return res.status(200).send({code: "SUCCESS"})
+                }
                 throw(e)
             }
         },

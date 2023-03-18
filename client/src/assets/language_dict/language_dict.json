@@ -56,14 +56,15 @@
 		"infos" : ["Check your inbox to reset your password, the link is only valid for 15 minutes. If you haven't received anything, you may have enterred an incorrect email, or it is not associated with any account.", "Regardez votre boite mail pour creer un nouveau mot de passe. Le lien n'est valable que 15 minutes. Si vous n'avez rien reçu, vous avez peut être entré une addresse email invalide ou vous n'avez pas encore de compte chez nous."]
 	},
 	"NEWPASS" : {
-		"reset"      : ["Reset Password                                                                                                        :", "Créer un nouveau mot de passe                                                                                :"],
-		"reset_pwd"    : ["New password                                                                                                          :", "nouveau mot de passe                                                                                         :"],
+		"reset"      : ["Reset Password:", "Créer un nouveau mot de passe :"],
+		"reset_pwd"    : ["New password:", "nouveau mot de passe :"],
 		"pwd"        : ["password", "motdepasse"],
 		"confirm"    : ["Confirm", "Confirmer"],
-		"error"      : [
-						"Error : a password should contain at least                                                                                      : 8 character, including at least an alphabetical character, a numeric charater and an uppercase and a lowercase",
-						"Erreur: le mot de passe doit contenir au moins 8 characteres, numeriques et alphabetiques, en lettre majuscules et minuscules."
-					   ]
+		"mdp_error"      :[
+			"A password should contain at least:\n-6 characters\n-An uppercase letter\n-A lower case letter\n-A numeric character\n-A special character",
+			"Le mot de passe doit contenir au moins:\n-6 characteres\n-Une lettre majuscule\n-Une lettre minuscule\n-Un chiffre\n-Un charactere special"
+		],
+		"error"	    : ["Error in reseting password, try again later", "Une erreur est survenue, veuillez reessayer plus tard"]
 	},
 	"MOVIES" : {
 		"recommendations" : ["recommendations", "suggestions"],

@@ -21,11 +21,14 @@ module.exports = (io, TorGod) => {
 
     socket.on("disconnecting", () => {
       try {
+        console.log("disco", socket.rooms)
         const rooms_iterator = socket.rooms[Symbol.iterator]();
 
         for (const item of rooms_iterator) { // Turn off torrents that no one is watchin
+          console.log("disco", item, io.sockets.adapter.rooms.get(item))
           if (item != socket.id) {
             if (io.sockets.adapter.rooms.get(item).size == 1) {
+              console.log("removing", item)
               TorGod.remove_torrent(item)
             }
           }

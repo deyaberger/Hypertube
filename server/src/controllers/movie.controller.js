@@ -41,6 +41,51 @@ module.exports = (db_pool) => {
             }
         },
 
+        get_recommendations_page : async (req, res) => {
+            try {
+                let user_id = req.user_id
+                let offset = req.query.offset
+                let limit = req.query.limit
+
+                let movies_res = await movie_functions.get_movies_recommendations_page(user_id, offset, limit)
+                if (movies_res != null && movies_res.code == "ECONNREFUSED") {
+
+                }
+                console.log("[movie.controller]: get_recommendations SUCCESS")
+                return res.status(200).send({movies: movies_res, code: "SUCCESS"})
+            }
+            catch (e) {
+                if (e.code == "ECONNREFUSED") {
+                    console.log("[movie.controller]: get_recommendations ECONNREFUSED")
+                    return res.status(400).send({msg: "Connection to DB refused, make sure you have started mysql service", code: "FAILURE"})
+                }
+                throw(e)
+            }
+        },
+
+        search_page : async (req, res) => {
+            try {
+                let user_id           = req.user_id
+                let query_term        = req.query.query_term
+                let minimum_rating    = req.query.minimum_rating
+                let genre             = req.query.genre
+                let quality           = 1080
+                let min_year          = req.query.min_year
+                let max_year          = req.query.max_year
+                let language          = req.query.language
+                let asc_or_desc       = req.query.asc_or_desc
+                let sort_by           = req.query.sort_by
+                let offset = req.query.offset
+                let limit = req.query.limit
+                let movies_res = await movie_functions.search_movies_page(user_id, query_term, minimum_rating, genre, quality, min_year, max_year, language, asc_or_desc, sort_by, offset, limit)
+                console.log("[movie.controller]: search SUCCESS")
+                return res.status(200).send({movies: movies_res, code: "SUCCESS"})
+            }
+            catch (e) {
+                throw(e)
+            }
+        },
+
         get_details: async (req, res) => {
             try {
                 let user_id = req.user_id

@@ -49,7 +49,8 @@ module.exports = (db_pool) => {
             try {
                 [added, ] = await db_pool.query(`
                 INSERT into watched_movies (user_id, movie_id)
-                values (?, ?)`,
+                values (?, ?)
+                ON DUPLICATE KEY UPDATE last_updated=CURRENT_TIMESTAMP;  `,
                 [userid, movie_id])
                 return added
             }

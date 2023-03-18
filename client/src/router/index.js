@@ -46,6 +46,7 @@ const router = createRouter({
       path: "/reset_pwd",
       name: "reset_pwd",
       component: reset_pwd,
+			props: route => ({ hash: route.query.hash })
     },
 		{
 			path: "/search",

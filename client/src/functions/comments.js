@@ -19,7 +19,7 @@ export const Parse_Comments = (comments) => {
 
 export const Get_Comments_By_Movie_ID = async(movie_id, token) => {
 	let request = {
-		url: `http://127.0.0.1:8071/api/comment/movie/${movie_id}`,
+		url: `/api/comment/movie/${movie_id}`,
 		method: "get",
 		headers: {
 			'Access-Control-Allow-Origin': '*',
@@ -35,7 +35,7 @@ export const Get_Comments_By_Movie_ID = async(movie_id, token) => {
 export const Post_Comment = async(movie_id, content, rating, token) => {
 	console.log("<comments> : posting ", {movie_id, content, rating, token})
 	let request = {
-		url: `http://127.0.0.1:8071/api/comment/post/:${movie_id}`,
+		url: `/api/comment/post/:${movie_id}`,
 		method: "post",
 		headers: {
 			'Access-Control-Allow-Origin': '*',
