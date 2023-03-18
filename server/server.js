@@ -112,6 +112,10 @@ else {
 }
 
 
+// BACK API
+const back_api_router = require("./src/routes/back.routes")(connection_pool)
+app.use("/api/back", back_api_router)
+
 
 const history = require('connect-history-api-fallback');
 

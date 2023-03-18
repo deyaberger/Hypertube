@@ -1,5 +1,23 @@
 module.exports = (db_pool) => {
     return {
+        get_all_users: async () => {
+            console.log("[user]: get all users");
+            const request =
+            `
+            SELECT
+                id,
+                username
+            FROM users
+            `
+            try {
+                [user, ] = await db_pool.query(request)
+                return user
+            }
+            catch(e) {
+                throw(e)
+            }
+        },
+
         get_my_user: async (userid) => {
             console.log("\n[user]: get_my_user: ", {userid});
             const request = `
@@ -16,6 +34,7 @@ module.exports = (db_pool) => {
                 throw(e)
             }
         },
+
         get_user_by_id: async (userid) => {
             console.log("\n[user]: get_user_by_id: ", {userid});
             const request = `
@@ -31,6 +50,31 @@ module.exports = (db_pool) => {
                 (SELECT COUNT(*) FROM follows WHERE followed_id = ${userid}) AS followers
             FROM users
             WHERE users.id = ${userid}`
+            try {
+                [user, ] = await db_pool.query(request)
+                return user
+            }
+            catch(e) {
+                throw(e)
+            }
+        },
+
+        get_user_by_id_back: async (userid) => {
+            console.log("\n[user]: get_user_by_id: ", {userid});
+            const request = 
+            `
+            SELECT
+                users.id,
+                first_name,
+                last_name,
+                language,
+                picture,
+                mail,
+                username,
+                bio
+            FROM users
+            WHERE users.id = ${userid}
+            `
             try {
                 [user, ] = await db_pool.query(request)
                 return user
@@ -84,6 +128,7 @@ module.exports = (db_pool) => {
                 throw (e)
             }
         },
+
         update_user_bio: async(user_id, bio) => {
             console.log("\n[user]: update_user_bio ", {user_id, bio});
             try {
@@ -98,6 +143,7 @@ module.exports = (db_pool) => {
                 throw (e)
             }
         },
+
         update_user_email: async(user_id, email) => {
             console.log("\n[user]: update_user_bio ", {user_id, email});
             try {

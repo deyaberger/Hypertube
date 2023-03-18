@@ -14,6 +14,50 @@ module.exports = (db_pool) => {
             }
         },
 
+        get_comment_by_id: async (id) => {
+            console.log("\n[comment]:getting comment by id: ", id)
+            try {
+                [comments, ] = await db_pool.query(`
+                SELECT
+                    comments.id,
+                    comments.date,
+                    comments.content,
+                    comments.rating,
+                    users.username
+                FROM comments
+                INNER JOIN users
+                    ON users.id = comments.user_id
+                WHERE comments.id = ?`,
+                id)
+                return comments
+            }
+            catch(e) {
+                throw(e)
+            }
+        },
+
+        get_latest: async (id) => {
+            console.log("\n[comment]: getting latest: ")
+            try {
+                [comments, ] = await db_pool.query(`
+                SELECT
+                    comments.id,
+                    comments.date,
+                    comments.content,
+                    comments.rating,
+                    users.username
+                FROM comments
+                INNER JOIN users
+                    ON users.id = comments.user_id
+                ORDER BY date DESC
+                LIMIT 20 OFFSET 0
+                `)
+                return comments
+            }
+            catch(e) {
+                throw(e)
+            }
+        },
 
         get_comment_by_movie_id: async (movie_id) => {
             console.log("\n[comment]:getting comment by movie id: ", movie_id)
@@ -32,7 +76,6 @@ module.exports = (db_pool) => {
                 throw(e)
             }
         },
-
 
         post_comment: async (user_id, movie_id, content, rating) => {
             console.log("\n[comment]:posting comment: ", {user_id, movie_id, content, rating})
