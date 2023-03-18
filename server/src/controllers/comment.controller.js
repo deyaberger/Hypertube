@@ -20,7 +20,7 @@ module.exports = (db_pool) => {
                     console.log("[comment.controller]: post_comment SUCCESS")
                     return res.status(200).send({comment_res: comment_res, code: "SUCCESS"})
                 }
-                return res.status(201).send({comment_res: comment_res, code: "FAILURE"})
+                return res.status(400).send({comment_res: comment_res, code: "FAILURE"})
             }
             catch (e) {
                 if (e.code == 'ER_BAD_FIELD_ERROR') {
@@ -35,9 +35,8 @@ module.exports = (db_pool) => {
                     console.log("[comment.controller]: post_comment bad rating")
                     return res.status(400).send({comment_res: e.sqlMessage, code: "BAD_RATING"})
                 }
-                throw (e)
-                    return res.status(400).send({comment_res: e.sqlMessage, code: "BAD_RATING"})
-                    return res.status(400).send({comment_res: 'Error posting comment', code: return_codes.UNKNOWN_ERROR})
+                // throw (e)
+                return res.status(400).send({comment_res: 'Error posting comment', code: return_codes.UNKNOWN_ERROR})
             }
         },
 

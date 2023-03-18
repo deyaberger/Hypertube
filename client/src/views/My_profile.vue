@@ -36,7 +36,7 @@ export default {
 	data() {
 		return {
 			text_content          : textContent.PROFILE,
-			is_empty			  : is_empty,
+			is_empty			        : is_empty,
 			user                  : null,
 
 			username              : null,
@@ -118,7 +118,7 @@ export default {
 			}
 			catch (e) {
 				console.log("wierd erro in get use favourites")
-				throw(e)
+				// throw(e)
 				this.fav_movies = null
 			}
 		},
@@ -137,7 +137,7 @@ export default {
 			}
 			catch (e) {
 				console.log("wierd erro in get user watched")
-				throw(e)
+				// throw(e)
 				this.watched_movies = null
 			}
 		},
@@ -166,7 +166,7 @@ export default {
 				}
 			}
 			catch(e) {
-				throw(e)
+				// throw(e)
 				this.parse_modifiable_data(res.data.user);
 			}
 		},
@@ -182,7 +182,7 @@ export default {
 				return null
 			}
 			catch (e) {
-				throw(e)
+				// throw(e)
 				return null
 			}
 		},

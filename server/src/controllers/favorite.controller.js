@@ -11,7 +11,8 @@ module.exports = (db_pool) => {
                 return res.status(200).send({favorites: favorites, code: "SUCCESS"})
             }
             catch (e) {
-                throw (e)
+                // throw (e)
+                return res.status(400).send({favorites: [], code: "FAILURE"})
             }
         },
 
@@ -25,9 +26,11 @@ module.exports = (db_pool) => {
                     console.log("[favorite.controller]: remove_from_favs SUCCESS")
                     return res.status(200).send({removed_res: removed_res, code: "SUCCESS"})
                 }
+                return res.status(204).send({code: "FAILURE"})
             }
             catch (e) {
-                throw (e)
+                // throw (e)
+                return res.status(400).send({code: "FAILURE"})
             }
         },
 
