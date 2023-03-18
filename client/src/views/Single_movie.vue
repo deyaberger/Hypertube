@@ -45,7 +45,8 @@ export default {
 			on_video            : false,
 			torrent_service     : null,
 			torrent_loading     : false,
-			torrent_error       : false
+			torrent_error       : false,
+			download_speed      : ''
 		}
 	},
 
@@ -101,10 +102,12 @@ export default {
 		Choose_Torrent(value) {
 			const torrent = JSON.parse(JSON.stringify((value.torrent)));
 			this.torrent_loading = true;
+			this.download_speed = ''
 			try {
 				this.torrent_service.choose_torrent(torrent.id)
 			}
 			catch (e) {
+				console.log("choose_torrent error", e)
 				if (e.code == 'SOCKET_CREATION_ERROR') {
 					this.torrent_loading = false
 					this.torrent_error = true
@@ -237,12 +240,15 @@ export default {
 			}
 			this.set_watched()
 		});
-		this.torrent_service.once('TOKEN_ERROR', () => {
-			this.torrent_loading = false
-			this.torrent_error = true
-			this.$store.commit('LOGOUT_USER')
-			this.$router.push('/sign_in')
-			alert("Session expired")
+
+		this.torrent_service.on('download', (status) => {
+			console.log("download handle")
+			try {
+				this.download_speed = status.downloadSpeed
+			}
+			catch {
+				this.download_speed = 0
+			}
 		})
 
 		this.torrent_service.on('TOR_WATCHER_ERROR', () => {
@@ -302,7 +308,7 @@ export default {
 					<div v-else>
 						<img class="movie_image loading" :src="movie.images_list[6]" alt="movie_image" :data-next-index="1" @error="handle_image_error($event, movie)"/>
 						<b-spinner v-if="torrent_loading" label="Loading..." variant="success" class="loading_video"></b-spinner>
-						<p v-if="torrent_loading" class="loading_video text">File is loading...</p>
+						<p v-if="torrent_loading" class="loading_video text">File is loading... {{download_speed}}</p>
 						<a v-if="torrent_error" class="see_movie" href="#target-element" data-toggle="tooltip" data-placement="top" title="See & select torrents"><b-icon-exclamation-circle class="on_image error"></b-icon-exclamation-circle></a>
 						<p v-if="torrent_error" class="Error text">{{ text_content.error_torrents[lang_nb] }}</p>
 					</div>

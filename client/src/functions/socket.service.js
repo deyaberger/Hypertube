@@ -1,6 +1,22 @@
 import { io } from "socket.io-client";
 import EventEmitter from 'events'
 
+function formatSizeUnits(bytes){
+  try {
+    if      (bytes >= 1073741824) { bytes = (bytes / 1073741824).toFixed(2) + " GB/s"; }
+    else if (bytes >= 1048576)    { bytes = (bytes / 1048576).toFixed(2) + " MB/s"; }
+    else if (bytes >= 1024)       { bytes = (bytes / 1024).toFixed(2) + " KB/s"; }
+    else if (bytes >= 1)          { bytes = bytes.toFixed(0) + " b/s"; }
+    else                          { bytes = "0 b/s"; }
+    return bytes;
+  }
+  catch (e) {
+    throw(e)
+    return ''
+  }
+  
+}
+
 class TorrentSocketService extends EventEmitter {
     constructor(user_token) {
       super()
@@ -11,6 +27,7 @@ class TorrentSocketService extends EventEmitter {
     }
 
     create_socket() {
+      console.log("create connetion socket")
 			this.socket = io("", {
 				path: "/socketo/",
 				auth: {
@@ -84,9 +101,11 @@ class TorrentSocketService extends EventEmitter {
 			})
 
 			this.socket.on('download', (torrent_status) => {
-				console.log("download: ", torrent_status)
+				torrent_status.downloadSpeed = formatSizeUnits(torrent_status.downloadSpeed / 10)
+        console.log("download: ", torrent_status)
 				this.torrent_status = torrent_status
         this.torrent_status = {...this.torrent_status}
+        this.emit('download', torrent_status)
 			})
 
 			this.socket.on('file_done', (file_status) => {
@@ -100,7 +119,6 @@ class TorrentSocketService extends EventEmitter {
 			this.socket.on('ready_to_watch'), () => {
 				console.log("ready_to_watch event recieved")
 			}
-
 
 			this.socket.emit('add_torrent', torrent_id)
 		}

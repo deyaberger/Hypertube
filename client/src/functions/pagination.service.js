@@ -49,19 +49,19 @@ class Paginator extends EventEmitter {
 
       let min = Math.max(0, page_number - page_range)
       let max = this.current_page + page_range
-      // console.log("min", min, 'max', max)
+      console.log("min", min, 'max', max)
 
       try {
         for (let i = min; i <= max; i++) {
-          // console.log("handling", i)
+          console.log("handling", i)
           if (!(i in Object.keys(this.searched_movies))) {
-            // console.log("no cache")
+            console.log("no cache")
             let new_movies = await this.get_page_from_server(i)
             this.searched_movies[i] = new_movies
             this.total_movies += new_movies.length
             if (i == page_number) {
               this.loading_search = false
-              // this.emit('search_done', new_movies)
+              this.emit('search_done', new_movies)
             }
             if (new_movies.length == 0) {
               console.log("no more movies")
@@ -69,9 +69,9 @@ class Paginator extends EventEmitter {
             }
           }
           else {
-            // console.log(i, 'in cache')
-            if (this.searched_movies[i].length == 0) {
-              // console.log("stop at", i)
+            console.log(i, 'in cache')
+            if (!this.searched_movies[i] || this.searched_movies[i].length == 0) {
+              console.log("stop at", i)
               break
             }
           }
@@ -83,7 +83,8 @@ class Paginator extends EventEmitter {
           console.log("emit GET_MOVIE_ERROR")
           return this.emit('GET_MOVIE_ERROR')
         }
-        throw(e)
+        // throw(e)
+        return this.emit('GET_MOVIE_ERROR')
       }
 
   

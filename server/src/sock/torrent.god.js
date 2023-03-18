@@ -8,7 +8,7 @@ const fixtures                      = require('../utils/fixtures')
 const throw_err_with_code           = require('../utils/error_throw')
 
 
-DOWLOAD_SPAM_LIMIT_MS = 5000
+DOWLOAD_SPAM_LIMIT_MS = 1000
 
 class TorrentWatcher extends EventEmitter {
   constructor(torrent, torrent_db_data) {
