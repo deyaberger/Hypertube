@@ -38,7 +38,7 @@ class Paginator extends EventEmitter {
     }
 
     async set_page(page_number) {
-      console.log("set page number", page_number)
+      // console.log("set page number", page_number)
       if (this.searched_movies[page_number]) {
         console.log("cache hit")
         this.emit('search_done', this.searched_movies[page_number])
@@ -49,19 +49,19 @@ class Paginator extends EventEmitter {
 
       let min = Math.max(0, page_number - page_range)
       let max = this.current_page + page_range
-      console.log("min", min, 'max', max)
+      // console.log("min", min, 'max', max)
 
       try {
         for (let i = min; i <= max; i++) {
-          console.log("handling", i)
+          // console.log("handling", i)
           if (!(i in Object.keys(this.searched_movies))) {
-            console.log("no cache")
+            // console.log("no cache")
             let new_movies = await this.get_page_from_server(i)
             this.searched_movies[i] = new_movies
             this.total_movies += new_movies.length
             if (i == page_number) {
               this.loading_search = false
-              this.emit('search_done', new_movies)
+              // this.emit('search_done', new_movies)
             }
             if (new_movies.length == 0) {
               console.log("no more movies")
@@ -69,9 +69,9 @@ class Paginator extends EventEmitter {
             }
           }
           else {
-            console.log(i, 'in cache')
+            // console.log(i, 'in cache')
             if (this.searched_movies[i].length == 0) {
-              console.log("stop at", i)
+              // console.log("stop at", i)
               break
             }
           }
@@ -127,7 +127,7 @@ class Paginator extends EventEmitter {
     async get_page_from_server(page_number) {
       try {
         let res
-        console.log("search", page_number * this.movies_per_page, this.movies_per_page )
+        // console.log("search", page_number * this.movies_per_page, this.movies_per_page )
         res = await Get_Movies_Research_Page(this.search_form, this.lang_nb, this.user_token, page_number * this.movies_per_page, this.movies_per_page);
 
         if (res && res.data && res.data.code == 'SUCCESS') {
