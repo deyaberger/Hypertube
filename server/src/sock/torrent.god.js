@@ -8,7 +8,7 @@ const fixtures                      = require('../utils/fixtures')
 const throw_err_with_code           = require('../utils/error_throw')
 
 
-DOWLOAD_SPAM_LIMIT_MS = 10000
+DOWLOAD_SPAM_LIMIT_MS = 5000
 
 class TorrentWatcher extends EventEmitter {
   constructor(torrent, torrent_db_data) {
@@ -40,7 +40,7 @@ class TorrentWatcher extends EventEmitter {
 
   setOnTorrentReady() {
     this.torrent.once('ready', this.safetyWrapper(() => {
-        console.log("\n [torrent.god] Torrent Ready !!", this.torrent.name)
+        console.log("\n[torrent.god] Torrent Ready !!", this.torrent.name)
         if (this.getFileType(this.getLargestFile()) != "MOVIE_FILE") {
           console.log("Largest", this.getLargestFile(), "type" , this.getFileType(this.getLargestFile()), this.getStatus())
           this.emit(event_names.NO_STREAMABLE_FILE)
@@ -201,6 +201,11 @@ class GodEventHandler {
   }
 
   async add_torrent(torrent_id) {
+    // TODO remove TEST errors
+    // this.io.to(torrent_id).emit(event_names.TORRENT_NOT_EXIST) // NOT WORKING
+    // this.io.to(torrent_id).emit(event_names.BAD_ERROR)
+    // this.io.to(torrent_id).emit(event_names.UNKNOWN_ERROR)
+    // return
     try {
       let torrent_db_data = await this.torrent_functions.get_torrent_from_id(torrent_id)
       let magnet_uri = hash_title_to_magnet_link(torrent_db_data.hash, `torrent_db_data.title_${torrent_id}`)

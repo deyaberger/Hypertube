@@ -45,6 +45,7 @@ export default {
 			on_video            : false,
 			torrent_service     : null,
 			torrent_loading     : false,
+			torrent_error		: false
 		}
 	},
 
@@ -80,6 +81,14 @@ export default {
 			}
 			return false
 		},
+
+		movie_file_type_ok() {
+			if (this.torrent_service && this.torrent_service.torrent_status) {
+				return this.isVideoFormatCompatible(this.torrent_service.torrent_status.video_file_type)
+			}
+			return false
+		},
+
 
 		...mapState({
 			lang_nb    : state => state.lang_nb,
@@ -161,10 +170,30 @@ export default {
 				}
 			}
 			catch (e) {
+				if (e.code == 'EXPIRED_TOKEN' || e.code == 'CORRUPTED_TOKEN') {
+					return alert("Session expired")
+				}
+				if (e.code == "ER_BAD_FIELD_ERROR") {
+					console.log("ER_BAD_FIELD_ERROR [single_movie]: in get_movie_details, make sure the DB is up to date")
+				}
 				this.movie_error = true
 				console.log("UNKNOWN ERROR [single_movie]: in get_movie_details")
 				throw(e)
 			}
+		},
+
+		videoErrorHandler(e) {
+			console.log("Viderr:",e )
+		},
+
+		isVideoFormatCompatible(format) {
+			if (format == ".mp4") {
+				return true
+			}
+			if (format == '.mkv' && navigator.userAgent.includes("Chrome")) {
+				return true
+			}
+			return false
 		},
 
 		handle_image_error(event, movie) {
@@ -185,6 +214,38 @@ export default {
 		this.torrent_service = new TorrentSocketService(this.user_token)
 		this.torrent_service.on('torrent_ready', (torrent_status) => {
 			this.set_watched()
+		});
+		this.torrent_service.on('TOKEN_ERROR', () => {
+			this.torrent_loading = false
+			alert("Session expired")
+		})
+
+		this.torrent_service.on('TOR_WATCHER_ERROR', () => {
+			this.torrent_loading = false
+			this.torrent_error = true
+			console.log("TOR_WATCHER_ERROR")
+		})
+
+		this.torrent_service.on('TORRENT_NOT_EXIST', () => {
+			this.torrent_loading = false
+			this.torrent_error = true
+			console.log("TORRENT_NOT_EXIST")
+		})
+
+		this.torrent_service.on('NO_STREAMABLE_FILE', (status) => {
+			if (status == null || status == undefined) {
+				this.torrent_loading = false
+				this.torrent_error = true
+				console.log("NO_STREAMABLE_FILE")
+				return
+			}
+			let okidoki = this.isVideoFormatCompatible(status.video_file_type)
+			if (!okidoki) {
+				this.torrent_loading = false
+				this.torrent_error = true
+				console.log("NO_STREAMABLE_FILE")
+				throw(new Error("PLAYING MKV ON FIREFOX WILL CAUSE ERROR"))
+			}
 		})
 	},
 
@@ -205,8 +266,8 @@ export default {
 						<b-spinner label="Loading..." variant="success" class="mt-5"></b-spinner>
 				</div>
 			<div v-else class="col video_container" id="video_container">
-				<div v-if="movie_ready_to_watch" class="image_container">
-					<video ref="movieplayer" controls loop id="videoPlayer" muted="muted" disablepictureinpicture>
+				<div v-if="movie_ready_to_watch && movie_file_type_ok" class="image_container">
+					<video ref="movieplayer" controls loop id="videoPlayer" muted="muted" disablepictureinpicture autoplay onerror="videoErrorHandler(e)">
 						<source :src="movie_source" type="video/mp4" />
 						<track v-for="sub in subs" v-bind:key="sub.path"
 							:label="sub.name"
@@ -216,14 +277,16 @@ export default {
 					</video>
 				</div>
 				<div v-else >
-					<div v-if="!torrent_loading">
+					<div v-if="!torrent_loading && !torrent_error">
 						<img class="movie_image not_ready" :src="movie.images_list[6]" alt="movie_image" :data-next-index="1" @error="handle_image_error($event, movie)"/>
 						<a class="see_movie" href="#target-element" data-toggle="tooltip" data-placement="top" title="See & select torrents"><b-icon-eye-fill class="on_image"></b-icon-eye-fill></a>
 					</div>
 					<div v-else>
 						<img class="movie_image loading" :src="movie.images_list[6]" alt="movie_image" :data-next-index="1" @error="handle_image_error($event, movie)"/>
-						<b-spinner label="Loading..." variant="success" class="loading_video"></b-spinner>
-						<p class="loading_video text">File is loading...</p>
+						<b-spinner v-if="torrent_loading" label="Loading..." variant="success" class="loading_video"></b-spinner>
+						<p v-if="torrent_loading" class="loading_video text">File is loading...</p>
+						<a v-if="torrent_error" class="see_movie" href="#target-element" data-toggle="tooltip" data-placement="top" title="See & select torrents"><b-icon-exclamation-circle class="on_image error"></b-icon-exclamation-circle></a>
+						<p v-if="torrent_error" class="Error text">{{ text_content.error_torrents[lang_nb] }}</p>
 					</div>
 				</div>
 			</div>
@@ -274,6 +337,11 @@ export default {
 	margin-top: calc(-0.5 * 150px);
 }
 
+.on_image.error {
+	color: white;
+	font-size: 115px;
+}
+
 .see_movie {
 	height: 500px;
 	text-decoration: none;
@@ -294,11 +362,20 @@ video {
 	width: 5rem; height: 5rem;
 }
 
+.Error {
+	z-index: 1;
+	position: absolute;
+	text-align: center;
+	left: calc(50% - 7.5rem);
+  	top: calc(50% + 4rem);
+	width: 15rem; height: 15rem;
+	font-size: 18px;
+}
+
 .loading_video.text {
 	top: calc(50% + 3rem);
 	text-align: center;
 	font-size: 18px;
-
 }
 
 </style>

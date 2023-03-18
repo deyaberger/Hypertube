@@ -26,7 +26,6 @@ export const Get_All_Movies = async (source, page) => {
 // JUST A TEST
 export const Dump_Json_To_DB = async (source, page) => {
 	console.log("Getting all movies from : ", source, ", page:", page);
-	let response = null;
 	let request = {
 		url: `/api/populate/add_to_db`,
 		method: "get",
@@ -39,12 +38,7 @@ export const Dump_Json_To_DB = async (source, page) => {
 			"page"   : page,
 		}
 	};
-	try {
-		response = await axios(request);
-	}
-	catch(e) {
-		console.log("Error: ", e);
-	}
+	const response = await axios(request);
 	return response;
 }
 

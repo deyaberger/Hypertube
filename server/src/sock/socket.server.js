@@ -36,7 +36,7 @@ module.exports = (io, TorGod) => {
       }
       catch (e) {
         console.log("error in disconnect torrent clean")
-        throw(e)
+        // throw(e)
       }
     });
 

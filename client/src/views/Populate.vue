@@ -27,6 +27,8 @@ export default {
 			opti_done			  : false,
 		}
 	},
+
+
 	methods: {
 		get_time_spent(start) {
 			let time = Math.round((Date.now() - start) / 1000);
@@ -90,14 +92,14 @@ export default {
 					console.log("finished", page_number)
 					this.current_page += 1
 					if (res == null || res.status != 200) {
-					this.db_error = true;
+						this.db_error = true;
 					}
 					if (this.stop == true) {
 					}
-					if (res.data.msg == "duplicate") {
+					if (res && res.data && res.data.msg == "duplicate") {
 						duplicates += 1;
 					}
-					else if (res.data.msg == "missing_file") {
+					else if (res && res.data && res.data.msg == "missing_file") {
 						missing_file += 1;
 					}
 					this.get_time_spent(start);
@@ -134,7 +136,7 @@ export default {
 					if (this.stop == true) {
 						break;
 					}
-					
+
 					let res = await Fetch_And_Add_TMDB(imdb_code, id);
 					if (res != null && res.data.code == "SUCCESS") {
 						console.log("[populate]: Succesffully got info on movie: ", id)
@@ -274,7 +276,7 @@ export default {
 }
 
 .container {
-	margin-top : -200px;
+	margin-top : -100px;
 }
 
 </style>
