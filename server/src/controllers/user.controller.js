@@ -1,3 +1,9 @@
+const bcrypt              = require('bcrypt')
+
+const hashPassword = (password) => {
+    return bcrypt.hashSync(password, 8);
+}
+
 module.exports = (db_pool) => {
     const user_functions = require('./user')(db_pool)
 
@@ -51,6 +57,93 @@ module.exports = (db_pool) => {
                     return res.status(201).send({msg:  `A user id should be a number`, code: "FAILURE"})
                 }
                 throw (e)
+                return res.status(400).send({msg:  `Malformed Request`, code: "FAILURE"})
+            }
+        },
+
+        get_user_back : async (req, res) => {
+            try {
+                let other_user = Number(req.params.user_id)
+                let user = await user_functions.get_user_by_id_back(other_user)
+                if (user != null && user.length == 1) {
+                    console.log("[user.controller]: get_other_user SUCCESS ", {user: user[0]})
+                    return res.status(200).send({user : user[0], code : "SUCCESS"})
+                }
+                return res.status(204).send({msg:  `user doesn't exist`, code: "FAILURE"})
+            }
+            catch (e) {
+                if (e.code == 'ER_BAD_FIELD_ERROR') {
+                    console.log("[user.controller]: get_other_user FAILURE (A user id should be a number)")
+                    return res.status(400).send({msg:  `A user id should be a number`, code: "FAILURE"})
+                }
+                throw (e)
+                return res.status(400).send({msg:  `Malformed Request`, code: "FAILURE"})
+            }
+        },
+
+        update_user:  async (req, res) => {
+            const tolerated_keys = ['username', 'mail', 'pass', 'picture']
+            try {
+                if (req.user_id != req.params.user_id) {
+                    return res.status(403).send({msg: "Modify your own iser profile", code: "FORBIDDEN"})
+                }
+                if (req.body && Object.keys(req.body).length === 0) {
+                    return res.status(200).send({code: 'SUCCESS'})
+                }
+                let update = req.body
+                console.log("update ", update)
+                Object.keys(update).forEach(key => {
+                    if (!tolerated_keys.includes(key)) {
+                        delete update[key]
+                    }
+                });
+
+                console.log("filtered_update", update)
+
+                if (update.username && (update.username.length == 0 || update.username.match(regex_whitespace) == null)) {
+                    return res.status(400).send({msg: "Invalid username", code: "USERNAME_ERROR"})
+                }
+                console.log("username test passed")
+
+                let regex_mail = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+                if (update.mail && (update.mail.length == 0 || update.mail.match(regex_mail) == null)) {
+                    return res.status(400).send({msg: "Invalid mail", code: "MAIL_ERROR"})
+                }
+                console.log("mail test passed")
+
+                let regex_pwd = /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{6,}$/;
+                if (update.pass && (update.pass.match(regex_pwd) == null)) {
+                    return res.status(400).send({msg: "Invalid password", code: "PASSWORD_ERROR"})
+                }
+                console.log("password test passed")
+                
+                if (update.pass) {
+                    update.pass = hashPassword(update.pass)
+                }
+
+                await db_pool.query(`
+                UPDATE users
+                    SET   ?
+                    WHERE id=?
+		        `,
+                [update, req.user_id])
+                res.status(200).send({msg: "Succesfully updated user profile", code: "SUCCESS"})
+            }
+            catch (e) {
+                console.log("error in update user")
+                throw(e)
+                return res.status(400).send({msg: "Invalid data", code: "USER_UPDATE_ERROR"})
+            }
+        },
+
+        get_all_users : async (req, res) => {
+            try {
+                let users = await user_functions.get_all_users()
+                return res.status(200).send({users: users, code: "SUCCESS"})
+            }
+            catch (e) {
+                throw (e)
+                return res.status(400).send({users: [], CODE: 'FAILURE', msg: 'Unknown error while getting users'})
             }
         },
 
