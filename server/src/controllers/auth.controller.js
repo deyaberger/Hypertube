@@ -138,7 +138,8 @@ module.exports = (db_pool) => {
                     return res.status(400).send({msg: "username too long", code : "TOO_LONG"})
                 }
                 console.log("\n\nError in oauth signin.\n\n")
-                throw (e)
+                // throw (e)
+                return res.status(403).send({message: "Signin failure", code : "FAILURE"})
             }
         },
 

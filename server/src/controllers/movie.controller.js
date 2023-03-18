@@ -14,9 +14,10 @@ module.exports = (db_pool) => {
             catch (e) {
                 if (e.code == "ECONNREFUSED") {
                     console.log("[movie.controller]: get_recommendations ECONNREFUSED")
-                    return res.status(400).send({msg: "Connection to DB refused, make sure you have started mysql service", code: "FAILURE"})
+                    return res.status(400).send({movies: [], msg: "Connection to DB refused, make sure you have started mysql service", code: "FAILURE"})
                 }
                 throw(e)
+                return res.status(400).send({movies: [], msg: "Error fetchin recommendations", code: "FAILURE"})
             }
         },
 
@@ -38,28 +39,7 @@ module.exports = (db_pool) => {
             }
             catch (e) {
                 throw(e)
-            }
-        },
-
-        get_recommendations_page : async (req, res) => {
-            try {
-                let user_id = req.user_id
-                let offset = req.query.offset
-                let limit = req.query.limit
-
-                let movies_res = await movie_functions.get_movies_recommendations_page(user_id, offset, limit)
-                if (movies_res != null && movies_res.code == "ECONNREFUSED") {
-
-                }
-                console.log("[movie.controller]: get_recommendations SUCCESS")
-                return res.status(200).send({movies: movies_res, code: "SUCCESS"})
-            }
-            catch (e) {
-                if (e.code == "ECONNREFUSED") {
-                    console.log("[movie.controller]: get_recommendations ECONNREFUSED")
-                    return res.status(400).send({msg: "Connection to DB refused, make sure you have started mysql service", code: "FAILURE"})
-                }
-                throw(e)
+                return res.status(400).send({movies: [], msg: "Error in search", code: "FAILURE"})
             }
         },
 
@@ -83,6 +63,7 @@ module.exports = (db_pool) => {
             }
             catch (e) {
                 throw(e)
+                return res.status(400).send({movies: [], msg: "Error in search page", code: "FAILURE"})
             }
         },
 
@@ -104,6 +85,7 @@ module.exports = (db_pool) => {
                     return res.status(201).send({msg: "the path /movie/:movie_id should contain a number as movie id", code: "FAILURE"})
                 }
                 throw(e)
+                return res.status(400).send({msg: "Error get details", code: "FAILURE"})
             }
         },
 
@@ -128,6 +110,7 @@ module.exports = (db_pool) => {
                     return res.status(201).send({msg: "the path /movie/:movie_id should contain a number as movie id", code: "FAILURE"})
                 }
                 throw(e)
+                return res.status(400).send({msg: "Error get details bak", code: "FAILURE"})
             }
         },
     }

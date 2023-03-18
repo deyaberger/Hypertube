@@ -16,7 +16,6 @@ export const Parse_Comments = (comments) => {
 	return parsed_comments
 }
 
-
 export const Get_Comments_By_Movie_ID = async(movie_id, token) => {
 	let request = {
 		url: `/api/comment/movie/${movie_id}`,
@@ -30,7 +29,6 @@ export const Get_Comments_By_Movie_ID = async(movie_id, token) => {
 	const response = await axios(request);
 	return response;
 }
-
 
 export const Post_Comment = async(movie_id, content, rating, token) => {
 	console.log("<comments> : posting ", {movie_id, content, rating, token})

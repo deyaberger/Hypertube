@@ -103,15 +103,15 @@ module.exports = (db_pool) => {
                 if (update.username && (update.username.length == 0 || update.username.match(regex_whitespace) == null)) {
                     return res.status(400).send({msg: "Invalid username", code: "USERNAME_ERROR"})
                 }
-                let regex_mail = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
                 console.log("username test passed")
 
+                let regex_mail = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
                 if (update.mail && (update.mail.length == 0 || update.mail.match(regex_mail) == null)) {
                     return res.status(400).send({msg: "Invalid mail", code: "MAIL_ERROR"})
                 }
-                let regex_pwd = /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{6,}$/;
                 console.log("mail test passed")
 
+                let regex_pwd = /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{6,}$/;
                 if (update.pass && (update.pass.match(regex_pwd) == null)) {
                     return res.status(400).send({msg: "Invalid password", code: "PASSWORD_ERROR"})
                 }
@@ -143,7 +143,7 @@ module.exports = (db_pool) => {
             }
             catch (e) {
                 throw (e)
-                return res.status(400).send({CODE: 'FAILURE', msg: 'Unknown error while getting users'})
+                return res.status(400).send({users: [], CODE: 'FAILURE', msg: 'Unknown error while getting users'})
             }
         },
 

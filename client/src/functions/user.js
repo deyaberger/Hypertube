@@ -8,7 +8,7 @@ export const Get_User_Details = async(token) => {
 		headers: {
 			'Access-Control-Allow-Origin': '*',
 			"Content-type"               : "application/json",
-			'Authorization'				 : `Bearer ${token}`
+			'Authorization'              : `Bearer ${token}`
 		}
 	};
 	try {

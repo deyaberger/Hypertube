@@ -1,3 +1,5 @@
+const return_codes = require('../utils/return_codes.js');
+
 module.exports = (db_pool) => {
     const comment_functions = require('./comment')(db_pool)
 
@@ -6,6 +8,7 @@ module.exports = (db_pool) => {
             try {
                 let user_id       = req.user_id
                 let movie_id      = Number(req.params.movie_id)
+                // TODO: test the double ID source trick
                 if (!movie_id || isNaN(movie_id)) {
                     movie_id = req.body.movie_id
                 }
@@ -33,22 +36,9 @@ module.exports = (db_pool) => {
                     return res.status(400).send({comment_res: e.sqlMessage, code: "BAD_RATING"})
                 }
                 throw (e)
+                return res.status(400).send({comment_res: 'Error posting comment', code: return_codes.UNKNOWN_ERROR})
             }
         },
-
-
-        get_comments_from_user : async (req, res) => {
-            try {
-                let author_id = Number(req.query.author_id)
-                let comments = await comment_functions.get_comment_by_author_id(author_id)
-                console.log("[comment.controller]: get_comments_from_user SUCCESS")
-                return res.status(200).send({comments: comments, author_id: author_id, code: "SUCCESS"})
-            }
-            catch (e) {
-                throw(e)
-            }
-        },
-
 
         get_comments_from_movie : async (req, res) => {
             try {
@@ -59,6 +49,7 @@ module.exports = (db_pool) => {
             }
             catch (e) {
                 throw(e)
+                return res.status(400).send({comments: [], code: "FAILURE"})
             }
         },
 
@@ -70,6 +61,7 @@ module.exports = (db_pool) => {
             }
             catch (e) {
                 throw(e)
+                return res.status(400).send({comments: [], code: "FAILURE"})
             }
         },
         
