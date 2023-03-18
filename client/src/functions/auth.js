@@ -10,6 +10,7 @@ export const Get_Oauth_Urls = async function() {
 		}
 	};
 	let response = await axios(request);
+	console.log(response)
 	return response;
 }
 
