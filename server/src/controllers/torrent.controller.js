@@ -3,7 +3,6 @@ const return_codes = require("../utils/return_codes");
 const { hash_title_to_magnet_link } = require('../utils/hash_title_to_magnet')
 
 const CHUNK_SIZE = 10 ** 6; // 1MB
-const video_paf = '/home/joep/Downloads/torrents/Avengers.mp4'
 module.exports = (db_pool) => {
     const torrent_functions = require('./torrent')(db_pool)
 

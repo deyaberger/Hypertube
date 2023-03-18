@@ -8,11 +8,11 @@ const Mailgun = require('mailgun.js');
 
 const mailgun = new Mailgun(formData);
 try {
-	const client = mailgun.client({username: 'api', key: MAILGUN_API_KEY, url:"https://api.eu.mailgun.net"});
+	const mail_client = mailgun.client({username: 'api', key: MAILGUN_API_KEY, url:"https://api.eu.mailgun.net"});
 }
 catch (e) {
 	console.log("\n\nERROR IN MAILGUN SETUP MAILS WONT BE SENT\n\n")
-	client = {
+	mail_client = {
 		messages: {
 			create: async function(DOMAIN, messageData) {
 				console.log("Fake MAIL", DOMAIN)
@@ -35,7 +35,7 @@ async function sendMail(dest, subject, text)
 		text: text
 		};
 	try {
-		res = await client.messages.create(DOMAIN, messageData)
+		res = await mail_client.messages.create(DOMAIN, messageData)
 	}
 	catch (err) {
 		console.error(err);

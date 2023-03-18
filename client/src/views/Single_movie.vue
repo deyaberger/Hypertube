@@ -117,9 +117,9 @@ export default {
 			try {
 				console.log("[single_movie]: Setting movie to watched: ...", {id: this.movie_id})
 				let res = await Set_Watched(this.movie_id, this.user_token)
+				this.movie.is_watched = true
 				if (res.data.code == "SUCCESS") {
 					console.log("[single_movie]: Successfully updated watched!")
-					this.movie.is_watched = true
 				}
 				else {
 					console.log("ERROR: [single_movie] in set_watched: ", res)
@@ -177,6 +177,7 @@ export default {
 				console.log("WTF in get movie deets", res.status, res.data)
 			}
 			catch (e) {
+				this.movie_error = true
 				if (e.code == 'EXPIRED_TOKEN' || e.code == 'CORRUPTED_TOKEN') {
 					this.$store.commit('LOGOUT_USER')
 					this.$router.push('/sign_in')
@@ -185,7 +186,6 @@ export default {
 				if (e.code == "ER_BAD_FIELD_ERROR") {
 					console.log("ER_BAD_FIELD_ERROR [single_movie]: in get_movie_details, make sure the DB is up to date")
 				}
-				this.movie_error = true
 				console.log("UNKNOWN ERROR [single_movie]: in get_movie_details")
 				// throw(e)
 			}
@@ -206,11 +206,16 @@ export default {
 		},
 
 		handle_image_error(event, movie) {
-			const nextIndex = parseInt(event.target.dataset.nextIndex)
-			const nextImage = movie.images_list[nextIndex];
-			if (nextImage) {
-				event.target.src = nextImage;
-			} else {
+			try {
+				const nextIndex = parseInt(event.target.dataset.nextIndex)
+				const nextImage = movie.images_list[nextIndex];
+				if (nextImage) {
+					event.target.src = nextImage;
+				} else {
+					event.target.src = this.fallbackUrl;
+				}
+			}
+			catch (e) {
 				event.target.src = this.fallbackUrl;
 			}
 		},
@@ -222,39 +227,43 @@ export default {
 	created() {
 		this.torrent_service = new TorrentSocketService(this.user_token)
 		this.torrent_service.on('torrent_ready', (torrent_status) => {
+			let okidoki = this.isVideoFormatCompatible(torrent_status.video_file_type)
+			if (!okidoki) {
+				this.torrent_loading = false
+				this.torrent_error = true
+				console.log("NO_STREAMABLE_FILE")
+				return alert("The torrent does not contain a video file compatible with your browser.")
+				// throw(new Error("PLAYING MKV ON FIREFOX WILL CAUSE ERROR"))
+			}
 			this.set_watched()
 		});
-		this.torrent_service.on('TOKEN_ERROR', () => {
+		this.torrent_service.once('TOKEN_ERROR', () => {
 			this.torrent_loading = false
+			this.torrent_error = true
+			this.$store.commit('LOGOUT_USER')
+			this.$router.push('/sign_in')
 			alert("Session expired")
 		})
 
 		this.torrent_service.on('TOR_WATCHER_ERROR', () => {
 			this.torrent_loading = false
 			this.torrent_error = true
+			alert("The movie file is corrupted")
 			console.log("TOR_WATCHER_ERROR")
 		})
 
 		this.torrent_service.on('TORRENT_NOT_EXIST', () => {
 			this.torrent_loading = false
 			this.torrent_error = true
+			alert("The torrent is broken")
 			console.log("TORRENT_NOT_EXIST")
 		})
 		
 		this.torrent_service.on('NO_STREAMABLE_FILE', (status) => {
-			if (status == null || status == undefined) {
-				this.torrent_loading = false
-				this.torrent_error = true
-				console.log("NO_STREAMABLE_FILE")
-				return
-			}
-			let okidoki = this.isVideoFormatCompatible(status.video_file_type)
-			if (!okidoki) {
-				this.torrent_loading = false
-				this.torrent_error = true
-				console.log("NO_STREAMABLE_FILE")
-				throw(new Error("PLAYING MKV ON FIREFOX WILL CAUSE ERROR"))
-			}
+			this.torrent_loading = false
+			this.torrent_error = true
+			alert("The torrent does not contain a video file compatible with your browser.")
+			console.log("NO_STREAMABLE_FILE")
 		})
 	},
 

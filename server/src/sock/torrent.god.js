@@ -213,7 +213,7 @@ class GodEventHandler {
       if (this.torrent_client.get(magnet_uri)) {
         console.log("\n\n\nWTF DOUBLE TROUBLE THIS SHOULD NEVER PRINT\n\n\n", torrent_id)
 
-        throw_err_with_code("You tried adding a torrent that's already present!", event_names.BAD_ERROR)
+        // throw_err_with_code("You tried adding a torrent that's already present!", event_names.BAD_ERROR)
         this.io.to(torrent_id).emit(event_names.NO_STREAMABLE_FILE)
       }
 
