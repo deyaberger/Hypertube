@@ -45,7 +45,7 @@ export default {
 			on_video            : false,
 			torrent_service     : null,
 			torrent_loading     : false,
-			torrent_error		: false
+			torrent_error       : false
 		}
 	},
 
@@ -106,7 +106,9 @@ export default {
 			}
 			catch (e) {
 				if (e.code == 'SOCKET_CREATION_ERROR') {
-					console.log("Error in socket creation !@")
+					this.torrent_loading = false
+					this.torrent_error = true
+					console.log("SOCKET_CREATION_ERROR")
 				}
 			}
 		},
@@ -125,13 +127,14 @@ export default {
 			}
 			catch(e) {
 				console.log("UNKNOWN ERROR [single_movie]: in set_watched")
-				throw(e)
+				// throw(e)
 			}
 		},
 
 		async update_fav() {
 			let res = null
 			try {
+				this.movie.is_fav = !this.movie.is_fav
 				if (this.movie.is_fav) {
 					res = await Remove_From_Favorites(this.movie_id, this.user_token)
 				}
@@ -140,7 +143,6 @@ export default {
 				}
 				if (res.data && res.data.code == "SUCCESS") {
 					console.log("[single_movie]: Successfully updated fav!")
-					this.movie.is_fav = !this.movie.is_fav
 				}
 				else {
 					console.log("ERROR: [single_movie] in update_fav: ", res)
@@ -148,7 +150,7 @@ export default {
 			}
 			catch(e) {
 				console.log("UNKNOWN ERROR [single_movie]: in update_fav")
-				throw(e)
+				// throw(e)
 			}
 		},
 
@@ -159,18 +161,25 @@ export default {
 				if (res.data.code == "SUCCESS") {
 					this.movie = Parse_Single_Movie(res.data.movie);
 					console.log("[single_movie]: Successfully got movie details! ", this.movie)
+					return
 				}
 				else if (res.data.code == "MISSING_MOVIE") {
 					this.movie_error = true
 					console.log("ERROR [single_movie]: No Movie found with id: ", this.movie_id)
+					return
 				}
 				else if (res.data.code == "FAILURE") {
 					this.movie_error = true
 					console.log("ERROR [single_movie]: ", res.data.msg)
+					return
 				}
+				this.movie_error = true
+				console.log("WTF in get movie deets", res.status, res.data)
 			}
 			catch (e) {
 				if (e.code == 'EXPIRED_TOKEN' || e.code == 'CORRUPTED_TOKEN') {
+					this.$store.commit('LOGOUT_USER')
+					this.$router.push('/sign_in')
 					return alert("Session expired")
 				}
 				if (e.code == "ER_BAD_FIELD_ERROR") {
@@ -178,7 +187,7 @@ export default {
 				}
 				this.movie_error = true
 				console.log("UNKNOWN ERROR [single_movie]: in get_movie_details")
-				throw(e)
+				// throw(e)
 			}
 		},
 
@@ -231,7 +240,7 @@ export default {
 			this.torrent_error = true
 			console.log("TORRENT_NOT_EXIST")
 		})
-
+		
 		this.torrent_service.on('NO_STREAMABLE_FILE', (status) => {
 			if (status == null || status == undefined) {
 				this.torrent_loading = false

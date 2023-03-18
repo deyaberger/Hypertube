@@ -39,7 +39,8 @@ export default {
 			reset             : false,
 			paginator         : null,
 			current_movies    : [],
-			recommendations   : []
+			recommendations   : [],
+			kaputkaboum       : false
 		}
 	},
 
@@ -100,9 +101,10 @@ export default {
 
 	created() {
 		this.paginator = new Paginator(this.user_token, this.lang_nb, this.perPage)
-		this.paginator.on("GET_MOVIE_ERROR", () => {
+		this.paginator.once("GET_MOVIE_ERROR", () => {
 			// throw(new Error("SEARCH MOVIE ERROR"))
 						// TODO: turn this back on
+			this.kaputkaboum = true
 			this.$store.commit('LOGOUT_USER')
 			this.$router.push('/sign_in')
 			alert("Session expired (search)")
@@ -114,6 +116,8 @@ export default {
 				this.recommendations = [...recos]
 			}
 			catch (e) {
+				// TODO: hide error print
+				// this.kaputkaboum = true
 				console.log("error in reco_done", e, "################## HANDLED #############")
 				this.recommendations = []
 			}
@@ -125,6 +129,7 @@ export default {
 				this.current_movies = [...movies]
 			}
 			catch (e) {
+				// TODO: hide error print
 				console.log("error in search_done", e, "HANDLED")
 				this.current_movies = []
 			}
@@ -137,42 +142,44 @@ export default {
 </script>
 
 <template>
-	<div class="test">
-		<SearchBar ref="search_bar" @search_form="update_form" :reset="reset"/>
-		<div ref="results_container" class="results_container">
-		
-			<div class="search_header">
-				<div v-if="user_research == 'SEARCH'" class="title">
-					<p class="actual">{{ text_content.research[lang_nb] }}:</p>
-					<p class="nav-link">or</p>
-					<a class="nav-link active" href="#" @click="from_research_to_reco()">{{text_content.see_reco[lang_nb]}}</a>
-				</div>
-
-				<div v-else class="title">
-					<p class="actual">{{text_content.recommendations[lang_nb]}}:</p>
-					<p class="nav-link">or</p>
-					<a class="nav-link active" href="#" @click="from_reco_to_research()">{{text_content.see_all[lang_nb]}}</a>
-				</div>
-			</div>
-
-			<!-- <SearchResults v-if="!paginator.loading_reco" :movie_list="reco_slice" :error="false" :profile="false" class="search_res"/> -->
-			<!-- <SearchResults v-if="!paginator.loading_reco" :movie_list="reco_slice" :error="false" :profile="false" class="search_res"/> -->
-			<SearchResults v-if="user_research == 'SEARCH'" :movie_list="current_movies" :error="false" :profile="false" class="search_res"/>
-			<SearchResults v-if="user_research == 'RECO'" :movie_list="recommendations" :error="false" :profile="false" class="search_res"/>
+	<div v-if="!kaputkaboum">
+		<div class="test">
+			<SearchBar ref="search_bar" @search_form="update_form" :reset="reset"/>
+			<div ref="results_container" class="results_container">
 			
-			<div class="pagination overflow-auto">
-				<div v-if="user_research == 'SEARCH' && current_movies.length != 0">
-					<b-pagination
-						v-model="currentPage"
-						:limit=5
-						:total-rows="totalo"
-						:per-page="perPage"
-						first-number
-						class="custom_pagination"
-					></b-pagination>
-				</div>
-			</div>
+				<div class="search_header">
+					<div v-if="user_research == 'SEARCH'" class="title">
+						<p class="actual">{{ text_content.research[lang_nb] }}:</p>
+						<p class="nav-link">or</p>
+						<a class="nav-link active" href="#" @click="from_research_to_reco()">{{text_content.see_reco[lang_nb]}}</a>
+					</div>
 
+					<div v-else class="title">
+						<p class="actual">{{text_content.recommendations[lang_nb]}}:</p>
+						<p class="nav-link">or</p>
+						<a class="nav-link active" href="#" @click="from_reco_to_research()">{{text_content.see_all[lang_nb]}}</a>
+					</div>
+				</div>
+
+				<!-- <SearchResults v-if="!paginator.loading_reco" :movie_list="reco_slice" :error="false" :profile="false" class="search_res"/> -->
+				<!-- <SearchResults v-if="!paginator.loading_reco" :movie_list="reco_slice" :error="false" :profile="false" class="search_res"/> -->
+				<SearchResults v-if="user_research == 'SEARCH'" :movie_list="current_movies" :error="false" :profile="false" class="search_res"/>
+				<SearchResults v-if="user_research == 'RECO'" :movie_list="recommendations" :error="false" :profile="false" class="search_res"/>
+				
+				<div class="pagination overflow-auto">
+					<div v-if="user_research == 'SEARCH' && current_movies.length != 0">
+						<b-pagination
+							v-model="currentPage"
+							:limit=5
+							:total-rows="totalo"
+							:per-page="perPage"
+							first-number
+							class="custom_pagination"
+						></b-pagination>
+					</div>
+				</div>
+
+			</div>
 		</div>
 	</div>
 </template>

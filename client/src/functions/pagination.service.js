@@ -119,7 +119,7 @@ class Paginator extends EventEmitter {
           }
         }
         // console.log("UNKNOWN ERROR [get_reco]: ", Object.keys(e), e.code, e.name, e.response)
-        throw(e)
+        // throw(e)
         this.emit('GET_MOVIE_ERROR')
       }
     }
@@ -138,13 +138,15 @@ class Paginator extends EventEmitter {
       catch(e) {
         this.error = true
         if (e.code == 'ERR_BAD_REQUEST' || e.code == 'ERR_BAD_RESPONSE') { // i.e. it's an axios error
-          console.log("catching request fail")
-          let err = new Error(e.msg)
-          err.code = 'GET_MOVIE_ERROR_CODE'
-          throw(err)
+          console.log("catching request fail", e.code)
         }
+        // TODO: maybe a bit extreme ?
+        let err = new Error(e.msg)
+        err.code = 'GET_MOVIE_ERROR_CODE'
+        throw(err)
+
         // console.log("UNKNOWN ERROR [search pagi]: ", Object.keys(e), e.code, e.name, e.response)
-        throw(e)
+        // throw(e)
         this.emit('GET_MOVIE_ERROR')
       }
     }
