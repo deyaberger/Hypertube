@@ -36,7 +36,8 @@ module.exports = (db_pool) => {
                     return res.status(400).send({comment_res: e.sqlMessage, code: "BAD_RATING"})
                 }
                 throw (e)
-                return res.status(400).send({comment_res: 'Error posting comment', code: return_codes.UNKNOWN_ERROR})
+                    return res.status(400).send({comment_res: e.sqlMessage, code: "BAD_RATING"})
+                    return res.status(400).send({comment_res: 'Error posting comment', code: return_codes.UNKNOWN_ERROR})
             }
         },
 

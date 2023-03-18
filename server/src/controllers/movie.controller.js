@@ -3,6 +3,7 @@ module.exports = (db_pool) => {
     return {
         get_recommendations : async (req, res) => {
             try {
+
                 let user_id = req.user_id
                 let movies_res = await movie_functions.get_movies_recommendations(user_id)
                 if (movies_res != null && movies_res.code == "ECONNREFUSED") {
@@ -82,7 +83,7 @@ module.exports = (db_pool) => {
             catch (e) {
                 if (e.code == "ER_BAD_FIELD_ERROR") {
                     console.log("ERROR [movie.controller]: ER_BAD_FIELD_ERROR")
-                    return res.status(201).send({msg: "the path /movie/:movie_id should contain a number as movie id", code: "FAILURE"})
+                    return res.status(400).send({msg: "the path /movie/:movie_id should contain a number as movie id", code: "FAILURE"})
                 }
                 throw(e)
                 return res.status(400).send({msg: "Error get details", code: "FAILURE"})

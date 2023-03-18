@@ -107,7 +107,7 @@ export default {
 			this.kaputkaboum = true
 			this.$store.commit('LOGOUT_USER')
 			this.$router.push('/sign_in')
-			alert("Session expired (search)")
+			alert("Session Expired or invalid request")
 		})
 
 		this.paginator.once('reco_done', (recos) => {
