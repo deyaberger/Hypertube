@@ -1,0 +1,142 @@
+
+.link_torrent {
+	text-decoration: none;
+}
+
+.collapse-torrents {
+	border: black;
+	background-image: linear-gradient(-45deg, #4568dc, #b753bb);
+}
+
+.collapse-torrents:hover {
+	transform: scale(1.1);
+	transition: 0.8s;
+	background-image: linear-gradient(-45deg, #587bee, #e370e7);
+}
+
+.torrent_button_container {
+	margin-top: 2%;
+}
+
+.bn30 {
+	margin-left: 0.5%;
+	min-height: 50px;
+	border: 5em;
+	cursor: pointer;
+	outline: none;
+	font-size: 16px;
+	-webkit-transform: translate(0);
+	transform: translate(0);
+	background-image: linear-gradient(45deg, #152e80ce, #59005cc0);
+	border-radius: 5px;
+	box-shadow: 0 12px 24px rgba(128, 128, 128, 0.1);
+	-webkit-transition: box-shadow 0.25s;
+	transition: box-shadow 0.25s;
+	color: white;
+}
+
+.bn30:after {
+  content: "";
+  border-radius: 5px;
+  position: absolute;
+  margin: 4px;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  z-index: -1;
+  background: #0e0e10;
+}
+
+.bn30:hover {
+  background-image: linear-gradient(45deg, #4568dc, #b06ab3);
+  box-shadow: 1px 1px 10px rgba(255, 255, 255, 0.438);
+}
+
+.bn30 > .col:first-of-type {
+	text-align:left;
+}
+
+.bn30 > .col {
+	text-align:right;
+    max-height: 100%;
+}
+
+.play_button {
+	border-color: white;
+	margin: auto;
+}
+
+.torrent_icon {
+	margin-top: -1%;
+	margin-right: 3%;
+}
+
+
+@media (max-width: 910px) {
+    .bn30 {
+        font-size: 14px;
+    }
+
+    .play_button {
+        font-size: 24px;
+    }
+}
+
+@media (max-width: 870px) {
+    .torrent_button {
+        font-size: 14px;
+    }
+    .bn30 {
+        font-size: 13px;
+    }
+    .play_button {
+        font-size: 20px;
+    }
+
+}
+
+@media (max-width: 790px) {
+    .torrent_button {
+        font-size: 12px;
+    }
+    .bn30 {
+        margin-left: 3%;
+        max-width: 95%;
+    }
+    .bn30 > .col {
+        padding: 1%;
+    }
+}
+
+@media (max-width: 600px) {
+    .torrent_button {
+        font-size: 11px;
+    }
+    .bn30 > .col {
+        font-size: 11px;
+    }
+}
+
+@media (max-width: 500px) {
+    .torrent_button {
+        font-size: 10px;
+    }
+    .bn30 {
+        margin-top: 3%;
+    	min-height: 40px;
+    }
+    .col.quality, .col.size, .col.peers {
+        display: none;
+    }
+    .col.play {
+        max-width: 30%;
+    }
+}
+
+@media (max-width: 300px) {
+    .collapse-torrents {
+        width: 100%;
+    }
+
+}

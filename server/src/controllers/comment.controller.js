@@ -64,7 +64,7 @@ module.exports = (db_pool) => {
                 return res.status(400).send({comments: [], code: "FAILURE"})
             }
         },
-        
+
         get_comment_by_id : async (req, res) => {
             try {
                 let comment_id = Number(req.params.id)
