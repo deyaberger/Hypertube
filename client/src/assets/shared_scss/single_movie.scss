@@ -8,58 +8,20 @@
 }
 
 .video_container {
+	margin-top: 2%;;
 	width         : 100%;
-	height        : 500px;
+	aspect-ratio: 16/6;
+	// height        : 500px;
 	position: relative;
 }
 
 h1 {
 	text-transform: uppercase;
-}
-
-h1 {
 	font-size     : 30px;
 }
 
-.big {
-	font-weight   : bold;
-	font-size     : 18px;
-}
-
-.icon {
-	vertical-align: -.05em;
-	margin-right: 3%;
-}
-
-.favorites {
-	cursor: pointer;
-}
-
-
-.rating .icon {
-	margin-right: 1%;
-}
-
-.icon.score {
-	color         : rgb(255, 255, 81);
-}
-
-.icon.genre {
-	color         : rgb(100, 195, 106);
-}
-
-.icon.year {
-	color         : rgb(112, 114, 219);
-}
-
-.icon.time {
-	color         : rgb(210, 102, 201)}
-.row {
-	margin-top    : 2%;
-}
-
-.general_infos-container {
-	text-align    :center;
+.movie_container {
+	margin-top: 2%;
 }
 
 .movie_image {
@@ -82,28 +44,9 @@ h1 {
 	margin-bottom : 5px;
 }
 
-.summary_container {
-	margin-top    : 5%;
-	margin-bottom : 5%;
-}
-.summary {
-	font-size     : 18px;
-	font-weight   : lighter;
-}
-
-.infos_title_horizontal {
-	font-weight   : bold;
-}
-
-.names {
-	font-weight   : lighter;
-}
-
 .my_review {
 	margin-top    : 5%;
 }
-
-
 
 .stars_container {
 	margin-top: 5px;
@@ -121,7 +64,6 @@ h1 {
 	margin-top: 3%;
 	margin-bottom: 3%;
 }
-
 
 .comment {
 	margin-top: 1%;
@@ -152,70 +94,93 @@ h1 {
 }
 
 
-.collapse-torrents {
-	margin: 0px;
-	height: 50px;
-	border: black;
-	background-image: linear-gradient(-45deg, #4568dc, #b753bb);
+.image_container {
+	background-color: black;
+	height: 500px;
 }
 
-.collapse-torrents:hover {
-	margin: 0px;
-	transform: scale(1.1);
-	transition: 0.8s;
-	background-image: linear-gradient(-45deg, #587bee, #e370e7);
+
+
+.not_ready {
+	filter: brightness(0.6);
+	position: absolute;
 }
 
-.torrent_container {
-	height: 80px;
-	margin-top: 0.5%;
+.loading {
+	filter: brightness(0.3);
+	position: absolute;
 }
 
-.torrent_container > * {
+.on_image {
+	z-index: 1;
+	position: absolute;
+	left: 50%;
+	transform: translateX(-50%);
+	top: 50%;
+	cursor: pointer;
+	font-size: 130px;
+	max-width: 20%;
+	margin-top: calc(-0.5 * 130px);
+}
+
+.on_image.error {
+	color: white;
+	font-size: 115px;
+}
+
+.see_movie {
+	height: 500px;
+	text-decoration: none;
+	color: white;
+}
+
+video {
+	height: 100%;
+	width: 100%;
+	// transform: translateX(25%);
+}
+
+.loading_video {
+	z-index: 1;
+	position: absolute;
+	left: calc(50% - 2.5rem);
+  	top: calc(50% - 2.5rem);
+	width: 5rem; height: 5rem;
+}
+
+.Error {
+	z-index: 1;
+	position: absolute;
+	text-align: center;
+	left: calc(50% - 7.5rem);
+  	top: calc(50% + 4rem);
+	width: 15rem; height: 15rem;
 	font-size: 18px;
 }
 
-.torrent_infos {
-	font-weight: bold;
-}
-
-.torrent_icon {
-	margin-top: -1%;
-	margin-right: 3%;
-}
-
-.play_button {
-	border-right: 1px;
-	border-color: white;
-}
-
-.bn30 > .col:first-of-type {
-	text-align:left;
-}
-
-.bn30 > .col {
-	text-align:right;
+.loading_video.text {
+	top: calc(50% + 3rem);
+	text-align: center;
+	font-size: 18px;
 }
 
 
-.torrent_button {
-	text-decoration: none;
-}
+@media (max-width: 1100px) {
+	.video_container {
+		aspect-ratio: 16/9;
+	}
 
+	.on_image {
+		font-size: 100px;
+		margin-top: calc(-0.5 * 100px);
+	}
+}
 
 
 @media (max-width: 690px) {
 
 	.homemade-container {
 		font-size: 11px;
-	}
-
-	.big, .summary {
-		font-size: 15px;
-	}
-
-	h1 {
-		font-size     : 25px;
 	}
 
 	.submit_button {
@@ -234,8 +199,8 @@ h1 {
 		margin-bottom : 3%;
 		margin-left   : 2%;
 	}
-}
 
+}
 
 @media (max-width: 590px) {
 
@@ -243,19 +208,6 @@ h1 {
 		width: 100%;
 	}
 
-	h1 {
-		font-size     : 20px;
-		margin-top: 10%;
-		margin-bottom: 10%;
-	}
-
-	.big, .summary {
-		font-size: 14px;
-	}
-
-	.summary {
-		margin-top: 10%;;
-	}
 
 	.people_reviews .rating, .people_reviews .username {
 		width: 100%;
@@ -264,6 +216,4 @@ h1 {
 	.comment {
 		margin-top: 3%;
 	}
-
 }
-

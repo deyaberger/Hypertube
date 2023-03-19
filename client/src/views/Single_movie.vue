@@ -161,17 +161,17 @@ export default {
 			try {
 				console.log("[single_movie]: getting movie details...")
 				let res = await Get_Single_Movie_Details(this.movie_id, this.user_token);
-				if (res.data.code == "SUCCESS") {
+				if (res && res.data && res.data.code == "SUCCESS") {
 					this.movie = Parse_Single_Movie(res.data.movie);
 					console.log("[single_movie]: Successfully got movie details! ", this.movie)
 					return
 				}
-				else if (res.data.code == "MISSING_MOVIE") {
+				else if (res && res.data && res.data.code == "MISSING_MOVIE") {
 					this.movie_error = true
 					console.log("ERROR [single_movie]: No Movie found with id: ", this.movie_id)
 					return
 				}
-				else if (res.data.code == "FAILURE") {
+				else if (res && res.data && res.data.code == "FAILURE") {
 					this.movie_error = true
 					console.log("ERROR [single_movie]: ", res.data.msg)
 					return
@@ -180,6 +180,12 @@ export default {
 				console.log("WTF in get movie deets", res.status, res.data)
 			}
 			catch (e) {
+				if (e.code == 'EXPIRED_TOKEN' || e.code == 'CORRUPTED_TOKEN') {
+					return alert("Session expired")
+				}
+				if (e.code == "ER_BAD_FIELD_ERROR") {
+					console.log("ER_BAD_FIELD_ERROR [single_movie]: in get_movie_details, make sure the DB is up to date")
+				}
 				this.movie_error = true
 				if (e.code == 'EXPIRED_TOKEN' || e.code == 'CORRUPTED_TOKEN') {
 					this.$store.commit('LOGOUT_USER')
@@ -223,8 +229,8 @@ export default {
 			}
 		},
 	},
-	mounted() {
-		this.get_movie_details();
+	async mounted() {
+		await this.get_movie_details();
 	},
 
 	created() {
@@ -264,7 +270,7 @@ export default {
 			alert("The torrent is broken")
 			console.log("TORRENT_NOT_EXIST")
 		})
-		
+
 		this.torrent_service.on('NO_STREAMABLE_FILE', (status) => {
 			this.torrent_loading = false
 			this.torrent_error = true
@@ -285,9 +291,10 @@ export default {
 
 <template>
 	<div class="homemade-container" v-if="!movie_error && movie">
-		<div class="row justify-content-md-center">
-			<div v-if="movie.length == 0" class="col-md-auto">
-						<b-spinner label="Loading..." variant="success" class="mt-5"></b-spinner>
+		<div>MOVIE: {{ movie }}</div>
+		<div class="row movie_container justify-content-md-center">
+			<div v-if="movie && movie.length == 0" class="col-md-auto">
+					<b-spinner label="Loading..." variant="success" class="mt-5"></b-spinner>
 				</div>
 			<div v-else class="col video_container" id="video_container">
 				<div v-if="movie_ready_to_watch && movie_file_type_ok" class="image_container">
@@ -331,75 +338,5 @@ export default {
 <style lang="scss" scoped>
 @import "../assets/shared_scss/single_movie.scss";
 
-.time {
-	text-align: end;
-}
-
-.image_container {
-	background-color: black;
-	height: 500px;
-}
-
-.not_ready {
-	filter: brightness(0.6);
-	position: absolute;
-}
-
-.loading {
-	filter: brightness(0.3);
-	position: absolute;
-}
-
-.on_image {
-	z-index: 1;
-	position: absolute;
-	left: 50%;
-	transform: translateX(-50%);
-	top: 50%;
-	cursor: pointer;
-	font-size: 150px;
-	margin-top: calc(-0.5 * 150px);
-}
-
-.on_image.error {
-	color: white;
-	font-size: 115px;
-}
-
-.see_movie {
-	height: 500px;
-	text-decoration: none;
-	color: white;
-}
-
-video {
-	height: 100%;
-	width: 100%;
-	// transform: translateX(25%);
-}
-
-.loading_video {
-	z-index: 1;
-	position: absolute;
-	left: calc(50% - 2.5rem);
-  	top: calc(50% - 2.5rem);
-	width: 5rem; height: 5rem;
-}
-
-.Error {
-	z-index: 1;
-	position: absolute;
-	text-align: center;
-	left: calc(50% - 7.5rem);
-  	top: calc(50% + 4rem);
-	width: 15rem; height: 15rem;
-	font-size: 18px;
-}
-
-.loading_video.text {
-	top: calc(50% + 3rem);
-	text-align: center;
-	font-size: 18px;
-}
 
 </style>
