@@ -45,7 +45,8 @@ export default {
 			on_video            : false,
 			torrent_service     : null,
 			torrent_loading     : false,
-			torrent_error		: false
+			torrent_error       : false,
+			download_speed      : ''
 		}
 	},
 
@@ -101,12 +102,16 @@ export default {
 		Choose_Torrent(value) {
 			const torrent = JSON.parse(JSON.stringify((value.torrent)));
 			this.torrent_loading = true;
+			this.download_speed = ''
 			try {
 				this.torrent_service.choose_torrent(torrent.id)
 			}
 			catch (e) {
+				console.log("choose_torrent error", e)
 				if (e.code == 'SOCKET_CREATION_ERROR') {
-					console.log("Error in socket creation !@")
+					this.torrent_loading = false
+					this.torrent_error = true
+					console.log("SOCKET_CREATION_ERROR")
 				}
 			}
 		},
@@ -115,9 +120,9 @@ export default {
 			try {
 				console.log("[single_movie]: Setting movie to watched: ...", {id: this.movie_id})
 				let res = await Set_Watched(this.movie_id, this.user_token)
+				this.movie.is_watched = true
 				if (res.data.code == "SUCCESS") {
 					console.log("[single_movie]: Successfully updated watched!")
-					this.movie.is_watched = true
 				}
 				else {
 					console.log("ERROR: [single_movie] in set_watched: ", res)
@@ -125,13 +130,14 @@ export default {
 			}
 			catch(e) {
 				console.log("UNKNOWN ERROR [single_movie]: in set_watched")
-				throw(e)
+				// throw(e)
 			}
 		},
 
 		async update_fav() {
 			let res = null
 			try {
+				this.movie.is_fav = !this.movie.is_fav
 				if (this.movie.is_fav) {
 					res = await Remove_From_Favorites(this.movie_id, this.user_token)
 				}
@@ -140,7 +146,6 @@ export default {
 				}
 				if (res.data && res.data.code == "SUCCESS") {
 					console.log("[single_movie]: Successfully updated fav!")
-					this.movie.is_fav = !this.movie.is_fav
 				}
 				else {
 					console.log("ERROR: [single_movie] in update_fav: ", res)
@@ -148,7 +153,7 @@ export default {
 			}
 			catch(e) {
 				console.log("UNKNOWN ERROR [single_movie]: in update_fav")
-				throw(e)
+				// throw(e)
 			}
 		},
 
@@ -159,16 +164,20 @@ export default {
 				if (res && res.data && res.data.code == "SUCCESS") {
 					this.movie = Parse_Single_Movie(res.data.movie);
 					console.log("[single_movie]: Successfully got movie details! ", this.movie)
+					return
 				}
 				else if (res && res.data && res.data.code == "MISSING_MOVIE") {
 					this.movie_error = true
 					console.log("ERROR [single_movie]: No Movie found with id: ", this.movie_id)
+					return
 				}
 				else if (res && res.data && res.data.code == "FAILURE") {
 					this.movie_error = true
 					console.log("ERROR [single_movie]: ", res.data.msg)
+					return
 				}
-				return
+				this.movie_error = true
+				console.log("WTF in get movie deets", res.status, res.data)
 			}
 			catch (e) {
 				if (e.code == 'EXPIRED_TOKEN' || e.code == 'CORRUPTED_TOKEN') {
@@ -178,8 +187,16 @@ export default {
 					console.log("ER_BAD_FIELD_ERROR [single_movie]: in get_movie_details, make sure the DB is up to date")
 				}
 				this.movie_error = true
+				if (e.code == 'EXPIRED_TOKEN' || e.code == 'CORRUPTED_TOKEN') {
+					this.$store.commit('LOGOUT_USER')
+					this.$router.push('/sign_in')
+					return alert("Session expired")
+				}
+				if (e.code == "ER_BAD_FIELD_ERROR") {
+					console.log("ER_BAD_FIELD_ERROR [single_movie]: in get_movie_details, make sure the DB is up to date")
+				}
 				console.log("UNKNOWN ERROR [single_movie]: in get_movie_details")
-				throw(e)
+				// throw(e)
 			}
 		},
 
@@ -198,11 +215,16 @@ export default {
 		},
 
 		handle_image_error(event, movie) {
-			const nextIndex = parseInt(event.target.dataset.nextIndex)
-			const nextImage = movie.images_list[nextIndex];
-			if (nextImage) {
-				event.target.src = nextImage;
-			} else {
+			try {
+				const nextIndex = parseInt(event.target.dataset.nextIndex)
+				const nextImage = movie.images_list[nextIndex];
+				if (nextImage) {
+					event.target.src = nextImage;
+				} else {
+					event.target.src = this.fallbackUrl;
+				}
+			}
+			catch (e) {
 				event.target.src = this.fallbackUrl;
 			}
 		},
@@ -214,39 +236,46 @@ export default {
 	created() {
 		this.torrent_service = new TorrentSocketService(this.user_token)
 		this.torrent_service.on('torrent_ready', (torrent_status) => {
+			let okidoki = this.isVideoFormatCompatible(torrent_status.video_file_type)
+			if (!okidoki) {
+				this.torrent_loading = false
+				this.torrent_error = true
+				console.log("NO_STREAMABLE_FILE")
+				return alert("The torrent does not contain a video file compatible with your browser.")
+				// throw(new Error("PLAYING MKV ON FIREFOX WILL CAUSE ERROR"))
+			}
 			this.set_watched()
 		});
-		this.torrent_service.on('TOKEN_ERROR', () => {
-			this.torrent_loading = false
-			alert("Session expired")
+
+		this.torrent_service.on('download', (status) => {
+			console.log("download handle")
+			try {
+				this.download_speed = status.downloadSpeed
+			}
+			catch {
+				this.download_speed = 0
+			}
 		})
 
 		this.torrent_service.on('TOR_WATCHER_ERROR', () => {
 			this.torrent_loading = false
 			this.torrent_error = true
+			alert("The movie file is corrupted")
 			console.log("TOR_WATCHER_ERROR")
 		})
 
 		this.torrent_service.on('TORRENT_NOT_EXIST', () => {
 			this.torrent_loading = false
 			this.torrent_error = true
+			alert("The torrent is broken")
 			console.log("TORRENT_NOT_EXIST")
 		})
 
 		this.torrent_service.on('NO_STREAMABLE_FILE', (status) => {
-			if (status == null || status == undefined) {
-				this.torrent_loading = false
-				this.torrent_error = true
-				console.log("NO_STREAMABLE_FILE")
-				return
-			}
-			let okidoki = this.isVideoFormatCompatible(status.video_file_type)
-			if (!okidoki) {
-				this.torrent_loading = false
-				this.torrent_error = true
-				console.log("NO_STREAMABLE_FILE")
-				throw(new Error("PLAYING MKV ON FIREFOX WILL CAUSE ERROR"))
-			}
+			this.torrent_loading = false
+			this.torrent_error = true
+			alert("The torrent does not contain a video file compatible with your browser.")
+			console.log("NO_STREAMABLE_FILE")
 		})
 	},
 
@@ -285,7 +314,7 @@ export default {
 					<div v-else>
 						<img class="movie_image loading" :src="movie.images_list[6]" alt="movie_image" :data-next-index="1" @error="handle_image_error($event, movie)"/>
 						<b-spinner v-if="torrent_loading" label="Loading..." variant="success" class="loading_video"></b-spinner>
-						<p v-if="torrent_loading" class="loading_video text">File is loading...</p>
+						<p v-if="torrent_loading" class="loading_video text">File is loading... {{download_speed}}</p>
 						<a v-if="torrent_error" class="see_movie" href="#target-element" data-toggle="tooltip" data-placement="top" title="See & select torrents"><b-icon-exclamation-circle class="on_image error"></b-icon-exclamation-circle></a>
 						<p v-if="torrent_error" class="Error text">{{ text_content.error_torrents[lang_nb] }}</p>
 					</div>

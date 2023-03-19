@@ -38,7 +38,7 @@ class Paginator extends EventEmitter {
     }
 
     async set_page(page_number) {
-      console.log("set page number", page_number)
+      // console.log("set page number", page_number)
       if (this.searched_movies[page_number]) {
         console.log("cache hit")
         this.emit('search_done', this.searched_movies[page_number])
@@ -70,7 +70,7 @@ class Paginator extends EventEmitter {
           }
           else {
             console.log(i, 'in cache')
-            if (this.searched_movies[i].length == 0) {
+            if (!this.searched_movies[i] || this.searched_movies[i].length == 0) {
               console.log("stop at", i)
               break
             }
@@ -83,7 +83,8 @@ class Paginator extends EventEmitter {
           console.log("emit GET_MOVIE_ERROR")
           return this.emit('GET_MOVIE_ERROR')
         }
-        throw(e)
+        // throw(e)
+        return this.emit('GET_MOVIE_ERROR')
       }
 
   
@@ -119,7 +120,7 @@ class Paginator extends EventEmitter {
           }
         }
         // console.log("UNKNOWN ERROR [get_reco]: ", Object.keys(e), e.code, e.name, e.response)
-        throw(e)
+        // throw(e)
         this.emit('GET_MOVIE_ERROR')
       }
     }
@@ -127,7 +128,7 @@ class Paginator extends EventEmitter {
     async get_page_from_server(page_number) {
       try {
         let res
-        console.log("search", page_number * this.movies_per_page, this.movies_per_page )
+        // console.log("search", page_number * this.movies_per_page, this.movies_per_page )
         res = await Get_Movies_Research_Page(this.search_form, this.lang_nb, this.user_token, page_number * this.movies_per_page, this.movies_per_page);
 
         if (res && res.data && res.data.code == 'SUCCESS') {
@@ -138,13 +139,15 @@ class Paginator extends EventEmitter {
       catch(e) {
         this.error = true
         if (e.code == 'ERR_BAD_REQUEST' || e.code == 'ERR_BAD_RESPONSE') { // i.e. it's an axios error
-          console.log("catching request fail")
-          let err = new Error(e.msg)
-          err.code = 'GET_MOVIE_ERROR_CODE'
-          throw(err)
+          console.log("catching request fail", e.code)
         }
+        // TODO: maybe a bit extreme ?
+        let err = new Error(e.msg)
+        err.code = 'GET_MOVIE_ERROR_CODE'
+        throw(err)
+
         // console.log("UNKNOWN ERROR [search pagi]: ", Object.keys(e), e.code, e.name, e.response)
-        throw(e)
+        // throw(e)
         this.emit('GET_MOVIE_ERROR')
       }
     }

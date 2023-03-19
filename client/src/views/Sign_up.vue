@@ -125,6 +125,7 @@ export default {
 			},
 			deep:true
 		},
+
 		firstname: {
 			handler:function() {
 				if (this.firstname.match(this.regex_whitespace) == null){
@@ -140,6 +141,7 @@ export default {
 			},
 			deep:true
 		},
+
 		lastname: {
 			handler:function() {
 				if (this.lastname.match(this.regex_whitespace) == null){
@@ -155,6 +157,7 @@ export default {
 			},
 			deep:true
 		},
+
 		email: {
 			handler:function() {
 				if (this.email.length == 0 || this.email.match(this.regex_mail) == null){
@@ -196,7 +199,6 @@ export default {
 				}
 			}
 		}
-
 	}
 }
 </script>

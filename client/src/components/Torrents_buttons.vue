@@ -11,9 +11,9 @@ export default {
 
 	data() {
 		return {
-			text_content       : textContent.MOVIES,
+			text_content        : textContent.MOVIES,
 			torrent_button_text : textContent.MOVIES["see_torrents"],
-			torrents		   : [],
+			torrents            : [],
 		}
 	},
 
@@ -38,13 +38,12 @@ export default {
 				else {
 					this.movie_error = true
 					console.log("ERROR [single_movie]: ", res)
-					return false
 				}
 			}
 			catch (e) {
 				this.movie_error = true
 				console.log("UNKNOWN ERROR [single_movie]: in get_torrents")
-				throw(e)
+				// throw(e)
 			}
 		},
 

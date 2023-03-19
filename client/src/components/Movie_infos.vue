@@ -11,14 +11,14 @@ export default {
 
 	data() {
 		return {
-			text_content       : textContent.MOVIES,
+			text_content        : textContent.MOVIES,
 			Get_Rating_Level    : Get_Rating_Level,
 			Get_Separator       : Get_Separator,
 			Get_Genres_String       : Get_Genres_String,
 			Get_Formatted_Time  : Get_Formatted_Time,
-			comments           : [],
-			user_rating        : 0,
-			user_comment 	   : ''
+			comments            : [],
+			user_rating         : 0,
+			user_comment        : ''
 		}
 	},
 

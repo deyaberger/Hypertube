@@ -73,7 +73,7 @@ export default {
 				}
 				else {
 					this.connection_error = true
-					console.log("error in signin")
+					console.log("error in signin", sign_in_res.status)
 				}
 			}
 			catch (e) {

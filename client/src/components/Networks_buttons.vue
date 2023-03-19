@@ -34,12 +34,17 @@ export default {
 	},
 
 	async mounted() {
-		const res = await Get_Oauth_Urls()
-		if (res.status == 200 ){
-			this.url_github = res.data.urls.url_github,
-			this.url_gitlab = res.data.urls.url_gitlab,
-			this.url_42 	= res.data.urls.url_42,
-			this.url_google = res.data.urls.url_google
+		try {
+			const res = await Get_Oauth_Urls()
+			if (res.status == 200 ){
+				this.url_github = res.data.urls.url_github,
+				this.url_gitlab = res.data.urls.url_gitlab,
+				this.url_42 	= res.data.urls.url_42,
+				this.url_google = res.data.urls.url_google
+			}
+		}
+		catch (e) {
+			console.log("Caught Get oauth urls failure", e)
 		}
 	}
 }

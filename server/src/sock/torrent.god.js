@@ -8,7 +8,7 @@ const fixtures                      = require('../utils/fixtures')
 const throw_err_with_code           = require('../utils/error_throw')
 
 
-DOWLOAD_SPAM_LIMIT_MS = 10000
+DOWLOAD_SPAM_LIMIT_MS = 1000
 
 class TorrentWatcher extends EventEmitter {
   constructor(torrent, torrent_db_data) {
@@ -40,7 +40,7 @@ class TorrentWatcher extends EventEmitter {
 
   setOnTorrentReady() {
     this.torrent.once('ready', this.safetyWrapper(() => {
-        console.log("TORRENT REDY", this.torrent.name)
+        console.log("\n[torrent.god] Torrent Ready !!", this.torrent.name)
         if (this.getFileType(this.getLargestFile()) != "MOVIE_FILE") {
           console.log("Largest", this.getLargestFile(), "type" , this.getFileType(this.getLargestFile()), this.getStatus())
           this.emit(event_names.NO_STREAMABLE_FILE)
@@ -171,7 +171,7 @@ class GodEventHandler {
   }
 
   handle_add_torrent_event(torrent_id) {
-    console.log("handling add tor for", torrent_id)
+    console.log("\n[torrent.god] handling add tor for", torrent_id)
     if (this.torrentWatchers[torrent_id] != undefined) {
       this.io.to(torrent_id).emit('torrent_added', torrent_id)
       return console.log("torrent watcher already exists", torrent_id)
@@ -183,11 +183,11 @@ class GodEventHandler {
   }
 
   async add_expiration_date(torrent_id, name) {
-    console.log("adding expiration date", torrent_id, name)
+    console.log("[torrent.god] Adding expiration date", torrent_id, name)
     try {
       await this.db_pool.query(`
-      UPDATE torrents 
-      set 
+      UPDATE torrents
+      set
         last_added=CURRENT_TIMESTAMP,
         folder=?
       WHERE id=?
@@ -197,10 +197,15 @@ class GodEventHandler {
       throw(e)
       console.log("oopsies add expiration date")
     }
-    
+
   }
 
   async add_torrent(torrent_id) {
+    // TODO remove TEST errors
+    // this.io.to(torrent_id).emit(event_names.TORRENT_NOT_EXIST) // NOT WORKING
+    // this.io.to(torrent_id).emit(event_names.BAD_ERROR)
+    // this.io.to(torrent_id).emit(event_names.UNKNOWN_ERROR)
+    // return
     try {
       let torrent_db_data = await this.torrent_functions.get_torrent_from_id(torrent_id)
       let magnet_uri = hash_title_to_magnet_link(torrent_db_data.hash, `torrent_db_data.title_${torrent_id}`)
@@ -208,11 +213,11 @@ class GodEventHandler {
       if (this.torrent_client.get(magnet_uri)) {
         console.log("\n\n\nWTF DOUBLE TROUBLE THIS SHOULD NEVER PRINT\n\n\n", torrent_id)
 
-        throw_err_with_code("You tried adding a torrent that's already present!", event_names.BAD_ERROR)
+        // throw_err_with_code("You tried adding a torrent that's already present!", event_names.BAD_ERROR)
         this.io.to(torrent_id).emit(event_names.NO_STREAMABLE_FILE)
       }
 
-      console.log("adding magnete")
+      console.log("[torrent.god] Adding magnete")
       let torrent = this.torrent_client.add(
         magnet_uri,
         {
@@ -220,10 +225,10 @@ class GodEventHandler {
             strategy  : "sequential"
         }
       )
-      
+
       // this.add_expiration_date(torrent_id)
 
-      console.log("adding tor watcher")
+      console.log("[torrent.god] Adding tor watcher")
       this.addTorrentWatcher(torrent, torrent_db_data)
     }
     catch (e) {
@@ -277,26 +282,26 @@ class GodEventHandler {
 
     // TODO: test NO_STREAMABLE_FILE on front and back
     this.torrentWatchers[torrent_id].once(event_names.NO_STREAMABLE_FILE, () => {
-      console.log("emit no streamable")
+      console.log("[torrent.god] emit no streamable")
       this.io.to(torrent_id).emit(event_names.NO_STREAMABLE_FILE)
       this.remove_torrent(torrent_id)
     })
 
     this.torrentWatchers[torrent_id].once('set_torrent_expiration', (name) => {
-      console.log("expirationnne", name, torrent_id)
+      console.log("[torrent.god]  expirationnne", name, torrent_id)
       this.add_expiration_date(torrent_id, name)
     })
-    
+
     this.torrentWatchers[torrent_id].once('torrent_ready', (torrent_status) => {
       // console.log("emit tor ready", torrent_status)
-      console.log("Subs set high prio")
+      console.log("[torrent.god] Subs set high prio")
       this.torrent_functions.set_subtitles_high_priority(torrent)
       this.io.to(torrent_id).emit('torrent_ready', torrent_status)
     })
 
 
     this.torrentWatchers[torrent_id].on('download', (torrent_status) => {
-      console.log("emit dl")
+      console.log("[torrent.god]  emit dl")
       this.io.to(torrent_id).emit('download', torrent_status)
     })
 
@@ -309,7 +314,7 @@ class GodEventHandler {
   }
 
   bringNewcomerUpToDate(socket, torrent_id) {
-    console.log("bring up to date")
+    console.log("[torrent.god] bring up to date")
     let torrent_watcher = this.torrentWatchers[torrent_id]
 
     if (torrent_watcher == undefined) return

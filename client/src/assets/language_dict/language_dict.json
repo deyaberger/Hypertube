@@ -110,7 +110,8 @@
 		"director"		  : ["Director", "Réalisateur"],
 		"actors"		  : ["Actors", "Acteurs"],
 		"see_torrents"	  : ["See the torrent list", "Regarder la liste de torrents"],
-		"hide_torrents"	  : ["Hide the torrent list", "Cacher la list de torrents"]
+		"hide_torrents"	  : ["Hide the torrent list", "Cacher la list de torrents"],
+		"error_torrents"  : ["Error in loading torrent, please select another one", "Erreur lors du chargement du torrent, merci d'en choisir un autre"]
 
 	},
 	"PROFILE" : {

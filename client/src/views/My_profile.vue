@@ -36,7 +36,7 @@ export default {
 	data() {
 		return {
 			text_content          : textContent.PROFILE,
-			is_empty			  : is_empty,
+			is_empty			        : is_empty,
 			user                  : null,
 
 			username              : null,
@@ -76,8 +76,6 @@ export default {
 
 			regex_whitespace      : /^\S*$/,
 			regex_mail            : /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i,
-
-			window_width          : window.innerWidth
 		}
 	},
 
@@ -120,7 +118,7 @@ export default {
 			}
 			catch (e) {
 				console.log("wierd erro in get use favourites")
-				throw(e)
+				// throw(e)
 				this.fav_movies = null
 			}
 		},
@@ -139,7 +137,7 @@ export default {
 			}
 			catch (e) {
 				console.log("wierd erro in get user watched")
-				throw(e)
+				// throw(e)
 				this.watched_movies = null
 			}
 		},
@@ -168,7 +166,7 @@ export default {
 				}
 			}
 			catch(e) {
-				throw(e)
+				// throw(e)
 				this.parse_modifiable_data(res.data.user);
 			}
 		},
@@ -184,7 +182,7 @@ export default {
 				return null
 			}
 			catch (e) {
-				throw(e)
+				// throw(e)
 				return null
 			}
 		},
@@ -485,10 +483,6 @@ export default {
 		mimic_click() {
 			this.$refs.fileInput.click();
 		},
-
-		updateWidth() {
-			this.window_width = window.innerWidth;
-		}
 	},
 
 
@@ -502,12 +496,7 @@ export default {
 		await this.get_user_data();
 		await this.get_user_fav_movies();
 		await this.get_user_watched_movies();
-		window.addEventListener('resize', this.updateWidth);
 	},
-
-	beforeUnmount() {
-    	window.removeEventListener('resize', this.updateWidth);
-  	},
 
 	watch: {
 		username: {
@@ -665,18 +654,7 @@ export default {
 
 				<div class="p-4 pt-5 text-black pseudo_and_co_container" style="background-color: #f8f9fa;">
 					<div class="justify-content-center text-center py-1">
-					<div>
-						<div class="row">
-						<div :class="window_width > 510 ? 'col-2 follows_container' : 'col-4 follows_container'">
-							<p class="small text-muted mb-0">{{text_content.followers[lang_nb]}}</p>
-							<p class="mb-1 h5">{{user.followers}}</p>
-						</div>
-						<div class="col follows_container">
-							<p class="small text-muted mb-0">{{text_content.followings[lang_nb]}}</p>
-							<p class="mb-1 h5">{{user.followings}}</p>
-						</div>
-						</div>
-						<div class="row pseudo_and_co">
+						<div :class="username_is_saved ? 'row pseudo_and_co' : 'pseudo_and_co'">
 						<div :class="username_is_saved ? 'col username_container' : 'row username_container'">
 							<div>
 							<p class="small text-muted mb-0">{{text_content.username[lang_nb]}}</p>
@@ -735,7 +713,10 @@ export default {
 						</div>
 					</div>
 					</div>
-					</div>
+				</div>
+				<div class="card-body text-black follows">
+					<p class="small text-muted mb-0">{{text_content.followers[lang_nb]}} : <span class="mb-1 h5">{{user.followers}}</span></p>
+					<p class="small text-muted mb-0">{{text_content.followings[lang_nb]}} : <span class="mb-1 h5">{{user.followings}}</span></p>
 				</div>
 				<div class="card-body p-4 text-black">
 					<div>
@@ -752,7 +733,7 @@ export default {
 								:placeholder="bio"
 								:maxlength=499
 							></b-form-textarea>
-							<p :class="bio.length >= 499 ? 'max_length reset' : 'max_length'">{{text_content.bio_max_length[lang_nb]}}: 500</p>
+							<p :class="bio && bio.length >= 499 ? 'max_length reset' : 'max_length'">{{text_content.bio_max_length[lang_nb]}}: 500</p>
 								<button class="btn check_button bio" type="button" @click="save_bio()">{{text_content.save[lang_nb]}}</button>
 								<span class="input-group-btn align-items-center">
 								<button class="btn check_button" type="button">
