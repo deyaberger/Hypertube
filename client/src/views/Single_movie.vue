@@ -262,7 +262,6 @@ export default {
 
 <template>
 	<div class="homemade-container" v-if="!movie_error && movie">
-		<div>MOVIE: {{ movie }}</div>
 		<div class="row movie_container justify-content-md-center">
 			<div v-if="movie && movie.length == 0" class="col-md-auto">
 					<b-spinner label="Loading..." variant="success" class="mt-5"></b-spinner>
