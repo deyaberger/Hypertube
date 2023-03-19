@@ -21,6 +21,11 @@ export function Get_Separator(index, text_list) {
     return (index < text_list.length - 1 ? ", " : "")
 }
 
+export function Get_Genres_String(genres_list) {
+    console.log("genres: ", genres_list)
+    return (genres_list.join(", "))
+}
+
 export function copy(obj) {
     return JSON.parse(JSON.stringify(obj))
 }
