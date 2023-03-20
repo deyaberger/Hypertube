@@ -29,8 +29,12 @@ hr {
 }
 
 .movie-card.profile {
-	width: 430px;
+	width: 400px;
 	margin-top: 0px;
+}
+
+.movie-card.profile > .movie-content > .movie-content-header > .movie-title {
+	width: 350px;
 }
 
 
@@ -163,13 +167,8 @@ hr {
 	max-width: 300px;
 }
 
-.movie-card.profile > .movie-content > .movie-content-header > .movie-title {
-	max-width: 390px;
-}
 
-
-
-@media screen and (max-width: 1410px) {
+@media screen and (max-width: 1400px) {
 	.movie-card.profile {
 		width: 350px
 	}
@@ -180,7 +179,7 @@ hr {
 
 @media screen and (max-width: 1200px) {
 	.movie-card.profile {
-		width: 300px
+		width: 290px
 	}
 	.movie-card.profile > .movie-content> .movie-content-header > .movie-title {
 		font-size: 20px;
@@ -190,20 +189,27 @@ hr {
 
 @media screen and (max-width: 991px) {
 	.movie-card.profile {
-		width: 350px
+		width: 250px
 	}
 	.movie-card.profile > .movie-content> .movie-content-header > .movie-title {
 		font-size: 25px;
-		width: 400px;
+		width: 200px;
 	}
 }
 
 @media screen and (max-width: 767px) {
 	.movie-card.profile {
-		margin-left: 8%;
+		width: 350px
+	}
+	.movie-header, .movie-image{
+		height: 250px;
+	}
+	.movie-card.profile {
+		margin-left: 10%;
 	}
 	.movie-card.profile > .movie-content> .movie-content-header > .movie-title {
 		font-size: 20px;
+		width: 300px;
 	}
 }
 
@@ -232,18 +238,18 @@ hr {
 }
 @media screen and (max-width: 430px) {
 	.movie-card.profile > .movie-content> .movie-content-header > .movie-title {
-		max-width: 250px;
+		width: 250px;
 	}
 }
 
 @media screen and (max-width: 380px) {
 	.movie-card.profile > .movie-content> .movie-content-header > .movie-title {
-		max-width: 210px;
+		width: 210px;
 	}
 }
 
 @media screen and (max-width: 350px) {
 	.movie-card.profile > .movie-content> .movie-content-header > .movie-title {
-		max-width: 150px;
+		width: 150px;
 	}
 }

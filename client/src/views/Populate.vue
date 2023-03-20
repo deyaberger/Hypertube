@@ -50,7 +50,7 @@ export default {
 
 
 			this.yts_currently_fetched = (20 * (this.current_page - 1))
-			this.yts_movie_count = 50; // TO DELETE
+			// this.yts_movie_count = 50; // TO DELETE
 			while (this.yts_currently_fetched < this.yts_movie_count) {
 				let res = await Get_All_Movies(source, this.current_page);
 				try {
@@ -237,6 +237,15 @@ export default {
 		<p v-if="db_on || db_done || db_error">Time Spent:{{hours}}:{{minutes}}:{{seconds}}</p>
       </div>
 	  <div class="col-md-12 text-center mt-4">
+        <button class="submit_button" @click="opti_db()" v-if="!opti_on">
+			Optimize DB
+		</button>
+		<p>
+			<span v-if="opti_on && !opti_done">Optimizing DB...<b-spinner variant="success"></b-spinner></span>
+			<span v-if="opti_done">Done Optimizing!<b-icon-check class="h2 green" variant="success"/></span>
+		</p>
+      </div>
+	  <div class="col-md-12 text-center mt-4">
         <button class="submit_button" @click="pimp_db('tmdb')" v-if="!tmdb_on">
 			Pimp DB with TMDB data
 		</button>
@@ -250,15 +259,6 @@ export default {
 		</p>
 		<p v-if="tmdb_on || tmdb_done">Time Spent:{{hours}}:{{minutes}}:{{seconds}}</p>
 		</div>
-		<div class="col-md-12 text-center mt-4">
-        <button class="submit_button" @click="opti_db()" v-if="!opti_on">
-			Optimize DB
-		</button>
-		<p>
-			<span v-if="opti_on && !opti_done">Optimizing DB...<b-spinner variant="success"></b-spinner></span>
-			<span v-if="opti_done">Done Optimizing!<b-icon-check class="h2 green" variant="success"/></span>
-		</p>
-      </div>
 
   </div>
 </template>

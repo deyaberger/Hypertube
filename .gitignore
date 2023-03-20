@@ -8,6 +8,7 @@ node_modules
 **/torrents/
 **/uploads/**
 **/yts_response/*
+**/yts_response*
 
 server/scraper/data
 server/client_dist

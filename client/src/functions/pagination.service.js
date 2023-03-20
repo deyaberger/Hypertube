@@ -26,24 +26,13 @@ class Paginator extends EventEmitter {
       this.search_form = {"title":"","min_rating":0,"genre":"Action","quality":"","min_year":1900,"sort_by":"title","asc_or_desc":"asc"}
     }
 
-    get_min_page() {
-      // Min page to display for nav
-      return Math.max(0, this.current_page - 4)
-    }
-
-    get_max_page() {
-      // Max page to display for nav
-      let max_loaded = Math.max(Object.keys(this.searched_movies))
-      return Math.min(max_loaded, this.current_page + 4)
-    }
-
     async set_page(page_number) {
       // console.log("set page number", page_number)
       if (this.searched_movies[page_number]) {
         console.log("cache hit")
         this.emit('search_done', this.searched_movies[page_number])
       }
-      
+
       this.current_page   = page_number
       this.loading_search = true
 
@@ -86,8 +75,6 @@ class Paginator extends EventEmitter {
         // throw(e)
         return this.emit('GET_MOVIE_ERROR')
       }
-
-  
     }
 
     set_search_form(form) {

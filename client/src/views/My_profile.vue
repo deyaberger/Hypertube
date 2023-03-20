@@ -577,7 +577,7 @@ export default {
 	<section v-if="user" class="gradient-custom-2">
 		<div class="container py-5 h-100">
 			<div class="row d-flex justify-content-center align-items-start h-100">
-			<div class="col col-lg-9 col-xl-7">
+			<div class="col col-lg-9">
 				<div class="card">
 				<div class="rounded-top text-white d-flex flex-row black_rectangle">
 					<div class="ms-4 d-flex flex-column pic_container">

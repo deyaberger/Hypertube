@@ -60,7 +60,7 @@ export default {
 		})
 	},
 
-	
+
 	watch: {
 		currentPage: {
 			handler: async function() {
@@ -76,8 +76,8 @@ export default {
 		update_form(value) {
 			console.log("update form")
 			this.reset = false;
-			this.form = JSON.parse(JSON.stringify(value));
 			this.user_research = "SEARCH"
+			this.form = JSON.parse(JSON.stringify(value));
 			this.current_movies = []
 			if (this.paginator) {
 					this.paginator.set_search_form(this.form)
@@ -88,6 +88,7 @@ export default {
 		from_research_to_reco() {
 			console.log("to reco")
 			this.user_research = 'RECO'
+			// this.reset = true;
 		},
 
 		from_reco_to_research() {
@@ -143,10 +144,10 @@ export default {
 
 <template>
 	<div v-if="!kaputkaboum">
-		<div class="test">
+		<div>
 			<SearchBar ref="search_bar" @search_form="update_form" :reset="reset"/>
 			<div ref="results_container" class="results_container">
-			
+
 				<div class="search_header">
 					<div v-if="user_research == 'SEARCH'" class="title">
 						<p class="actual">{{ text_content.research[lang_nb] }}:</p>
@@ -165,7 +166,7 @@ export default {
 				<!-- <SearchResults v-if="!paginator.loading_reco" :movie_list="reco_slice" :error="false" :profile="false" class="search_res"/> -->
 				<SearchResults v-if="user_research == 'SEARCH'" :movie_list="current_movies" :error="false" :profile="false" class="search_res"/>
 				<SearchResults v-if="user_research == 'RECO'" :movie_list="recommendations" :error="false" :profile="false" class="search_res"/>
-				
+
 				<div class="pagination overflow-auto">
 					<div v-if="user_research == 'SEARCH' && current_movies.length != 0">
 						<b-pagination
@@ -186,10 +187,6 @@ export default {
 
 
 <style lang="scss" scoped>
-
-.test {
-	background-color: blue;
-}
 
 .form-check > *, .form-switch > * {
 	cursor: pointer;
@@ -215,7 +212,7 @@ export default {
 	min-height: 100%;
 	transition : none;
 	background-color: rgba(34, 35, 40, 0.864);
-	min-height: 1150px;
+	min-height: 200vh;
 }
 
 .small_sidebar + .results_container {

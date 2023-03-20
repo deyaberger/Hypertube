@@ -100,6 +100,7 @@ export default {
 
 	methods: {
 		Choose_Torrent(value) {
+			this.torrent_error = false
 			const torrent = JSON.parse(JSON.stringify((value.torrent)));
 			this.torrent_loading = true;
 			this.download_speed = ''
@@ -137,13 +138,13 @@ export default {
 		async update_fav() {
 			let res = null
 			try {
-				this.movie.is_fav = !this.movie.is_fav
 				if (this.movie.is_fav) {
 					res = await Remove_From_Favorites(this.movie_id, this.user_token)
 				}
 				else {
 					res = await Add_To_Favorites(this.movie_id, this.user_token)
 				}
+				this.movie.is_fav = !this.movie.is_fav
 				if (res.data && res.data.code == "SUCCESS") {
 					console.log("[single_movie]: Successfully updated fav!")
 				}

@@ -225,7 +225,7 @@ export default {
 	<section v-if="user" class="gradient-custom-2">
 		<div class="container py-5 h-100">
 			<div class="row d-flex justify-content-center align-items-start h-100">
-			<div class="col col-lg-9 col-xl-7">
+			<div class="col col-lg-9">
 				<div class="card">
 					<div class="rounded-top text-white d-flex flex-row black_rectangle">
 						<div class="ms-4 d-flex flex-column pic_container">
@@ -275,11 +275,11 @@ export default {
 				</div>
 				<div class="card-body p-4 text-black movies" v-if="exists(fav_movies)">
 					<p class="lead fw-normal mb-4">{{text_content.favorites[lang_nb]}}:</p>
-					<SearchResults  :movie_list="set_movie_props(fav_movies)" @updating="updating_movies"/>
+					<SearchResults  :movie_list="fav_movies" :profile="true" :error="false" @updating="updating_movies"/>
 				</div>
 				<div class="card-body p-4 text-black movies"  v-if="exists(watched_movies)">
 					<p class="lead fw-normal mb-4">{{text_content.watched[lang_nb]}}:</p>
-					<SearchResults :movie_list="set_movie_props(watched_movies)" @updating="updating_movies"/>
+					<SearchResults :movie_list="watched_movies" :profile="true" :error="false" @updating="updating_movies"/>
 				</div>
 				</div>
 			</div>

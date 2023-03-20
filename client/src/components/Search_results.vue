@@ -61,13 +61,17 @@ export default {
 				event.target.src = this.fallbackUrl;
 			}
 			// console.log("movie", movie.title, movie.images_list)
-			
+
 		}
 	},
 	computed: mapState({
 		lang_nb    : state =>  state.lang_nb,
 		user_token : state =>  state.user_token,
     }),
+
+	created() {
+		console.log("profile: ", this.profile)
+	}
 }
 </script>
 
