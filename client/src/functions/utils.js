@@ -11,7 +11,7 @@ export function Get_Formatted_Time(n) {
         console.log("Handled get time error ", e)
         return '1h17m'
     }
-    
+
 }
 
 export function Get_Rating_Level(rating) {
@@ -22,13 +22,13 @@ export function Get_Rating_Level(rating) {
         if (rating <= 7) {
             return "bof"
         }
-        return null    
+        return null
     }
     catch (e) {
         console.log("Handled get rating error ", e)
         return 'bof'
     }
-    
+
 }
 
 export function Get_Separator(index, text_list) {
@@ -39,11 +39,6 @@ export function Get_Separator(index, text_list) {
         console.log("Handled Get_Separator error ", e)
         return ", "
     }
-}
-
-export function Get_Genres_String(genres_list) {
-    console.log("genres: ", genres_list)
-    return (genres_list.join(", "))
 }
 
 export function Get_Genres_String(genres_list) {
