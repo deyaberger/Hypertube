@@ -123,7 +123,7 @@ export default {
 			<span><span class="big">{{comment.rating}}</span>/10</span>
 		</div>
 		<div class="col username">
-			@{{comment.username}}
+			<router-link :to="'/profile/' + comment.user_id" class="link_to_user">@{{comment.username}}</router-link>
 		</div>
 		<div class="col-3 time">
 			<span>{{comment.date}}</span>
@@ -136,5 +136,10 @@ export default {
 
 <style lang="scss" scoped>
 @import "../assets/shared_scss/single_movie.scss";
+@import "../assets/shared_scss/movie_infos.scss";
+
+.link_to_user {
+	color: rgb(197, 126, 255);
+}
 
 </style>

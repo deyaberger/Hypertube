@@ -6,11 +6,13 @@ export const Parse_Comments = (comments) => {
 	}
 	let parsed_comments = []
 	for (let i = 0; i < comments.length; i++) {
+		console.log("COMMMENTS: ", comments[i])
 		parsed_comments.push( {
 			"content" : comments[i].content,
 			"date" : comments[i].date,
 			"username" : comments[i].username,
-			"rating" : comments[i].rating
+			"rating" : comments[i].rating,
+			"user_id": comments[i].user_id
 		});
 	  }
 	return parsed_comments

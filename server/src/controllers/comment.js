@@ -23,7 +23,7 @@ module.exports = (db_pool) => {
                     comments.date,
                     comments.content,
                     comments.rating,
-                    users.username
+                    users.username,
                 FROM comments
                 INNER JOIN users
                     ON users.id = comments.user_id
@@ -45,7 +45,7 @@ module.exports = (db_pool) => {
                     comments.date,
                     comments.content,
                     comments.rating,
-                    users.username
+                    users.username,
                 FROM comments
                 INNER JOIN users
                     ON users.id = comments.user_id
@@ -63,7 +63,7 @@ module.exports = (db_pool) => {
             console.log("\n[comment]:getting comment by movie id: ", movie_id)
             try {
                 [comments, ] = await db_pool.query(`
-                SELECT content, DATE_FORMAT(date, '%Y-%m-%d %T') as date, u.username, rating
+                SELECT content, DATE_FORMAT(date, '%Y-%m-%d %T') as date, u.username, u.id as user_id, rating
                 FROM comments
                     LEFT JOIN users u on comments.user_id = u.id
                 WHERE comments.movie_id = ?
