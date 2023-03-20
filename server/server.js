@@ -120,13 +120,12 @@ app.use("/api/back", back_api_router)
 const history = require('connect-history-api-fallback');
 
 const historyMiddleware = history({
-  verbose: true,
+  verbose: false,
 });
 
 app.use((req, res, next) => {
   console.log(req.path)
   let route_base = req.path.split('/')[1]
-  console.log("LIOL", route_base)
   if (route_base == 'populate' && process.env.ENABLE_POPULATE != 'TRUE') {
     return res.redirect('/')
   }

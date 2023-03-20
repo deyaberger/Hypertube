@@ -175,7 +175,7 @@ export default {
 			try {
 				if (!is_empty(this.user.picture)) {
 					if (this.user.picture.startsWith('http')) {
-						return (this.user.picture)
+						return `${this.user.picture}`
 					}
 					return `${this.pic_prefix}${this.user.picture}`
 				}
@@ -234,10 +234,10 @@ export default {
 			}
 			catch(e) {
 				console.log("UNKOWN ERROR [my_profile] in save_first_name ")
-				throw(e)
 				this.first_name = this.user.first_name
 				this.first_name_error = true;
 				this.first_name_error_text = this.text_content.first_name_error
+				throw(e)
 			}
 
 		},

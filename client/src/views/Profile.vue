@@ -51,7 +51,6 @@ export default {
 			fallbackUrl			: fallbackUrll,
 
 			followed       : false,
-			window_width   : window.innerWidth,
 		}
 	},
 
@@ -125,13 +124,19 @@ export default {
 		},
 
 		get_user_profile_pic() { // SAME
-			if (this.user.picture != null) {
-				if (this.user.picture.includes("cdn.intra.42") || this.user.picture.includes("github")) {
-					return (this.user.picture)
+			try {
+				if (this.user.picture != null) {
+					if (this.user.picture.startsWith('http')) {
+						return `${this.user.picture}`
+					}
+					return `${this.pic_prefix}${this.user.picture}`
 				}
-				return `${this.pic_prefix}${this.user.picture}`
+				return null
 			}
-			return null
+			catch(e) {
+				return null
+			}
+
 		},
 
 		async updating_movies(value) { // SAME
@@ -180,11 +185,6 @@ export default {
 				throw(e)
 			}
 		},
-
-		updateWidth() {
-			this.window_width = window.innerWidth;
-			console.log("Height: ", this.window_height)
-		}
 	},
 
 
@@ -199,11 +199,9 @@ export default {
 		await this.get_user_fav_movies();
 		await this.get_user_watched_movies();
 		await this.is_following();
-		window.addEventListener('resize', this.updateWidth);
 	},
 
 	beforeUnmount() {
-    	window.removeEventListener('resize', this.updateWidth);
   	},
 }
 </script>
@@ -248,11 +246,11 @@ export default {
 					<div class="justify-content-center text-center py-1">
 					<div>
 						<div class="row">
-						<div class="button_container" :class="window_width > 1415 ? 'col-9' : 'col-7'" v-if="user.id != my_id">
+						<div class="col button_container" v-if="user.id != my_id">
 							<button v-if="followed" class="btn check_button followed" @click="update_follow()" type="button" data-toggle="tooltip" data-placement="top" :title="text_content.unfollow[lang_nb]">{{text_content.followed[lang_nb]}}</button>
 							<button v-else class="btn check_button follow" type="button" @click="update_follow()">{{text_content.follow[lang_nb]}}</button>
 						</div>
-						<div v-else class="button_container" :class="window_width > 1415 ? 'col-9' : 'col-7'">
+						<div v-else class="col button_container" >
 							Hey there, narcissist
 						</div>
 						<div class="col">

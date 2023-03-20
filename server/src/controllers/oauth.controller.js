@@ -98,9 +98,10 @@ const helper_functions = (db_pool) => {
                     client_secret: process.env.OAUTH_GITLAB_SECRET,
                     redirect_uri : `${back_hostname}/api/oauth/gitlab`,
                     grant_type: 'authorization_code',
-                    state: 'test'
+                    // state: 'test'
                 }
             };
+            console.log("REquest: ", request)
             const response = await axios(request);
             return response;
         },
@@ -291,10 +292,10 @@ module.exports = (db_pool) => {
                     console.log("ERROR: [oauth.controller] CANT_CREATE_USERNAME, Redirecting signup page")
                 }
                 else if (e.code == "ER_DUP_ENTRY") {
-                    if (e.sqlMessage.includes('users.users_mail_uindex')) {
+                    if (e.sqlMessage.includes('mail_uindex')) {
                         console.log("ERROR: [oauth.controller] MAIL_ALREADY_TAKEN, Redirecting signup page")
                     }
-                    else if (e.sqlMessage.includes('users.users_name_uindex')) {
+                    else if (e.sqlMessage.includes('name_uindex')) {
                         console.log("ERROR: [oauth.controller] USERNAME_ALREADY_TAKEN, Redirecting signup page")
                     }
                     return res.redirect(`${front_hostname}/sign_up`)
@@ -454,7 +455,7 @@ module.exports = (db_pool) => {
                 }
             }
             catch(e) {
-                console.log("UNKOWN ERROR GITLAB [oauth.controller]: could not check_if_42_user_exists", e)
+                console.log("UNKOWN ERROR GITLAB [oauth.controller]: could not check_if_gitlab_user_exists", e)
                 return res.redirect(`${front_hostname}/sign_up`)
             }
         },
