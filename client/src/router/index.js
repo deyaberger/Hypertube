@@ -9,8 +9,6 @@ import SingleMovie      from "../views/Single_movie.vue";
 import My_profile       from "../views/My_profile.vue";
 import Populate         from "../views/Populate.vue";
 import NotFound         from "../views/NotFound.vue";
-import MovieTorrents    from "../views/Movie_torrents.vue";
-
 
 
 const router = createRouter({
@@ -85,12 +83,7 @@ const router = createRouter({
 			name: "populate",
 			component: Populate,
 		},
-		{
-			path: "/movie_torrent/:movie_id",
-			name: "movie_torrent",
-			props: true,
-			component: MovieTorrents,
-		},
+
   ]
 })
 

@@ -11,7 +11,6 @@ export default {
 	name: "Search",
 
 	beforeRouteEnter(to, from, next) {
-		// TODO: This fails if the token is invalid or expired.
 		const isAuthenticated = store.state.user_token != null // check if the user is authenticated
 		if (!isAuthenticated) {
 			console.log("[search]: not logged in yeat, redirecting to sign in")
@@ -103,8 +102,6 @@ export default {
 	created() {
 		this.paginator = new Paginator(this.user_token, this.lang_nb, this.perPage)
 		this.paginator.once("GET_MOVIE_ERROR", () => {
-			// throw(new Error("SEARCH MOVIE ERROR"))
-						// TODO: turn this back on
 			this.kaputkaboum = true
 			this.$store.commit('LOGOUT_USER')
 			this.$router.push('/sign_in')
@@ -117,9 +114,8 @@ export default {
 				this.recommendations = [...recos]
 			}
 			catch (e) {
-				// TODO: hide error print
-				// this.kaputkaboum = true
-				console.log("error in reco_done", e, "################## HANDLED #############")
+				this.kaputkaboum = true
+				// console.log("error in reco_done", e, "################## HANDLED #############")
 				this.recommendations = []
 			}
 		})
@@ -130,8 +126,7 @@ export default {
 				this.current_movies = [...movies]
 			}
 			catch (e) {
-				// TODO: hide error print
-				console.log("error in search_done", e, "HANDLED")
+				// console.log("error in search_done", e, "HANDLED")
 				this.current_movies = []
 			}
 		})

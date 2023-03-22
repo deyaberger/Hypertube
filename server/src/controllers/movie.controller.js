@@ -17,30 +17,8 @@ module.exports = (db_pool) => {
                     console.log("[movie.controller]: get_recommendations ECONNREFUSED")
                     return res.status(400).send({movies: [], msg: "Connection to DB refused, make sure you have started mysql service", code: "FAILURE"})
                 }
-                throw(e)
+                console.log("ERROR [movie.controller]: get_recommendations")
                 return res.status(400).send({movies: [], msg: "Error fetchin recommendations", code: "FAILURE"})
-            }
-        },
-
-        search : async (req, res) => {
-            try {
-                let user_id           = req.user_id
-                let query_term        = req.query.query_term
-                let minimum_rating    = req.query.minimum_rating
-                let genre             = req.query.genre
-                let quality           = 1080
-                let min_year          = req.query.min_year
-                let max_year          = req.query.max_year
-                let language          = req.query.language
-                let asc_or_desc       = req.query.asc_or_desc
-                let sort_by           = req.query.sort_by
-                let movies_res = await movie_functions.search_movies(user_id, query_term, minimum_rating, genre, quality, min_year, max_year, language, asc_or_desc, sort_by)
-                console.log("[movie.controller]: search SUCCESS")
-                return res.status(200).send({movies: movies_res, code: "SUCCESS"})
-            }
-            catch (e) {
-                throw(e)
-                return res.status(400).send({movies: [], msg: "Error in search", code: "FAILURE"})
             }
         },
 
@@ -50,7 +28,7 @@ module.exports = (db_pool) => {
                 let query_term        = req.query.query_term
                 let minimum_rating    = req.query.minimum_rating
                 let genre             = req.query.genre
-                let quality           = 1080
+                let quality           = req.query.quality
                 let min_year          = req.query.min_year
                 let max_year          = req.query.max_year
                 let language          = req.query.language
@@ -63,7 +41,7 @@ module.exports = (db_pool) => {
                 return res.status(200).send({movies: movies_res, code: "SUCCESS"})
             }
             catch (e) {
-                throw(e)
+                console.log("ERROR [movie.controller]: search_page")
                 return res.status(400).send({movies: [], msg: "Error in search page", code: "FAILURE"})
             }
         },
@@ -85,7 +63,7 @@ module.exports = (db_pool) => {
                     console.log("ERROR [movie.controller]: ER_BAD_FIELD_ERROR")
                     return res.status(400).send({msg: "the path /movie/:movie_id should contain a number as movie id", code: "FAILURE"})
                 }
-                throw(e)
+                console.log("ERROR [movie.controller]: get_details")
                 return res.status(400).send({msg: "Error get details", code: "FAILURE"})
             }
         },
@@ -101,7 +79,6 @@ module.exports = (db_pool) => {
                     return res.status(200).send({movie: movie_res, code: "MISSING_MOVIE"})
                 }
                 console.log("[movie.controller]: get_details SUCCESS")
-                // TODO: get the subtitles ?
                 movie_res.subtitles = []
                 return res.status(200).send({movie: movie_res, code: "SUCCESS"})
             }
@@ -110,7 +87,7 @@ module.exports = (db_pool) => {
                     console.log("ERROR [movie.controller]: ER_BAD_FIELD_ERROR")
                     return res.status(201).send({msg: "the path /movie/:movie_id should contain a number as movie id", code: "FAILURE"})
                 }
-                throw(e)
+                console.log("ERROR [movie.controller]: get_details_back")
                 return res.status(400).send({msg: "Error get details bak", code: "FAILURE"})
             }
         },

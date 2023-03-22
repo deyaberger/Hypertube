@@ -75,7 +75,6 @@ export default {
 		movie_ready_to_watch() {
 			if (this.torrent_service && this.torrent_service.torrent_status) {
 				if (this.torrent_service.torrent_status.ready_to_watch == true) {
-					// TODO: maybe we don't care because it works: we send set watched many many times
 					this.torrent_loading = false;
 				}
 				return this.torrent_service.torrent_status.ready_to_watch
@@ -131,7 +130,6 @@ export default {
 			}
 			catch(e) {
 				console.log("UNKNOWN ERROR [single_movie]: in set_watched")
-				// throw(e)
 			}
 		},
 
@@ -154,7 +152,6 @@ export default {
 			}
 			catch(e) {
 				console.log("UNKNOWN ERROR [single_movie]: in update_fav")
-				// throw(e)
 			}
 		},
 
@@ -197,7 +194,6 @@ export default {
 					console.log("ER_BAD_FIELD_ERROR [single_movie]: in get_movie_details, make sure the DB is up to date")
 				}
 				console.log("UNKNOWN ERROR [single_movie]: in get_movie_details")
-				// throw(e)
 			}
 		},
 
@@ -298,7 +294,7 @@ export default {
 				</div>
 			<div v-else class="col video_container" id="video_container">
 				<div v-if="movie_ready_to_watch && movie_file_type_ok" class="image_container">
-					<video ref="movieplayer" controls loop id="videoPlayer" muted="muted" disablepictureinpicture autoplay onerror="videoErrorHandler(e)">
+					<video ref="movieplayer" controls loop id="videoPlayer" muted="muted" autoplay onerror="videoErrorHandler(e)">
 						<source :src="movie_source" type="video/mp4" />
 						<track v-for="sub in subs" v-bind:key="sub.path"
 							:label="sub.name"

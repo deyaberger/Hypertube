@@ -45,7 +45,6 @@ export default {
 			}
 			catch (e) {
 				console.log("UNKNOWN ERROR [single_movie]: in get_comments")
-				// throw(e)
 				console.log("HANDLED error in get comments", e)
 			}
 		},
@@ -60,7 +59,6 @@ export default {
 				}
 			}
 			catch (e) {
-				// throw(e)
 				console.log("HANDLED error in post comment", e)
 			}
 		},

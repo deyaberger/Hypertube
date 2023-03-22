@@ -6,7 +6,6 @@ module.exports = (db_pool) => {
     const express            = require("express");
     var   router             = require("express").Router();
 
-    // TODO: RESTRICT ACCESS TO STREAMING
     router.get ("/stream_magnet/:hash/:title" , torrent_controller.stream_magnet)
 
     router.get ("/get_list", auth_middlewares.authenticateToken , torrent_controller.get_torrents_from_movie_id)

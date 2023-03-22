@@ -16,7 +16,7 @@ module.exports = (db_pool) => {
                     console.log("Tor not ready")
                     return res.sendStatus(200)
                 }
-    
+
                 let file = torrent_functions.get_largest_file(tor);
                 let paf = file.path
                 paf = torrent_functions.to_relative_path(paf)
@@ -26,34 +26,34 @@ module.exports = (db_pool) => {
                     console.log("no range")
                     return res.status(400).send("Requires Range header");
                 }
-    
+
                 const videoSize = fs.statSync(paf).size;
                 // console.log("size:", videoSize)
                 // const videoSize = file.downloaded;
-    
+
                 let start = Number(range.replace(/\D/g, ""));
                 const end = Math.min(start + CHUNK_SIZE, videoSize - 1);
                 start = Math.min(end, start)
                 const contentLength = end - start + 1;
-    
+
                 console.log("start:", Math.round(start / (1000 * 1000 * 1)), "end:", Math.round(end / (1000 * 1000 * 1)), "file.down:", Math.round(file.downloaded / (1000 * 1000 * 1)))
-    
+
                 if (Math.max(start, end) >= file.downloaded) {
                     console.log("TOO FAR")
                     return res.sendStatus(206)
                 }
-    
+
                 const headers = {
                     "Content-Range" : `bytes ${start}-${end}/${videoSize}`,
                     "Accept-Ranges" : "bytes",
                     "Content-Length": contentLength,
                     "Content-Type"  : "video/mp4",
                 };
-    
-                // console.log(start) 
+
+                // console.log(start)
                 // console.log("Write head")
                 res.writeHead(206, headers);
-                
+
                 // console.log("Make stream")
                 const videoStream = fs.createReadStream(paf, { start, end });
                 // console.log("PIPE stream")
@@ -61,7 +61,6 @@ module.exports = (db_pool) => {
             }
             catch (e) {
                 console.log("Error in stream torrent", e)
-                // throw(e)
                 res.sendStatus(204)
             }
         },
@@ -97,7 +96,6 @@ module.exports = (db_pool) => {
             }
             catch (e) {
                 console.log("Error in get torrents:", e)
-                throw(e)
                 res.status(400).send(e)
             }
         },

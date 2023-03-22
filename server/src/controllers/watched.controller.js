@@ -11,7 +11,8 @@ module.exports = (db_pool) => {
                 return res.status(200).send({watched: watched, code: "SUCCESS"})
             }
             catch (e) {
-                throw (e)
+                console.log("ERRORin get_user_watched_movies")
+                return res.status(400).send({msg: 'cant get_user_watched_movies', code: "FAILURE"})
             }
         },
 
@@ -20,16 +21,19 @@ module.exports = (db_pool) => {
                 let user_id = req.user_id
                 let movie_id  = Number(req.params.movie_id)
                 let update_res  = await watched_functions.post_watched(user_id, movie_id)
-                if (update_res.affectedRows == 1) {
+                if (update_res.affectedRows >= 1) {
                     console.log("[watched.controller]: set_watched SUCCESS")
                     return res.status(200).send({code: "SUCCESS"})
                 }
+                console.log("ERROR in set_watched", update_res)
+                return res.status(400).send({msg: 'cant set_watched', code: "FAILURE"})
             }
             catch (e) {
                 if (e.code == 'ER_DUP_ENTRY') {
                     return res.status(200).send({code: "SUCCESS"})
                 }
-                throw(e)
+                console.log("ERRORin set_watched", e)
+                return res.status(400).send({msg: 'cant set_watched', code: "FAILURE"})
             }
         },
 
@@ -44,7 +48,8 @@ module.exports = (db_pool) => {
                 }
             }
             catch (e) {
-                throw(e)
+                console.log("ERRORin set_unwatched")
+                return res.status(400).send({msg: 'cant set_unwatched', code: "FAILURE"})
             }
         }
     }

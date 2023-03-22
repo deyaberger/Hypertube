@@ -116,7 +116,7 @@ module.exports = (db_pool) => {
                     return res.status(400).send({msg: "Invalid password", code: "PASSWORD_ERROR"})
                 }
                 console.log("password test passed")
-                
+
                 if (update.pass) {
                     update.pass = hashPassword(update.pass)
                 }
@@ -131,7 +131,6 @@ module.exports = (db_pool) => {
             }
             catch (e) {
                 console.log("error in update user")
-                throw(e)
                 return res.status(400).send({msg: "Invalid data", code: "USER_UPDATE_ERROR"})
             }
         },
@@ -142,7 +141,7 @@ module.exports = (db_pool) => {
                 return res.status(200).send({users: users, code: "SUCCESS"})
             }
             catch (e) {
-                throw (e)
+                console.log("error in get_all_users")
                 return res.status(400).send({users: [], CODE: 'FAILURE', msg: 'Unknown error while getting users'})
             }
         },
@@ -176,8 +175,8 @@ module.exports = (db_pool) => {
                     console.log("[user.controller]: update_username FAILURE : ER_BAD_NULL_ERROR")
                     return res.status(201).send({msg: "Can't change username (empty)", code : "EMPTY"})
                 }
-                throw(e)
-                return res.status(201).send({msg: "Can't change username.", code : "UNKNOWN_ERROR"})
+                console.log("ERRROR in update_username")
+                return res.status(400).send({msg: "Can't change username.", code : "UNKNOWN_ERROR"})
             }
         },
 
@@ -207,7 +206,7 @@ module.exports = (db_pool) => {
                     return res.status(201).send({msg: "Can't change first_name (empty)", code : "EMPTY"})
                 }
                 console.log("[user.controller]: update_first_name ERROR")
-                throw(e)
+                return res.status(400).send({msg: "Can't update_first_name.", code : "FAILURE"})
             }
         },
 
@@ -237,7 +236,7 @@ module.exports = (db_pool) => {
                     return res.status(201).send({msg: "Can't change last_name (empty)", code : "EMPTY"})
                 }
                 console.log("[user.controller]: update_last_name ERROR")
-                throw(e)
+                return res.status(400).send({msg: "Can't update_last_name.", code : "FAILURE"})
             }
         },
 
@@ -258,7 +257,7 @@ module.exports = (db_pool) => {
                     console.log("[user.controller]: update_bio ER_DATA_TOO_LONG")
                     return res.status(201).send({msg: "Can't change bio (too long)", code : "TOO_LONG"})
                 }
-                throw(e)
+                return res.status(400).send({msg: "Can't update_bio.", code : "FAILURE"})
             }
         },
 
@@ -291,7 +290,7 @@ module.exports = (db_pool) => {
                     console.log("[user.controller]: update_email FAILURE : ER_BAD_NULL_ERROR")
                     return res.status(201).send({msg: "Can't change email (empty)", code : "EMPTY"})
                 }
-                throw(e)
+                return res.status(400).send({msg: "Can't update_email.", code : "FAILURE"})
             }
         }
     }

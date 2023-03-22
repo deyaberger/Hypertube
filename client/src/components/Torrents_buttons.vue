@@ -43,7 +43,6 @@ export default {
 			catch (e) {
 				this.movie_error = true
 				console.log("UNKNOWN ERROR [single_movie]: in get_torrents")
-				// throw(e)
 			}
 		},
 

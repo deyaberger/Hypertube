@@ -119,7 +119,9 @@ export default {
 				}
 			}
 			catch(e) {
-				throw(e)
+				console.log("UNKOWN ERROR [my_profile]: ")
+				this.request_error = true
+				this.error_text = this.text_content.no_user_found
 			}
 		},
 
@@ -182,7 +184,6 @@ export default {
 			}
 			catch(e) {
 				console.log("UNKNOWN ERROR [update_follow]: ")
-				throw(e)
 			}
 		},
 	},

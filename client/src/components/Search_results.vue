@@ -38,7 +38,6 @@ export default {
 				}
 			}
 			catch(e) {
-				// throw (e)
 				console.log("Favourite update failed with err", e)
 			}
 

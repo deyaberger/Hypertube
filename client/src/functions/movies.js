@@ -62,23 +62,6 @@ export const Get_Recommendations = async(token) => {
 }
 
 
-export const Get_Movies_Research = async(form, lang_nb, token) => {
-	const params = _parse_form_for_back(form, lang_nb)
-	console.log("<movies> : params ", params)
-	let request = {
-		url: `/api/movie/search`,
-		method: "get",
-		headers: {
-			'Access-Control-Allow-Origin': '*',
-			"Content-type"               : "application/json",
-			'Authorization'				 : `Bearer ${token}`
-		},
-		params : params
-	};
-	const response = await axios(request);
-	return response;
-}
-
 export const Get_Movies_Research_Page = async(form, lang_nb, token, offset, limit) => {
 	let params = _parse_form_for_back(form, lang_nb)
 	params.offset = offset

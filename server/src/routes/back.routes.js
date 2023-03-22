@@ -8,7 +8,6 @@ module.exports = (db_pool) => {
 
   var router = require("express").Router();
 
-  // TODO: is username / password OK for oauth/token ?
   router.post  ("/oauth/token"                                                   , auth_controller.signin_oauth          );
 
   router.get   ("/users"                     , auth_middlewares.authenticateToken, user_controller.get_all_users         );
@@ -25,7 +24,7 @@ module.exports = (db_pool) => {
   router.delete("/comments/:id"              , auth_middlewares.authenticateToken, comment_controller.delete_comment     );
   router.post  ("/movies/:movie_id/comments" , auth_middlewares.authenticateToken, comment_controller.post_comment       );
   router.post  ("/comments"                  , auth_middlewares.authenticateToken, comment_controller.post_comment       );
-  
+
   return router
 }
 

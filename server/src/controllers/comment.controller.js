@@ -8,7 +8,6 @@ module.exports = (db_pool) => {
             try {
                 let user_id       = req.user_id
                 let movie_id      = Number(req.params.movie_id)
-                // TODO: test the double ID source trick
                 if (!movie_id || isNaN(movie_id)) {
                     movie_id = req.body.movie_id
                 }
@@ -48,7 +47,7 @@ module.exports = (db_pool) => {
                 return res.status(200).send({comments: comments, code: "SUCCESS"})
             }
             catch (e) {
-                throw(e)
+                console.log("ERRor in get_comments_from_movie")
                 return res.status(400).send({comments: [], code: "FAILURE"})
             }
         },
@@ -60,7 +59,7 @@ module.exports = (db_pool) => {
                 return res.status(200).send({comments: comments, code: "SUCCESS"})
             }
             catch (e) {
-                throw(e)
+                console.log("ERRor in get_latest_comments")
                 return res.status(400).send({comments: [], code: "FAILURE"})
             }
         },
@@ -79,7 +78,7 @@ module.exports = (db_pool) => {
                 if (e.code == 'ER_BAD_FIELD_ERROR') {
                     return res.status(400).send({code: "FAILURE", msg: 'invalid id'})
                 }
-                throw(e)
+                console.log("ERRor in get_comment_by_id")
                 return res.status(400).send({code: "FAILURE"})
             }
         },
@@ -100,7 +99,7 @@ module.exports = (db_pool) => {
                 if (e.code == 'ER_BAD_FIELD_ERROR') {
                     return res.status(400).send({code: "FAILURE", msg: 'invalid id'})
                 }
-                throw(e)
+                console.log("ERRor in delete_comment")
                 return res.status(400).send({code: "FAILURE"})
             }
         },
@@ -150,7 +149,7 @@ module.exports = (db_pool) => {
                 if (e.code == 'ER_BAD_FIELD_ERROR') {
                     return res.status(400).send({code: "FAILURE", msg: 'invalid id'})
                 }
-                throw(e)
+                console.log("ERRor in update_comment")
                 return res.status(400).send({msg: "Invalid data", code: "COMMENT_UPDATE_ERROR"})
             }
         },

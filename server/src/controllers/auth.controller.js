@@ -43,7 +43,7 @@ module.exports = (db_pool) => {
                 console.log("Signup parse error", e)
                 return res.status(400).send({specific_errors: {}, message: 'cant create user', code: e.code})
             }
-            
+
             try {
                 let result = await auth_functions.signup(username, firstName, lastName, mail, password, '', 'en')
                 let id     = result.insertId
@@ -105,7 +105,7 @@ module.exports = (db_pool) => {
             try {
                 let user = await auth_functions.get_user_from_username(req.body.username)
 				console.log("[auth.controller]: get_user_from_username ", {user})
-				
+
                 if (user == null) {
 					return res.status(400).send({message: "Signin failed", code: "FAILURE"})
 				}
@@ -171,7 +171,6 @@ module.exports = (db_pool) => {
             }
             catch (e) {
                 console.log("[auth.controller]: UNKOWN ERROR request_reset_pass, ", e.code)
-                // throw(e)
                 return res.status(400).send({msg: "Could not request new password, contact support.", code : "FAILURE"})
             }
         },
@@ -196,7 +195,6 @@ module.exports = (db_pool) => {
                     return res.status(400).send({msg: "ER_PARSE_ERROR", code : "FAILURE"})
                 }
                 console.log("[auth.controller]: UNKOWN ERROR reset_pass, ", e.code)
-                // throw(e)
                 return res.status(400).send({msg: "Could not reset pass", code : "FAILURE"})
             }
         }

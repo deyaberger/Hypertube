@@ -118,7 +118,6 @@ export default {
 			}
 			catch (e) {
 				console.log("wierd erro in get use favourites")
-				// throw(e)
 				this.fav_movies = null
 			}
 		},
@@ -137,7 +136,6 @@ export default {
 			}
 			catch (e) {
 				console.log("wierd erro in get user watched")
-				// throw(e)
 				this.watched_movies = null
 			}
 		},
@@ -166,8 +164,7 @@ export default {
 				}
 			}
 			catch(e) {
-				// throw(e)
-				this.parse_modifiable_data(res.data.user);
+				console.log("error in get user data")
 			}
 		},
 
@@ -182,7 +179,6 @@ export default {
 				return null
 			}
 			catch (e) {
-				// throw(e)
 				return null
 			}
 		},
@@ -237,7 +233,6 @@ export default {
 				this.first_name = this.user.first_name
 				this.first_name_error = true;
 				this.first_name_error_text = this.text_content.first_name_error
-				throw(e)
 			}
 
 		},
@@ -288,7 +283,6 @@ export default {
 				console.log("UNKOWN ERROR [my_profile] in save_last_name ")
 				this.last_name_error = true;
 				this.last_name_error_text = this.text_content.last_name_error
-				throw(e)
 			}
 
 		},
@@ -325,7 +319,7 @@ export default {
 			}
 			catch(e) {
 				console.log("UNKOWN ERROR [my_profile] in save_bio ")
-				throw(e)
+				this.bio_error = true;
 			}
 		},
 
@@ -383,7 +377,6 @@ export default {
 			}
 			catch(e) {
 				console.log("UNKOWN ERROR [my_profile] in save_username ")
-				throw(e)
 				this.username_error = true;
 				this.username_error_text = this.text_content.username_unkown_err;
 			}
@@ -440,7 +433,6 @@ export default {
 			}
 			catch(e) {
 				console.log("UNKOWN ERROR [my_profile] in save_mail ")
-				throw(e)
 				this.email_error = true;
 				this.email_error_text = this.text_content.email_unkown_err;
 			}
@@ -474,7 +466,6 @@ export default {
 				}
 			}
 			catch(e) {
-				throw(e)
 				this.image_error = true
 				this.image_error_text = "Unexpected error with your image. Try another."
 			}

@@ -14,8 +14,7 @@ module.exports = (io, TorGod) => {
       }
       catch (e) {
         console.log("err in socket add torrent")
-        throw(e)
-        socket.emit()
+        socket.emit('BAD_ERROR')
       }
     })
 

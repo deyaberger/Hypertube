@@ -49,6 +49,7 @@ class TorrentWatcher extends EventEmitter {
           this.setOnFileDone()
           this.setOnDownloadEmitStatus()
           this.setOnDownloadCheckETA()
+          console.log('torrent_ready', this.getStatus())
           this.emit('torrent_ready', this.getStatus())
           this.emit('set_torrent_expiration', this.torrent.name)
         }
@@ -141,7 +142,6 @@ class TorrentWatcher extends EventEmitter {
       done      : file.done,
       name      : file.name,
       path      : file.path,
-      // TODO: fix negative downloaded values ?
       downloaded: file.downloaded < 0 ? 0: file.downloaded,
       size      : file.length,
       type      : this.getFileType(file)
@@ -194,18 +194,12 @@ class GodEventHandler {
       `, [name, torrent_id])
     }
     catch (e) {
-      throw(e)
       console.log("oopsies add expiration date")
     }
 
   }
 
   async add_torrent(torrent_id) {
-    // TODO remove TEST errors
-    // this.io.to(torrent_id).emit(event_names.TORRENT_NOT_EXIST) // NOT WORKING
-    // this.io.to(torrent_id).emit(event_names.BAD_ERROR)
-    // this.io.to(torrent_id).emit(event_names.UNKNOWN_ERROR)
-    // return
     try {
       let torrent_db_data = await this.torrent_functions.get_torrent_from_id(torrent_id)
       let magnet_uri = hash_title_to_magnet_link(torrent_db_data.hash, `torrent_db_data.title_${torrent_id}`)
@@ -213,7 +207,6 @@ class GodEventHandler {
       if (this.torrent_client.get(magnet_uri)) {
         console.log("\n\n\nWTF DOUBLE TROUBLE THIS SHOULD NEVER PRINT\n\n\n", torrent_id)
 
-        // throw_err_with_code("You tried adding a torrent that's already present!", event_names.BAD_ERROR)
         this.io.to(torrent_id).emit(event_names.NO_STREAMABLE_FILE)
       }
 
@@ -243,7 +236,6 @@ class GodEventHandler {
       }
 
       console.log("error in add torrent socket")
-      throw(e)
       return this.io.to(torrent_id).emit(event_names.UNKNOWN_ERROR)
     }
   }
@@ -261,13 +253,11 @@ class GodEventHandler {
       }
       else {
         console.log("watcher not found")
-        throw(new Error("Removing unexisting torrent from client"))
       }
 
     }
     catch (e) {
       console.log("err in remove torrent on disconnect")
-      throw(e)
     }
   }
 
@@ -280,7 +270,6 @@ class GodEventHandler {
       this.io.to(torrent_id).emit(event_names.TOR_WATCHER_ERROR)
     })
 
-    // TODO: test NO_STREAMABLE_FILE on front and back
     this.torrentWatchers[torrent_id].once(event_names.NO_STREAMABLE_FILE, () => {
       console.log("[torrent.god] emit no streamable")
       this.io.to(torrent_id).emit(event_names.NO_STREAMABLE_FILE)
@@ -301,7 +290,7 @@ class GodEventHandler {
 
 
     this.torrentWatchers[torrent_id].on('download', (torrent_status) => {
-      console.log("[torrent.god]  emit dl")
+      // console.log("[torrent.god]  emit dl")
       this.io.to(torrent_id).emit('download', torrent_status)
     })
 

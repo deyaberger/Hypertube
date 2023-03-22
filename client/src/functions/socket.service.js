@@ -11,10 +11,9 @@ function formatSizeUnits(bytes){
     return bytes;
   }
   catch (e) {
-    throw(e)
     return ''
   }
-  
+
 }
 
 class TorrentSocketService extends EventEmitter {
@@ -81,6 +80,21 @@ class TorrentSocketService extends EventEmitter {
 
 			this.socket.once('TOR_WATCHER_ERROR', (err) => {
         console.log('TOR_WATCHER_ERROR')
+        this.refresh_state()
+        this.delete_socket()
+        this.emit('TOR_WATCHER_ERROR')
+      })
+
+      this.socket.once('UNKNOWN_ERROR', (err) => {
+        console.log('UNKNOWN_ERROR')
+        this.refresh_state()
+        this.delete_socket()
+        this.emit('TOR_WATCHER_ERROR')
+      })
+
+
+      this.socket.once('BAD_ERROR', (err) => {
+        console.log('BAD_ERROR')
         this.refresh_state()
         this.delete_socket()
         this.emit('TOR_WATCHER_ERROR')
