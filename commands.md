@@ -1,62 +1,30 @@
-Kill HOST MYSQL
+# Launch Hypertube:
 
-# Start API
-
-using this [TORRENT_API](https://github.com/Ryuk-me/Torrent-Api-py).
-with this `.env` in the source of that repo:
-
+1. Launch docker container
+2. Start DB:
 ```bash
-REDIS_URI=CHECK_ENCRYPTED_ENV
-PYTHON_ENV=dev
-CACHE_EXPIRATION=100000
+service mysql start
+cd server/sql
+bash get_db_from_dump.sh
 ```
-
+3. Build client:
 ```bash
-python main.py
+cd client
+npm i
+npm run build
 ```
-
-# Scrape
-
-
+4. Start server:
 ```bash
-cd server/scraper
-node scrape.py
+cd server
+gpg -d .env.gpg # create .env from encrypted file - you need the password
 ```
-
+make sure that in .env: `FRONT_HOST="http://localhost:8071"`\
+then:
 ```bash
-cd /etc/mysql/mysql.conf.d
-
-vim mysql.cnf
-# Set this
-[mysql]
-port=6606
-
-vim mysqld.cnf
-# change the port value as shown here
-# pid-file      = /var/run/mysqld/mysqld.pid
-# socket        = /var/run/mysqld/mysqld.sock
-port            = 6606
-# datadir       = /var/lib/mysql
-```
-
-```
-service mysql start && \
-/workspaces/Hypertube/server/sql/create_user_table_docker.sh
-```
-```
-cd server && \
-mkdir -p src/yts_response/ \
-touch src/yts_response/log.txt \
-npm i && \
+npm i
 npm start
 ```
-```
-cd client && \
-npm i && \
-npm start
-```
-
-# On your own machine :
-```
-docker volume create hyper-db
+5. Go to the website and enjoy:
+```bash
+localhost:8071
 ```
